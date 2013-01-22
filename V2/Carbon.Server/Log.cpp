@@ -2,7 +2,7 @@
 #include "Log.h"
 #include "Enums.h"
 
-#include <boost\
+#include <boost\log\trivial.hpp>
 
 namespace Carbon {
 namespace Server {
@@ -35,7 +35,7 @@ namespace Utils {
 		
 		fprintf(stdout, formatted.str().c_str());
 
-		BOOST:Log:
+		BOOST_LOG_TRIVIAL(debug) << message.c_str();
 	}
 
 	std::string Log::GetTimeString(time_t time)

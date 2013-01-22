@@ -49,13 +49,12 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ninject, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ExternalLibraries\Ninject 2.2.1.0\Ninject.dll</HintPath>
+    <Reference Include="Ninject">
+      <HintPath>..\..\..\CarbonExt\Ninject 2.2.1.0\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\SlimDX SDK (January 2012)\Bin\net40\x64\SlimDX.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\SlimDX Jan 2012\x64\SlimDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
