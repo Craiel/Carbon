@@ -1,0 +1,20 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <DataTemplate x:Key="DocumentPropertyTemplate">
+        <Expander Header="Document" IsExpanded="True">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Name:" Margin="4" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding Path=Name, UpdateSourceTrigger=LostFocus}" Grid.Column="1" Margin="4"/>
+            </Grid>
+        </Expander>
+    </DataTemplate>
+</ResourceDictionary>

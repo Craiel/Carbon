@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{819FF5D0-4498-48F2-9F7D-81A322B9B082}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Carbon.Editor</RootNamespace>
+    <AssemblyName>Carbon.Editor</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ninject, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ExternalLibraries\Ninject 2.2.1.0\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\SlimDX SDK (January 2012)\Bin\net40\x64\SlimDX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Processors\ModelProcessor.cs" />
+    <Compile Include="Processors\FontProcessor.cs" />
+    <Compile Include="Contracts\ICarbonBuilder.cs" />
+    <Compile Include="Contracts\IContentProcessor.cs" />
+    <Compile Include="Logic\CarbonBuilder.cs" />
+    <Compile Include="Logic\SourceReference.cs" />
+    <Compile Include="Ninject\NinjectModuleManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resource\Collada\ColladaCarbonConverter.cs" />
+    <Compile Include="Resource\Collada\ColladaModel.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaColor.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaDataConversion.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaFloat.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaFloatArray.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaFloatArrayType.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaInput.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaIntArrayType.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaRotate.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaScale.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaSource.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaTexture.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaTranslate.cs" />
+    <Compile Include="Resource\Collada\Effect\ColladaEffect.cs" />
+    <Compile Include="Resource\Collada\Effect\ColladaEffectLibrary.cs" />
+    <Compile Include="Resource\Collada\Effect\ColladaMaterial.cs" />
+    <Compile Include="Resource\Collada\Effect\ColladaMaterialLibrary.cs" />
+    <Compile Include="Resource\Collada\Effect\EffectBlinn.cs" />
+    <Compile Include="Resource\Collada\Effect\EffectBump.cs" />
+    <Compile Include="Resource\Collada\Effect\EffectDoubleSided.cs" />
+    <Compile Include="Resource\Collada\Effect\EffectExtra.cs" />
+    <Compile Include="Resource\Collada\Effect\EffectLambert.cs" />
+    <Compile Include="Resource\Collada\Effect\EffectMembers.cs" />
+    <Compile Include="Resource\Collada\Effect\EffectPhong.cs" />
+    <Compile Include="Resource\Collada\Effect\EffectTechnique.cs" />
+    <Compile Include="Resource\Collada\Effect\InstanceEffect.cs" />
+    <Compile Include="Resource\Collada\Effect\ProfileCommon.cs" />
+    <Compile Include="Resource\Collada\Geometry\ColladaGeometry.cs" />
+    <Compile Include="Resource\Collada\Geometry\ColladaGeometryElement.cs" />
+    <Compile Include="Resource\Collada\Geometry\ColladaGeometryLibrary.cs" />
+    <Compile Include="Resource\Collada\Geometry\ColladaMesh.cs" />
+    <Compile Include="Resource\Collada\Geometry\ColladaPolyList.cs" />
+    <Compile Include="Resource\Collada\Geometry\ColladaVertices.cs" />
+    <Compile Include="Resource\Collada\Scene\ColladaBindInstanceMaterial.cs" />
+    <Compile Include="Resource\Collada\Scene\ColladaBindMaterial.cs" />
+    <Compile Include="Resource\Collada\Scene\ColladaBindTechnique.cs" />
+    <Compile Include="Resource\Collada\Scene\ColladaBindVertexInput.cs" />
+    <Compile Include="Resource\Collada\Scene\ColladaInstanceGeometry.cs" />
+    <Compile Include="Resource\Collada\Scene\ColladaSceneNode.cs" />
+    <Compile Include="Resource\Collada\Scene\ColladaVisualScene.cs" />
+    <Compile Include="Resource\Collada\Scene\ColladaSceneLibrary.cs" />
+    <Compile Include="Resource\SourceFolderContent.cs" />
+    <Compile Include="Resource\SourceMesh.cs" />
+    <Compile Include="Resource\SourceModel.cs" />
+    <Compile Include="Resource\SourceProject.cs" />
+    <Compile Include="Resource\SourceProjectFolder.cs" />
+    <Compile Include="Resource\SourceTexture.cs" />
+    <Compile Include="Resource\SourceTextureFont.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Utils\Core.Utils.csproj">
+      <Project>{e05836d9-0bb3-4bfa-89e6-f5ed40a9d93c}</Project>
+      <Name>Core.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Carbon.Engine\Carbon.Engine.csproj">
+      <Project>{a724db75-b032-4ae5-b901-063a165f7e71}</Project>
+      <Name>Carbon.Engine</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

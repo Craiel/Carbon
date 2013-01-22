@@ -1,0 +1,349 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7F99AF1C-CC9D-434B-8A2C-3CFFC0E04D98}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Carbed</RootNamespace>
+    <AssemblyName>Carbed</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Carbed.Entry</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AvalonDock">
+      <HintPath>..\..\ExternalLibraries\AvalonDock 2.0.1746\AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="AvalonDock.Themes.Metro">
+      <HintPath>..\..\ExternalLibraries\AvalonDock 2.0.1746\AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Fluent">
+      <HintPath>..\..\ExternalLibraries\FluentRibbon c2848bed6826\Fluent.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\ExternalLibraries\log4net 1.2.10\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="lua51">
+      <HintPath>..\..\ExternalLibraries\LuaInterface 2.0.4\lua51.dll</HintPath>
+    </Reference>
+    <Reference Include="LuaInterface">
+      <HintPath>..\..\ExternalLibraries\LuaInterface 2.0.4\LuaInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\..\ExternalLibraries\Ninject 2.2.1.0\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="PresentationFramework.Aero2" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Contracts\IApplicationLog.cs" />
+    <Compile Include="Contracts\Carbed.cs" />
+    <Compile Include="Contracts\ICarbedBase.cs" />
+    <Compile Include="Contracts\ICarbedDocument.cs" />
+    <Compile Include="Contracts\IDocumentMemento.cs" />
+    <Compile Include="Contracts\IDocumentTemplate.cs" />
+    <Compile Include="Contracts\IDocumentTemplateCategory.cs" />
+    <Compile Include="Contracts\ICarbedLogic.cs" />
+    <Compile Include="Contracts\ICarbedTool.cs" />
+    <Compile Include="Contracts\IModelViewModel.cs" />
+    <Compile Include="Contracts\INewDialogViewModel.cs" />
+    <Compile Include="Contracts\IProjectExplorerViewModel.cs" />
+    <Compile Include="Contracts\IProjectFolderContent.cs" />
+    <Compile Include="Contracts\IProjectFolderViewModel.cs" />
+    <Compile Include="Contracts\IPropertyViewModel.cs" />
+    <Compile Include="Contracts\ITextureFontViewModel.cs" />
+    <Compile Include="Contracts\IMainViewModel.cs" />
+    <Compile Include="Contracts\IOperationProgress.cs" />
+    <Compile Include="Contracts\IProjectViewModel.cs" />
+    <Compile Include="Contracts\IUndoRedoGroup.cs" />
+    <Compile Include="Contracts\IUndoRedoManager.cs" />
+    <Compile Include="Contracts\IViewModelFactory.cs" />
+    <Compile Include="Entry.cs" />
+    <Compile Include="Events\LayoutEvents.cs" />
+    <Compile Include="Logic\ApplicationLog.cs" />
+    <Compile Include="Carbed.cs" />
+    <Compile Include="Logic\CarbedBase.cs" />
+    <Compile Include="Logic\CarbedLogic.cs" />
+    <Compile Include="Logic\MVVM\CommandReference.cs" />
+    <Compile Include="Logic\MVVM\Converters.cs" />
+    <Compile Include="Logic\Docking\ActiveDocumentConverter.cs" />
+    <Compile Include="Logic\Docking\LayoutInitializer.cs" />
+    <Compile Include="Logic\Docking\PanesStyleSelector.cs" />
+    <Compile Include="Logic\Docking\PanesTemplateSelector.cs" />
+    <Compile Include="Logic\DocumentTemplate.cs" />
+    <Compile Include="Logic\DocumentTemplateCategory.cs" />
+    <Compile Include="Logic\MVVM\FreezableBinding.cs" />
+    <Compile Include="Logic\MVVM\ListBoxSelectionSynchronization.cs" />
+    <Compile Include="Logic\MVVM\OneWayBinding.cs" />
+    <Compile Include="Logic\OperationProgress.cs" />
+    <Compile Include="Logic\ProjectExplorerTemplateSelector.cs" />
+    <Compile Include="Logic\MVVM\RelayCommand.cs" />
+    <Compile Include="Logic\MVVM\TreeViewExtension.cs" />
+    <Compile Include="Logic\UndoRedoManager.cs" />
+    <Compile Include="Ninject\ViewModelFactory.cs" />
+    <Compile Include="StaticResources.cs" />
+    <Compile Include="ViewModels\DocumentViewModel.cs" />
+    <Compile Include="ViewModels\FolderContentViewModel.cs" />
+    <Compile Include="ViewModels\ModelViewModel.cs" />
+    <Compile Include="ViewModels\NewDialogViewModel.cs" />
+    <Compile Include="ViewModels\ProjectExplorerViewModel.cs" />
+    <Compile Include="ViewModels\ProjectFolderViewModel.cs" />
+    <Compile Include="ViewModels\PropertyViewModel.cs" />
+    <Compile Include="ViewModels\TextureFontViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\ProjectViewModel.cs" />
+    <Compile Include="ViewModels\ToolViewModel.cs" />
+    <Compile Include="Views\ModelView.xaml.cs">
+      <DependentUpon>ModelView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NewDocumentView.xaml.cs">
+      <DependentUpon>NewDocumentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Properties\FolderProperties.xaml.cs">
+      <DependentUpon>FolderProperties.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Properties\MeshProperties.xaml.cs">
+      <DependentUpon>MeshProperties.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Properties\ProjectProperties.xaml.cs">
+      <DependentUpon>ProjectProperties.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Properties\TextureFontProperties.xaml.cs">
+      <DependentUpon>TextureFontProperties.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PropertyView.xaml.cs">
+      <DependentUpon>PropertyView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TaskProgress.xaml.cs">
+      <DependentUpon>TaskProgress.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TextureFontView.xaml.cs">
+      <DependentUpon>TextureFontView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProjectExplorerView.xaml.cs">
+      <DependentUpon>ProjectExplorerView.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Ninject\FactoryExtension.cs" />
+    <Compile Include="Ninject\NinjectModuleManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Utils\Core.Utils.csproj">
+      <Project>{e05836d9-0bb3-4bfa-89e6-f5ed40a9d93c}</Project>
+      <Name>Core.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Carbon.Editor\Carbon.Editor.csproj">
+      <Project>{819ff5d0-4498-48f2-9f7d-81a322b9b082}</Project>
+      <Name>Carbon.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Carbon.Engine\Carbon.Engine.csproj">
+      <Project>{a724db75-b032-4ae5-b901-063a165f7e71}</Project>
+      <Name>Carbon.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Carbon.Game\Carbon.Project.csproj">
+      <Project>{7093cdec-8281-45ef-965c-dc26ae613f8b}</Project>
+      <Name>Carbon.Project</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_exit.png" />
+    <Resource Include="Resources\icon_tool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Resources\Converters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ModelView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NewDocumentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Properties\FolderProperties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Properties\MeshProperties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Properties\ProjectProperties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\PropertyControls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Properties\TextureFontProperties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PropertyView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TaskProgress.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TextureFontView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProjectExplorerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_close.png" />
+    <Resource Include="Resources\icon_new.png" />
+    <Resource Include="Resources\icon_open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\resourceicon_texturefont.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_redo.png" />
+    <Resource Include="Resources\icon_undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_project.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_newFolder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_newDocument.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\resourceicon_model.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
