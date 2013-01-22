@@ -6,7 +6,7 @@
 int main()
 {
 	Carbon::Server::Utils::Log *log = new Carbon::Server::Utils::Log("CarbonServer");
-	Carbon::Server::CarbonServer *server = new Carbon::Server::CarbonServer();
+	Carbon::Server::CarbonServer *server = new Carbon::Server::CarbonServer(log);
 	Carbon::Server::DataManager *data = new Carbon::Server::DataManager();
 
 	log->Info("Starting Server");
@@ -21,6 +21,9 @@ int main()
 	log->Info("Shutting down");
 	server->Shutdown();
 	data->~DataManager();
+	delete data;
+	delete server;
+	delete log;
 
 	return 0;
 }

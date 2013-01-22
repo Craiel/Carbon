@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "Log.h"
 
 static const int DEFAULT_PORT = 9991;
 
@@ -8,7 +9,7 @@ namespace Server {
 	class CarbonServer
 	{
 	public:
-		CarbonServer();
+		CarbonServer(Carbon::Server::Utils::Log *log);
 
 		int Port;
 
@@ -24,6 +25,8 @@ namespace Server {
 		SOCKET ListenSocket;
 
 	private:
+		Carbon::Server::Utils::Log *log;
+
 		std::map<unsigned int, SOCKET> *sessions;
 
 		void InitializeSocket();
