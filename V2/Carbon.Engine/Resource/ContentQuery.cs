@@ -1,4 +1,5 @@
-﻿namespace Carbon.Engine.Resource
+﻿
+namespace Carbon.Engine.Resource
 {
     using System;
     using System.Collections.Generic;
