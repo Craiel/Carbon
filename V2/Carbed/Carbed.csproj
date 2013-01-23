@@ -61,25 +61,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AvalonDock">
-      <HintPath>..\..\ExternalLibraries\AvalonDock 2.0.1746\AvalonDock.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\AvalonDock 2.0.1746\AvalonDock.dll</HintPath>
     </Reference>
     <Reference Include="AvalonDock.Themes.Metro">
-      <HintPath>..\..\ExternalLibraries\AvalonDock 2.0.1746\AvalonDock.Themes.Metro.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\AvalonDock 2.0.1746\AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
     <Reference Include="Fluent">
-      <HintPath>..\..\ExternalLibraries\FluentRibbon c2848bed6826\Fluent.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\FluentRibbon c2848bed6826\Fluent.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\..\ExternalLibraries\log4net 1.2.10\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="lua51">
-      <HintPath>..\..\ExternalLibraries\LuaInterface 2.0.4\lua51.dll</HintPath>
-    </Reference>
-    <Reference Include="LuaInterface">
-      <HintPath>..\..\ExternalLibraries\LuaInterface 2.0.4\LuaInterface.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\log4net 1.2.10\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Ninject">
-      <HintPath>..\..\ExternalLibraries\Ninject 2.2.1.0\Ninject.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\Ninject 2.2.1.0\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="PresentationFramework.Aero2" />

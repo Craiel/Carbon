@@ -2,12 +2,13 @@
 #include "Log.h"
 #include "Enums.h"
 
-#include <boost\
+#include <boost\log\core.hpp>
+#include <boost\log\trivial.hpp>
 
 namespace Carbon {
 namespace Server {
 namespace Utils {
-
+	
 	Log::Log(std::string name)
 	{
 		this->name = name;
@@ -24,7 +25,6 @@ namespace Utils {
 	{
 		formatted.str(std::string());
 
-		formatted << this->GetTimeString(time(0)) << "\t";
 		formatted << level.InnerValue() << "\t";
 		formatted << message;
 		if(exception != NULL)
@@ -33,27 +33,7 @@ namespace Utils {
 		}
 		formatted << "\n";
 		
-		fprintf(stdout, formatted.str().c_str());
-
-		BOOST:Log:
-	}
-
-	std::string Log::GetTimeString(time_t time)
-	{
-		struct tm *info = new tm();
-		localtime_s(info, &time);
-
-		std::string buffer;		
-		int length = 0;
-		int size = this->TimeFormat.size();
-		do
-		{
-			buffer.resize(size + 1);
-			length = strftime(&buffer[0], buffer.size(), this->TimeFormat.c_str(), info);
-			size *= 2;
-		} while(length == 0);
-		buffer.resize(length);
-		return buffer;
+		BOOST_LOG_TRIVIAL(debug) << message.c_str();
 	}
 
 	void Log::Info(std::string message)

@@ -1,12 +1,14 @@
 #include "stdafx.h"
 #include "Server.h"
 #include "network.pb.h"
+#include "Log.h"
 
 namespace Carbon {
 namespace Server {
 
-    CarbonServer::CarbonServer()
+    CarbonServer::CarbonServer(Carbon::Server::Utils::Log *log)
     {
+        this->log = log;
         Port = DEFAULT_PORT;
 
         ListenSocket = INVALID_SOCKET;
@@ -19,6 +21,8 @@ namespace Server {
     // -------------------------------------------------------------------
     void CarbonServer::InitializeSocket()
     {
+        this->log->Info("Initializing Socket");
+
         WSADATA data;
         struct addrinfo *result = NULL;
         struct addrinfo hints;
@@ -40,7 +44,8 @@ namespace Server {
         operationResult = getaddrinfo(NULL, port, &hints, &result);
         if(operationResult != 0)
         {
-            throw;
+            this->log->Error("Failed to get address information");
+			return;
         }
 
         ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
@@ -48,7 +53,8 @@ namespace Server {
         {
             freeaddrinfo(result);
             WSACleanup();
-            throw;
+            this->log->Error("Socket invalid in creation");
+			return;
         }
 
         u_long mode = 1; // Non-blocking
@@ -57,7 +63,8 @@ namespace Server {
         {
             closesocket(ListenSocket);
             WSACleanup();
-            throw;
+            this->log->Error("Socket error in ioctl");
+			return;
         }
 
         operationResult = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
@@ -66,7 +73,8 @@ namespace Server {
             freeaddrinfo(result);
             closesocket(ListenSocket);
             WSACleanup();
-            throw;
+            this->log->Error("Socket error in bind");
+			return;
         }
 
         freeaddrinfo(result);
@@ -76,8 +84,11 @@ namespace Server {
         {
             closesocket(ListenSocket);
             WSACleanup();
-            throw;
+			this->log->Error(std::string("Socket error in listen").append(std::to_string(this->Port)));
+			return;
         }
+
+        this->log->Info(std::string("Socket Initialized on port ").append(std::to_string(this->Port)));
     }
 
     // -------------------------------------------------------------------
@@ -115,6 +126,30 @@ namespace Server {
 
     void CarbonServer::Receive()
     {
+		if(this->ListenSocket == INVALID_SOCKET)
+		{
+			return;
+		}
+
+        char buffer[1024] = "";
+        int received = recv(this->ListenSocket, buffer, sizeof(buffer), 0);
+        if(received < 0)
+        {
+            int error = WSAGetLastError();
+
+			char *err;
+        if (!FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+                           NULL,
+                           error,
+                           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // default language
+                           (LPTSTR) &err,
+                           0,
+                           NULL));
+						   static char buffer[1024];
+        _snprintf_s(buffer, sizeof(buffer), "ERROR: %s: %s\n", "", err);
+            return;
+			//this->log->Error("Socket Receive returned error: " + error);
+        }
     }
 }}
     
