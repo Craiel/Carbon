@@ -37,6 +37,11 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public ContentQueryResult<T> Load<T>(ContentQuery<T> criteria) where T : ICarbonContent
+        {
+            throw new NotImplementedException();
+        }
+
         public T Load<T>(string key) where T : ICarbonResource
         {
             if (string.IsNullOrEmpty(key))
@@ -73,6 +78,11 @@ namespace Carbon.Engine.Resource
             }
 
             return (T)this.cache[hash];
+        }
+
+        public void Save(ICarbonContent content)
+        {
+            throw new NotImplementedException();
         }
 
         public void Store(string key, ICarbonResource resource)

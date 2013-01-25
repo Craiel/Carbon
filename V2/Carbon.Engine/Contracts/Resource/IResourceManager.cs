@@ -4,7 +4,7 @@ namespace Carbon.Engine.Contracts.Resource
 {
     public interface IResourceManager
     {
-        ContentLoadResult<T> Load<T>(ContentLoadCriteria<T> criteria) where T : ICarbonContent;
+        ContentQueryResult<T> Load<T>(ContentQuery<T> criteria) where T : ICarbonContent;
 
         T Load<T>(string key) where T : ICarbonResource;
 

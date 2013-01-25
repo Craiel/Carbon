@@ -3,6 +3,8 @@
 using Carbed.Contracts;
 using Carbed.Ninject;
 
+using Core.Utils.Diagnostics;
+
 using Ninject;
 
 namespace Carbed
@@ -19,6 +21,8 @@ namespace Carbed
 
             IKernel kernel = new StandardKernel(NinjectModuleManager.GetModules());
             kernel.Get<ICarbed>().Run();
+
+            Profiler.TraceProfilerStatistics();
         }
     }
 }

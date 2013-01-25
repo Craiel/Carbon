@@ -8,7 +8,7 @@ int main()
 	Carbon::Server::Utils::Log *log = new Carbon::Server::Utils::Log("CarbonServer");
 	Carbon::Server::CarbonServer *server = new Carbon::Server::CarbonServer(log);
 	Carbon::Server::DataManager *data = new Carbon::Server::DataManager();
-
+	
 	log->Info("Starting Server");
 	server->Startup();
 
