@@ -24,10 +24,43 @@ namespace Carbon.Engine.Resource
         public PropertyInfo PropertyInfo { get; set; }
     }
 
+    public static class ContentQueryPropertyLookup
+    {
+        private static readonly IDictionary<Type, IDictionary<string, PropertyInfo>> propertyLookupCache;
+
+        static ContentQueryPropertyLookup()
+        {
+            propertyLookupCache = new Dictionary<Type, IDictionary<string, PropertyInfo>>();
+        }
+
+        public static PropertyInfo GetPropertyInfo<T>(string propertyName) where T : ICarbonContent
+        {
+            Type type = typeof(T);
+
+            if (!propertyLookupCache.ContainsKey(type))
+            {
+                propertyLookupCache.Add(type, new Dictionary<string, PropertyInfo>());
+            }
+
+            if (!propertyLookupCache[type].ContainsKey(propertyName))
+            {
+                PropertyInfo info = type.GetProperty(propertyName);
+                if (info == null)
+                {
+                    throw new InvalidOperationException("Property was not found on type for criteria");
+                }
+
+                propertyLookupCache[type].Add(propertyName, info);
+            }
+
+            return propertyLookupCache[type][propertyName];
+        }
+    }
+
     public sealed class ContentQuery<T> where T : ICarbonContent
     {
         // Todo: Is static in the context of a generic global or per generic evaluation
-        private static IDictionary<Type, IDictionary<string, PropertyInfo>> propertyLookupCache;
+        
 
         private readonly List<ContentCriterion> criteria;
         private readonly List<ContentOrder> order; 
@@ -35,10 +68,7 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        static ContentQuery()
-        {
-            propertyLookupCache = new Dictionary<Type, IDictionary<string, PropertyInfo>>();
-        }
+        
 
         public ContentQuery()
         {
@@ -67,7 +97,7 @@ namespace Carbon.Engine.Resource
 
         public ContentQuery<T> IsEqual(string property, object value)
         {
-            var criterion = new ContentCriterion { PropertyInfo = GetPropertyInfo(property), Type = CriterionType.Equals };
+            var criterion = new ContentCriterion { PropertyInfo = ContentQueryPropertyLookup.GetPropertyInfo<T>(property), Type = CriterionType.Equals };
             return this.AddCriterion(criterion);
         }
  
@@ -91,29 +121,6 @@ namespace Carbon.Engine.Resource
 
             this.order.Add(entry);
             return this;
-        }
-
-        private static PropertyInfo GetPropertyInfo(string propertyName)
-        {
-            Type type = typeof(T);
-
-            if (!propertyLookupCache.ContainsKey(type))
-            {
-                propertyLookupCache.Add(type, new Dictionary<string, PropertyInfo>());
-            }
-
-            if (!propertyLookupCache[type].ContainsKey(propertyName))
-            {
-                PropertyInfo info = type.GetProperty(propertyName);
-                if (info == null)
-                {
-                    throw new InvalidOperationException("Property was not found on type for criteria");
-                }
-
-                propertyLookupCache[type].Add(propertyName, info);
-            }
-
-            return propertyLookupCache[type][propertyName];
         }
     }
 }

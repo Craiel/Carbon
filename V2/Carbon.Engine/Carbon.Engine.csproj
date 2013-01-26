@@ -96,6 +96,8 @@
     <Compile Include="Contracts\Rendering\IRenderTarget.cs" />
     <Compile Include="Contracts\Resource\ICarbonContent.cs" />
     <Compile Include="Contracts\Resource\ICarbonResource.cs" />
+    <Compile Include="Contracts\Resource\IContentManager.cs" />
+    <Compile Include="Contracts\Resource\IResourceLink.cs" />
     <Compile Include="Contracts\Resource\IResourceManager.cs" />
     <Compile Include="Logic\CarbonConsole.cs" />
     <Compile Include="Logic\CarbonGraphics.cs" />
