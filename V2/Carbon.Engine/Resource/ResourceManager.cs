@@ -42,7 +42,7 @@ namespace Carbon.Engine.Resource
             throw new NotImplementedException();
         }
 
-        public T Load<T>(string key) where T : ICarbonResource
+        public T Load<T>(ResourceLink link) where T : ICarbonResource
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -80,12 +80,7 @@ namespace Carbon.Engine.Resource
             return (T)this.cache[hash];
         }
 
-        public void Save(ICarbonContent content)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Store(string key, ICarbonResource resource)
+        public void Store(ref ResourceLink link, ICarbonResource resource)
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -106,7 +101,7 @@ namespace Carbon.Engine.Resource
             }
         }
 
-        public void Replace(string key, ICarbonResource resource)
+        public void Replace(ResourceLink link, ICarbonResource resource)
         {
             if (string.IsNullOrEmpty(key))
             {
@@ -132,7 +127,7 @@ namespace Carbon.Engine.Resource
             throw new InvalidDataException("Resource could not be replaced, no existing resource was found");
         }
 
-        public void StoreOrReplace(string key, ICarbonResource resource)
+        public void StoreOrReplace(ref ResourceLink link, ICarbonResource resource)
         {
             if (string.IsNullOrEmpty(key))
             {

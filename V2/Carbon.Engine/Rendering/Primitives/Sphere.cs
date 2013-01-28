@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Resources;
 
 using SlimDX;
 using System.Collections.Generic;

@@ -1,4 +1,6 @@
-﻿using SlimDX;
+﻿using Carbon.Engine.Resource.Content;
+
+using SlimDX;
 
 namespace Carbon.Engine.Rendering
 {
@@ -15,27 +17,27 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public Material(ICarbonGraphics graphics, MaterialResource resource)
+        public Material(ICarbonGraphics graphics, MaterialContent content)
         {
             this.graphics = graphics;
 
-            this.Color = resource.Color;
+            this.Color = content.Color;
 
-            this.DiffuseTexture = graphics.TextureManager.Register(resource.DiffuseTexture);
+            this.DiffuseTexture = graphics.TextureManager.Register(content.DiffuseTexture);
 
-            if (!string.IsNullOrEmpty(resource.NormalTexture))
+            if (!string.IsNullOrEmpty(content.NormalTexture))
             {
-                this.NormalTexture = graphics.TextureManager.Register(resource.NormalTexture);
+                this.NormalTexture = graphics.TextureManager.Register(content.NormalTexture);
             }
 
-            if (!string.IsNullOrEmpty(resource.SpecularTexture))
+            if (!string.IsNullOrEmpty(content.SpecularTexture))
             {
-                this.SpecularTexture = graphics.TextureManager.Register(resource.SpecularTexture);
+                this.SpecularTexture = graphics.TextureManager.Register(content.SpecularTexture);
             }
 
-            if (!string.IsNullOrEmpty(resource.AlphaTexture))
+            if (!string.IsNullOrEmpty(content.AlphaTexture))
             {
-                this.AlphaTexture = graphics.TextureManager.Register(resource.AlphaTexture);
+                this.AlphaTexture = graphics.TextureManager.Register(content.AlphaTexture);
             }
         }
 

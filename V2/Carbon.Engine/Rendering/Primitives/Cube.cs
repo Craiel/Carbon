@@ -1,4 +1,4 @@
-﻿using Carbon.Engine.Resource;
+﻿using Carbon.Engine.Resource.Resources;
 
 using SlimDX;
 

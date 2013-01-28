@@ -6,7 +6,7 @@ using Core.Utils;
 
 using SlimDX;
 
-namespace Carbon.Engine.Resource
+namespace Carbon.Engine.Resource.Resources
 {
     public class MeshElement
     {

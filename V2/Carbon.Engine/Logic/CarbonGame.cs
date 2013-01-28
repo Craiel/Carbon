@@ -14,7 +14,7 @@ namespace Carbon.Engine.Logic
     public struct EngineContent
     {
         public string FallbackTexture;
-    }
+     }
 
     /// <summary>
     /// Base class for a carbon based game
@@ -73,7 +73,7 @@ namespace Carbon.Engine.Logic
         private int frameDropCount;
         
         private object renderSynchronizationLock = new object();
-        
+
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -99,7 +99,6 @@ namespace Carbon.Engine.Logic
         public virtual void Run()
         {
             this.BeginInitialize();
-
             this.Initialize();
 
             this.gameTimer.Reset();

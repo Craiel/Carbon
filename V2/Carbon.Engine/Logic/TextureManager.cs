@@ -7,6 +7,7 @@ using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Resources;
 
 using Core.Utils.Contracts;
 
@@ -16,7 +17,7 @@ namespace Carbon.Engine.Logic
 {
     public enum TextureReferenceType
     {
-        File,
+        Resource,
         Memory,
         View,
         Register
@@ -30,11 +31,11 @@ namespace Carbon.Engine.Logic
             this.Type = registerReference ? TextureReferenceType.Register : TextureReferenceType.View;
         }
 
-        internal TextureReference(string file, int register)
+        internal TextureReference(ResourceLink resource, int register)
         {
-            this.File = file;
+            this.Resource = resource;
             this.Register = register;
-            this.Type = TextureReferenceType.File;
+            this.Type = TextureReferenceType.Resource;
         }
 
         internal TextureReference(byte[] data, int register)
@@ -46,7 +47,7 @@ namespace Carbon.Engine.Logic
 
         public TextureReferenceType Type { get; private set; }
 
-        public string File { get; private set; }
+        public ResourceLink Resource { get; private set; }
 
         public byte[] Data { get; private set; }
 
@@ -56,7 +57,7 @@ namespace Carbon.Engine.Logic
 
         public override int GetHashCode()
         {
-            return Tuple.Create(this.File).GetHashCode();
+            return Tuple.Create(this.Resource).GetHashCode();
         }
     }
 
@@ -105,11 +106,11 @@ namespace Carbon.Engine.Logic
             return reference;
         }
 
-        public TextureReference RegisterStatic(string file, int register)
+        public TextureReference RegisterStatic(ResourceLink resource, int register)
         {
             this.CheckStaticRegister(register);
 
-            var reference = new TextureReference(file, register);
+            var reference = new TextureReference(resource, register);
             this.textureRegister.Add(register, reference);
             return reference;
         }
@@ -123,9 +124,9 @@ namespace Carbon.Engine.Logic
             return reference;
         }
 
-        public TextureReference Register(string file)
+        public TextureReference Register(ResourceLink resource)
         {
-            var reference = new TextureReference(file, this.nextRegister);
+            var reference = new TextureReference(resource, this.nextRegister);
             this.textureRegister.Add(reference.Register, reference);
             this.nextRegister++;
             return reference;
@@ -241,9 +242,9 @@ namespace Carbon.Engine.Logic
         {
             switch (reference.Type)
             {
-                case TextureReferenceType.File:
+                case TextureReferenceType.Resource:
                     {
-                        var textureResource = this.resourceManager.Load<RawResource>(reference.File);
+                        var textureResource = this.resourceManager.Load<RawResource>(reference.Resource);
                         if (textureResource != null)
                         {
                             return textureResource.Data;

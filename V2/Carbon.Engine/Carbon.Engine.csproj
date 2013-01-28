@@ -163,15 +163,18 @@
     <Compile Include="Rendering\Structs.cs" />
     <Compile Include="Rendering\DataContainer.cs" />
     <Compile Include="Resource\CompiledShader.cs" />
+    <Compile Include="Resource\ContentEntryAttributes.cs" />
+    <Compile Include="Resource\ContentManager.cs" />
     <Compile Include="Resource\ContentQuery.cs" />
     <Compile Include="Resource\ContentQueryResult.cs" />
-    <Compile Include="Resource\SceneResource.cs" />
+    <Compile Include="Resource\ContentReflection.cs" />
+    <Compile Include="Resource\Content\MaterialEntry.cs" />
     <Compile Include="Resource\EngineResource.cs" />
-    <Compile Include="Resource\MaterialResource.cs" />
-    <Compile Include="Resource\MeshResource.cs" />
-    <Compile Include="Resource\FontResource.cs" />
+    <Compile Include="Resource\ResourceLink.cs" />
+    <Compile Include="Resource\Resources\MeshResource.cs" />
+    <Compile Include="Resource\Resources\FontResource.cs" />
     <Compile Include="Resource\FolderContent.cs" />
-    <Compile Include="Resource\RawResource.cs" />
+    <Compile Include="Resource\Resources\RawResource.cs" />
     <Compile Include="Resource\ResourceManager.cs" />
     <Compile Include="Logic\CarbonShaderDescription.cs" />
     <Compile Include="Logic\ShaderManager.cs" />
@@ -212,6 +215,7 @@
   <ItemGroup>
     <None Include="Todo.md" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>$(ProjectDir)\..\Carbon.Engine\Network\Protocol\build.bat $(ProjectDir)\..\Carbon.Engine\Network\Protocol\</PreBuildEvent>

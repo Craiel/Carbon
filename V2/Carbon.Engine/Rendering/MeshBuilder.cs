@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Resources;
 
 using SlimDX;
 

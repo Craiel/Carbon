@@ -2,6 +2,8 @@
 #include "Server.h"
 #include "DataManager.h"
 #include "Log.h"
+#include <iostream>
+#include <vector>
 
 int main()
 {

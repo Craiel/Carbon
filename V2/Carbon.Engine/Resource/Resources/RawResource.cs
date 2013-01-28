@@ -2,7 +2,7 @@
 
 using Carbon.Engine.Contracts.Resource;
 
-namespace Carbon.Engine.Resource
+namespace Carbon.Engine.Resource.Resources
 {
     public class RawResource : ICarbonResource
     {
