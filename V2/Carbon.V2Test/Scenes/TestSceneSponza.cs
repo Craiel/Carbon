@@ -7,6 +7,8 @@ using Carbon.Engine.Rendering;
 using Carbon.Engine.Rendering.Primitives;
 using Carbon.Engine.Rendering.RenderTarget;
 using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Content;
+using Carbon.Engine.Resource.Resources;
 using Carbon.Engine.Scene;
 using Carbon.V2Test.Contracts;
 using Core.Utils;
@@ -111,7 +113,7 @@ namespace Carbon.V2Test.Scenes
                 }
             }
 
-            var materialResource = new MaterialResource { DiffuseTexture = @"Textures\checkerboard.dds" };
+            var materialResource = new MaterialContent { DiffuseTexture = new ResourceLink { Source = @"Textures\checkerboard.dds" } };
             this.checkerboardMaterial = new Material(graphics, materialResource);
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
             this.normalDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1002));
@@ -122,7 +124,8 @@ namespace Carbon.V2Test.Scenes
             this.gBufferDepthTexture = new Material(this.graphics.TextureManager.GetRegisterReference(14));
             this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));
 
-            var resource = this.resourceManager.Load<RawResource>(@"Models\sponza.dae");
+            var source = new ResourceLink { Source = @"Models\sponza.dae" };
+            var resource = this.resourceManager.Load<RawResource>(ref source);
             if (resource != null)
             {
                 /*ColladaModel testModel = ColladaModel.Load(resource.Data);

@@ -42,82 +42,66 @@ namespace Carbon.Engine.Resource
             throw new NotImplementedException();
         }
 
-        public T Load<T>(ResourceLink link) where T : ICarbonResource
+        public T Load<T>(ref ResourceLink link) where T : ICarbonResource
         {
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentException("key can not be null or emtpy!");
-            }
+            System.Diagnostics.Trace.TraceWarning("Loading Resource {0}", link);
+            this.ProcessResourceLink(ref link);
 
-            System.Diagnostics.Trace.TraceWarning("Loading Resource {0}", key);
-            byte[] hashData = this.hashProvider.ComputeHash(Encoding.UTF8.GetBytes(key));
-            string hash = Convert.ToBase64String(hashData);
-            if (!this.cache.ContainsKey(hash))
+            if (!this.cache.ContainsKey(link.Hash))
             {
                 for (int i = 0; i < this.content.Count; i++)
                 {
                     ResourceContent resourceContent = this.content[i];
-                    Stream dataStream = resourceContent.Load(hash, key);
+                    Stream dataStream = resourceContent.Load(link.Hash, link.Source);
                     if (dataStream != null)
                     {
                         dataStream.Position = 0;
                         T resource = (T)Activator.CreateInstance(typeof(T), new[] { dataStream });
-                        this.cache.Add(hash, resource);
+                        this.cache.Add(link.Hash, resource);
                         return resource;
                     }
                 }
 
-                System.Diagnostics.Trace.TraceWarning("Resource not found {0}", key);
+                System.Diagnostics.Trace.TraceWarning("Resource not found {0}", link);
                 return default(T);
             }
 
-            if (this.cache[hash].GetType() != typeof(T))
+            if (this.cache[link.Hash].GetType() != typeof(T))
             {
                 System.Diagnostics.Trace.TraceError("Resource was not in the requested format, was {0} but expected {1}", this.cache.GetType(), typeof(T));
                 return default(T);
             }
 
-            return (T)this.cache[hash];
+            return (T)this.cache[link.Hash];
         }
 
         public void Store(ref ResourceLink link, ICarbonResource resource)
         {
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentException("key can not be null or emtpy!");
-            }
+            System.Diagnostics.Trace.TraceWarning("Storing Resource {0} ({1})", link, resource.GetType());
+            this.ProcessResourceLink(ref link);
 
-            System.Diagnostics.Trace.TraceWarning("Storing Resource {0} ({1})", key, resource.GetType());
-            byte[] hashData = this.hashProvider.ComputeHash(Encoding.UTF8.GetBytes(key));
-            string hash = Convert.ToBase64String(hashData);
             for (int i = 0; i < this.content.Count; i++)
             {
                 ResourceContent resourceContent = this.content[i];
-                if (resourceContent.Store(hash, resource))
+                if (resourceContent.Store(link.Hash, resource))
                 {
-                    this.cache.Add(hash, resource);
+                    this.cache.Add(link.Hash, resource);
                     return;
                 }
             }
         }
 
-        public void Replace(ResourceLink link, ICarbonResource resource)
+        public void Replace(ref ResourceLink link, ICarbonResource resource)
         {
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentException("key can not be null or emtpy!");
-            }
-
-            byte[] hashData = this.hashProvider.ComputeHash(Encoding.UTF8.GetBytes(key));
-            string hash = Convert.ToBase64String(hashData);
+            this.ProcessResourceLink(ref link);
             for (int i = 0; i < this.content.Count; i++)
             {
                 ResourceContent resourceContent = this.content[i];
-                if (resourceContent.Replace(hash, resource))
+                if (resourceContent.Replace(link.Hash, resource))
                 {
-                    if (!this.cache.ContainsKey(hash))
+                    if (!this.cache.ContainsKey(link.Hash))
                     {
-                        this.cache.Add(hash, resource);
+                        this.cache.Add(link.Hash, resource);
                     }
 
                     return;
@@ -129,21 +113,15 @@ namespace Carbon.Engine.Resource
 
         public void StoreOrReplace(ref ResourceLink link, ICarbonResource resource)
         {
-            if (string.IsNullOrEmpty(key))
-            {
-                throw new ArgumentException("key can not be null or empty!");
-            }
-
-            byte[] hashData = this.hashProvider.ComputeHash(Encoding.UTF8.GetBytes(key));
-            string hash = Convert.ToBase64String(hashData);
+            this.ProcessResourceLink(ref link);
             for (int i = 0; i < this.content.Count; i++)
             {
                 ResourceContent resourceContent = this.content[i];
-                if (resourceContent.Replace(hash, resource))
+                if (resourceContent.Replace(link.Hash, resource))
                 {
-                    if (!this.cache.ContainsKey(hash))
+                    if (!this.cache.ContainsKey(link.Hash))
                     {
-                        this.cache.Add(hash, resource);
+                        this.cache.Add(link.Hash, resource);
                     }
 
                     return;
@@ -153,9 +131,9 @@ namespace Carbon.Engine.Resource
             for (int i = 0; i < this.content.Count; i++)
             {
                 ResourceContent resourceContent = this.content[i];
-                if (resourceContent.Store(hash, resource))
+                if (resourceContent.Store(link.Hash, resource))
                 {
-                    this.cache.Add(hash, resource);
+                    this.cache.Add(link.Hash, resource);
                     return;
                 }
             }
@@ -177,6 +155,20 @@ namespace Carbon.Engine.Resource
             }
 
             this.content.Add(newContent);
+        }
+
+        private void ProcessResourceLink(ref ResourceLink link)
+        {
+            if (link.Hash == null && string.IsNullOrEmpty(link.Source))
+            {
+                throw new ArgumentException("Resource link data is invalid, source has to be supplied");
+            }
+
+            if (link.Hash == null)
+            {
+                byte[] hashData = this.hashProvider.ComputeHash(Encoding.UTF8.GetBytes(link.Source));
+                link.Hash = Convert.ToBase64String(hashData);
+            }
         }
     }
 }

@@ -11,6 +11,8 @@ using Carbon.Editor.Resource.Collada.Scene;
 using Carbon.Engine.Resource;
 
 using Carbon.Engine.Rendering;
+using Carbon.Engine.Resource.Content;
+using Carbon.Engine.Resource.Resources;
 
 using Core.Utils;
 
@@ -21,7 +23,7 @@ namespace Carbon.Editor.Resource.Collada
     public static class ColladaCarbonConverter
     {
         private readonly static IDictionary<string, int> materialLookup = new Dictionary<string, int>();
-        private readonly static IList<MaterialResource> materialLibrary = new List<MaterialResource>();
+        private readonly static IList<MaterialContent> materialLibrary = new List<MaterialContent>();
 
         private readonly static IDictionary<string, int> meshLookup = new Dictionary<string, int>();
         private readonly static IList<MeshResource> meshLibrary = new List<MeshResource>();
@@ -76,7 +78,7 @@ namespace Carbon.Editor.Resource.Collada
             }*/
         }
 
-        private static IEnumerable<SceneResourceNode> BuildScene(ColladaSceneLibrary library)
+        /*private static IEnumerable<SceneResourceNode> BuildScene(ColladaSceneLibrary library)
         {
             IList<SceneResourceNode> sceneModels = new List<SceneResourceNode>();
             foreach (ColladaSceneNode sceneNode in library.VisualScene.Nodes)
@@ -456,6 +458,6 @@ namespace Carbon.Editor.Resource.Collada
                 offset += highestOffset + 1;
                 element++;
             }
-        }
+        }*/
     }
 }

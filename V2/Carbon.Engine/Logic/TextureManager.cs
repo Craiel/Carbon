@@ -228,7 +228,7 @@ namespace Carbon.Engine.Logic
 
             if (this.textureRegister.ContainsKey(register))
             {
-                throw new ArgumentException(string.Format("Static register is already taken ({0}) by {1}", register, this.textureRegister[register].File));
+                throw new ArgumentException(string.Format("Static register is already taken ({0}) by {1}", register, this.textureRegister[register].Resource));
             }
         }
 
@@ -244,7 +244,8 @@ namespace Carbon.Engine.Logic
             {
                 case TextureReferenceType.Resource:
                     {
-                        var textureResource = this.resourceManager.Load<RawResource>(reference.Resource);
+                        var res = reference.Resource;
+                        var textureResource = this.resourceManager.Load<RawResource>(ref res);
                         if (textureResource != null)
                         {
                             return textureResource.Data;
@@ -276,7 +277,7 @@ namespace Carbon.Engine.Logic
 
             if (reference != this.Fallback && this.Fallback != null)
             {
-                this.log.Warning("Loading fallback for {0}", reference.File ?? reference.Type.ToString());
+                this.log.Warning("Loading fallback for {0}", reference);
                 return this.LoadData(this.Fallback);
             }
 

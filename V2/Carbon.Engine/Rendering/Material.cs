@@ -1,15 +1,13 @@
-﻿using Carbon.Engine.Resource.Content;
+﻿using System;
+
+using Carbon.Engine.Contracts.Logic;
+using Carbon.Engine.Logic;
+using Carbon.Engine.Resource.Content;
 
 using SlimDX;
 
 namespace Carbon.Engine.Rendering
 {
-    using System;
-
-    using Carbon.Engine.Contracts.Logic;
-    using Carbon.Engine.Logic;
-    using Carbon.Engine.Resource;
-
     public class Material : IDisposable
     {
         private readonly ICarbonGraphics graphics;
@@ -23,21 +21,24 @@ namespace Carbon.Engine.Rendering
 
             this.Color = content.Color;
 
-            this.DiffuseTexture = graphics.TextureManager.Register(content.DiffuseTexture);
-
-            if (!string.IsNullOrEmpty(content.NormalTexture))
+            if (content.DiffuseTexture != null)
             {
-                this.NormalTexture = graphics.TextureManager.Register(content.NormalTexture);
+                this.DiffuseTexture = graphics.TextureManager.Register(content.DiffuseTexture.Value);
             }
 
-            if (!string.IsNullOrEmpty(content.SpecularTexture))
+            if (content.NormalTexture != null)
             {
-                this.SpecularTexture = graphics.TextureManager.Register(content.SpecularTexture);
+                this.NormalTexture = graphics.TextureManager.Register(content.NormalTexture.Value);
             }
 
-            if (!string.IsNullOrEmpty(content.AlphaTexture))
+            if (content.SpecularTexture != null)
             {
-                this.AlphaTexture = graphics.TextureManager.Register(content.AlphaTexture);
+                this.SpecularTexture = graphics.TextureManager.Register(content.SpecularTexture.Value);
+            }
+
+            if (content.AlphaTexture != null)
+            {
+                this.AlphaTexture = graphics.TextureManager.Register(content.AlphaTexture.Value);
             }
         }
 

@@ -1,4 +1,6 @@
-﻿namespace Carbon.Editor.Logic
+﻿using Carbon.Engine.Resource.Resources;
+
+namespace Carbon.Editor.Logic
 {
     using System;
     using System.Collections.Generic;
@@ -131,7 +133,8 @@
                     { 
                         processor.Process(entry);
                         stream.Position = 0;
-                        this.resourceManager.StoreOrReplace(key, new RawResource(stream));
+                        var res = new ResourceLink() { Source = key };
+                        this.resourceManager.StoreOrReplace(ref res, new RawResource(stream));
                     }
 
                     progressValue++;

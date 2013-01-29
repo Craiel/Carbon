@@ -9,12 +9,15 @@ namespace Carbon.Engine.Resource.Content
         public Vector4 Color { get; set; }
 
         [ContentEntryElement]
-        public ResourceLink DiffuseTexture { get; set; }
+        public ResourceLink? DiffuseTexture { get; set; }
 
         [ContentEntryElement]
-        public ResourceLink NormalTexture { get; set; }
+        public ResourceLink? NormalTexture { get; set; }
 
         [ContentEntryElement]
-        public ResourceLink SpecularTexture { get; set; }
+        public ResourceLink? AlphaTexture { get; set; }
+
+        [ContentEntryElement]
+        public ResourceLink? SpecularTexture { get; set; }
     }
 }

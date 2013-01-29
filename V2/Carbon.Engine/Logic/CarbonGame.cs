@@ -3,6 +3,8 @@ using System.Threading;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
+using Carbon.Engine.Resource;
+
 using Core.Utils;
 using Core.Utils.Contracts;
 using Core.Utils.Diagnostics;
@@ -186,7 +188,8 @@ namespace Carbon.Engine.Logic
 
         protected void SetEngineContent(EngineContent content)
         {
-            this.graphics.TextureManager.Fallback = this.graphics.TextureManager.Register(@"Textures\checkerboard.dds");
+            var link = new ResourceLink { Source = @"Textures\checkerboard.dds" };
+            this.graphics.TextureManager.Fallback = this.graphics.TextureManager.Register(link);
         }
 
         // -------------------------------------------------------------------

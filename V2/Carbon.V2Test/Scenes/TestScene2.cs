@@ -1,4 +1,6 @@
-﻿using Carbon.Engine.Contracts;
+﻿using System.Collections.Generic;
+
+using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
 using Carbon.Engine.Contracts.Resource;
@@ -7,6 +9,8 @@ using Carbon.Engine.Rendering;
 using Carbon.Engine.Rendering.Primitives;
 using Carbon.Engine.Rendering.RenderTarget;
 using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Content;
+using Carbon.Engine.Resource.Resources;
 using Carbon.Engine.Scene;
 using Carbon.V2Test.Contracts;
 using Core.Utils;
@@ -124,12 +128,12 @@ namespace Carbon.V2Test.Scenes
 
             testLight = new Light { Color = new Vector4(1), Type = LightType.Spot, Range = 10.0f, SpecularPower = 10.0f, Direction = Vector3.UnitY, SpotAngles = new Vector2(5, 10) };
             this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(35f, 0.5f, 20f, 1) });
-            
-            var materialResource = new MaterialResource { DiffuseTexture = @"Textures\checkerboard.dds" };
+
+            var materialResource = new MaterialContent { DiffuseTexture = new ResourceLink { Source = @"Textures\checkerboard.dds" } };
             this.checkerboardMaterial = new Material(graphics, materialResource);
             this.stoneMaterial = new Material(
                 graphics,
-                new MaterialResource { DiffuseTexture = @"Textures\stone.dds" });
+                new MaterialContent { DiffuseTexture = new ResourceLink { Source = @"Textures\stone.dds" } });
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
             this.normalDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1002));
 
@@ -218,30 +222,30 @@ namespace Carbon.V2Test.Scenes
             */
             Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
             this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
-            
-            RawResource resource;
+
+            /*RawResource resource;
             resource = this.resourceManager.Load<RawResource>(@"Models\room.dae");
             if (resource != null)
             {
-                /*ColladaModel testModel = ColladaModel.Load(resource.Data);
+                ColladaModel testModel = ColladaModel.Load(resource.Data);
                 ColladaCarbonConverter.Convert("room", testModel);
                 node.Material = this.defaultMaterial;
                 node.Rotation = Quaternion.RotationAxis(Vector3.UnitX, MathExtension.DegreesToRadians(-90));
                 node.Position = new Vector4(25, 3, 10, 1);
-                this.root.AddChild(node);*/
-            }
+                this.root.AddChild(node);
+            }*/
 
-            resource = this.resourceManager.Load<RawResource>(@"Models\sponza_vase.dae");
+            /*resource = this.resourceManager.Load<RawResource>(@"Models\sponza_vase.dae");
             if (resource != null)
             {
-                /*ColladaModel testModel = ColladaModel.Load(resource.Data);
+                ColladaModel testModel = ColladaModel.Load(resource.Data);
                 ColladaCarbonConverter.Convert("sponza", testModel);
                 node.Material = this.redColorMaterial;
                 node.Scale = new Vector3(0.02f);
                 //node.Rotation = Quaternion.RotationAxis(Vector3.UnitY, MathExtension.DegreesToRadians(30));
                 node.Position = new Vector4(6, 0, 0, 1);
-                this.root.AddChild(node);*/
-            }
+                this.root.AddChild(node);
+            }*/
 
             /*resource = this.resourceManager.Load<RawResource>(@"Models\house6.dae");
             if (resource != null)

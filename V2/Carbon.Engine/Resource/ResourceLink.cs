@@ -7,7 +7,7 @@
         public int Id { get; set; }
 
         [ContentEntryElement]
-        public byte[] Hash { get; set; }
+        public string Hash { get; set; }
 
         [ContentEntryElement]
         public string Source { get; set; }
