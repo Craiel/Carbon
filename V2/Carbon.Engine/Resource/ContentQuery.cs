@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reflection;
 
 using Carbon.Engine.Contracts.Resource;
@@ -23,23 +24,51 @@ namespace Carbon.Engine.Resource
         public PropertyInfo PropertyInfo { get; set; }
     }
 
-    public sealed class ContentQuery<T> where T : ICarbonContent
+    public sealed class ContentQuery<T> : ContentQuery where T : ICarbonContent
     {
-        private readonly List<ContentCriterion> criteria;
-        private readonly List<ContentOrder> order; 
- 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
         public ContentQuery()
+            : base(typeof(T))
         {
-            this.criteria = new List<ContentCriterion>();
-            this.order = new List<ContentOrder>();
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public new ContentQuery<T> IsEqual(string property, object value)
+        {
+            base.IsEqual(property, value);
+            return this;
+        }
+    }
+
+    public class ContentQuery
+    {
+        private readonly List<ContentCriterion> criteria;
+        private readonly List<ContentOrder> order;
+
+        private readonly IList<ContentReflectionProperty> eligibleProperties;
+ 
+        // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
+        public ContentQuery(Type type)
+        {
+            this.criteria = new List<ContentCriterion>();
+            this.order = new List<ContentOrder>();
+
+            this.Type = type;
+
+            this.eligibleProperties = ContentReflection.GetPropertyInfos(type);
+        }
+
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
+        public Type Type { get; private set; }
+
         public ReadOnlyCollection<ContentCriterion> Criterion
         {
             get
@@ -56,13 +85,13 @@ namespace Carbon.Engine.Resource
             }
         }
 
-        public ContentQuery<T> IsEqual(string property, object value)
+        public ContentQuery IsEqual(string property, object value)
         {
-            var criterion = new ContentCriterion { PropertyInfo = ContentReflection.GetPropertyInfo<T>(property), Type = CriterionType.Equals };
+            var criterion = new ContentCriterion { PropertyInfo = this.PropertyCheck(property), Type = CriterionType.Equals };
             return this.AddCriterion(criterion);
         }
  
-        public ContentQuery<T> AddCriterion(ContentCriterion criterion)
+        public ContentQuery AddCriterion(ContentCriterion criterion)
         {
             if (this.criteria.Contains(criterion))
             {
@@ -73,7 +102,7 @@ namespace Carbon.Engine.Resource
             return this;
         }
 
-        public ContentQuery<T> AddOrder(ContentOrder entry)
+        public ContentQuery AddOrder(ContentOrder entry)
         {
             if (this.order.Contains(entry))
             {
@@ -82,6 +111,20 @@ namespace Carbon.Engine.Resource
 
             this.order.Add(entry);
             return this;
+        }
+
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private PropertyInfo PropertyCheck(string propertyName)
+        {
+            var entry = this.eligibleProperties.FirstOrDefault(x => x.Name.Equals(propertyName));
+            if (entry == null)
+            {
+                throw new ArgumentException("Property was not found on underlying content object: " + propertyName);
+            }
+
+            return entry.Info;
         }
     }
 }

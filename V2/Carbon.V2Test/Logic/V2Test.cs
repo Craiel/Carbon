@@ -30,7 +30,7 @@ namespace Carbon.V2Test.Logic
 
             this.log = factory.Get<IApplicationLog>().AquireContextLog("Carbon.V2Test");
 
-            factory.Get<IResourceManager>().AddContent(new FolderContent(@"..\..\Data\", useSources:true));
+            factory.Get<IResourceManager>().AddContent(new FolderContent(@"..\..\..\Data\", useSources:true));
         }
 
         // -------------------------------------------------------------------

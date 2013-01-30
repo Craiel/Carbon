@@ -113,7 +113,7 @@ namespace Carbon.V2Test.Scenes
                 }
             }
 
-            var materialResource = new MaterialContent { DiffuseTexture = new ResourceLink { Source = @"Textures\checkerboard.dds" } };
+            var materialResource = new MaterialEntry { DiffuseTexture = new ResourceLink { Source = @"Textures\checkerboard.dds" } };
             this.checkerboardMaterial = new Material(graphics, materialResource);
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
             this.normalDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1002));

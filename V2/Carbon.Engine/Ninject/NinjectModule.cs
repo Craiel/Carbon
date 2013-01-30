@@ -38,6 +38,7 @@ namespace Carbon.Engine.Ninject
             this.Bind<IBlendShader>().To<BlendShader>();
 
             // Resource
+            this.Bind<IContentManager>().To<ContentManager>();
             this.Bind<IResourceManager>().To<ResourceManager>().InSingletonScope();
         }
     }

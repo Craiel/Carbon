@@ -23,7 +23,7 @@ namespace Carbon.Editor.Resource.Collada
     public static class ColladaCarbonConverter
     {
         private readonly static IDictionary<string, int> materialLookup = new Dictionary<string, int>();
-        private readonly static IList<MaterialContent> materialLibrary = new List<MaterialContent>();
+        private readonly static IList<MaterialEntry> materialLibrary = new List<MaterialEntry>();
 
         private readonly static IDictionary<string, int> meshLookup = new Dictionary<string, int>();
         private readonly static IList<MeshResource> meshLibrary = new List<MeshResource>();

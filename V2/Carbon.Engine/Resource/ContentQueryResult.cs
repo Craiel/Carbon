@@ -1,26 +1,54 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Linq;
 
 using Carbon.Engine.Contracts.Resource;
 
 namespace Carbon.Engine.Resource
 {
-    using System.Data.Common;
-    using System.Data.SQLite;
+    public class ContentQueryResult<T> : ContentQueryResult
+        where T : ICarbonContent
+    {
+        // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
+        public ContentQueryResult(DbCommand command)
+            : base(command)
+        {
+        }
 
-    public class ContentQueryResult<T> where T : ICarbonContent
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
+        public IList<T> ToList<T>()
+        {
+            IList untyped = this.ToList(typeof(T));
+            return untyped.Cast<T>().ToList();
+        }
+    }
+
+    public class ContentQueryResult
     {
         private readonly DbCommand command;
 
-        private List<T> entries;
+        private IList entries;
 
+        // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
         public ContentQueryResult(DbCommand command)
         {
             this.command = command;
         }
 
-        public IList<T> ToList()
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
+        public IList ToList(Type type)
         {
-            return new List<T>(this.entries);
+            return this.entries;
         }
     }
 }

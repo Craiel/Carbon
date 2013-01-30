@@ -31,7 +31,7 @@ namespace Carbon.Engine.Logic
     public class ShaderManager
     {
         // Todo: Yeah right, hard coded path's...
-        internal const string ShaderLocation = @"..\..\Data\shaders";
+        internal const string ShaderLocation = @"..\..\..\Data\shaders";
         internal const string ShaderCacheKeyPrefix = @"ShaderCache";
 
         private readonly IResourceManager resourceManager;

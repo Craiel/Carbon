@@ -1,17 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.SQLite;
+using System.Text;
 
+using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Resource;
+
+using Core.Utils.Contracts;
 
 namespace Carbon.Engine.Resource
 {
-    using System.Collections.Generic;
-    using System.Data.SQLite;
-    using System.Text;
-
-    using Carbon.Engine.Contracts.Logic;
-
-    using Core.Utils.Contracts;
-
     public class ContentManager : IContentManager
     {
         private readonly IResourceManager resourceManager;
@@ -26,12 +24,11 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ContentManager(IResourceManager resourceManager, IEngineLog log, ResourceLink rootResource)
+        public ContentManager(IResourceManager resourceManager, IEngineLog log)
         {
             this.resourceManager = resourceManager;
             this.log = log.AquireContextLog("ContentManager");
 
-            this.rootResource = rootResource;
             this.factory = new SQLiteFactory();
         }
 
@@ -44,6 +41,11 @@ namespace Carbon.Engine.Resource
         // Public
         // -------------------------------------------------------------------
         public ContentQueryResult<T> Load<T>(ContentQuery<T> criteria) where T : ICarbonContent
+        {
+            return this.Load(criteria);
+        }
+
+        public ContentQueryResult Load(ContentQuery criteria)
         {
             this.Connect();
 
@@ -64,10 +66,10 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private string BuildSelectStatement<T>(ContentQuery<T> criteria) where T : ICarbonContent
+        private string BuildSelectStatement(ContentQuery criteria)
         {
-            string what = this.BuildSelect<T>();
-            string where = this.BuildWhereClause<T>(criteria.Criterion);
+            string what = this.BuildSelect();
+            string where = this.BuildWhereClause(criteria.Criterion);
             string order = this.BuildOrder(criteria.Order);
 
             return this.AssembleStatement(what, where, order);
@@ -89,10 +91,11 @@ namespace Carbon.Engine.Resource
             return builder.ToString();
         }
 
-        private string BuildSelect<T>() where T : ICarbonContent
+        private string BuildSelect()
         {
-            string tableName = ContentReflection.GetTableName<T>();
+            string tableName = ContentReflection.GetTableName();
 
+            ContentReflection.GetPropertyInfos<T>();
             /*if (QueryCache.ContainsKey(targetType))
             {
                 return QueryCache[targetType];
@@ -115,16 +118,18 @@ namespace Carbon.Engine.Resource
             string query = string.Format("select {0} from {1}", columnQueryBuilder, tableName);
             QueryCache.Add(targetType, query);
             return query;*/
+
+            return null;
         }
 
         private string BuildWhereClause<T>(IEnumerable<ContentCriterion> criteria)
         {
-            
+            return null;
         }
 
         private string BuildOrder(IEnumerable<ContentOrder> orders)
         {
-            
+            return null;
         }
 
         private void Connect()
@@ -134,12 +139,16 @@ namespace Carbon.Engine.Resource
                 return;
             }
 
-            this.connection = this.factory.CreateConnection() as SQLiteConnection;
-            
+            // Todo:
             // - Load the database from the resource manager
-            // - Connect
-            // - Create Schemas and check data
-            // - If its not saved store it in the resource manager
+            // - Pull the data into the memory database
+            // - Release the resource
+            this.connection = (SQLiteConnection)this.factory.CreateConnection();
+            this.connection.ConnectionString = "Data Source=:memory:";
+            this.connection.Open();
+
+            // Todo:
+            // - Create Schema data
         }
 
         private void Disconnect()

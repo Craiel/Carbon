@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 using Carbon.Engine.Contracts.Resource;
 
 namespace Carbon.Engine.Resource
 {
-    using System.Linq;
-
-    internal class ContentReflectionProperty
+    public class ContentReflectionProperty
     {
-        public ContentReflectionProperty(string name, PropertyInfo info)
+        public ContentReflectionProperty(ContentEntryElementAttribute attribute, PropertyInfo info)
         {
-            this.Name = name;
+            this.Name = attribute.Name ?? info.Name;
             this.Info = info;
         }
 
@@ -25,12 +24,18 @@ namespace Carbon.Engine.Resource
         private static readonly IDictionary<Type, string> tableNameCache;
         private static readonly IDictionary<Type, IList<ContentReflectionProperty>> propertyLookupCache;
 
+        // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
         static ContentReflection()
         {
             tableNameCache = new Dictionary<Type, string>();
             propertyLookupCache = new Dictionary<Type, IList<ContentReflectionProperty>>();
         }
 
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
         public static string GetTableName<T>() where T : ICarbonContent
         {
             Type key = typeof(T);
@@ -48,28 +53,39 @@ namespace Carbon.Engine.Resource
             return tableNameCache[key];
         }
 
-        public static PropertyInfo GetPropertyInfo<T>(string propertyName) where T : ICarbonContent
+        public static IList<ContentReflectionProperty> GetPropertyInfos(Type type)
         {
-            Type type = typeof(T);
-
             if (!propertyLookupCache.ContainsKey(type))
             {
-                // Todo: Build the entire cache for this type in one go
-                propertyLookupCache.Add(type, new Dictionary<string, PropertyInfo>());
+                BuildLookupCache(type);
             }
+            
+            return propertyLookupCache[type];
+        }
 
-            if (!propertyLookupCache[type].ContainsKey(propertyName))
+        public static IList<ContentReflectionProperty> GetPropertyInfos<T>() where T : ICarbonContent
+        {
+            return GetPropertyInfos(typeof(T));
+        }
+
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private static void BuildLookupCache(Type type)
+        {
+            IList<ContentReflectionProperty> properties = new List<ContentReflectionProperty>();
+            PropertyInfo[] propertyInfos = type.GetProperties();
+            foreach (PropertyInfo info in propertyInfos)
             {
-                PropertyInfo info = type.GetProperty(propertyName);
-                if (info == null)
+                var attribute = info.GetCustomAttributes(typeof(ContentEntryElementAttribute), false).FirstOrDefault() as
+                    ContentEntryElementAttribute;
+                if (attribute != null)
                 {
-                    throw new InvalidOperationException("Property was not found on type for criteria");
+                    properties.Add(new ContentReflectionProperty(attribute, info));
                 }
-
-                propertyLookupCache[type].Add(propertyName, info);
             }
 
-            return propertyLookupCache[type][propertyName];
+            propertyLookupCache.Add(type, properties);
         }
     }
 }
