@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
@@ -32,8 +31,6 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        
-
         public ContentQuery()
         {
             this.criteria = new List<ContentCriterion>();

@@ -15,7 +15,7 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public Material(ICarbonGraphics graphics, MaterialContent content)
+        public Material(ICarbonGraphics graphics, MaterialEntry content)
         {
             this.graphics = graphics;
 

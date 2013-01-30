@@ -4,13 +4,18 @@ using Carbon.Engine.Contracts.Resource;
 
 namespace Carbon.Engine.Resource
 {
+    using System.Data.Common;
+    using System.Data.SQLite;
+
     public class ContentQueryResult<T> where T : ICarbonContent
     {
-        private readonly IEnumerable<T> entries;
+        private readonly DbCommand command;
 
-        ContentQueryResult(IEnumerable<T> entries)
+        private List<T> entries;
+
+        public ContentQueryResult(DbCommand command)
         {
-            this.entries = entries;
+            this.command = command;
         }
 
         public IList<T> ToList()

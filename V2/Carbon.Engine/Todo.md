@@ -15,10 +15,11 @@
 
 [Resource Loader]
 
-	* Finish up SQLite part connection and make it modular to allow for several running at the same time
+	* Finish up SQLite part connection and make it modular to allow for several running at the same 
 	* Create schema / tables on demand if they don't exist by reflectin on type, should we scan the assembly to do this??
 	* loading a ContentEntry
 	* saving a ContentEntry
+	* Cache ContentQueries by hashing their contents and using that to store the resulting SQL
 	* Evaluate ResourceLinks in ContentEntry on load by replacing them with id columns into the table for resource links
 	
 	* Use Content Transaction table to figure out if a resource was changed since the current transaction state

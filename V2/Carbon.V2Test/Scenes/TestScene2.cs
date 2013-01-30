@@ -29,6 +29,7 @@ namespace Carbon.V2Test.Scenes
     {
         private readonly ILog log;
         private readonly IResourceManager resourceManager;
+        private readonly IContentManager contentManager;
         private readonly IFrameManager frameManager;
         private readonly IRenderer renderer;
         private readonly ICarbonGraphics graphics;
@@ -81,6 +82,7 @@ namespace Carbon.V2Test.Scenes
             this.overlayCamera = factory.Get<IOrthographicCamera>();
 
             this.resourceManager = factory.Get<IResourceManager>();
+            this.contentManager = factory.Get<IContentManager>();
             
             this.root = new Node();
         }
@@ -222,6 +224,9 @@ namespace Carbon.V2Test.Scenes
             */
             Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
             this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
+
+            var testCriteria = new ContentQuery<MaterialEntry>().IsEqual("NormalTexture", null);
+            this.contentManager.Load(testCriteria);
 
             /*RawResource resource;
             resource = this.resourceManager.Load<RawResource>(@"Models\room.dae");

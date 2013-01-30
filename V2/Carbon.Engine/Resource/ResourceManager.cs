@@ -37,11 +37,6 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public ContentQueryResult<T> Load<T>(ContentQuery<T> criteria) where T : ICarbonContent
-        {
-            throw new NotImplementedException();
-        }
-
         public T Load<T>(ref ResourceLink link) where T : ICarbonResource
         {
             System.Diagnostics.Trace.TraceWarning("Loading Resource {0}", link);

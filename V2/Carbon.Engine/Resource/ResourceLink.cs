@@ -11,5 +11,8 @@
 
         [ContentEntryElement]
         public string Source { get; set; }
+
+        [ContentEntryElement]
+        public bool Mutable { get; set; }
     }
 }

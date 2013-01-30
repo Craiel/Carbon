@@ -2,8 +2,10 @@
 
 namespace Carbon.Engine.Resource.Content
 {
+    using Carbon.Engine.Contracts.Resource;
+
     [ContentEntry("Material")]
-    public struct MaterialContent
+    public struct MaterialEntry : ICarbonContent
     {
         [ContentEntryElement]
         public Vector4 Color { get; set; }
