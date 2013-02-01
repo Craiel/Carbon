@@ -15,13 +15,16 @@ namespace Carbon.Engine.Resource
 
     public struct ContentCriterion
     {
-        public PropertyInfo PropertyInfo { get; set; }
+        public ContentReflectionProperty PropertyInfo { get; set; }
         public CriterionType Type { get; set; }
+        public object Value { get; set; }
+        public bool Negate { get; set; }
     }
 
     public struct ContentOrder
     {
-        public PropertyInfo PropertyInfo { get; set; }
+        public ContentReflectionProperty PropertyInfo { get; set; }
+        public bool Ascending { get; set; }
     }
 
     public sealed class ContentQuery<T> : ContentQuery where T : ICarbonContent
@@ -50,6 +53,8 @@ namespace Carbon.Engine.Resource
         private readonly List<ContentOrder> order;
 
         private readonly IList<ContentReflectionProperty> eligibleProperties;
+
+        private bool negateNext;
  
         // -------------------------------------------------------------------
         // Constructor
@@ -85,10 +90,22 @@ namespace Carbon.Engine.Resource
             }
         }
 
+        public ContentQuery Not()
+        {
+            this.negateNext = true;
+            return this;
+        }
+
         public ContentQuery IsEqual(string property, object value)
         {
-            var criterion = new ContentCriterion { PropertyInfo = this.PropertyCheck(property), Type = CriterionType.Equals };
+            var criterion = new ContentCriterion { PropertyInfo = this.PropertyCheck(property), Type = CriterionType.Equals, Value = value };
             return this.AddCriterion(criterion);
+        }
+
+        public ContentQuery OrderBy(string property, bool ascending = true)
+        {
+            var orderEntry = new ContentOrder { PropertyInfo = this.PropertyCheck(property), Ascending = ascending };
+            return this.AddOrder(orderEntry);
         }
  
         public ContentQuery AddCriterion(ContentCriterion criterion)
@@ -96,6 +113,11 @@ namespace Carbon.Engine.Resource
             if (this.criteria.Contains(criterion))
             {
                 throw new ArgumentException("Criterion was already added");
+            }
+            if (this.negateNext)
+            {
+                criterion.Negate = true;
+                this.negateNext = false;
             }
 
             this.criteria.Add(criterion);
@@ -116,7 +138,7 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private PropertyInfo PropertyCheck(string propertyName)
+        private ContentReflectionProperty PropertyCheck(string propertyName)
         {
             var entry = this.eligibleProperties.FirstOrDefault(x => x.Name.Equals(propertyName));
             if (entry == null)
@@ -124,7 +146,7 @@ namespace Carbon.Engine.Resource
                 throw new ArgumentException("Property was not found on underlying content object: " + propertyName);
             }
 
-            return entry.Info;
+            return entry;
         }
     }
 }

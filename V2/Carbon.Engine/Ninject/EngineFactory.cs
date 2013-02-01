@@ -1,6 +1,9 @@
 ﻿using Carbon.Engine.Contracts;
+using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Resource;
 
 using Ninject;
+using Ninject.Parameters;
 
 namespace Carbon.Engine.Ninject
 {
@@ -30,6 +33,11 @@ namespace Carbon.Engine.Ninject
         public T Get<T>()
         {
             return this.kernel.Get<T>();
+        }
+
+        public IContentManager GetContentManager(ResourceLink root)
+        {
+            return this.kernel.Get<IContentManager>(new ConstructorArgument("root", root));
         }
     }
 }

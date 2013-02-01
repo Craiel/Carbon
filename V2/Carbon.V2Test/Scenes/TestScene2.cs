@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using Carbon.Engine.Contracts;
+﻿using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
 using Carbon.Engine.Contracts.Resource;
@@ -10,7 +8,6 @@ using Carbon.Engine.Rendering.Primitives;
 using Carbon.Engine.Rendering.RenderTarget;
 using Carbon.Engine.Resource;
 using Carbon.Engine.Resource.Content;
-using Carbon.Engine.Resource.Resources;
 using Carbon.Engine.Scene;
 using Carbon.V2Test.Contracts;
 using Core.Utils;
@@ -19,8 +16,6 @@ using SlimDX;
 
 namespace Carbon.V2Test.Scenes
 {
-    using Carbon.Editor.Resource.Collada;
-
     public interface ITestScene : IScene
     {
     }
@@ -82,7 +77,7 @@ namespace Carbon.V2Test.Scenes
             this.overlayCamera = factory.Get<IOrthographicCamera>();
 
             this.resourceManager = factory.Get<IResourceManager>();
-            this.contentManager = factory.Get<IContentManager>();
+            this.contentManager = factory.GetContentManager(new ResourceLink { Source = "v2test_master.db" });
             
             this.root = new Node();
         }
@@ -225,6 +220,7 @@ namespace Carbon.V2Test.Scenes
             Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
             this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
 
+            this.contentManager.Save(materialResource);
             var testCriteria = new ContentQuery<MaterialEntry>().IsEqual("NormalTexture", null);
             this.contentManager.Load(testCriteria);
 

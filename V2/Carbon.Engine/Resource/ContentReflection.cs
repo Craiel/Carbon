@@ -36,9 +36,8 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static string GetTableName<T>() where T : ICarbonContent
+        public static string GetTableName(Type key)
         {
-            Type key = typeof(T);
             if (!tableNameCache.ContainsKey(key))
             {
                 var attribute = key.GetCustomAttributes(typeof(ContentEntryAttribute), true).FirstOrDefault() as ContentEntryAttribute;
@@ -51,6 +50,11 @@ namespace Carbon.Engine.Resource
             }
 
             return tableNameCache[key];
+        }
+
+        public static string GetTableName<T>() where T : ICarbonContent
+        {
+            return GetTableName(typeof(T));
         }
 
         public static IList<ContentReflectionProperty> GetPropertyInfos(Type type)

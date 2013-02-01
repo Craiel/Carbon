@@ -8,7 +8,16 @@ namespace Carbon.Engine.Resource.Content
     public struct MaterialEntry : ICarbonContent
     {
         [ContentEntryElement]
-        public Vector4 Color { get; set; }
+        public float ColorR { get; set; }
+
+        [ContentEntryElement]
+        public float ColorG { get; set; }
+
+        [ContentEntryElement]
+        public float ColorB { get; set; }
+
+        [ContentEntryElement]
+        public float ColorA { get; set; }
 
         [ContentEntryElement]
         public ResourceLink? DiffuseTexture { get; set; }

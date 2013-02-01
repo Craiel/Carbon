@@ -19,7 +19,7 @@ namespace Carbon.Engine.Rendering
         {
             this.graphics = graphics;
 
-            this.Color = content.Color;
+            this.Color = new Vector4(content.ColorR, content.ColorG, content.ColorB, content.ColorA);
 
             if (content.DiffuseTexture != null)
             {
