@@ -172,9 +172,10 @@
     <Compile Include="Resource\ContentQuery.cs" />
     <Compile Include="Resource\ContentQueryResult.cs" />
     <Compile Include="Resource\ContentReflection.cs" />
+    <Compile Include="Resource\Content\ContentLink.cs" />
     <Compile Include="Resource\Content\MaterialEntry.cs" />
     <Compile Include="Resource\EngineResource.cs" />
-    <Compile Include="Resource\ResourceLink.cs" />
+    <Compile Include="Resource\Content\ResourceLink.cs" />
     <Compile Include="Resource\Resources\MeshResource.cs" />
     <Compile Include="Resource\Resources\FontResource.cs" />
     <Compile Include="Resource\FolderContent.cs" />

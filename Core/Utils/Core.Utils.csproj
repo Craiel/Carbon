@@ -101,6 +101,7 @@
     <Compile Include="RuntimeInfo.cs" />
     <Compile Include="TextFile.cs" />
     <Compile Include="Timer.cs" />
+    <Compile Include="TypeExtension.cs" />
     <Compile Include="VectorExtension.cs" />
   </ItemGroup>
   <ItemGroup>

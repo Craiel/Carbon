@@ -2,6 +2,13 @@
 
 namespace Carbon.Engine.Resource
 {
+    public enum PrimaryKeyMode
+    {
+        None,
+        Assigned,
+        AutoIncrement
+    }
+
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, Inherited = false)]
     public class ContentEntryAttribute : Attribute
     {
@@ -13,6 +20,7 @@ namespace Carbon.Engine.Resource
         public string Table { get; private set; }
     }
 
+    [AttributeUsage(AttributeTargets.Property)]
     public class ContentEntryElementAttribute : Attribute
     {
         public ContentEntryElementAttribute()
@@ -26,6 +34,6 @@ namespace Carbon.Engine.Resource
 
         public string Name { get; private set; }
 
-        public bool PrimaryKey { get; set; }
+        public PrimaryKeyMode PrimaryKey { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Resource.Content;
 
 using Core.Utils.Contracts;
 
@@ -23,6 +24,9 @@ namespace Carbon.Engine.Resource
         private readonly SQLiteFactory factory;
         private readonly IList<string> checkedTableList;
 
+        private readonly IDictionary<int, ContentLink> contentLinkCache;
+        private readonly IDictionary<int, ResourceLink> resourceLinkCache;
+
         private SQLiteConnection connection;
 
         // -------------------------------------------------------------------
@@ -36,6 +40,8 @@ namespace Carbon.Engine.Resource
 
             this.factory = new SQLiteFactory();
             this.checkedTableList = new List<string>();
+            this.resourceLinkCache = new Dictionary<int, ResourceLink>();
+            this.contentLinkCache = new Dictionary<int, ContentLink>();
         }
 
         public void Dispose()
@@ -60,7 +66,7 @@ namespace Carbon.Engine.Resource
             command.CommandText = this.BuildSelectStatement(criteria);
 
             this.log.Debug("ConentManager.Load<{0}>: {1}", criteria.Type, command.CommandText);
-            return new ContentQueryResult(command);
+            return new ContentQueryResult(this, this.log, command);
         }
 
         public void Save(ICarbonContent content)
@@ -76,6 +82,16 @@ namespace Carbon.Engine.Resource
             {
                 throw new InvalidOperationException("Expected 1 row affected but got " + affected);
             }
+        }
+
+        public ContentLink ResolveLink(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ResourceLink ResolveResourceLink(int id)
+        {
+            throw new NotImplementedException();
         }
 
         // -------------------------------------------------------------------
@@ -285,7 +301,7 @@ namespace Carbon.Engine.Resource
                 string tableType = this.GetTableType(properties[i].Info.PropertyType);
                 string tableColumn = properties[i].Name;
 
-                if (properties[i].PrimaryKey)
+                if (properties[i].PrimaryKey != PrimaryKeyMode.None)
                 {
                     // If the column is part of the primary key we have to mark it as not null
                     if (!tableType.Contains(SqlNotNull))
@@ -293,7 +309,20 @@ namespace Carbon.Engine.Resource
                         tableType = string.Concat(tableType, SqlNotNull);
                     }
 
-                    primaryKeySegments.Add(tableColumn);
+                    switch (properties[i].PrimaryKey)
+                    {
+                        case PrimaryKeyMode.AutoIncrement:
+                            {
+                                primaryKeySegments.Add(string.Format("{0} autoincrement", tableColumn));
+                                break;
+                            }
+
+                        default:
+                            {
+                                primaryKeySegments.Add(tableColumn);
+                                break;
+                            }
+                    }
                 }
 
                 // If we still assume to be consistent check more details

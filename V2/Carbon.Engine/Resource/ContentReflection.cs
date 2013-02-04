@@ -17,7 +17,7 @@ namespace Carbon.Engine.Resource
 
         public string Name { get; private set; }
         public PropertyInfo Info { get; private set; }
-        public bool PrimaryKey { get; set; }
+        public PrimaryKeyMode PrimaryKey { get; set; }
     }
 
     public static class ContentReflection

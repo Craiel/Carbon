@@ -220,9 +220,9 @@ namespace Carbon.V2Test.Scenes
             Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
             this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
 
-            this.contentManager.Save(materialResource);
-            var testCriteria = new ContentQuery<MaterialEntry>().IsEqual("NormalTexture", null);
-            this.contentManager.Load(testCriteria);
+            //this.contentManager.Save(materialResource);
+            var testCriteria = new ContentQuery<MaterialEntry>().IsEqual("Id", 0);
+            this.contentManager.Load(testCriteria).UniqueResult<MaterialEntry>();
 
             /*RawResource resource;
             resource = this.resourceManager.Load<RawResource>(@"Models\room.dae");

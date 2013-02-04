@@ -2,9 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.IO;
 using System.Linq;
 
 using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Resource.Content;
+
+using Core.Utils;
+using Core.Utils.Contracts;
 
 namespace Carbon.Engine.Resource
 {
@@ -14,8 +19,8 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ContentQueryResult(DbCommand command)
-            : base(command)
+        public ContentQueryResult(IContentManager contentManager, ILog log, DbCommand command)
+            : base(contentManager, log, command)
         {
         }
 
@@ -31,16 +36,20 @@ namespace Carbon.Engine.Resource
 
     public class ContentQueryResult
     {
+        private readonly IContentManager contentManager;
+        private readonly ILog log;
+
         private readonly DbCommand command;
-        private readonly string statement;
 
         private IList<object[]> results;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ContentQueryResult(DbCommand command)
+        public ContentQueryResult(IContentManager contentManager, ILog log, DbCommand command)
         {
+            this.contentManager = contentManager;
+            this.log = log;
             this.command = command;
         }
 
@@ -62,10 +71,26 @@ namespace Carbon.Engine.Resource
             return this.ProcessResults(type);
         }
 
-        public IList<T> ToList<T>()
+        public object UniqueResult()
         {
             this.EvaluateCommand();
-            return this.ProcessResults(typeof(T)).Cast<T>().ToList();
+            if (this.results.Count != 1)
+            {
+                throw new InvalidDataException("Expected unique result but got " + this.results.Count);
+            }
+
+            return this.results[0];
+        }
+
+        public T UniqueResult<T>()
+        {
+            this.EvaluateCommand();
+            if (this.results.Count != 1)
+            {
+                throw new InvalidDataException("Expected unique result but got " + this.results.Count);
+            }
+
+            return this.ProcessResults(typeof(T)).Cast<T>().First();
         }
 
         private void EvaluateCommand()
@@ -96,56 +121,63 @@ namespace Carbon.Engine.Resource
             IList<ContentReflectionProperty> properties = ContentReflection.GetPropertyInfos(targetType);
             IList processed = new List<object>();
 
+            for (int i = 0; i < this.results.Count; i++)
+            {
+                if (this.results[i].Length != properties.Count)
+                {
+                    this.log.Error(
+                        "Result does not match property count for {0} (got {1} but expected {2}",
+                        null,
+                        targetType,
+                        this.results[i].Length,
+                        properties.Count);
+                    continue;
+                }
+
+                object entry = Activator.CreateInstance(targetType);
+                for (int p = 0; p < properties.Count; p++)
+                {
+                    object translatedValue = this.TanslateValue(properties[p].Info.PropertyType, this.results[i][p]);
+                    properties[p].Info.SetValue(entry, translatedValue);
+                }
+
+                processed.Add(entry);
+            }
 
             return processed;
         }
 
-        /*var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            IList result;
-            using (DbDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+        private object TanslateValue(Type type, object source)
+        {
+            Type targetType = type;
+            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
-                result = this.LoadFromReader(targetType, reader);
+                targetType = targetType.GetGenericArguments()[0];
             }
 
-            stopWatch.Stop();
-            Debug.WriteLine("DirectDataQuery: {0} executed in {1}ms", targetType, stopWatch.ElapsedMilliseconds);
-
-            if (this.LookupDataLoaded != null)
+            if (targetType == typeof(ResourceLink))
             {
-                this.LookupDataLoaded(this, new LookupDataLoadedEventArgs(targetType, result.Count, stopWatch.ElapsedMilliseconds));
-            }
-
-            return result;*/
-
-
-        /*List<LookupData> results = new List<LookupData>();
-            LookupColumnInfo[] columnInfos = LookupDataReflection.GetColumnInfo(targetType).ToArray();
-            object[] temp = new object[columnInfos.Length];
-
-            while (reader.Read())
-            {
-                if (reader.GetValues(temp) != columnInfos.Length)
+                int? id = (int?)typeof(int?).ConvertValue(source);
+                if (id == null)
                 {
-                    throw new DataException("Read count does not match expected columns");
+                    return null;
                 }
 
-                LookupData translated = Activator.CreateInstance(targetType) as LookupData;
-                for (int i = 0; i < temp.Length; i++)
-                {
-                    // Skip all null and DBNull sets, default for all object and nullables
-                    if (temp[i] == null || temp[i] is DBNull)
-                    {
-                        continue;
-                    }
-
-                    object value = TypeConversion.GetTypedValue(columnInfos[i].Type, temp[i]);
-                    columnInfos[i].PropertyInfo.SetValue(translated, value, null);
-                }
-
-                results.Add(translated);
+                return this.contentManager.ResolveResourceLink(id.Value);
             }
 
-            return results;*/
+            if (targetType == typeof(ContentLink))
+            {
+                int? id = (int?)typeof(int?).ConvertValue(source);
+                if (id == null)
+                {
+                    return null;
+                }
+
+                return this.contentManager.ResolveLink(id.Value);
+            }
+
+            return targetType.ConvertValue(source);
+        }
     }
 }

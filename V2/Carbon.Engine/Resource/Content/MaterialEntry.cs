@@ -5,7 +5,7 @@ namespace Carbon.Engine.Resource.Content
     [ContentEntry("Material")]
     public struct MaterialEntry : ICarbonContent
     {
-        [ContentEntryElement(PrimaryKey = true)]
+        [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
         public int Id { get; set; }
 
         [ContentEntryElement]
