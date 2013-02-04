@@ -1,12 +1,13 @@
-﻿using SlimDX;
+﻿using Carbon.Engine.Contracts.Resource;
 
 namespace Carbon.Engine.Resource.Content
 {
-    using Carbon.Engine.Contracts.Resource;
-
     [ContentEntry("Material")]
     public struct MaterialEntry : ICarbonContent
     {
+        [ContentEntryElement(PrimaryKey = true)]
+        public int Id { get; set; }
+
         [ContentEntryElement]
         public float ColorR { get; set; }
 

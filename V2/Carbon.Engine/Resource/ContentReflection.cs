@@ -17,6 +17,7 @@ namespace Carbon.Engine.Resource
 
         public string Name { get; private set; }
         public PropertyInfo Info { get; private set; }
+        public bool PrimaryKey { get; set; }
     }
 
     public static class ContentReflection
@@ -85,7 +86,7 @@ namespace Carbon.Engine.Resource
                     ContentEntryElementAttribute;
                 if (attribute != null)
                 {
-                    properties.Add(new ContentReflectionProperty(attribute, info));
+                    properties.Add(new ContentReflectionProperty(attribute, info) { PrimaryKey = attribute.PrimaryKey });
                 }
             }
 

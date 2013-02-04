@@ -13,6 +13,8 @@ namespace Carbon.Engine.Resource
 {
     public class ContentManager : IContentManager
     {
+        private const string SqlNotNull = " NOT NULL";
+
         private readonly IResourceManager resourceManager;
         private readonly ILog log;
 
@@ -277,15 +279,27 @@ namespace Carbon.Engine.Resource
 
             bool needRecreate = properties.Count != pragmaInfo.Count;
             IList<string> columnSegments = new List<string>();
+            IList<string> primaryKeySegments = new List<string>();
             for (int i = 0; i < properties.Count; i++)
             {
                 string tableType = this.GetTableType(properties[i].Info.PropertyType);
                 string tableColumn = properties[i].Name;
 
+                if (properties[i].PrimaryKey)
+                {
+                    // If the column is part of the primary key we have to mark it as not null
+                    if (!tableType.Contains(SqlNotNull))
+                    {
+                        tableType = string.Concat(tableType, SqlNotNull);
+                    }
+
+                    primaryKeySegments.Add(tableColumn);
+                }
+
                 // If we still assume to be consistent check more details
                 if (!needRecreate)
                 {
-                    if (!tableType.Replace(" NOT NULL", string.Empty).Equals(pragmaInfo[i][2] as string, StringComparison.OrdinalIgnoreCase))
+                    if (!tableType.Replace(SqlNotNull, string.Empty).Equals(pragmaInfo[i][2] as string, StringComparison.OrdinalIgnoreCase))
                     {
                         needRecreate = true;
                     }
@@ -297,6 +311,11 @@ namespace Carbon.Engine.Resource
                 }
 
                 columnSegments.Add(string.Format("{0} {1}", tableColumn, tableType));
+            }
+
+            if (primaryKeySegments.Count > 0)
+            {
+                columnSegments.Add(string.Format("PRIMARY KEY ({0})", string.Join(",", primaryKeySegments)));
             }
 
             if (needRecreate && pragmaInfo.Count > 0)

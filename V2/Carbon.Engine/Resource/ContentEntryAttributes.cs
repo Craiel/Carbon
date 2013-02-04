@@ -17,7 +17,6 @@ namespace Carbon.Engine.Resource
     {
         public ContentEntryElementAttribute()
         {
-            
         }
 
         public ContentEntryElementAttribute(string name)
@@ -26,5 +25,7 @@ namespace Carbon.Engine.Resource
         }
 
         public string Name { get; private set; }
+
+        public bool PrimaryKey { get; set; }
     }
 }
