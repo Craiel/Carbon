@@ -226,7 +226,7 @@
       <Project>{a724db75-b032-4ae5-b901-063a165f7e71}</Project>
       <Name>Carbon.Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Carbon.Game\Carbon.Project.csproj">
+    <ProjectReference Include="..\Carbon.Project\Carbon.Project.csproj">
       <Project>{7093cdec-8281-45ef-965c-dc26ae613f8b}</Project>
       <Name>Carbon.Project</Name>
     </ProjectReference>

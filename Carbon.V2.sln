@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carbon.Editor", "V2\Carbon.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carbed", "V2\Carbed\Carbed.csproj", "{7F99AF1C-CC9D-434B-8A2C-3CFFC0E04D98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carbon.Project", "V2\Carbon.Game\Carbon.Project.csproj", "{7093CDEC-8281-45EF-965C-DC26AE613F8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Carbon.Project", "V2\Carbon.Project\Carbon.Project.csproj", "{7093CDEC-8281-45EF-965C-DC26AE613F8B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Carbon.Server", "V2\Carbon.Server\Carbon.Server.vcxproj", "{70D4C0DD-845B-4569-9DF2-32887D9AEA32}"
 EndProject
