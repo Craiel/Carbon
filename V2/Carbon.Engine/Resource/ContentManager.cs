@@ -19,6 +19,7 @@ namespace Carbon.Engine.Resource
     public class ContentManager : IContentManager
     {
         private const string SqlNotNull = " NOT NULL";
+        private const string SqlLastId = "SELECT last_insert_rowid()";
 
         private readonly IResourceManager resourceManager;
         private readonly ILog log;
@@ -66,18 +67,43 @@ namespace Carbon.Engine.Resource
             return new ContentQueryResult(this, this.log, this.GetCommand(criteria));
         }
 
-        public void Save(ICarbonContent content)
+        public void Save(ref ICarbonContent content)
         {
             this.Connect();
             this.CheckTable(content.GetType());
 
+            bool needPrimaryKeyUpdate = false;
             SQLiteCommand command = this.connection.CreateCommand();
-            command.CommandText = this.BuildInsertOrUpdateStatement(content);
+            ContentReflectionProperty primaryKeyProperty = ContentReflection.GetPrimaryKeyPropertyInfo(content.GetType());
+            if (primaryKeyProperty.Info.GetValue(content) == null)
+            {
+                command.CommandText = this.BuildInsertStatement(ref content);
+                needPrimaryKeyUpdate = true;
+            }
+            else
+            {
+                command.CommandText = this.BuildUpdateStatement(ref content);
+            }
+            
             this.log.Debug("ContentManager.Save<{0}>: {1}", content.GetType(), command.CommandText);
             int affected = command.ExecuteNonQuery();
             if (affected != 1)
             {
                 throw new InvalidOperationException("Expected 1 row affected but got " + affected);
+            }
+
+            if (needPrimaryKeyUpdate)
+            {
+                command = this.connection.CreateCommand();
+                command.CommandText = SqlLastId;
+                SQLiteDataReader reader = command.ExecuteReader();
+                if (!reader.Read())
+                {
+                    throw new InvalidOperationException("Failed to retrieve the id for saved object");
+                }
+
+                int lastId = reader.GetInt32(0);
+                primaryKeyProperty.Info.SetValue(content, lastId);
             }
         }
 
@@ -92,13 +118,11 @@ namespace Carbon.Engine.Resource
             return this.contentLinkCache[id];
         }
 
-        public int StoreLink(ContentLink link)
+        public void StoreLink(ref ContentLink link)
         {
-            this.Save(link);
-            
-            // Todo: Get the id of the object somehow...
-
-            return 0;
+            var cast = (ICarbonContent)link;
+            this.Save(ref cast);
+            link = (ContentLink)cast;
         }
 
         public ResourceLink ResolveResourceLink(int id)
@@ -112,7 +136,7 @@ namespace Carbon.Engine.Resource
             return this.resourceLinkCache[id];
         }
 
-        public int StoreResourceLink(ResourceLink link)
+        public void StoreResourceLink(ref ResourceLink link)
         {
             if (string.IsNullOrEmpty(link.Hash))
             {
@@ -128,11 +152,9 @@ namespace Carbon.Engine.Resource
                 }
             }
 
-            this.Save(link);
-
-            // Todo: Get the id of the saved object
-
-            return 0;
+            var cast = (ICarbonContent)link;
+            this.Save(ref cast);
+            link = (ResourceLink)cast;
         }
 
         // -------------------------------------------------------------------
@@ -159,31 +181,18 @@ namespace Carbon.Engine.Resource
             return this.AssembleStatement(what, where, order);
         }
 
-        private string BuildInsertOrUpdateStatement(ICarbonContent content)
+        private string BuildInsertStatement(ref ICarbonContent content)
         {
-            bool canUpdate = true;
-            IList<ContentReflectionProperty> primaryKeyProperties = ContentReflection.GetPrimaryKeyPropertyInfos(content.GetType());
-            for (int i = 0; i < primaryKeyProperties.Count; i++)
-            {
-                if (primaryKeyProperties[i].Info.GetValue(content) == null)
-                {
-                    canUpdate = false; 
-                    break;
-                }
-            }
+            string insert = this.BuildInsert(content.GetType());
+            string what = this.ProcessInsertValues(ref content);
+            return string.Format("{0} VALUES ({1})", insert, what);
+        }
 
-            if (canUpdate)
-            {
-                string update = this.BuildUpdate(content.GetType());
-                string what = this.BuildInsertValues(content);
-                return string.Format("{0} VALUES ({1})", update, what);
-            }
-            else
-            {
-                string insert = this.BuildInsert(content.GetType());
-                string what = this.BuildInsertValues(content);
-                return string.Format("{0} VALUES ({1})", insert, what);
-            }
+        private string BuildUpdateStatement(ref ICarbonContent content)
+        {
+            string update = this.BuildUpdate(content.GetType());
+            string what = this.ProcessInsertValues(ref content);
+            return string.Format("{0} VALUES ({1})", update, what);
         }
 
         private string AssembleStatement(string what, string where, string order)
@@ -335,20 +344,21 @@ namespace Carbon.Engine.Resource
             return segmentString;
         }
 
-        private string BuildInsertValues(ICarbonContent entry)
+        private string ProcessInsertValues(ref ICarbonContent entry)
         {
             IList<ContentReflectionProperty> properties = ContentReflection.GetPropertyInfos(entry.GetType());
             IList<string> segments = new List<string>();
             foreach (ContentReflectionProperty property in properties)
             {
                 object value = property.Info.GetValue(entry);
-                segments.Add(this.TranslateInsertValue(value));
+                segments.Add(this.TranslateInsertValue(ref value));
+                property.Info.SetValue(entry, value);
             }
 
             return string.Join(", ", segments);
         }
 
-        private string TranslateInsertValue(object value)
+        private string TranslateInsertValue(ref object value)
         {
             if (value == null)
             {
@@ -358,12 +368,18 @@ namespace Carbon.Engine.Resource
             Type type = value.GetType();
             if (type == typeof(ContentLink))
             {
-                return this.StoreLink((ContentLink)value).ToString();
+                var cast = (ContentLink)value;
+                this.StoreLink(ref cast);
+                value = cast;
+                return cast.Id.ToString();
             }
 
             if (type == typeof(ResourceLink))
             {
-                return this.StoreResourceLink((ResourceLink)value).ToString();
+                var cast = (ResourceLink)value;
+                this.StoreResourceLink(ref cast);
+                value = cast;
+                return cast.Id.ToString();
             }
 
             return string.Format("'{0}'", value);
@@ -412,26 +428,7 @@ namespace Carbon.Engine.Resource
 
             this.checkedTableList.Clear();
         }
-
-        private ICarbonContent GetPristineInstance(ICarbonContent source)
-        {
-            Type sourceType = source.GetType();
-            IList<ContentReflectionProperty> primaryKeyProperties = ContentReflection.GetPrimaryKeyPropertyInfos(sourceType);
-            var query = new ContentQuery(sourceType);
-            for (int i = 0; i < primaryKeyProperties.Count; i++)
-            {
-                object pkValue = primaryKeyProperties[i].Info.GetValue(source);
-                if (pkValue == null)
-                {
-                    throw new DataException(string.Format("Can not get pristine instance for source object of type {0}, one or more primary key columns are null ({1})", sourceType, primaryKeyProperties[i].Name));
-                }
-
-                query.IsEqual(primaryKeyProperties[i].Name, pkValue);
-            }
-
-            return (ICarbonContent)this.Load(query).UniqueResult(sourceType);
-        }
-
+        
         private void CheckTable(Type type)
         {
             string tableName = ContentReflection.GetTableName(type);
@@ -439,14 +436,7 @@ namespace Carbon.Engine.Resource
             {
                 return;
             }
-
-            IList<ContentReflectionProperty> primaryKeyProperties = ContentReflection.GetPrimaryKeyPropertyInfos(type);
-            if (primaryKeyProperties.Count <= 0)
-            {
-                // Throw this since its not likely to be intended behavior
-                throw new DataException("No primary key defined for type " + type);
-            }
-
+            
             IList<ContentReflectionProperty> properties = ContentReflection.GetPropertyInfos(type);
             SQLiteCommand command = this.connection.CreateCommand();
             command.CommandText = string.Format("PRAGMA table_info({0})", tableName);

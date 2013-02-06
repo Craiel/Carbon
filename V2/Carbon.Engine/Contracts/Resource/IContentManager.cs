@@ -8,12 +8,12 @@ namespace Carbon.Engine.Contracts.Resource
         ContentQueryResult<T> TypedLoad<T>(ContentQuery<T> criteria) where T : ICarbonContent;
         ContentQueryResult Load(ContentQuery criteria);
 
-        void Save(ICarbonContent content);
+        void Save(ref ICarbonContent content);
 
         ContentLink ResolveLink(int id);
-        int StoreLink(ContentLink link);
+        void StoreLink(ref ContentLink link);
 
         ResourceLink ResolveResourceLink(int id);
-        int StoreResourceLink(ResourceLink link);
+        void StoreResourceLink(ref ResourceLink link);
     }
 }

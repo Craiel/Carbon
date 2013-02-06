@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 
@@ -24,7 +25,7 @@ namespace Carbon.Engine.Resource
     {
         private static readonly IDictionary<Type, string> tableNameCache;
         private static readonly IDictionary<Type, IList<ContentReflectionProperty>> propertyLookupCache;
-        private static readonly IDictionary<Type, IList<ContentReflectionProperty>> primaryKeyPropertyLookupCache; 
+        private static readonly IDictionary<Type, ContentReflectionProperty> primaryKeyPropertyLookupCache; 
 
         // -------------------------------------------------------------------
         // Constructor
@@ -33,7 +34,7 @@ namespace Carbon.Engine.Resource
         {
             tableNameCache = new Dictionary<Type, string>();
             propertyLookupCache = new Dictionary<Type, IList<ContentReflectionProperty>>();
-            primaryKeyPropertyLookupCache = new Dictionary<Type, IList<ContentReflectionProperty>>();
+            primaryKeyPropertyLookupCache = new Dictionary<Type, ContentReflectionProperty>();
         }
 
         // -------------------------------------------------------------------
@@ -75,7 +76,7 @@ namespace Carbon.Engine.Resource
             return GetPropertyInfos(typeof(T));
         }
 
-        public static IList<ContentReflectionProperty> GetPrimaryKeyPropertyInfos(Type type)
+        public static ContentReflectionProperty GetPrimaryKeyPropertyInfo(Type type)
         {
             if (!primaryKeyPropertyLookupCache.ContainsKey(type))
             {
@@ -85,17 +86,17 @@ namespace Carbon.Engine.Resource
             return primaryKeyPropertyLookupCache[type];
         }
 
-        public static IList<ContentReflectionProperty> GetPrimaryKeyPropertyInfos<T>() where T : ICarbonContent
+        public static ContentReflectionProperty GetPrimaryKeyPropertyInfo<T>() where T : ICarbonContent
         {
-            return GetPrimaryKeyPropertyInfos(typeof(T));
+            return GetPrimaryKeyPropertyInfo(typeof(T));
         }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
         private static void BuildLookupCache(Type type)
         {
             IList<ContentReflectionProperty> properties = new List<ContentReflectionProperty>();
-            IList<ContentReflectionProperty> primaryKeyProperties = new List<ContentReflectionProperty>();
             PropertyInfo[] propertyInfos = type.GetProperties();
             foreach (PropertyInfo info in propertyInfos)
             {
@@ -108,13 +109,22 @@ namespace Carbon.Engine.Resource
 
                     if (attribute.PrimaryKey != PrimaryKeyMode.None)
                     {
-                        primaryKeyProperties.Add(propertyInfo);
+                        if (primaryKeyPropertyLookupCache.ContainsKey(type))
+                        {
+                            throw new DataException("Only one primary key is currently supported for type " + type);
+                        }
+
+                        primaryKeyPropertyLookupCache.Add(type, propertyInfo);
                     }
                 }
             }
 
+            if (!primaryKeyPropertyLookupCache.ContainsKey(type))
+            {
+                throw new DataException("Type does not have a primary key defined: " + type);
+            }
+
             propertyLookupCache.Add(type, properties);
-            primaryKeyPropertyLookupCache.Add(type, primaryKeyProperties);
         }
     }
 }
