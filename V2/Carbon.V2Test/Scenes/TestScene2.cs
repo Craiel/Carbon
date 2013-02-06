@@ -128,6 +128,10 @@ namespace Carbon.V2Test.Scenes
 
             var materialResource = new MaterialEntry { DiffuseTexture = new ResourceLink { Source = @"..\SourceData\Textures\checkerboard.dds" } };
             this.contentManager.Save(materialResource);
+            var test =
+                this.contentManager.TypedLoad(
+                    new ContentQuery<MaterialEntry>().Contains("Id", new[] { (object)0, 1, 2, 3 }))
+                    .ToList<MaterialEntry>();
 
             this.checkerboardMaterial = new Material(graphics, materialResource);
             this.stoneMaterial = new Material(
@@ -224,7 +228,7 @@ namespace Carbon.V2Test.Scenes
 
             //this.contentManager.Save(materialResource);
             var testCriteria = new ContentQuery<MaterialEntry>().IsEqual("Id", 0);
-            this.contentManager.Load(testCriteria).UniqueResult<MaterialEntry>();
+            this.contentManager.TypedLoad(testCriteria).UniqueResult<MaterialEntry>();
 
             /*RawResource resource;
             resource = this.resourceManager.Load<RawResource>(@"Models\room.dae");

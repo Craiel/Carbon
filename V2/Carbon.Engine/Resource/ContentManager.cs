@@ -58,19 +58,12 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         public ContentQueryResult<T> TypedLoad<T>(ContentQuery<T> criteria) where T : ICarbonContent
         {
-            return this.Load(criteria) as ContentQueryResult<T>;
+            return new ContentQueryResult<T>(this, this.log, this.GetCommand(criteria));
         }
 
         public ContentQueryResult Load(ContentQuery criteria)
         {
-            this.Connect();
-            this.CheckTable(criteria.Type);
-
-            SQLiteCommand command = this.connection.CreateCommand();
-            command.CommandText = this.BuildSelectStatement(criteria);
-
-            this.log.Debug("ConentManager.Load<{0}>: {1}", criteria.Type, command.CommandText);
-            return new ContentQueryResult(this, this.log, command);
+            return new ContentQueryResult(this, this.log, this.GetCommand(criteria));
         }
 
         public void Save(ICarbonContent content)
@@ -93,7 +86,7 @@ namespace Carbon.Engine.Resource
             if (!this.contentLinkCache.ContainsKey(id))
             {
                 ContentQueryResult result = this.Load(new ContentQuery(typeof(ContentLink)).IsEqual("Id", id));
-                this.contentLinkCache.Add(id, result.UniqueResult<ContentLink>());
+                this.contentLinkCache.Add(id, (ContentLink)result.UniqueResult(typeof(ContentLink)));
             }
 
             return this.contentLinkCache[id];
@@ -102,7 +95,7 @@ namespace Carbon.Engine.Resource
         public int StoreLink(ContentLink link)
         {
             this.Save(link);
-
+            
             // Todo: Get the id of the object somehow...
 
             return 0;
@@ -113,7 +106,7 @@ namespace Carbon.Engine.Resource
             if (!this.resourceLinkCache.ContainsKey(id))
             {
                 ContentQueryResult result = this.Load(new ContentQuery(typeof(ResourceLink)).IsEqual("Id", id));
-                this.resourceLinkCache.Add(id, result.UniqueResult<ResourceLink>());
+                this.resourceLinkCache.Add(id, (ResourceLink)result.UniqueResult(typeof(ResourceLink)));
             }
 
             return this.resourceLinkCache[id];
@@ -145,6 +138,18 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
+        private SQLiteCommand GetCommand(ContentQuery criteria)
+        {
+            this.Connect();
+            this.CheckTable(criteria.Type);
+
+            SQLiteCommand command = this.connection.CreateCommand();
+            command.CommandText = this.BuildSelectStatement(criteria);
+
+            this.log.Debug("ConentManager.Load<{0}>: {1}", criteria.Type, command.CommandText);
+            return command;
+        }
+
         private string BuildSelectStatement(ContentQuery criteria)
         {
             string what = this.BuildSelect(criteria.Type);
@@ -259,26 +264,75 @@ namespace Carbon.Engine.Resource
             IList<string> segments = new List<string>();
             foreach (ContentCriterion criterion in criteria)
             {
-                if (criterion.Value == null)
+                switch (criterion.Type)
                 {
-                    segments.Add(
-                        criterion.Negate
-                            ? string.Format("{0} IS NOT NULL", criterion.PropertyInfo.Name)
-                            : string.Format("{0} IS NULL", criterion.PropertyInfo.Name));
-                }
-                else
-                {
-                    string segmentString = string.Format("{0} = '{1}'", criterion.PropertyInfo.Name, this.TranslateCriterionValue(criterion.Value));
-                    if (criterion.Negate)
-                    {
-                        segmentString = string.Concat("NOT ", segmentString);
-                    }
+                    case CriterionType.Equals:
+                        {
+                            segments.Add(this.BuildEqualsSegment(criterion));
+                            break;
+                        }
 
-                    segments.Add(segmentString);
+                    case CriterionType.Contains:
+                        {
+                            segments.Add(this.BuildContainsSegment(criterion));
+                            break;
+                        }
                 }
             }
 
             return string.Join(" AND ", segments);
+        }
+
+        private string BuildEqualsSegment(ContentCriterion criterion)
+        {
+            if (criterion.Values == null || criterion.Values.Length == 0)
+            {
+                return criterion.Negate
+                           ? string.Format("{0} IS NOT NULL", criterion.PropertyInfo.Name)
+                           : string.Format("{0} IS NULL", criterion.PropertyInfo.Name);
+            }
+
+            if (criterion.Values.Length > 1)
+            {
+                this.log.Warning(
+                    "Equals with multiple values detected for {0}, excess values will be ignored",
+                    criterion.PropertyInfo.Name);
+            }
+
+            string segmentString = string.Format("{0} = '{1}'", criterion.PropertyInfo.Name, this.TranslateCriterionValue(criterion.Values[0]));
+            if (criterion.Negate)
+            {
+                segmentString = string.Concat("NOT ", segmentString);
+            }
+
+            return segmentString;
+        }
+
+        private string BuildContainsSegment(ContentCriterion criterion)
+        {
+            if (criterion.Values == null || criterion.Values.Length == 0)
+            {
+                throw new DataException("Contains Segment can not be build without values");
+            }
+
+            if (criterion.Values.Length == 1)
+            {
+                this.log.Warning("Equals statement with single value detected for {0}", criterion.PropertyInfo.Name);
+            }
+
+            IList<string> containValues = new List<string>();
+            for (int i = 0; i < criterion.Values.Length; i++)
+            {
+                containValues.Add(string.Format("'{0}'", this.TranslateCriterionValue(criterion.Values[i])));
+            }
+
+            string segmentString = string.Format("{0} in ({1})", criterion.PropertyInfo.Name, string.Join(", ", containValues));
+            if (criterion.Negate)
+            {
+                segmentString = string.Concat("NOT ", segmentString);
+            }
+
+            return segmentString;
         }
 
         private string BuildInsertValues(ICarbonContent entry)
@@ -375,7 +429,7 @@ namespace Carbon.Engine.Resource
                 query.IsEqual(primaryKeyProperties[i].Name, pkValue);
             }
 
-            return this.Load(query).UniqueResult<ICarbonContent>();
+            return (ICarbonContent)this.Load(query).UniqueResult(sourceType);
         }
 
         private void CheckTable(Type type)

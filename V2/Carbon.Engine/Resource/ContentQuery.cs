@@ -10,14 +10,15 @@ namespace Carbon.Engine.Resource
 {
     public enum CriterionType
     {
-        Equals
+        Equals,
+        Contains
     }
 
     public struct ContentCriterion
     {
         public ContentReflectionProperty PropertyInfo { get; set; }
         public CriterionType Type { get; set; }
-        public object Value { get; set; }
+        public object[] Values { get; set; }
         public bool Negate { get; set; }
     }
 
@@ -43,6 +44,12 @@ namespace Carbon.Engine.Resource
         public new ContentQuery<T> IsEqual(string property, object value)
         {
             base.IsEqual(property, value);
+            return this;
+        }
+
+        public new ContentQuery<T> Contains(string property, object[] values)
+        {
+            base.Contains(property, values);
             return this;
         }
     }
@@ -98,7 +105,23 @@ namespace Carbon.Engine.Resource
 
         public ContentQuery IsEqual(string property, object value)
         {
-            var criterion = new ContentCriterion { PropertyInfo = this.PropertyCheck(property), Type = CriterionType.Equals, Value = value };
+            var criterion = new ContentCriterion
+                                {
+                                    PropertyInfo = this.PropertyCheck(property),
+                                    Type = CriterionType.Equals,
+                                    Values = new[] { value }
+                                };
+            return this.AddCriterion(criterion);
+        }
+
+        public ContentQuery Contains(string property, object[] values)
+        {
+            var criterion = new ContentCriterion
+                                {
+                                    PropertyInfo = this.PropertyCheck(property),
+                                    Type = CriterionType.Contains,
+                                    Values = values
+                                };
             return this.AddCriterion(criterion);
         }
 

@@ -32,6 +32,11 @@ namespace Carbon.Engine.Resource
             IList untyped = this.ToList(typeof(T));
             return untyped.Cast<T>().ToList();
         }
+
+        public T UniqueResult<T>()
+        {
+            return (T)this.UniqueResult(typeof(T));
+        }
     }
 
     public class ContentQueryResult
@@ -82,7 +87,7 @@ namespace Carbon.Engine.Resource
             return this.results[0];
         }
 
-        public T UniqueResult<T>()
+        public object UniqueResult(Type targetType)
         {
             this.EvaluateCommand();
             if (this.results.Count != 1)
@@ -90,7 +95,7 @@ namespace Carbon.Engine.Resource
                 throw new InvalidDataException("Expected unique result but got " + this.results.Count);
             }
 
-            return this.ProcessResults(typeof(T)).Cast<T>().First();
+            return this.ProcessResults(targetType);
         }
 
         private void EvaluateCommand()
