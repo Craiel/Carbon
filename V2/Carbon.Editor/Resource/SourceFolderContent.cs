@@ -4,8 +4,6 @@ using System.Xml.Serialization;
 namespace Carbon.Editor.Resource
 {
     [Serializable]
-    [XmlInclude(typeof(SourceTextureFont))]
-    [XmlInclude(typeof(SourceModel))]
     public abstract class SourceFolderContent
     {
         [XmlAttribute]

@@ -53,9 +53,9 @@ namespace Carbon.Editor.Processors
 
         public void Process(Stream target, CarbonBuilderEntry entry)
         {
-            SourceTextureFont source = (SourceTextureFont)entry.Content;
+            /*SourceTextureFont source = (SourceTextureFont)entry.Content;
 
-            this.font = new Font(source.Font.Reference, source.FontSize, FontStyle.Regular);
+            this.font = new Font(source.Font.Reference, source.FontSize, FontStyle.Regular);*/
             
             // Todo: Evaluate reference
 

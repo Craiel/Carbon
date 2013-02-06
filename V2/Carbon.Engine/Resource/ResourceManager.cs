@@ -9,6 +9,8 @@ using Carbon.Engine.Contracts.Resource;
 
 namespace Carbon.Engine.Resource
 {
+    using Carbon.Engine.Resource.Content;
+
     public abstract class ResourceContent
     {
         public abstract Stream Load(string hash, string key);

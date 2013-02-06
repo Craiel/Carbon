@@ -141,7 +141,6 @@
     <Compile Include="StaticResources.cs" />
     <Compile Include="ViewModels\DocumentViewModel.cs" />
     <Compile Include="ViewModels\FolderContentViewModel.cs" />
-    <Compile Include="ViewModels\ModelViewModel.cs" />
     <Compile Include="ViewModels\NewDialogViewModel.cs" />
     <Compile Include="ViewModels\ProjectExplorerViewModel.cs" />
     <Compile Include="ViewModels\ProjectFolderViewModel.cs" />
@@ -150,9 +149,6 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModel.cs" />
     <Compile Include="ViewModels\ToolViewModel.cs" />
-    <Compile Include="Views\ModelView.xaml.cs">
-      <DependentUpon>ModelView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\NewDocumentView.xaml.cs">
       <DependentUpon>NewDocumentView.xaml</DependentUpon>
     </Compile>
@@ -241,10 +237,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Resources\Icons.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ModelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

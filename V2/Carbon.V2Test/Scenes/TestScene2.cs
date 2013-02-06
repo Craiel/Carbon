@@ -126,7 +126,9 @@ namespace Carbon.V2Test.Scenes
             testLight = new Light { Color = new Vector4(1), Type = LightType.Spot, Range = 10.0f, SpecularPower = 10.0f, Direction = Vector3.UnitY, SpotAngles = new Vector2(5, 10) };
             this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(35f, 0.5f, 20f, 1) });
 
-            var materialResource = new MaterialEntry { DiffuseTexture = new ResourceLink { Source = @"Textures\checkerboard.dds" } };
+            var materialResource = new MaterialEntry { DiffuseTexture = new ResourceLink { Source = @"..\SourceData\Textures\checkerboard.dds" } };
+            this.contentManager.Save(materialResource);
+
             this.checkerboardMaterial = new Material(graphics, materialResource);
             this.stoneMaterial = new Material(
                 graphics,

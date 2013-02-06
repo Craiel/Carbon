@@ -24,6 +24,7 @@ namespace Carbon.Engine.Resource
     {
         private static readonly IDictionary<Type, string> tableNameCache;
         private static readonly IDictionary<Type, IList<ContentReflectionProperty>> propertyLookupCache;
+        private static readonly IDictionary<Type, IList<ContentReflectionProperty>> primaryKeyPropertyLookupCache; 
 
         // -------------------------------------------------------------------
         // Constructor
@@ -32,6 +33,7 @@ namespace Carbon.Engine.Resource
         {
             tableNameCache = new Dictionary<Type, string>();
             propertyLookupCache = new Dictionary<Type, IList<ContentReflectionProperty>>();
+            primaryKeyPropertyLookupCache = new Dictionary<Type, IList<ContentReflectionProperty>>();
         }
 
         // -------------------------------------------------------------------
@@ -73,12 +75,27 @@ namespace Carbon.Engine.Resource
             return GetPropertyInfos(typeof(T));
         }
 
+        public static IList<ContentReflectionProperty> GetPrimaryKeyPropertyInfos(Type type)
+        {
+            if (!primaryKeyPropertyLookupCache.ContainsKey(type))
+            {
+                BuildLookupCache(type);
+            }
+
+            return primaryKeyPropertyLookupCache[type];
+        }
+
+        public static IList<ContentReflectionProperty> GetPrimaryKeyPropertyInfos<T>() where T : ICarbonContent
+        {
+            return GetPrimaryKeyPropertyInfos(typeof(T));
+        }
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
         private static void BuildLookupCache(Type type)
         {
             IList<ContentReflectionProperty> properties = new List<ContentReflectionProperty>();
+            IList<ContentReflectionProperty> primaryKeyProperties = new List<ContentReflectionProperty>();
             PropertyInfo[] propertyInfos = type.GetProperties();
             foreach (PropertyInfo info in propertyInfos)
             {
@@ -86,11 +103,18 @@ namespace Carbon.Engine.Resource
                     ContentEntryElementAttribute;
                 if (attribute != null)
                 {
-                    properties.Add(new ContentReflectionProperty(attribute, info) { PrimaryKey = attribute.PrimaryKey });
+                    var propertyInfo = new ContentReflectionProperty(attribute, info) { PrimaryKey = attribute.PrimaryKey };
+                    properties.Add(propertyInfo);
+
+                    if (attribute.PrimaryKey != PrimaryKeyMode.None)
+                    {
+                        primaryKeyProperties.Add(propertyInfo);
+                    }
                 }
             }
 
             propertyLookupCache.Add(type, properties);
+            primaryKeyPropertyLookupCache.Add(type, primaryKeyProperties);
         }
     }
 }

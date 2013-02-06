@@ -11,6 +11,9 @@ namespace Carbon.Engine.Contracts.Resource
         void Save(ICarbonContent content);
 
         ContentLink ResolveLink(int id);
+        int StoreLink(ContentLink link);
+
         ResourceLink ResolveResourceLink(int id);
+        int StoreResourceLink(ResourceLink link);
     }
 }

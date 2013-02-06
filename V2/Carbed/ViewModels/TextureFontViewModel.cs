@@ -17,9 +17,11 @@ using Carbon.Engine.Contracts;
 
 namespace Carbed.ViewModels
 {
+    using Carbon.Engine.Resource.Content;
+
     public class TextureFontViewModel : FolderContentViewModel, ITextureFontViewModel
     {
-        private readonly SourceTextureFont data;
+        private readonly FontEntry data;
         private readonly List<Font> selectableFonts;
         private readonly ICarbonBuilder builder;
 
@@ -28,7 +30,7 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public TextureFontViewModel(IEngineFactory factory, SourceTextureFont data)
+        public TextureFontViewModel(IEngineFactory factory, FontEntry data)
             : base(factory, data)
         {
             this.data = data;

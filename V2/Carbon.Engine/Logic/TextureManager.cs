@@ -15,6 +15,8 @@ using SlimDX.Direct3D11;
 
 namespace Carbon.Engine.Logic
 {
+    using Carbon.Engine.Resource.Content;
+
     public enum TextureReferenceType
     {
         Resource,

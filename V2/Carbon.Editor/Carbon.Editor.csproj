@@ -121,12 +121,8 @@
     <Compile Include="Resource\Collada\Scene\ColladaVisualScene.cs" />
     <Compile Include="Resource\Collada\Scene\ColladaSceneLibrary.cs" />
     <Compile Include="Resource\SourceFolderContent.cs" />
-    <Compile Include="Resource\SourceMesh.cs" />
-    <Compile Include="Resource\SourceModel.cs" />
     <Compile Include="Resource\SourceProject.cs" />
     <Compile Include="Resource\SourceProjectFolder.cs" />
-    <Compile Include="Resource\SourceTexture.cs" />
-    <Compile Include="Resource\SourceTextureFont.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Utils\Core.Utils.csproj">

@@ -7,6 +7,8 @@ using Ninject.Parameters;
 
 namespace Carbon.Engine.Ninject
 {
+    using Carbon.Engine.Resource.Content;
+
     public class EngineFactory : IEngineFactory
     {
         private readonly IKernel kernel;

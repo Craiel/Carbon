@@ -15,9 +15,9 @@ namespace Carbon.Editor.Processors
         // -------------------------------------------------------------------
         public ProcessingResult Process(CarbonBuilderEntry entry)
         {
-            SourceModel source = (SourceModel)entry.Content;
+            /*SourceModel source = (SourceModel)entry.Content;
 
-            /*if (source.File == null)
+            if (source.File == null)
             {
                 throw new ArgumentException();
             }

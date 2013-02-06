@@ -13,6 +13,8 @@ using SlimDX.Windows;
 
 namespace Carbon.Engine.Logic
 {
+    using Carbon.Engine.Resource.Content;
+
     public struct EngineContent
     {
         public string FallbackTexture;

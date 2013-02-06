@@ -7,12 +7,11 @@ namespace Carbon.Engine.Resource
     public class FolderContent : ResourceContent
     {
         private readonly string folder;
-        private readonly bool useSources;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public FolderContent(string folder, bool create = false, bool useSources = false)
+        public FolderContent(string folder, bool create = false)
         {
             if (!Directory.Exists(folder))
             {
@@ -25,7 +24,6 @@ namespace Carbon.Engine.Resource
             }
 
             this.folder = folder;
-            this.useSources = useSources;
         }
 
         // -------------------------------------------------------------------
@@ -34,14 +32,10 @@ namespace Carbon.Engine.Resource
         public override Stream Load(string hash, string key)
         {
             string fileName = Path.Combine(this.folder, hash.Replace('/', '.'));
-            string sourceFileName = Path.Combine(this.folder, key);
 
             if (!File.Exists(fileName))
             {
-                if (!this.useSources || !this.ConvertSource(sourceFileName, fileName))
-                {
-                    return null;
-                }
+                return null;
             }
 
             System.Diagnostics.Trace.TraceInformation("Loading {0}", fileName);
@@ -94,21 +88,6 @@ namespace Carbon.Engine.Resource
 
             System.Diagnostics.Trace.TraceInformation("Stored {0} bytes as {1}", size, fileName);
 
-            return true;
-        }
-
-        // -------------------------------------------------------------------
-        // Private
-        // -------------------------------------------------------------------
-        private bool ConvertSource(string sourceName, string targetName)
-        {
-            if (!File.Exists(sourceName))
-            {
-                return false;
-            }
-
-            System.Diagnostics.Trace.TraceInformation("Converting Source File {0} to {1}", sourceName, targetName);
-            File.Copy(sourceName, targetName);
             return true;
         }
     }

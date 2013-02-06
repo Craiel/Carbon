@@ -12,6 +12,7 @@ namespace Carbon.Editor.Logic
     using Carbon.Engine.Contracts;
     using Carbon.Engine.Contracts.Resource;
     using Carbon.Engine.Resource;
+    using Carbon.Engine.Resource.Content;
 
     public class CarbonBuilderEntry
     {
@@ -33,11 +34,11 @@ namespace Carbon.Editor.Logic
         // -------------------------------------------------------------------
         static CarbonBuilder()
         {
-            contentProcessors = new Dictionary<Type, IContentProcessor>
+            /*contentProcessors = new Dictionary<Type, IContentProcessor>
                 {
                     { typeof(SourceTextureFont), new FontProcessor() },
                     { typeof(SourceModel), new ModelProcessor() }
-                };
+                };*/
         }
 
         public CarbonBuilder(IEngineFactory factory)
@@ -133,7 +134,7 @@ namespace Carbon.Editor.Logic
                     { 
                         processor.Process(entry);
                         stream.Position = 0;
-                        var res = new ResourceLink() { Source = key };
+                        var res = new ResourceLink { Source = key };
                         this.resourceManager.StoreOrReplace(ref res, new RawResource(stream));
                     }
 

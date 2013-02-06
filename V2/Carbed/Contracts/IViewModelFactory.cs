@@ -2,10 +2,11 @@
 
 namespace Carbed.Contracts
 {
+    using Carbon.Engine.Resource.Content;
+
     public interface IViewModelFactory
     {
         IProjectFolderViewModel GetFolderViewModel(SourceProjectFolder data);
-        ITextureFontViewModel GetTextureFontViewModel(SourceTextureFont data);
-        IModelViewModel GetModelViewModel(SourceModel data);
+        ITextureFontViewModel GetTextureFontViewModel(FontEntry data);
     }
 }

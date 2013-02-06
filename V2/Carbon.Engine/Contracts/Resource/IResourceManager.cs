@@ -2,6 +2,8 @@
 
 namespace Carbon.Engine.Contracts.Resource
 {
+    using Carbon.Engine.Resource.Content;
+
     public interface IResourceManager
     {
         T Load<T>(ref ResourceLink link) where T : ICarbonResource;

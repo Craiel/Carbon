@@ -2,19 +2,16 @@
 {
     using Carbon.Engine.Contracts.Resource;
 
-    [ContentEntry("ResourceLink")]
-    public struct ResourceLink : ICarbonContent
+    [ContentEntry("Font")]
+    public struct FontEntry : ICarbonContent
     {
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
         public int? Id { get; set; }
 
         [ContentEntryElement]
-        public string Hash { get; set; }
+        public int Size { get; set; }
 
         [ContentEntryElement]
-        public string Source { get; set; }
-
-        [ContentEntryElement]
-        public bool Mutable { get; set; }
+        public ResourceLink Font { get; set; }
     }
 }

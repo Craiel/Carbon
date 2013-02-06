@@ -14,6 +14,8 @@ using System.Text;
 
 namespace Carbon.Engine.Logic
 {
+    using Carbon.Engine.Resource.Content;
+
     internal class ShaderIncludeHandler : Include
     {
         public void Open(IncludeType type, string fileName, Stream parentStream, out Stream stream)
@@ -31,7 +33,7 @@ namespace Carbon.Engine.Logic
     public class ShaderManager
     {
         // Todo: Yeah right, hard coded path's...
-        internal const string ShaderLocation = @"..\..\..\Data\shaders";
+        internal const string ShaderLocation = @"Data\shaders";
         internal const string ShaderCacheKeyPrefix = @"ShaderCache";
 
         private readonly IResourceManager resourceManager;
@@ -152,7 +154,7 @@ namespace Carbon.Engine.Logic
 
             byte[] md5;
             string sourceData = this.ReadSource(sourceFile, out md5);
-            var key = new ResourceLink() { Source = cachedKey };
+            var key = new ResourceLink { Source = cachedKey };
             var shader = this.resourceManager.Load<CompiledShader>(ref key);
             if (shader != null)
             {

@@ -5,6 +5,8 @@ using Ninject;
 
 namespace Carbon.Engine.Contracts
 {
+    using Carbon.Engine.Resource.Content;
+
     public interface IEngineFactory
     {
         IKernel Kernel { get; }
