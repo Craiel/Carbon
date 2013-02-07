@@ -120,6 +120,7 @@
     <Compile Include="Resource\Collada\Scene\ColladaSceneNode.cs" />
     <Compile Include="Resource\Collada\Scene\ColladaVisualScene.cs" />
     <Compile Include="Resource\Collada\Scene\ColladaSceneLibrary.cs" />
+    <Compile Include="Resource\SourceModel.cs" />
     <Compile Include="Resource\SourceFolderContent.cs" />
     <Compile Include="Resource\SourceProject.cs" />
     <Compile Include="Resource\SourceProjectFolder.cs" />

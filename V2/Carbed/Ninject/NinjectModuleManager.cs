@@ -37,7 +37,8 @@ namespace Carbed.Ninject
                 // Document views
                 this.Bind<IProjectViewModel>().To<ProjectViewModel>();
                 this.Bind<IProjectFolderViewModel>().To<ProjectFolderViewModel>();
-                this.Bind<ITextureFontViewModel>().To<TextureFontViewModel>();
+                this.Bind<IFontViewModel>().To<FontViewModel>();
+                this.Bind<IPlayfieldViewModel>().To<PlayfieldViewModel>();
                 this.Bind<IModelViewModel>().To<ModelViewModel>();
 
                 // Tool views

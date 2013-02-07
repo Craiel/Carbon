@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 
 using Carbon.Engine.Contracts.Resource;
 
@@ -50,6 +49,18 @@ namespace Carbon.Engine.Resource
         public new ContentQuery<T> Contains(string property, object[] values)
         {
             base.Contains(property, values);
+            return this;
+        }
+
+        public new ContentQuery<T> Not()
+        {
+            base.Not();
+            return this;
+        }
+
+        public new ContentQuery<T> OrderBy(string property, bool ascending = true)
+        {
+            base.OrderBy(property, ascending);
             return this;
         }
     }

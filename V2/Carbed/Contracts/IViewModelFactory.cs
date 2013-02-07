@@ -7,6 +7,10 @@ namespace Carbed.Contracts
     public interface IViewModelFactory
     {
         IProjectFolderViewModel GetFolderViewModel(SourceProjectFolder data);
-        ITextureFontViewModel GetTextureFontViewModel(FontEntry data);
+
+        IFontViewModel GetFontViewModel(FontEntry data);
+        IPlayfieldViewModel GetPlayfieldViewModel(PlayfieldEntry data);
+
+        IModelViewModel GetModelViewModel(SourceModel data);
     }
 }

@@ -2,24 +2,20 @@
 
 namespace Carbon.Engine.Resource.Content
 {
-    public enum ContentLinkType
-    {
-        Unknown = 0,
-    }
-
-    [ContentEntry("ContentLink")]
-    public struct ContentLink : ICarbonContent
+    [ContentEntry("Playfield")]
+    public struct PlayfieldEntry : ICarbonContent
     {
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
         public int? Id { get; set; }
 
         [ContentEntryElement]
-        public int ContentId { get; set; }
+        public float SizeX { get; set; }
+        [ContentEntryElement]
+        public float SizeY { get; set; }
+        [ContentEntryElement]
+        public float SizeZ { get; set; }
 
         [ContentEntryElement]
-        public ContentLinkType Type { get; set; }
-
-        [ContentEntryElement]
-        public bool Mutable { get; set; }
+        public ResourceLink? StaticModel { get; set; }
     }
 }

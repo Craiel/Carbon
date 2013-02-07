@@ -239,15 +239,6 @@ namespace Carbed.ViewModels
                     continue;
                 }
 
-                var font = child as SourceTextureFont;
-                if (font != null)
-                {
-                    var vm = this.viewModelFactory.GetTextureFontViewModel(font);
-                    vm.Parent = this;
-                    this.content.Add(vm);
-                    continue;
-                }
-
                 var mesh = child as SourceModel;
                 if (mesh != null)
                 {

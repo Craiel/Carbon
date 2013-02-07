@@ -15,7 +15,7 @@ namespace Carbed.Logic
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             if (item is IProjectFolderViewModel) return FolderTemplate;
-            if (item is ITextureFontViewModel) return TextureFontTemplate;
+            if (item is IFontViewModel) return TextureFontTemplate;
             if (item is IModelViewModel) return ModelTemplate;
 
             return GenericDocumentTemplate;

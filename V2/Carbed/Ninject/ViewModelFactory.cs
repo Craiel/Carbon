@@ -1,6 +1,7 @@
 ﻿using Carbed.Contracts;
 
 using Carbon.Editor.Resource;
+using Carbon.Engine.Resource.Content;
 
 using Ninject;
 using Ninject.Parameters;
@@ -27,9 +28,14 @@ namespace Carbed.Ninject
             return this.kernel.Get<IProjectFolderViewModel>(new ConstructorArgument("data", data));
         }
 
-        public ITextureFontViewModel GetTextureFontViewModel(SourceTextureFont data)
+        public IFontViewModel GetFontViewModel(FontEntry data)
         {
-            return this.kernel.Get<ITextureFontViewModel>(new ConstructorArgument("data", data));
+            return this.kernel.Get<IFontViewModel>(new ConstructorArgument("data", data));
+        }
+
+        public IPlayfieldViewModel GetPlayfieldViewModel(PlayfieldEntry data)
+        {
+            return this.kernel.Get<IPlayfieldViewModel>(new ConstructorArgument("data", data));
         }
 
         public IModelViewModel GetModelViewModel(SourceModel data)

@@ -12,7 +12,7 @@ namespace Carbon.Editor.Resource
         public virtual SourceFolderContent Clone()
         {
             SourceFolderContent clone = (SourceFolderContent)Activator.CreateInstance(this.GetType());
-            clone.Name = this.Name;
+            clone.LoadFrom(this);
             return clone;
         }
 

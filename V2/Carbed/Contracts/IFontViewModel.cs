@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace Carbed.Contracts
 {
-    public interface ITextureFontViewModel : ICarbedDocument, IProjectFolderContent
+    public interface IFontViewModel : ICarbedDocument
     {
         bool HasName { get; }
         

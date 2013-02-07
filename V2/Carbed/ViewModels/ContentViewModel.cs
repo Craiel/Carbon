@@ -1,44 +1,36 @@
 ﻿using System;
 using System.Windows;
 
-using Carbed.Contracts;
-
-using Carbon.Editor.Resource;
 using Carbon.Engine.Contracts;
+using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
-    public abstract class FolderContentViewModel : DocumentViewModel, IProjectFolderContent
+    public abstract class ContentViewModel : DocumentViewModel
     {
-        private readonly SourceFolderContent data;
+        private readonly ICarbonContent data;
         
-        private IProjectFolderViewModel parent;
-        
+        private MetaDataEntry? name;
+
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        protected FolderContentViewModel(IEngineFactory factory, SourceFolderContent data)
+        protected ContentViewModel(IEngineFactory factory, ICarbonContent data)
             : base(factory)
         {
             this.data = data;
+
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override string Title
-        {
-            get
-            {
-                return this.data.Name ?? "<no name>";
-            }
-        }
-
         public bool HasName
         {
             get
             {
-                return string.IsNullOrEmpty(this.data.Name);
+                return this.name != null;
             }
         }
 
@@ -46,59 +38,50 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (string.IsNullOrEmpty(this.data.Name))
+                if (this.name == null)
                 {
                     return "<no name>";
                 }
 
-                return this.data.Name;
+                return this.name.Value.Value;
             }
             set
             {
-                if (this.data.Name != value)
+                if (this.name == null && value == null)
+                {
+                    return;
+                }
+
+                if (value == null)
+                {
+                    // Todo: be sure to delete name entry...
+                    this.name = null;
+                    return;
+                }
+                
+                if (this.name == null || this.name.Value.Value != value)
                 {
                     this.CreateUndoState();
-                    this.data.Name = value;
+
+                    if (name == null)
+                    {
+                        name = new MetaDataEntry();
+                    }
+                    
+                    ((MetaDataEntry)this.name).Value = value;
                     this.NotifyPropertyChanged();
                     this.NotifyPropertyChanged("HasName");
                 }
             }
         }
-        
-        public IProjectFolderViewModel Parent
-        {
-            get
-            {
-                return this.parent;
-            }
 
-            set
-            {
-                if (this.parent != value)
-                {
-                    this.parent = value;
-                    this.NotifyPropertyChanged();
-                }
-            }
-        }
-        
-        public bool IsExpanded { get; set; }
-        
-        public SourceFolderContent Data
-        {
-            get
-            {
-                return this.data;
-            }
-        }
-        
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
         protected override void OnDelete(object arg)
         {
             if (MessageBox.Show(
-                "Delete Resource " + this.Name,
+                "Delete Content " + this.Name,
                 "Confirmation",
                 MessageBoxButton.OKCancel,
                 MessageBoxImage.Question,
@@ -108,7 +91,6 @@ namespace Carbed.ViewModels
             }
 
             this.OnClose(null);
-            this.parent.DeleteContent(this);
         }
 
         protected override object CreateMemento()
@@ -118,7 +100,7 @@ namespace Carbed.ViewModels
 
         protected override void RestoreMemento(object memento)
         {
-            SourceFolderContent source = memento as SourceFolderContent;
+            ICarbonContent source = memento as ICarbonContent;
             if (source == null)
             {
                 throw new ArgumentException();

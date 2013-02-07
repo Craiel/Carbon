@@ -121,7 +121,7 @@
     <Compile Include="Network\DescriptorProtoFile.cs" />
     <Compile Include="Network\NetworkClient.cs" />
     <Compile Include="Network\NetworkMessages.cs" />
-    <Compile Include="Network\NetworkProtocol.cs" />
+    <Compile Include="Network\NetworkProtocol.pb.cs" />
     <Compile Include="Ninject\EngineFactory.cs" />
     <Compile Include="Ninject\NinjectModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -175,6 +175,10 @@
     <Compile Include="Resource\Content\ContentLink.cs" />
     <Compile Include="Resource\Content\FontEntry.cs" />
     <Compile Include="Resource\Content\MaterialEntry.cs" />
+    <Compile Include="Resource\Content\MetaDataEntry.cs" />
+    <Compile Include="Resource\Content\PlayfieldEntry.cs" />
+    <Compile Include="Resource\Content\PlayfieldRegionEntry.cs" />
+    <Compile Include="Resource\Content\ScriptEntry.cs" />
     <Compile Include="Resource\EngineResource.cs" />
     <Compile Include="Resource\Content\ResourceLink.cs" />
     <Compile Include="Resource\Resources\MeshResource.cs" />
