@@ -12,7 +12,6 @@ using Carbed.Logic.MVVM;
 
 using Carbon.Editor.Contracts;
 using Carbon.Editor.Logic;
-using Carbon.Editor.Resource;
 using Carbon.Engine.Contracts;
 
 namespace Carbed.ViewModels
@@ -56,7 +55,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return this.data.Name ?? "<no name>";
+                return this.Name ?? "<no name>";
             }
         }
         

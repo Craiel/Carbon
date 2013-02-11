@@ -7,8 +7,6 @@ namespace Carbed.Contracts
 {
     public interface IFontViewModel : ICarbedDocument
     {
-        bool HasName { get; }
-        
         int FontSize { get; set; }
 
         IReadOnlyCollection<Font> SelectableFonts { get; }

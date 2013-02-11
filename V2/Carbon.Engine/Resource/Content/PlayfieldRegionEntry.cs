@@ -1,15 +1,13 @@
-﻿using Carbon.Engine.Contracts.Resource;
-
-namespace Carbon.Engine.Resource.Content
+﻿namespace Carbon.Engine.Resource.Content
 {
     [ContentEntry("PlayfieldRegion")]
-    public class PlayfieldRegionEntry : ICarbonContent
+    public class PlayfieldRegionEntry : ContentEntry
     {
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
         public int Id { get; set; }
 
         [ContentEntryElement]
-        public ContentLink? Playfield { get; set; }
+        public ContentLink Playfield { get; set; }
 
         [ContentEntryElement]
         public float PositionX { get; set; }

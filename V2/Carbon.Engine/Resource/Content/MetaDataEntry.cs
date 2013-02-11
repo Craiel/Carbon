@@ -1,13 +1,13 @@
 ﻿namespace Carbon.Engine.Resource.Content
 {
     [ContentEntry("MetaData")]
-    public struct MetaDataEntry
+    public class MetaDataEntry : ContentEntry
     {
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
         public int? Id { get; set; }
 
         [ContentEntryElement]
-        public ContentLink? ContentId { get; set; }
+        public ContentLink ContentId { get; set; }
 
         [ContentEntryElement]
         public string Key { get; set; }

@@ -1,9 +1,7 @@
 ﻿namespace Carbon.Engine.Resource.Content
 {
-    using Carbon.Engine.Contracts.Resource;
-
     [ContentEntry("ResourceLink")]
-    public struct ResourceLink : ICarbonContent
+    public class ResourceLink : ContentEntry
     {
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
         public int? Id { get; set; }

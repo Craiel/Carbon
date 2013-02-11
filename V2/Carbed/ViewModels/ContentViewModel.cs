@@ -11,7 +11,7 @@ namespace Carbed.ViewModels
     {
         private readonly ICarbonContent data;
         
-        private MetaDataEntry? name;
+        private MetaDataEntry name;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -20,7 +20,6 @@ namespace Carbed.ViewModels
             : base(factory)
         {
             this.data = data;
-
         }
 
         // -------------------------------------------------------------------
@@ -43,7 +42,7 @@ namespace Carbed.ViewModels
                     return "<no name>";
                 }
 
-                return this.name.Value.Value;
+                return this.name.Value;
             }
             set
             {
@@ -59,7 +58,7 @@ namespace Carbed.ViewModels
                     return;
                 }
                 
-                if (this.name == null || this.name.Value.Value != value)
+                if (this.name == null || this.name.Value != value)
                 {
                     this.CreateUndoState();
 
@@ -67,8 +66,8 @@ namespace Carbed.ViewModels
                     {
                         name = new MetaDataEntry();
                     }
-                    
-                    ((MetaDataEntry)this.name).Value = value;
+
+                    this.name.Value = value;
                     this.NotifyPropertyChanged();
                     this.NotifyPropertyChanged("HasName");
                 }

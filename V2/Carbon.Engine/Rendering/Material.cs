@@ -23,22 +23,22 @@ namespace Carbon.Engine.Rendering
 
             if (content.DiffuseTexture != null)
             {
-                this.DiffuseTexture = graphics.TextureManager.Register(content.DiffuseTexture.Value);
+                this.DiffuseTexture = graphics.TextureManager.Register(content.DiffuseTexture);
             }
 
             if (content.NormalTexture != null)
             {
-                this.NormalTexture = graphics.TextureManager.Register(content.NormalTexture.Value);
+                this.NormalTexture = graphics.TextureManager.Register(content.NormalTexture);
             }
 
             if (content.SpecularTexture != null)
             {
-                this.SpecularTexture = graphics.TextureManager.Register(content.SpecularTexture.Value);
+                this.SpecularTexture = graphics.TextureManager.Register(content.SpecularTexture);
             }
 
             if (content.AlphaTexture != null)
             {
-                this.AlphaTexture = graphics.TextureManager.Register(content.AlphaTexture.Value);
+                this.AlphaTexture = graphics.TextureManager.Register(content.AlphaTexture);
             }
         }
 

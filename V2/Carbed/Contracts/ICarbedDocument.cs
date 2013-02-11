@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Windows.Input;
 
-using Carbed.Logic;
-
 namespace Carbed.Contracts
 {
     public interface ICarbedDocument : ICarbedBase
     {
         string Name { get; set; }
         string Title { get; }
+
+        bool HasName { get; }
         
         Uri IconUri { get; }
 

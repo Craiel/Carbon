@@ -172,6 +172,7 @@
     <Compile Include="Resource\ContentQuery.cs" />
     <Compile Include="Resource\ContentQueryResult.cs" />
     <Compile Include="Resource\ContentReflection.cs" />
+    <Compile Include="Resource\Content\ContentEntry.cs" />
     <Compile Include="Resource\Content\ContentLink.cs" />
     <Compile Include="Resource\Content\FontEntry.cs" />
     <Compile Include="Resource\Content\MaterialEntry.cs" />

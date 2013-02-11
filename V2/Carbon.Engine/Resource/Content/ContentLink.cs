@@ -1,6 +1,4 @@
-﻿using Carbon.Engine.Contracts.Resource;
-
-namespace Carbon.Engine.Resource.Content
+﻿namespace Carbon.Engine.Resource.Content
 {
     public enum ContentLinkType
     {
@@ -8,7 +6,7 @@ namespace Carbon.Engine.Resource.Content
     }
 
     [ContentEntry("ContentLink")]
-    public struct ContentLink : ICarbonContent
+    public class ContentLink : ContentEntry 
     {
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
         public int? Id { get; set; }

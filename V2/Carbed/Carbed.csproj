@@ -102,6 +102,7 @@
     <Compile Include="Contracts\IDocumentTemplateCategory.cs" />
     <Compile Include="Contracts\ICarbedLogic.cs" />
     <Compile Include="Contracts\ICarbedTool.cs" />
+    <Compile Include="Contracts\IMaterialViewModel.cs" />
     <Compile Include="Contracts\IModelViewModel.cs" />
     <Compile Include="Contracts\INewDialogViewModel.cs" />
     <Compile Include="Contracts\IPlayfieldViewModel.cs" />

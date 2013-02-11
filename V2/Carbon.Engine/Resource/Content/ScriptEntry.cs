@@ -1,6 +1,4 @@
-﻿using Carbon.Engine.Contracts.Resource;
-
-namespace Carbon.Engine.Resource.Content
+﻿namespace Carbon.Engine.Resource.Content
 {
     public enum ScriptType
     {
@@ -8,7 +6,7 @@ namespace Carbon.Engine.Resource.Content
     }
 
     [ContentEntry("Script")]
-    public class ScriptEntry : ICarbonContent
+    public class ScriptEntry : ContentEntry
     {
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
         public int Id { get; set; }
@@ -17,6 +15,6 @@ namespace Carbon.Engine.Resource.Content
         public ScriptType Type { get; set; }
 
         [ContentEntryElement]
-        public ResourceLink? Script { get; set; }
+        public ResourceLink Script { get; set; }
     }
 }
