@@ -3,6 +3,6 @@
     public enum EngineResourceType
     {
         CompiledShader,
-        TextureFont,
+        Font,
     }
 }

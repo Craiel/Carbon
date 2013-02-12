@@ -1,10 +1,12 @@
-﻿using Carbon.Engine.Resource;
+﻿using System;
+
+using Carbon.Engine.Resource;
 
 namespace Carbon.Engine.Contracts.Resource
 {
     using Carbon.Engine.Resource.Content;
 
-    public interface IResourceManager
+    public interface IResourceManager : IDisposable
     {
         T Load<T>(ref ResourceLink link) where T : ICarbonResource;
 

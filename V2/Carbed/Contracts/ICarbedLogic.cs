@@ -1,5 +1,8 @@
-﻿using Carbon.Editor.Resource;
+﻿using System.Collections.Generic;
+
+using Carbon.Editor.Resource;
 using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Content;
 using Carbon.Project.Resource;
 
 namespace Carbed.Contracts
@@ -19,7 +22,9 @@ namespace Carbed.Contracts
 
         void Build(string folder);
 
-        object NewResource(EngineResourceType type, string name);
-        object NewResource(ProjectResourceType type, string name);
+        object NewResource(EngineResourceType type);
+        object NewResource(ProjectResourceType type);
+
+        IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue);
     }
 }

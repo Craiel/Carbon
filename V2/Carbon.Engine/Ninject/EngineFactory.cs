@@ -37,9 +37,15 @@ namespace Carbon.Engine.Ninject
             return this.kernel.Get<T>();
         }
 
-        public IContentManager GetContentManager(ResourceLink root)
+        public IResourceManager GetResourceManager(string root)
         {
-            return this.kernel.Get<IContentManager>(new ConstructorArgument("root", root));
+            return this.kernel.Get<IResourceManager>(new ConstructorArgument("root", root));
+        }
+
+        public IContentManager GetContentManager(IResourceManager resourceManager, ResourceLink root)
+        {
+            return this.kernel.Get<IContentManager>(
+                new ConstructorArgument("resourceManager", resourceManager), new ConstructorArgument("root", root));
         }
     }
 }

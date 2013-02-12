@@ -24,6 +24,7 @@ namespace Carbed
         
         public static readonly Uri ResourceTextureFontIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_texturefont.png", UriKind.Absolute);
         public static readonly Uri ResourceModelIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_model.png", UriKind.Absolute);
+        public static readonly Uri ResourcePlayfieldIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_playfield.png", UriKind.Absolute);
 
         public static IDocumentTemplate ProjectTemplate = new DocumentTemplate
             {
@@ -39,11 +40,18 @@ namespace Carbed
             IconUri = ResourceModelIconUri
         };
 
-        public static IDocumentTemplate TextureFontTemplate = new DocumentTemplate
+        public static IDocumentTemplate FontTemplate = new DocumentTemplate
             {
-                TemplateName = "Texture Font",
-                Description = "Texture Font for use in UI",
+                TemplateName = "Font",
+                Description = "Font for use in UI",
                 IconUri = ResourceTextureFontIconUri
             };
+
+        public static IDocumentTemplate PlayfieldTemplate = new DocumentTemplate
+        {
+            TemplateName = "Playfield",
+            Description = "Playfield",
+            IconUri = ResourcePlayfieldIconUri
+        };
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Carbon.Engine.Contracts.Resource;
-using Carbon.Engine.Resource;
 
 using Ninject;
 
@@ -13,6 +12,7 @@ namespace Carbon.Engine.Contracts
 
         T Get<T>();
 
-        IContentManager GetContentManager(ResourceLink root);
+        IResourceManager GetResourceManager(string path);
+        IContentManager GetContentManager(IResourceManager resourceManager, ResourceLink root);
     }
 }

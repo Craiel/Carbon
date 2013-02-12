@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
+
+using Carbed.Contracts;
 
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Resource;
 using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
     public abstract class ContentViewModel : DocumentViewModel
     {
+        private readonly ICarbedLogic logic;
         private readonly ICarbonContent data;
         
         private MetaDataEntry name;
@@ -19,20 +24,13 @@ namespace Carbed.ViewModels
         protected ContentViewModel(IEngineFactory factory, ICarbonContent data)
             : base(factory)
         {
+            this.logic = factory.Get<ICarbedLogic>();
             this.data = data;
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public bool HasName
-        {
-            get
-            {
-                return this.name != null;
-            }
-        }
-
         public override string Name
         {
             get
@@ -72,6 +70,16 @@ namespace Carbed.ViewModels
                     this.NotifyPropertyChanged("HasName");
                 }
             }
+        }
+
+        public override void Load()
+        {
+            // Get the primary key information
+            ContentReflectionProperty primaryKeyInfo = ContentReflection.GetPrimaryKeyPropertyInfo(this.data.GetType());
+
+            // Load the metadata for this object
+            //  -> ContentQueryResult<MetaDataEntry> result = this.contentManager.TypedLoad(new ContentQuery<MetaDataEntry>().IsEqual("ContentId", ));
+            IList<MetaDataEntry> metaData = this.logic.GetEntryMetaData(primaryKeyInfo.Info.GetValue(this.data));
         }
 
         // -------------------------------------------------------------------

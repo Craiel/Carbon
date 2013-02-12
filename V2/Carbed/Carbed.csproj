@@ -102,6 +102,7 @@
     <Compile Include="Contracts\IDocumentTemplateCategory.cs" />
     <Compile Include="Contracts\ICarbedLogic.cs" />
     <Compile Include="Contracts\ICarbedTool.cs" />
+    <Compile Include="Contracts\ICarbedLog.cs" />
     <Compile Include="Contracts\IMaterialViewModel.cs" />
     <Compile Include="Contracts\IModelViewModel.cs" />
     <Compile Include="Contracts\INewDialogViewModel.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Carbed.cs" />
     <Compile Include="Logic\CarbedBase.cs" />
     <Compile Include="Logic\CarbedLogic.cs" />
+    <Compile Include="Logic\CarbedLog.cs" />
     <Compile Include="Logic\MVVM\CommandReference.cs" />
     <Compile Include="Logic\MVVM\Converters.cs" />
     <Compile Include="Logic\Docking\ActiveDocumentConverter.cs" />
@@ -142,6 +144,8 @@
     <Compile Include="Ninject\ViewModelFactory.cs" />
     <Compile Include="StaticResources.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
+    <Compile Include="ViewModels\ModelViewModel.cs" />
+    <Compile Include="ViewModels\PlayfieldViewModel.cs" />
     <Compile Include="ViewModels\DocumentViewModel.cs" />
     <Compile Include="ViewModels\FolderContentViewModel.cs" />
     <Compile Include="ViewModels\NewDialogViewModel.cs" />

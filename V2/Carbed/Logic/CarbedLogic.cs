@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,29 +9,38 @@ using System.Xml.Serialization;
 using Carbed.Contracts;
 using Carbed.Views;
 
+using Carbon.Editor.Contracts;
 using Carbon.Editor.Resource;
 using Carbon.Engine.Contracts;
+using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Content;
 using Carbon.Project.Resource;
+
+using Core.Utils.Contracts;
 
 namespace Carbed.Logic
 {
-    using Carbon.Editor.Contracts;
-    
     public class CarbedLogic : CarbedBase, ICarbedLogic
     {
-        private readonly IEngineFactory factory;
         private readonly XmlSerializer projectSerializer;
         private readonly ICarbonBuilder carbonBuilder;
+        private readonly IEngineFactory engineFactory;
+        private readonly ILog log;
         
         private SourceProject project;
+        private IContentManager projectContent;
+        private IResourceManager projectResources;
+
+        private string tempLocation;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
         public CarbedLogic(IEngineFactory factory)
         {
-            this.factory = factory;
+            this.engineFactory = factory;
+            this.log = factory.Get<ICarbedLog>().AquireContextLog("Logic");
             this.carbonBuilder = factory.Get<ICarbonBuilder>();
             this.carbonBuilder.ProgressChanged += this.OnBuilderProgressChanged;
 
@@ -53,12 +63,27 @@ namespace Carbed.Logic
         public void NewProject()
         {
             this.project = new SourceProject();
+            this.tempLocation = Path.GetTempPath();
+            this.InitializeProject(this.tempLocation);
             this.NotifyProjectChanged();
         }
 
         public void CloseProject()
         {
-            this.project = null;
+            if (this.project != null)
+            {
+                this.project = null;
+
+                // Todo: this will probably cause issues if resources are still in use somewhere
+                // First clear up the content since that relies on the resource manager
+                this.projectContent.Dispose();
+                this.projectContent = null;
+
+                this.projectResources.Dispose();
+                this.projectResources = null;
+            }
+
+            this.tempLocation = null;
             this.NotifyProjectChanged();
         }
 
@@ -72,6 +97,7 @@ namespace Carbed.Logic
             using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 this.project = (SourceProject)this.projectSerializer.Deserialize(stream);
+                this.InitializeProject(Path.GetDirectoryName(file));
                 this.NotifyProjectChanged();
             }
         }
@@ -86,6 +112,12 @@ namespace Carbed.Logic
             using (var stream = new FileStream(file, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
             {
                 this.projectSerializer.Serialize(stream, this.project);
+                
+                if (!string.IsNullOrEmpty(this.tempLocation))
+                {
+                    // Todo: Copy the files from temp location to the project location
+                    throw new NotImplementedException();
+                }
             }
         }
 
@@ -96,13 +128,13 @@ namespace Carbed.Logic
             new TaskProgress(new[] { task });
         }
 
-        public object NewResource(EngineResourceType type, string name)
+        public object NewResource(EngineResourceType type)
         {
             switch (type)
             {
-                case EngineResourceType.TextureFont:
+                case EngineResourceType.Font:
                     {
-                        return new SourceTextureFont { Name = name };
+                        return new FontEntry();
                     }
 
                 default:
@@ -112,13 +144,13 @@ namespace Carbed.Logic
             }
         }
 
-        public object NewResource(ProjectResourceType type, string name)
+        public object NewResource(ProjectResourceType type)
         {
             switch (type)
             {
                 case ProjectResourceType.Model:
                     {
-                        return new SourceModel { Name = name };
+                        return new SourceModel();
                     }
 
                 default:
@@ -145,9 +177,33 @@ namespace Carbed.Logic
             Dispatcher.PushFrame(frame);
         }
 
+        public IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue)
+        {
+            if (primaryKeyValue == null)
+            {
+                return null;
+            }
+
+            throw new NotImplementedException();
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
+        private void InitializeProject(string rootPath)
+        {
+            if (this.project == null)
+            {
+                throw new InvalidOperationException("null Project can not be initialized");
+            }
+
+            string resourcePath = Path.Combine(rootPath, "Data");
+            this.projectResources = this.engineFactory.GetResourceManager(resourcePath);
+
+            string contentPath = Path.Combine(rootPath, string.Format("{0}Content.db", this.project.Name));
+            this.projectContent = this.engineFactory.GetContentManager(this.projectResources, new ResourceLink { Source = contentPath });
+        }
+
         private void NotifyProjectChanged()
         {
             var handler = this.ProjectChanged;

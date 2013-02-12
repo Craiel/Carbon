@@ -34,14 +34,6 @@ namespace Carbed.ViewModels
             }
         }
 
-        public bool HasName
-        {
-            get
-            {
-                return string.IsNullOrEmpty(this.data.Name);
-            }
-        }
-
         public override string Name
         {
             get

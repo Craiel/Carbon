@@ -39,6 +39,14 @@ namespace Carbed.ViewModels
         public abstract string Name { get; set; }
 
         public abstract string Title { get; }
+
+        public bool HasName
+        {
+            get
+            {
+                return string.IsNullOrEmpty(this.Name);
+            }
+        }
         
         public virtual Uri IconUri
         {
@@ -93,6 +101,10 @@ namespace Carbed.ViewModels
             {
                 return this.commandDelete ?? (this.commandDelete = new RelayCommand(this.OnDelete));
             }
+        }
+
+        public virtual void Load()
+        {
         }
 
         // -------------------------------------------------------------------

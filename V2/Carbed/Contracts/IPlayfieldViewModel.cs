@@ -2,6 +2,5 @@
 {
     public interface IPlayfieldViewModel : ICarbedDocument
     {
-        bool HasName { get; }
     }
 }

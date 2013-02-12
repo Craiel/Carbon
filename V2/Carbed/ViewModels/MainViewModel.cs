@@ -15,6 +15,7 @@ using Carbed.Views;
 using Carbon.Editor.Resource;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Content;
 using Carbon.Project.Resource;
 
 using Core.Utils.Contracts;
@@ -453,10 +454,10 @@ namespace Carbed.ViewModels
             StaticResources.ProjectTemplate.Categories.Add(globalMain);
             this.documentTemplates.Add(StaticResources.ProjectTemplate);
 
-            StaticResources.TextureFontTemplate.CommandCreate = this.engineResourceCommands[EngineResourceType.TextureFont];
-            StaticResources.TextureFontTemplate.CreateParameter = EngineResourceType.TextureFont;
-            StaticResources.TextureFontTemplate.Categories.Add(documentMain);
-            this.documentTemplates.Add(StaticResources.TextureFontTemplate);
+            StaticResources.FontTemplate.CommandCreate = this.engineResourceCommands[EngineResourceType.Font];
+            StaticResources.FontTemplate.CreateParameter = EngineResourceType.Font;
+            StaticResources.FontTemplate.Categories.Add(documentMain);
+            this.documentTemplates.Add(StaticResources.FontTemplate);
 
             StaticResources.ModelTemplate.CommandCreate = this.projectResourceCommands[ProjectResourceType.Model];
             StaticResources.ModelTemplate.CreateParameter = ProjectResourceType.Model;
@@ -469,10 +470,11 @@ namespace Carbed.ViewModels
             string name = arguments as string ?? string.Empty;
             switch (type)
             {
-                case EngineResourceType.TextureFont:
+                case EngineResourceType.Font:
                     {
-                        var data = (SourceTextureFont)this.logic.NewResource(type, name);
-                        var vm = this.viewModelFactory.GetTextureFontViewModel(data);
+                        var data = (FontEntry)this.logic.NewResource(type);
+                        var vm = this.viewModelFactory.GetFontViewModel(data);
+                        vm.Name = name;
                         this.InsertContent(vm);
                         this.Documents.Add(vm);
                         return vm;
@@ -492,9 +494,10 @@ namespace Carbed.ViewModels
             {
                 case ProjectResourceType.Model:
                     {
-                        var data = (SourceModel)this.logic.NewResource(type, name);
+                        var data = (SourceModel)this.logic.NewResource(type);
+                        data.Name = name;
                         var vm = this.viewModelFactory.GetModelViewModel(data);
-                        this.InsertContent(vm);
+                        this.InsertFolderContent(vm);
                         this.Documents.Add(vm);
                         return vm;
                     }
@@ -506,7 +509,7 @@ namespace Carbed.ViewModels
             }
         }
 
-        private void InsertContent(IProjectFolderContent content)
+        private void InsertFolderContent(IProjectFolderContent content)
         {
             if (this.currentCreationContext != null)
             {
@@ -516,6 +519,11 @@ namespace Carbed.ViewModels
             {
                 this.projectExplorerViewModel.Root.AddContent(content);
             }
+        }
+
+        private void InsertContent(ICarbedDocument content)
+        {
+            throw new NotImplementedException();
         }
 
         private void OnBuild(object obj)

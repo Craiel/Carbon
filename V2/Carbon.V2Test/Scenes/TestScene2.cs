@@ -76,8 +76,8 @@ namespace Carbon.V2Test.Scenes
             this.camera = factory.Get<IProjectionCamera>();
             this.overlayCamera = factory.Get<IOrthographicCamera>();
 
-            this.resourceManager = factory.Get<IResourceManager>();
-            this.contentManager = factory.GetContentManager(new ResourceLink { Source = "v2test_master.db" });
+            this.resourceManager = factory.GetResourceManager("Data");
+            this.contentManager = factory.GetContentManager(this.resourceManager, new ResourceLink { Source = "v2test_master.db" });
             
             this.root = new Node();
         }

@@ -29,11 +29,16 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ResourceManager()
+        public ResourceManager(string root)
         {
             this.hashProvider = SHA1.Create();
             this.cache = new Hashtable();
-            this.content = new List<ResourceContent> { new FolderContent("Data", true) };
+            this.content = new List<ResourceContent> { new FolderContent(root, true) };
+        }
+
+        public void Dispose()
+        {
+            // Todo
         }
 
         // -------------------------------------------------------------------
