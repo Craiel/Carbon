@@ -1,4 +1,6 @@
-﻿namespace Carbed.ViewModels
+﻿using Carbon.Engine.Contracts;
+
+namespace Carbed.ViewModels
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -20,19 +22,22 @@
     {
         private readonly ICarbedLogic logic;
         private readonly IViewModelFactory viewModelFactory;
+        private readonly IEngineFactory factory;
 
         private readonly List<ICarbedDocument> documents;
 
-        private ICommand commandAdd;
         private ICommand commandReload;
+
+        private IMainViewModel mainViewModel;
 
         private ExplorableContent selectedContentType;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ContentExplorerViewModel(ICarbedLogic logic, IViewModelFactory viewModelFactory)
+        public ContentExplorerViewModel(IEngineFactory factory, ICarbedLogic logic, IViewModelFactory viewModelFactory)
         {
+            this.factory = factory;
             this.logic = logic;
             this.logic.ProjectChanged += this.OnProjectChanged;
             this.viewModelFactory = viewModelFactory;
@@ -79,11 +84,17 @@
             }
         }
 
-        public ICommand CommandAdd
+        public ICommand CommandOpenNewDialog
         {
             get
             {
-                return this.commandAdd ?? (this.commandAdd = new RelayCommand(this.OnAdd, this.CanAdd));
+                // Has to be acquired on demand otherwise we get circular IoC dependency
+                if (this.mainViewModel == null)
+                {
+                    this.mainViewModel = this.factory.Get<IMainViewModel>();
+                }
+
+                return this.mainViewModel.CommandOpenNewDialog;
             }
         }
 

@@ -52,7 +52,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="Purple">
+    <Grid Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>

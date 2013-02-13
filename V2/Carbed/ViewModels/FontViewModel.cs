@@ -149,7 +149,7 @@ namespace Carbed.ViewModels
         private void UpdatePreview()
         {
             this.previewImage = null;
-            if (this.font.Value == null || this.FontSize <= 0)
+            if (this.font == null || this.font.Value == null || this.FontSize <= 0)
             {
                 return;
             }

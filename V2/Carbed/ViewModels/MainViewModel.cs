@@ -408,7 +408,7 @@ namespace Carbed.ViewModels
 
         private void OnSaveProjectAs(object obj)
         {
-            OpenFileDialog dialog = new OpenFileDialog
+            var dialog = new OpenFileDialog
                 {
                     CheckPathExists = true,
                     CheckFileExists = false,
@@ -456,11 +456,13 @@ namespace Carbed.ViewModels
         private void LoadDocumentTemplates()
         {
             var globalMain = new DocumentTemplateCategory { Name = "Project" };
-            var documentMain = new DocumentTemplateCategory { Name = "Documents" };
+            var contentMain = new DocumentTemplateCategory { Name = "Content" };
+            var resourceMain = new DocumentTemplateCategory { Name = "Resource" };
 
             this.documentTemplateCategories.Clear();
             this.documentTemplateCategories.Add(globalMain);
-            this.documentTemplateCategories.Add(documentMain);
+            this.documentTemplateCategories.Add(contentMain);
+            this.documentTemplateCategories.Add(resourceMain);
 
             StaticResources.ProjectTemplate.CommandCreate = this.CommandNewProject;
             StaticResources.ProjectTemplate.Categories.Add(globalMain);
@@ -468,12 +470,12 @@ namespace Carbed.ViewModels
 
             StaticResources.FontTemplate.CommandCreate = this.engineResourceCommands[EngineResourceType.Font];
             StaticResources.FontTemplate.CreateParameter = EngineResourceType.Font;
-            StaticResources.FontTemplate.Categories.Add(documentMain);
+            StaticResources.FontTemplate.Categories.Add(contentMain);
             this.documentTemplates.Add(StaticResources.FontTemplate);
 
             StaticResources.ModelTemplate.CommandCreate = this.projectResourceCommands[ProjectResourceType.Model];
             StaticResources.ModelTemplate.CreateParameter = ProjectResourceType.Model;
-            StaticResources.ModelTemplate.Categories.Add(documentMain);
+            StaticResources.ModelTemplate.Categories.Add(contentMain);
             this.documentTemplates.Add(StaticResources.ModelTemplate);
         }
 
@@ -487,7 +489,6 @@ namespace Carbed.ViewModels
                         var data = (FontEntry)this.logic.NewResource(type);
                         var vm = this.viewModelFactory.GetFontViewModel(data);
                         vm.Name = name;
-                        this.InsertContent(vm);
                         this.Documents.Add(vm);
                         return vm;
                     }
@@ -531,11 +532,6 @@ namespace Carbed.ViewModels
             {
                 this.projectExplorerViewModel.Root.AddContent(content);
             }
-        }
-
-        private void InsertContent(ICarbedDocument content)
-        {
-            throw new NotImplementedException();
         }
 
         private void OnBuild(object obj)

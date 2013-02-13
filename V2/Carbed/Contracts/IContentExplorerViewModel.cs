@@ -11,7 +11,7 @@
 
         ReadOnlyCollection<ICarbedDocument> Documents { get; }
 
-        ICommand CommandAdd { get; }
         ICommand CommandReload { get; }
+        ICommand CommandOpenNewDialog { get; }
     }
 }
