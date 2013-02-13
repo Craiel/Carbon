@@ -550,7 +550,8 @@ namespace Carbon.Engine.Resource
                 || internalType == typeof(long)
                 || internalType == typeof(ulong)
                 || internalType == typeof(bool)
-                || internalType == typeof(ResourceLink))
+                || internalType == typeof(ResourceLink)
+                || internalType == typeof(ContentLink))
             {
                 return string.Concat("INTEGER", arguments);
             }

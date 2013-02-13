@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Carbed.Views.ProjectExplorerView"
+﻿<UserControl x:Class="Carbed.Views.ResourceExplorerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:carbed="clr-namespace:Carbed"
              xmlns:logic="clr-namespace:Carbed.Logic" xmlns:mvvm="clr-namespace:Carbed.Logic.MVVM">
@@ -15,7 +15,7 @@
                 <SolidColorBrush Color="Red"/>
             </x:Array>
 
-            <DataTemplate x:Key="TextureFontTemplate">
+            <DataTemplate x:Key="FontTemplate">
                 <StackPanel Orientation="Horizontal">
                     <StackPanel.Resources>
                         <mvvm:CommandReference x:Key="CommandOpenReference" Command="{Binding Path=CommandOpen}" />
@@ -86,12 +86,11 @@
             </DataTemplate>
 
             <!--This one is needed cause the root elements don't update properly with style-->
-            <logic:ProjectExplorerTemplateSelector x:Key="ExplorerTemplateSelector" 
+            <logic:ResourceExplorerTemplateSelector x:Key="ExplorerTemplateSelector" 
                                                    ModelTemplate="{StaticResource ModelTemplate}"
                                                    FolderTemplate="{StaticResource FolderTemplate}"
-                                                   TextureFontTemplate="{StaticResource TextureFontTemplate}"
                                                    GenericDocumentTemplate="{StaticResource GenericTemplate}">
-            </logic:ProjectExplorerTemplateSelector>
+            </logic:ResourceExplorerTemplateSelector>
         </ResourceDictionary>
     </UserControl.Resources>
 

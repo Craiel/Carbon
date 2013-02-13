@@ -48,7 +48,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return StaticResources.ResourceTextureFontIconUri;
+                return StaticResources.ResourcePlayfieldIconUri;
             }
         }
         

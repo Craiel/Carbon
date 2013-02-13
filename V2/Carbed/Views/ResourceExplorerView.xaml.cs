@@ -1,8 +1,8 @@
 ﻿namespace Carbed.Views
 {
-    public partial class TextureFontView
+    public partial class ResourceExplorerView
     {
-        public TextureFontView()
+        public ResourceExplorerView()
         {
             InitializeComponent();
         }

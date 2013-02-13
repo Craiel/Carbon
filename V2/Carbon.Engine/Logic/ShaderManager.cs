@@ -47,9 +47,9 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ShaderManager(IEngineFactory factory, Device device)
+        public ShaderManager(IResourceManager resourceManager, Device device)
         {
-            this.resourceManager = factory.Get<IResourceManager>();
+            this.resourceManager = resourceManager;
 
             this.vertexShaderCache = new Hashtable();
             this.pixelShaderCache = new Hashtable();

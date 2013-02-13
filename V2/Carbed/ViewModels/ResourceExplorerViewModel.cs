@@ -4,7 +4,7 @@ using Carbon.Editor.Resource;
 
 namespace Carbed.ViewModels
 {
-    public class ProjectExplorerViewModel : ToolViewModel, IProjectExplorerViewModel
+    public class ResourceExplorerViewModel : ToolViewModel, IResourceExplorerViewModel
     {
         private readonly ICarbedLogic logic;
         private readonly IViewModelFactory viewModelFactory;
@@ -14,7 +14,7 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ProjectExplorerViewModel(ICarbedLogic logic, IViewModelFactory viewModelFactory)
+        public ResourceExplorerViewModel(ICarbedLogic logic, IViewModelFactory viewModelFactory)
         {
             this.logic = logic;
             this.logic.ProjectChanged += this.OnProjectChanged;

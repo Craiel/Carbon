@@ -79,9 +79,9 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public TextureManager(IEngineFactory factory, Device device)
+        public TextureManager(IEngineFactory factory, IResourceManager resourceManager, Device device)
         {
-            this.resourceManager = factory.Get<IResourceManager>();
+            this.resourceManager = resourceManager;
             this.device = device;
             this.log = factory.Get<IEngineLog>().AquireContextLog("TextureManager");
 

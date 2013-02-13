@@ -60,7 +60,8 @@
             
             <fluent:RibbonTabItem Header="View">
                 <fluent:RibbonGroupBox>
-                    <fluent:Button Command="{Binding Path=CommandOpenProjectExplorer}" Header="Project Explorer"/>
+                    <fluent:Button Command="{Binding Path=CommandOpenResourceExplorer}" Header="Resource Explorer"/>
+                    <fluent:Button Command="{Binding Path=CommandOpenContentExplorer}" Header="Content Explorer"/>
                     <fluent:Button Command="{Binding Path=CommandOpenProperties}" Header="Properties"/>
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
@@ -88,17 +89,23 @@
                             <views:ModelView/>
                         </DataTemplate>
                     </local:PanesTemplateSelector.ModelTemplate>
-                    <local:PanesTemplateSelector.TextureFontTemplate>
+                    <local:PanesTemplateSelector.FontTemplate>
                         <DataTemplate>
-                            <views:TextureFontView/>
+                            <views:FontView/>
                         </DataTemplate>
-                    </local:PanesTemplateSelector.TextureFontTemplate>
+                    </local:PanesTemplateSelector.FontTemplate>
                     
-                    <local:PanesTemplateSelector.ProjectExplorerTemplate>
+                    <local:PanesTemplateSelector.ResourceExplorerTemplate>
                         <DataTemplate>
-                            <views:ProjectExplorerView/>
+                            <views:ResourceExplorerView/>
                         </DataTemplate>
-                    </local:PanesTemplateSelector.ProjectExplorerTemplate>
+                    </local:PanesTemplateSelector.ResourceExplorerTemplate>
+                    
+                    <local:PanesTemplateSelector.ContentExplorerTemplate>
+                        <DataTemplate>
+                            <views:ContentExplorerView/>
+                        </DataTemplate>
+                    </local:PanesTemplateSelector.ContentExplorerTemplate>
                     
                     <local:PanesTemplateSelector.PropertiesTemplate>
                         <DataTemplate>

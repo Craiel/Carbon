@@ -18,8 +18,10 @@
     <Image Width="24" x:Key="IconRedo" Source="{Binding Source={x:Static carbed:StaticResources.RedoIconUri}}"/>
     <Image Width="24" x:Key="IconProject" Source="{Binding Source={x:Static carbed:StaticResources.ProjectIconUri}}"/>
     <Image Width="24" x:Key="IconFolder" Source="{Binding Source={x:Static carbed:StaticResources.FolderIconUri}}"/>
+    <Image Width="24" x:Key="IconReload" Source="{Binding Source={x:Static carbed:StaticResources.ReloadIconUri}}"/>
     <Image Width="24" x:Key="IconNewFolder" Source="{Binding Source={x:Static carbed:StaticResources.NewFolderIconUri}}"/>
     <Image Width="24" x:Key="IconNewResource" Source="{Binding Source={x:Static carbed:StaticResources.NewResourceIconUri}}"/>
-    <Image Width="24" x:Key="IconResourceTextureFont" Source="{Binding Source={x:Static carbed:StaticResources.ResourceTextureFontIconUri}}"/>
+    <Image Width="24" x:Key="IconNewContent" Source="{Binding Source={x:Static carbed:StaticResources.NewContentIconUri}}"/>
+    <Image Width="24" x:Key="IconResourceFont" Source="{Binding Source={x:Static carbed:StaticResources.ResourceFontIconUri}}"/>
     
 </ResourceDictionary>

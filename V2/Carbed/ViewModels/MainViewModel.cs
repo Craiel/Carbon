@@ -38,7 +38,8 @@ namespace Carbed.ViewModels
         private readonly IUndoRedoManager undoRedoManager;
         private readonly IOperationProgress operationProgress;
         private readonly IPropertyViewModel propertyViewModel;
-        private readonly IProjectExplorerViewModel projectExplorerViewModel;
+        private readonly IResourceExplorerViewModel projectExplorerViewModel;
+        private readonly IContentExplorerViewModel contentExplorerViewModel;
 
         private readonly List<IDocumentTemplate> documentTemplates;
         private readonly List<IDocumentTemplateCategory> documentTemplateCategories;
@@ -67,7 +68,8 @@ namespace Carbed.ViewModels
             this.undoRedoManager.PropertyChanged += this.OnUndoRedoManagerChanged;
             this.operationProgress = factory.Get<IOperationProgress>();
             this.propertyViewModel = factory.Get<IPropertyViewModel>();
-            this.projectExplorerViewModel = factory.Get<IProjectExplorerViewModel>();
+            this.projectExplorerViewModel = factory.Get<IResourceExplorerViewModel>();
+            this.contentExplorerViewModel = factory.Get<IContentExplorerViewModel>();
             
             this.documentTemplates = new List<IDocumentTemplate>();
             this.documentTemplateCategories = new List<IDocumentTemplateCategory>();
@@ -84,7 +86,8 @@ namespace Carbed.ViewModels
             this.CommandSaveProjectAs = new RelayCommand(this.OnSaveProjectAs, this.CanSaveProject);
             this.CommandBuild = new RelayCommand(this.OnBuild, this.CanBuild);
             this.CommandExit = new RelayCommand(this.OnExit);
-            this.CommandOpenProjectExplorer = new RelayCommand(this.OnShowProjectExplorer);
+            this.CommandOpenResourceExplorer = new RelayCommand(this.OnShowResourceExplorer);
+            this.CommandOpenContentExplorer = new RelayCommand(this.OnShowContentExplorer);
             this.CommandOpenProperties = new RelayCommand(this.OnShowProperties);
             this.CommandOpenNewDialog = new RelayCommand(this.OnNewDialog);
 
@@ -235,7 +238,8 @@ namespace Carbed.ViewModels
 
         public ICommand CommandExit { get; private set; }
 
-        public ICommand CommandOpenProjectExplorer { get; private set; }
+        public ICommand CommandOpenResourceExplorer { get; private set; }
+        public ICommand CommandOpenContentExplorer { get; private set; }
         public ICommand CommandOpenProperties { get; private set; }
         public ICommand CommandOpenNewDialog { get; private set; }
 
@@ -423,11 +427,19 @@ namespace Carbed.ViewModels
             Application.Current.Shutdown(0);
         }
 
-        private void OnShowProjectExplorer(object obj)
+        private void OnShowResourceExplorer(object obj)
         {
             if (!this.ToolWindows.Contains(this.projectExplorerViewModel))
             {
                 this.ToolWindows.Add(this.projectExplorerViewModel);
+            }
+        }
+
+        private void OnShowContentExplorer(object obj)
+        {
+            if (!this.ToolWindows.Contains(this.contentExplorerViewModel))
+            {
+                this.ToolWindows.Add(this.contentExplorerViewModel);
             }
         }
 

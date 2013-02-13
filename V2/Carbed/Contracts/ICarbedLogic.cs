@@ -7,6 +7,8 @@ using Carbon.Project.Resource;
 
 namespace Carbed.Contracts
 {
+    using Carbon.Engine.Contracts.Resource;
+
     public delegate void ProjectChangedEventHandler(SourceProject project);
 
     public interface ICarbedLogic : ICarbedBase
@@ -14,6 +16,8 @@ namespace Carbed.Contracts
         event ProjectChangedEventHandler ProjectChanged;
 
         SourceProject Project { get; }
+
+        IContentManager ProjectContent { get; }
         
         void NewProject();
         void CloseProject();

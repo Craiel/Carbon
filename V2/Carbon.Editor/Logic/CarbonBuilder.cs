@@ -43,7 +43,7 @@ namespace Carbon.Editor.Logic
 
         public CarbonBuilder(IEngineFactory factory)
         {
-            this.resourceManager = factory.Get<IResourceManager>();
+            //this.resourceManager = factory.Get<IResourceManager>();
 
             this.contentDictionary = new Dictionary<Type, IList<CarbonBuilderEntry>>();
         }

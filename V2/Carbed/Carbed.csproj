@@ -79,6 +79,10 @@
     <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.84.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\CarbonExt\sqllite 1.0.84.0\x64\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -97,6 +101,7 @@
     <Compile Include="Contracts\Carbed.cs" />
     <Compile Include="Contracts\ICarbedBase.cs" />
     <Compile Include="Contracts\ICarbedDocument.cs" />
+    <Compile Include="Contracts\IContentExplorerViewModel.cs" />
     <Compile Include="Contracts\IDocumentMemento.cs" />
     <Compile Include="Contracts\IDocumentTemplate.cs" />
     <Compile Include="Contracts\IDocumentTemplateCategory.cs" />
@@ -107,7 +112,7 @@
     <Compile Include="Contracts\IModelViewModel.cs" />
     <Compile Include="Contracts\INewDialogViewModel.cs" />
     <Compile Include="Contracts\IPlayfieldViewModel.cs" />
-    <Compile Include="Contracts\IProjectExplorerViewModel.cs" />
+    <Compile Include="Contracts\IResourceExplorerViewModel.cs" />
     <Compile Include="Contracts\IProjectFolderContent.cs" />
     <Compile Include="Contracts\IProjectFolderViewModel.cs" />
     <Compile Include="Contracts\IPropertyViewModel.cs" />
@@ -125,6 +130,7 @@
     <Compile Include="Logic\CarbedBase.cs" />
     <Compile Include="Logic\CarbedLogic.cs" />
     <Compile Include="Logic\CarbedLog.cs" />
+    <Compile Include="Logic\ContentExplorerTemplateSelector.cs" />
     <Compile Include="Logic\MVVM\CommandReference.cs" />
     <Compile Include="Logic\MVVM\Converters.cs" />
     <Compile Include="Logic\Docking\ActiveDocumentConverter.cs" />
@@ -132,30 +138,37 @@
     <Compile Include="Logic\Docking\PanesStyleSelector.cs" />
     <Compile Include="Logic\Docking\PanesTemplateSelector.cs" />
     <Compile Include="Logic\DocumentTemplate.cs" />
-    <Compile Include="Logic\DocumentTemplateCategory.cs" />
+    <Compile Include="Logic\Docking\DocumentTemplateCategory.cs" />
     <Compile Include="Logic\MVVM\FreezableBinding.cs" />
     <Compile Include="Logic\MVVM\ListBoxSelectionSynchronization.cs" />
     <Compile Include="Logic\MVVM\OneWayBinding.cs" />
     <Compile Include="Logic\OperationProgress.cs" />
-    <Compile Include="Logic\ProjectExplorerTemplateSelector.cs" />
+    <Compile Include="Logic\ResourceExplorerTemplateSelector.cs" />
     <Compile Include="Logic\MVVM\RelayCommand.cs" />
     <Compile Include="Logic\MVVM\TreeViewExtension.cs" />
     <Compile Include="Logic\UndoRedoManager.cs" />
     <Compile Include="Ninject\ViewModelFactory.cs" />
     <Compile Include="StaticResources.cs" />
+    <Compile Include="ViewModels\ContentExplorerViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
     <Compile Include="ViewModels\ModelViewModel.cs" />
     <Compile Include="ViewModels\PlayfieldViewModel.cs" />
     <Compile Include="ViewModels\DocumentViewModel.cs" />
     <Compile Include="ViewModels\FolderContentViewModel.cs" />
     <Compile Include="ViewModels\NewDialogViewModel.cs" />
-    <Compile Include="ViewModels\ProjectExplorerViewModel.cs" />
+    <Compile Include="ViewModels\ResourceExplorerViewModel.cs" />
     <Compile Include="ViewModels\ProjectFolderViewModel.cs" />
     <Compile Include="ViewModels\PropertyViewModel.cs" />
     <Compile Include="ViewModels\FontViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModel.cs" />
     <Compile Include="ViewModels\ToolViewModel.cs" />
+    <Compile Include="Views\ContentExplorerView.xaml.cs">
+      <DependentUpon>ContentExplorerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ModelView.xaml.cs">
+      <DependentUpon>ModelView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\NewDocumentView.xaml.cs">
       <DependentUpon>NewDocumentView.xaml</DependentUpon>
     </Compile>
@@ -168,8 +181,8 @@
     <Compile Include="Views\Properties\ProjectProperties.xaml.cs">
       <DependentUpon>ProjectProperties.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Properties\TextureFontProperties.xaml.cs">
-      <DependentUpon>TextureFontProperties.xaml</DependentUpon>
+    <Compile Include="Views\Properties\FontProperties.xaml.cs">
+      <DependentUpon>FontProperties.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PropertyView.xaml.cs">
       <DependentUpon>PropertyView.xaml</DependentUpon>
@@ -177,14 +190,14 @@
     <Compile Include="Views\TaskProgress.xaml.cs">
       <DependentUpon>TaskProgress.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\TextureFontView.xaml.cs">
-      <DependentUpon>TextureFontView.xaml</DependentUpon>
+    <Compile Include="Views\FontView.xaml.cs">
+      <DependentUpon>FontView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProjectExplorerView.xaml.cs">
-      <DependentUpon>ProjectExplorerView.xaml</DependentUpon>
+    <Compile Include="Views\ResourceExplorerView.xaml.cs">
+      <DependentUpon>ResourceExplorerView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -247,6 +260,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ContentExplorerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ModelView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\NewDocumentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -267,7 +288,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Properties\TextureFontProperties.xaml">
+    <Page Include="Views\Properties\FontProperties.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -279,7 +300,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\TextureFontView.xaml">
+    <Page Include="Views\FontView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -287,7 +308,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ProjectExplorerView.xaml">
+    <Page Include="Views\ResourceExplorerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -331,7 +352,13 @@
   <ItemGroup>
     <Resource Include="Resources\resourceicon_model.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_placeholder.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>"$(SolutionDir)..\CarbonExt\sqllite 1.0.84.0\x64\Deploy.bat" $(TargetDir)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

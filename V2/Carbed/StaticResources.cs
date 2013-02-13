@@ -19,10 +19,12 @@ namespace Carbed
         public static readonly Uri RedoIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_redo.png", UriKind.Absolute);
         public static readonly Uri ProjectIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_project.png", UriKind.Absolute);
         public static readonly Uri FolderIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_folder.png", UriKind.Absolute);
+        public static readonly Uri ReloadIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);
         public static readonly Uri NewFolderIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_newFolder.png", UriKind.Absolute);
         public static readonly Uri NewResourceIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_newDocument.png", UriKind.Absolute);
+        public static readonly Uri NewContentIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);
         
-        public static readonly Uri ResourceTextureFontIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_texturefont.png", UriKind.Absolute);
+        public static readonly Uri ResourceFontIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_texturefont.png", UriKind.Absolute);
         public static readonly Uri ResourceModelIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_model.png", UriKind.Absolute);
         public static readonly Uri ResourcePlayfieldIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_playfield.png", UriKind.Absolute);
 
@@ -44,7 +46,7 @@ namespace Carbed
             {
                 TemplateName = "Font",
                 Description = "Font for use in UI",
-                IconUri = ResourceTextureFontIconUri
+                IconUri = ResourceFontIconUri
             };
 
         public static IDocumentTemplate PlayfieldTemplate = new DocumentTemplate

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Carbed.Views.Properties.TextureFontProperties"
+﻿<UserControl x:Class="Carbed.Views.Properties.FontProperties"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <UserControl.Resources>

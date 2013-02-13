@@ -10,10 +10,13 @@ using Core.Utils.Contracts;
 
 namespace Carbon.Engine.Logic
 {
+    using Carbon.Engine.Contracts.Resource;
+
     public class CarbonGraphics : ICarbonGraphics
     {
         private readonly ILog log;
         private readonly IEngineFactory factory;
+        private readonly IResourceManager resourceManager;
 
         private CarbonDeviceContextDx11 context;
         private DeviceStateManager deviceStateManager;
@@ -38,8 +41,9 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public CarbonGraphics(IEngineFactory factory)
+        public CarbonGraphics(IEngineFactory factory, IResourceManager resourceManager)
         {
+            this.resourceManager = resourceManager;
             this.log = factory.Get<IEngineLog>().AquireContextLog("CarbonGraphics");
             this.factory = factory;
 
@@ -263,8 +267,8 @@ namespace Carbon.Engine.Logic
 
             this.deviceStateManager = new DeviceStateManager(this.context.Device);
 
-            this.shaderManager = new ShaderManager(this.factory, this.context.Device);
-            this.textureManager = new TextureManager(this.factory, this.context.Device);
+            this.shaderManager = new ShaderManager(this.resourceManager, this.context.Device);
+            this.textureManager = new TextureManager(this.factory, this.resourceManager, this.context.Device);
         }
 
         private void DisposeBuffers()

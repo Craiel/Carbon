@@ -39,6 +39,7 @@ namespace Carbon.Engine.Ninject
 
             // Resource
             this.Bind<IContentManager>().To<ContentManager>();
+            this.Bind<IResourceManager>().To<ResourceManager>();
         }
     }
 }

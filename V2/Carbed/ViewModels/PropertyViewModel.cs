@@ -83,7 +83,7 @@ namespace Carbed.ViewModels
 
                 if (this.activeContext is IFontViewModel)
                 {
-                    this.PropertyControl = new TextureFontProperties { DataContext = this.activeContext };
+                    this.PropertyControl = new FontProperties { DataContext = this.activeContext };
                 }
 
                 if (this.activeContext is IModelViewModel)

@@ -1,6 +1,6 @@
 ﻿namespace Carbed.Contracts
 {
-    public interface IProjectExplorerViewModel : ICarbedTool
+    public interface IResourceExplorerViewModel : ICarbedTool
     {
         IProjectFolderViewModel Root { get; }
     }

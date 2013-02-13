@@ -42,7 +42,8 @@ namespace Carbed.Contracts
 
         ICommand CommandExit { get; }
 
-        ICommand CommandOpenProjectExplorer { get; }
+        ICommand CommandOpenResourceExplorer { get; }
+        ICommand CommandOpenContentExplorer { get; }
         ICommand CommandOpenProperties { get; }
         ICommand CommandOpenNewDialog { get; }
 

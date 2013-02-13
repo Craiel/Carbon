@@ -1,8 +1,8 @@
 ﻿namespace Carbed.Views
 {
-    public partial class ProjectExplorerView
+    public partial class FontView
     {
-        public ProjectExplorerView()
+        public FontView()
         {
             InitializeComponent();
         }

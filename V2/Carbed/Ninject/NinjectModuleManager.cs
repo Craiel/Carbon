@@ -30,6 +30,7 @@ namespace Carbed.Ninject
                 this.Bind<IOperationProgress>().To<OperationProgress>().InSingletonScope();
                 this.Bind<IUndoRedoManager>().To<UndoRedoManager>().InSingletonScope();
                 this.Bind<ICarbedLogic>().To<CarbedLogic>().InSingletonScope();
+                this.Bind<ICarbedLog>().To<CarbedLog>().InSingletonScope();
                 this.Bind<IViewModelFactory>().To<ViewModelFactory>().InSingletonScope();
 
                 this.Bind<IMainViewModel>().To<MainViewModel>().InSingletonScope();
@@ -42,7 +43,8 @@ namespace Carbed.Ninject
                 this.Bind<IModelViewModel>().To<ModelViewModel>();
 
                 // Tool views
-                this.Bind<IProjectExplorerViewModel>().To<ProjectExplorerViewModel>().InSingletonScope();
+                this.Bind<IResourceExplorerViewModel>().To<ResourceExplorerViewModel>().InSingletonScope();
+                this.Bind<IContentExplorerViewModel>().To<ContentExplorerViewModel>().InSingletonScope();
                 this.Bind<IPropertyViewModel>().To<PropertyViewModel>().InSingletonScope();
                 this.Bind<INewDialogViewModel>().To<NewDialogViewModel>().InSingletonScope();
             }

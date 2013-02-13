@@ -60,6 +60,14 @@ namespace Carbed.Logic
             }
         }
 
+        public IContentManager ProjectContent
+        {
+            get
+            {
+                return this.projectContent;
+            }
+        }
+
         public void NewProject()
         {
             this.project = new SourceProject();
@@ -200,7 +208,7 @@ namespace Carbed.Logic
             string resourcePath = Path.Combine(rootPath, "Data");
             this.projectResources = this.engineFactory.GetResourceManager(resourcePath);
 
-            string contentPath = Path.Combine(rootPath, string.Format("{0}Content.db", this.project.Name));
+            string contentPath = Path.Combine(rootPath, "Main.db");
             this.projectContent = this.engineFactory.GetContentManager(this.projectResources, new ResourceLink { Source = contentPath });
         }
 
