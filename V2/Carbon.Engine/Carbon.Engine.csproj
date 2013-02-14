@@ -179,8 +179,8 @@
     <Compile Include="Resource\Content\MetaDataEntry.cs" />
     <Compile Include="Resource\Content\PlayfieldEntry.cs" />
     <Compile Include="Resource\Content\PlayfieldRegionEntry.cs" />
+    <Compile Include="Resource\Content\ResourceEntry.cs" />
     <Compile Include="Resource\Content\ScriptEntry.cs" />
-    <Compile Include="Resource\EngineResource.cs" />
     <Compile Include="Resource\Content\ResourceLink.cs" />
     <Compile Include="Resource\Resources\MeshResource.cs" />
     <Compile Include="Resource\Resources\FontResource.cs" />

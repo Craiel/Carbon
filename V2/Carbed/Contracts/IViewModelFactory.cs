@@ -1,16 +1,14 @@
-﻿using Carbon.Editor.Resource;
-
-namespace Carbed.Contracts
+﻿namespace Carbed.Contracts
 {
     using Carbon.Engine.Resource.Content;
 
     public interface IViewModelFactory
     {
-        IProjectFolderViewModel GetFolderViewModel(SourceProjectFolder data);
+        IFolderViewModel GetFolderViewModel();
 
         IFontViewModel GetFontViewModel(FontEntry data);
         IPlayfieldViewModel GetPlayfieldViewModel(PlayfieldEntry data);
 
-        IModelViewModel GetModelViewModel(SourceModel data);
+        IModelViewModel GetModelViewModel(ResourceEntry data);
     }
 }

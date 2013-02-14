@@ -23,7 +23,8 @@ namespace Carbed
         public static readonly Uri NewFolderIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_newFolder.png", UriKind.Absolute);
         public static readonly Uri NewResourceIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_newDocument.png", UriKind.Absolute);
         public static readonly Uri NewContentIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);
-        
+
+        public static readonly Uri ResourceIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);
         public static readonly Uri ResourceFontIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_texturefont.png", UriKind.Absolute);
         public static readonly Uri ResourceModelIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_model.png", UriKind.Absolute);
         public static readonly Uri ResourcePlayfieldIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_playfield.png", UriKind.Absolute);
@@ -33,6 +34,13 @@ namespace Carbed
                 TemplateName = "Project",
                 Description = "Carbon Project",
                 IconUri = ProjectIconUri
+            };
+
+        public static IDocumentTemplate ResourceTemplate = new DocumentTemplate
+            {
+                TemplateName = "Resource",
+                Description = "Resource for use in the project",
+                IconUri = ReloadIconUri
             };
 
         public static IDocumentTemplate ModelTemplate = new DocumentTemplate

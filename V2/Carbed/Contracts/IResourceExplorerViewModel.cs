@@ -2,6 +2,6 @@
 {
     public interface IResourceExplorerViewModel : ICarbedTool
     {
-        IProjectFolderViewModel Root { get; }
+        IFolderViewModel Root { get; }
     }
 }

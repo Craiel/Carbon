@@ -2,7 +2,7 @@
 
 namespace Carbed.Contracts
 {
-    public interface IModelViewModel : ICarbedDocument, IProjectFolderContent
+    public interface IModelViewModel : IResourceViewModel
     {
         string FileName { get; }
 

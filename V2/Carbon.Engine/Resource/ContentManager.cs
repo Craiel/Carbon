@@ -140,12 +140,12 @@ namespace Carbon.Engine.Resource
         {
             if (string.IsNullOrEmpty(link.Hash))
             {
-                if (string.IsNullOrEmpty(link.Source))
+                if (string.IsNullOrEmpty(link.Path))
                 {
                     throw new DataException("Source has to be supplied if hash is null");
                 }
 
-                using (var fileStream = new FileStream(link.Source, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (var fileStream = new FileStream(link.Path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     var resource = new RawResource(fileStream);
                     this.resourceManager.Store(ref link, resource);
@@ -414,7 +414,7 @@ namespace Carbon.Engine.Resource
             // - Release the resource
             this.connection = (SQLiteConnection)this.factory.CreateConnection();
             //this.connection.ConnectionString = "Data Source=:memory:";
-            this.connection.ConnectionString = string.Format("Data Source={0}", this.root.Source);
+            this.connection.ConnectionString = string.Format("Data Source={0}", this.root.Path);
             this.connection.Open();
         }
 

@@ -190,7 +190,7 @@ namespace Carbon.Engine.Logic
 
         protected void SetEngineContent(EngineContent content)
         {
-            var link = new ResourceLink { Source = @"Textures\checkerboard.dds" };
+            var link = new ResourceLink { Path = @"Textures\checkerboard.dds" };
             this.graphics.TextureManager.Fallback = this.graphics.TextureManager.Register(link);
         }
 

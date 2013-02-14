@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Security.Cryptography;
 
-using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource;
 
@@ -154,7 +153,7 @@ namespace Carbon.Engine.Logic
 
             byte[] md5;
             string sourceData = this.ReadSource(sourceFile, out md5);
-            var key = new ResourceLink { Source = cachedKey };
+            var key = new ResourceLink { Path = cachedKey };
             var shader = this.resourceManager.Load<CompiledShader>(ref key);
             if (shader != null)
             {

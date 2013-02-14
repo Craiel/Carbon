@@ -76,7 +76,7 @@ namespace Carbed.ViewModels
                     this.PropertyControl = new ProjectProperties { DataContext = this.activeContext };
                 }
 
-                if (this.activeContext is IProjectFolderViewModel)
+                if (this.activeContext is IFolderViewModel)
                 {
                     this.PropertyControl = new FolderProperties { DataContext = this.activeContext };
                 }

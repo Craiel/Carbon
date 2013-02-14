@@ -1,0 +1,9 @@
+﻿namespace Carbed.Contracts
+{
+    public interface IResourceViewModel : ICarbedDocument
+    {
+        bool IsExpanded { get; set; }
+
+        IFolderViewModel Parent { get; set; }
+    }
+}

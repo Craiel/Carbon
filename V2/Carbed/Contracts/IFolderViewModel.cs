@@ -3,14 +3,14 @@ using System.Windows.Input;
 
 namespace Carbed.Contracts
 {
-    public interface IProjectFolderViewModel : IProjectFolderContent
+    public interface IFolderViewModel
     {
         string Name { get; set; }
 
         bool HasName { get; }
         bool IsExpanded { get; set; }
-        
-        ReadOnlyObservableCollection<IProjectFolderContent> Content { get; }
+
+        ReadOnlyObservableCollection<IResourceViewModel> Content { get; }
 
         ICommand CommandAddFolder { get; }
         ICommand CommandDeleteFolder { get; }
@@ -18,8 +18,8 @@ namespace Carbed.Contracts
         ICommand CommandExpandAll { get; }
         ICommand CommandCollapseAll { get; }
 
-        void AddContent(IProjectFolderContent content);
-        void DeleteContent(IProjectFolderContent content);
+        void AddContent(IResourceViewModel content);
+        void DeleteContent(IResourceViewModel content);
         void SetExpand(bool expanded);
     }
 }

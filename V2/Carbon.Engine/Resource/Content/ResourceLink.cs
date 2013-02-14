@@ -10,7 +10,7 @@
         public string Hash { get; set; }
 
         [ContentEntryElement]
-        public string Source { get; set; }
+        public string Path { get; set; }
 
         [ContentEntryElement]
         public bool Mutable { get; set; }

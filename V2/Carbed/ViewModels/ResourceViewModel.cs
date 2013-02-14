@@ -3,24 +3,30 @@ using System.Windows;
 
 using Carbed.Contracts;
 
-using Carbon.Editor.Resource;
 using Carbon.Engine.Contracts;
+using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
-    public abstract class FolderContentViewModel : DocumentViewModel, IProjectFolderContent
+    public abstract class ResourceViewModel : DocumentViewModel, IResourceViewModel
     {
-        private readonly SourceFolderContent data;
-        
-        private IProjectFolderViewModel parent;
-        
+        private readonly ResourceEntry data;
+
+        private IFolderViewModel parent;
+        private string fileName;
+
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        protected FolderContentViewModel(IEngineFactory factory, SourceFolderContent data)
+        protected ResourceViewModel(IEngineFactory factory, ResourceEntry data)
             : base(factory)
         {
             this.data = data;
+
+            if (this.data.Resource != null && !string.IsNullOrEmpty(this.data.Resource.Path))
+            {
+                this.fileName = System.IO.Path.GetFileName(this.data.Resource.Path);
+            }
         }
 
         // -------------------------------------------------------------------
@@ -30,7 +36,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return this.data.Name ?? "<no name>";
+                return this.Name ?? "<no name>";
             }
         }
 
@@ -38,51 +44,39 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (string.IsNullOrEmpty(this.data.Name))
+                if (string.IsNullOrEmpty(this.fileName))
                 {
                     return "<no name>";
                 }
 
-                return this.data.Name;
+                return this.fileName;
             }
+
             set
             {
-                if (this.data.Name != value)
+                if (this.fileName != value)
                 {
-                    this.CreateUndoState();
-                    this.data.Name = value;
-                    this.NotifyPropertyChanged();
-                    this.NotifyPropertyChanged("HasName");
+                    this.RenameFile(value);
                 }
             }
         }
-        
-        public IProjectFolderViewModel Parent
+
+        public IFolderViewModel Parent
         {
             get
             {
                 return this.parent;
             }
-
             set
             {
                 if (this.parent != value)
                 {
-                    this.parent = value;
-                    this.NotifyPropertyChanged();
+                    this.MoveFile(value);
                 }
             }
         }
-        
+
         public bool IsExpanded { get; set; }
-        
-        public SourceFolderContent Data
-        {
-            get
-            {
-                return this.data;
-            }
-        }
         
         // -------------------------------------------------------------------
         // Protected
@@ -110,7 +104,7 @@ namespace Carbed.ViewModels
 
         protected override void RestoreMemento(object memento)
         {
-            SourceFolderContent source = memento as SourceFolderContent;
+            /*SourceFolderContent source = memento as SourceFolderContent;
             if (source == null)
             {
                 throw new ArgumentException();
@@ -118,7 +112,17 @@ namespace Carbed.ViewModels
 
             this.CreateUndoState();
             this.data.LoadFrom(source);
-            this.NotifyPropertyChanged(string.Empty);
+            this.NotifyPropertyChanged(string.Empty);*/
+        }
+
+        private void RenameFile(string newName)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void MoveFile(IFolderViewModel newParent)
+        {
+            throw new NotImplementedException();
         }
     }
 }

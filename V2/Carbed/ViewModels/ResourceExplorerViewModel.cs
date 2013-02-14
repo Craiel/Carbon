@@ -9,7 +9,7 @@ namespace Carbed.ViewModels
         private readonly ICarbedLogic logic;
         private readonly IViewModelFactory viewModelFactory;
 
-        private IProjectFolderViewModel content;
+        private IFolderViewModel content;
         
         // -------------------------------------------------------------------
         // Constructor
@@ -39,7 +39,7 @@ namespace Carbed.ViewModels
             }
         }
 
-        public IProjectFolderViewModel Root
+        public IFolderViewModel Root
         {
             get
             {

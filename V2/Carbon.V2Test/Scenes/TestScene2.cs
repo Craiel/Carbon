@@ -77,7 +77,7 @@ namespace Carbon.V2Test.Scenes
             this.overlayCamera = factory.Get<IOrthographicCamera>();
 
             this.resourceManager = factory.GetResourceManager("Data");
-            this.contentManager = factory.GetContentManager(this.resourceManager, new ResourceLink { Source = "v2test_master.db" });
+            this.contentManager = factory.GetContentManager(this.resourceManager, new ResourceLink { Path = "v2test_master.db" });
             
             this.root = new Node();
         }
@@ -126,7 +126,7 @@ namespace Carbon.V2Test.Scenes
             testLight = new Light { Color = new Vector4(1), Type = LightType.Spot, Range = 10.0f, SpecularPower = 10.0f, Direction = Vector3.UnitY, SpotAngles = new Vector2(5, 10) };
             this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(35f, 0.5f, 20f, 1) });
 
-            ICarbonContent materialResource = new MaterialEntry { DiffuseTexture = new ResourceLink { Source = @"..\SourceData\Textures\checkerboard.dds" } };
+            ICarbonContent materialResource = new MaterialEntry { DiffuseTexture = new ResourceLink { Path = @"..\SourceData\Textures\checkerboard.dds" } };
             this.contentManager.Save(ref materialResource);
             var test =
                 this.contentManager.TypedLoad(
@@ -136,7 +136,7 @@ namespace Carbon.V2Test.Scenes
             this.checkerboardMaterial = new Material(graphics, (MaterialEntry)materialResource);
             this.stoneMaterial = new Material(
                 graphics,
-                new MaterialEntry { DiffuseTexture = new ResourceLink { Source = @"Textures\stone.dds" } });
+                new MaterialEntry { DiffuseTexture = new ResourceLink { Path = @"Textures\stone.dds" } });
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
             this.normalDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1002));
 

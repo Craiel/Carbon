@@ -3,21 +3,21 @@
 using Carbed.Contracts;
 using Carbed.Logic.MVVM;
 
-using Carbon.Editor.Resource;
 using Carbon.Engine.Contracts;
+using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
-    public class ModelViewModel : FolderContentViewModel, IModelViewModel
+    public class ModelViewModel : ResourceViewModel, IModelViewModel
     {
-        private readonly SourceModel data;
+        private readonly ResourceEntry data;
 
         private ICommand commandSelectFile;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ModelViewModel(IEngineFactory factory, SourceModel data)
+        public ModelViewModel(IEngineFactory factory, ResourceEntry data)
             : base(factory, data)
         {
             this.data = data;
@@ -30,7 +30,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return this.data.File;
+                return this.data.SourcePath;
             }
         }
 

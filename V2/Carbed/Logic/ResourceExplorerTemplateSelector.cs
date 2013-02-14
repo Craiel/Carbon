@@ -13,7 +13,7 @@ namespace Carbed.Logic
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if (item is IProjectFolderViewModel) return FolderTemplate;
+            if (item is IFolderViewModel) return FolderTemplate;
             if (item is IModelViewModel) return ModelTemplate;
 
             return GenericDocumentTemplate;

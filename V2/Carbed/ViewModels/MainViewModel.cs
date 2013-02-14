@@ -12,11 +12,7 @@ using Carbed.Logic;
 using Carbed.Logic.MVVM;
 using Carbed.Views;
 
-using Carbon.Editor.Resource;
 using Carbon.Engine.Contracts;
-using Carbon.Engine.Resource;
-using Carbon.Engine.Resource.Content;
-using Carbon.Project.Resource;
 
 using Core.Utils.Contracts;
 
@@ -43,17 +39,14 @@ namespace Carbed.ViewModels
 
         private readonly List<IDocumentTemplate> documentTemplates;
         private readonly List<IDocumentTemplateCategory> documentTemplateCategories;
-
-        private readonly IDictionary<EngineResourceType, ICommand> engineResourceCommands;
-        private readonly IDictionary<ProjectResourceType, ICommand> projectResourceCommands;
-
+        
         private string currentProjectFile;
 
         private IProjectViewModel projectViewModel;
 
         private ICarbedDocument activeDocument;
 
-        private IProjectFolderViewModel currentCreationContext;
+        private IFolderViewModel currentCreationContext;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -90,27 +83,9 @@ namespace Carbed.ViewModels
             this.CommandOpenContentExplorer = new RelayCommand(this.OnShowContentExplorer);
             this.CommandOpenProperties = new RelayCommand(this.OnShowProperties);
             this.CommandOpenNewDialog = new RelayCommand(this.OnNewDialog);
-
-            // Create the commands for the individual resources
-            this.engineResourceCommands = new Dictionary<EngineResourceType, ICommand>();
-            this.projectResourceCommands = new Dictionary<ProjectResourceType, ICommand>();
-
+            
             this.eventRelay.Subscribe<EventWindowClosing>(this.OnMainWindowClosing);
-
-            foreach (EngineResourceType value in Enum.GetValues(typeof(EngineResourceType)))
-            {
-                EngineResourceType type = value;
-                var command = new RelayCommand(x => this.CreateEngineResource(type, x), this.CanCreateResource);
-                this.engineResourceCommands.Add(value, command);
-            }
-
-            foreach (ProjectResourceType value in Enum.GetValues(typeof(ProjectResourceType)))
-            {
-                ProjectResourceType type = value;
-                var command = new RelayCommand(x => this.CreateProjectResource(type, x), this.CanCreateResource);
-                this.projectResourceCommands.Add(value, command);
-            }
-
+            
             this.LoadDocumentTemplates();
         }
 
@@ -186,12 +161,12 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.logic.Project == null)
+                if (this.Project == null)
                 {
                     return "<no project loaded>";
                 }
 
-                return this.logic.Project.Name;
+                return this.Project.Name;
             }
         }
 
@@ -303,7 +278,7 @@ namespace Carbed.ViewModels
 
         private void OnNewDialog(object obj)
         {
-            this.currentCreationContext = obj as IProjectFolderViewModel;
+            this.currentCreationContext = obj as IFolderViewModel;
             var vm = this.factory.Get<INewDialogViewModel>();
             var view = new NewDocumentView { DataContext = vm };
             view.ShowDialog();
@@ -457,18 +432,19 @@ namespace Carbed.ViewModels
         {
             var globalMain = new DocumentTemplateCategory { Name = "Project" };
             var contentMain = new DocumentTemplateCategory { Name = "Content" };
-            var resourceMain = new DocumentTemplateCategory { Name = "Resource" };
 
             this.documentTemplateCategories.Clear();
             this.documentTemplateCategories.Add(globalMain);
             this.documentTemplateCategories.Add(contentMain);
-            this.documentTemplateCategories.Add(resourceMain);
 
             StaticResources.ProjectTemplate.CommandCreate = this.CommandNewProject;
             StaticResources.ProjectTemplate.Categories.Add(globalMain);
             this.documentTemplates.Add(StaticResources.ProjectTemplate);
 
-            StaticResources.FontTemplate.CommandCreate = this.engineResourceCommands[EngineResourceType.Font];
+            StaticResources.ResourceTemplate.Categories.Add(globalMain);
+            this.documentTemplates.Add(StaticResources.ResourceTemplate);
+
+            /*StaticResources.FontTemplate.CommandCreate = this.engineResourceCommands[EngineResourceType.Font];
             StaticResources.FontTemplate.CreateParameter = EngineResourceType.Font;
             StaticResources.FontTemplate.Categories.Add(contentMain);
             this.documentTemplates.Add(StaticResources.FontTemplate);
@@ -476,53 +452,10 @@ namespace Carbed.ViewModels
             StaticResources.ModelTemplate.CommandCreate = this.projectResourceCommands[ProjectResourceType.Model];
             StaticResources.ModelTemplate.CreateParameter = ProjectResourceType.Model;
             StaticResources.ModelTemplate.Categories.Add(contentMain);
-            this.documentTemplates.Add(StaticResources.ModelTemplate);
+            this.documentTemplates.Add(StaticResources.ModelTemplate);*/
         }
-
-        private ICarbedDocument CreateEngineResource(EngineResourceType type, object arguments)
-        {
-            string name = arguments as string ?? string.Empty;
-            switch (type)
-            {
-                case EngineResourceType.Font:
-                    {
-                        var data = (FontEntry)this.logic.NewResource(type);
-                        var vm = this.viewModelFactory.GetFontViewModel(data);
-                        vm.Name = name;
-                        this.Documents.Add(vm);
-                        return vm;
-                    }
-
-                default:
-                    {
-                        throw new NotImplementedException();
-                    }
-            }
-        }
-
-        private ICarbedDocument CreateProjectResource(ProjectResourceType type, object arguments)
-        {
-            string name = arguments as string ?? string.Empty;
-            switch (type)
-            {
-                case ProjectResourceType.Model:
-                    {
-                        var data = (SourceModel)this.logic.NewResource(type);
-                        data.Name = name;
-                        var vm = this.viewModelFactory.GetModelViewModel(data);
-                        this.InsertFolderContent(vm);
-                        this.Documents.Add(vm);
-                        return vm;
-                    }
-
-                default:
-                    {
-                        throw new NotImplementedException();
-                    }
-            }
-        }
-
-        private void InsertFolderContent(IProjectFolderContent content)
+        
+        private void InsertFolderContent(IResourceViewModel content)
         {
             if (this.currentCreationContext != null)
             {

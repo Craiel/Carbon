@@ -54,7 +54,7 @@ namespace Carbon.Engine.Resource
                 for (int i = 0; i < this.content.Count; i++)
                 {
                     ResourceContent resourceContent = this.content[i];
-                    Stream dataStream = resourceContent.Load(link.Hash, link.Source);
+                    Stream dataStream = resourceContent.Load(link.Hash, link.Path);
                     if (dataStream != null)
                     {
                         dataStream.Position = 0;
@@ -161,14 +161,14 @@ namespace Carbon.Engine.Resource
 
         private void ProcessResourceLink(ref ResourceLink link)
         {
-            if (link.Hash == null && string.IsNullOrEmpty(link.Source))
+            if (link.Hash == null && string.IsNullOrEmpty(link.Path))
             {
                 throw new ArgumentException("Resource link data is invalid, source has to be supplied");
             }
 
             if (link.Hash == null)
             {
-                byte[] hashData = this.hashProvider.ComputeHash(Encoding.UTF8.GetBytes(link.Source));
+                byte[] hashData = this.hashProvider.ComputeHash(Encoding.UTF8.GetBytes(link.Path));
                 link.Hash = Convert.ToBase64String(hashData);
             }
         }

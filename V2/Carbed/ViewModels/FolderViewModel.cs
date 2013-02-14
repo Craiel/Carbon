@@ -11,12 +11,12 @@ using Carbon.Engine.Contracts;
 
 namespace Carbed.ViewModels
 {
-    public class ProjectFolderViewModel : CarbedBase, IProjectFolderViewModel
+    public class FolderViewModel : CarbedBase, IFolderViewModel
     {
         private readonly ICarbedLogic logic;
         private readonly IViewModelFactory viewModelFactory;
-        private readonly ObservableCollection<IProjectFolderContent> content;
-        private readonly SourceProjectFolder data;
+        private readonly ObservableCollection<IFolderViewModel> subFolders;
+        private readonly ObservableCollection<IResourceViewModel> content;
         private readonly IPropertyViewModel propertyViewModel;
         private readonly IMainViewModel mainViewModel;
         private readonly IUndoRedoManager undoRedoManager;
@@ -24,20 +24,23 @@ namespace Carbed.ViewModels
         private bool isSelected;
         private bool isExpanded;
 
-        private IProjectFolderViewModel parent;
+        private IFolderViewModel parent;
+
+        private string name;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ProjectFolderViewModel(IEngineFactory factory, SourceProjectFolder data)
+        public FolderViewModel(IEngineFactory factory)
         {
             this.logic = factory.Get<ICarbedLogic>();
             this.viewModelFactory = factory.Get<IViewModelFactory>();
             this.propertyViewModel = factory.Get<IPropertyViewModel>();
             this.mainViewModel = factory.Get<IMainViewModel>();
             this.undoRedoManager = factory.Get<IUndoRedoManager>();
-            this.data = data;
-            this.content = new ObservableCollection<IProjectFolderContent>();
+
+            this.subFolders = new ObservableCollection<IFolderViewModel>();
+            this.content = new ObservableCollection<IResourceViewModel>();
 
             this.CommandAddFolder = new RelayCommand(this.OnAddFolder, this.CanAddFolder);
             this.CommandDeleteFolder = new RelayCommand(this.OnDeleteFolder, this.CanDeleteFolder);
@@ -56,7 +59,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return string.IsNullOrEmpty(this.data.Name);
+                return string.IsNullOrEmpty(this.name);
             }
         }
 
@@ -64,30 +67,30 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (string.IsNullOrEmpty(this.data.Name))
+                if (string.IsNullOrEmpty(this.name))
                 {
                     return "<no name>";
                 }
 
-                return this.data.Name;
+                return this.name;
             }
             set
             {
-                if (this.data.Name != value)
+                if (this.name != value)
                 {
                     this.CreateUndoState();
-                    this.data.Name = value;
+                    this.name = value;
                     this.NotifyPropertyChanged();
                     this.NotifyPropertyChanged("HasName");
                 }
             }
         }
 
-        public ReadOnlyObservableCollection<IProjectFolderContent> Content
+        public ReadOnlyObservableCollection<IResourceViewModel> Content
         {
             get
             {
-                return new ReadOnlyObservableCollection<IProjectFolderContent>(this.content);
+                return new ReadOnlyObservableCollection<IResourceViewModel>(this.content);
             }
         }
 
@@ -125,16 +128,8 @@ namespace Carbed.ViewModels
                 }
             }
         }
-
-        public SourceFolderContent Data
-        {
-            get
-            {
-                return this.data;
-            }
-        }
-
-        public IProjectFolderViewModel Parent 
+        
+        public IFolderViewModel Parent 
         {
             get
             {
@@ -167,7 +162,7 @@ namespace Carbed.ViewModels
 
         public ICommand CommandCollapseAll { get; private set; }
 
-        public void AddContent(IProjectFolderContent newContent)
+        public void AddContent(IResourceViewModel newContent)
         {
             if (this.content.Contains(newContent))
             {
@@ -178,7 +173,7 @@ namespace Carbed.ViewModels
             this.content.Add(newContent);
         }
 
-        public void DeleteContent(IProjectFolderContent oldContent)
+        public void DeleteContent(IResourceViewModel oldContent)
         {
             if (!this.content.Contains(oldContent))
             {
@@ -192,9 +187,9 @@ namespace Carbed.ViewModels
         public void SetExpand(bool expanded)
         {
             this.IsExpanded = expanded;
-            foreach (IProjectFolderContent child in this.content)
+            foreach (IFolderViewModel child in this.subFolders)
             {
-                var vm = child as IProjectFolderViewModel;
+                var vm = child;
                 if (vm != null)
                 {
                     vm.SetExpand(expanded);
@@ -209,10 +204,8 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         private void OnAddFolder(object obj)
         {
-            var child = new SourceProjectFolder();
-            this.data.Contents.Add(child);
-            var vm = this.viewModelFactory.GetFolderViewModel(child);
-            this.content.Add(vm);
+            var vm = this.viewModelFactory.GetFolderViewModel();
+            this.subFolders.Add(vm);
         }
 
         private bool CanAddFolder(object obj)

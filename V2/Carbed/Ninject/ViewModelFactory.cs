@@ -23,9 +23,9 @@ namespace Carbed.Ninject
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public IProjectFolderViewModel GetFolderViewModel(SourceProjectFolder data)
+        public IFolderViewModel GetFolderViewModel()
         {
-            return this.kernel.Get<IProjectFolderViewModel>(new ConstructorArgument("data", data));
+            return this.kernel.Get<IFolderViewModel>();
         }
 
         public IFontViewModel GetFontViewModel(FontEntry data)
