@@ -24,44 +24,54 @@ namespace Carbed
         public static readonly Uri NewResourceIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_newDocument.png", UriKind.Absolute);
         public static readonly Uri NewContentIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);
 
-        public static readonly Uri ResourceIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);
-        public static readonly Uri ResourceFontIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_texturefont.png", UriKind.Absolute);
-        public static readonly Uri ResourceModelIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_model.png", UriKind.Absolute);
-        public static readonly Uri ResourcePlayfieldIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_playfield.png", UriKind.Absolute);
+        public static readonly Uri ResourceTextureIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);
+        public static readonly Uri ResourceMeshIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);
+
+        public static readonly Uri ContentMaterialIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);
+        public static readonly Uri ContentFontIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_texturefont.png", UriKind.Absolute);
+        public static readonly Uri ContentModelIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_model.png", UriKind.Absolute);
+        public static readonly Uri ContentStageIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/resourceicon_playfield.png", UriKind.Absolute);
 
         public static IDocumentTemplate ProjectTemplate = new DocumentTemplate
             {
                 TemplateName = "Project",
-                Description = "Carbon Project",
                 IconUri = ProjectIconUri
             };
 
-        public static IDocumentTemplate ResourceTemplate = new DocumentTemplate
+        public static IDocumentTemplate TextureTemplate = new DocumentTemplate
             {
-                TemplateName = "Resource",
-                Description = "Resource for use in the project",
-                IconUri = ReloadIconUri
+                TemplateName = "Texture",
+                IconUri = ResourceTextureIconUri
             };
 
-        public static IDocumentTemplate ModelTemplate = new DocumentTemplate
+        public static IDocumentTemplate MeshTemplate = new DocumentTemplate
         {
-            TemplateName = "Model",
-            Description = "Model for use in the project",
-            IconUri = ResourceModelIconUri
+            TemplateName = "Mesh",
+            IconUri = ResourceMeshIconUri
         };
 
         public static IDocumentTemplate FontTemplate = new DocumentTemplate
             {
                 TemplateName = "Font",
-                Description = "Font for use in UI",
-                IconUri = ResourceFontIconUri
+                IconUri = ContentFontIconUri
             };
 
-        public static IDocumentTemplate PlayfieldTemplate = new DocumentTemplate
+        public static IDocumentTemplate ModelTemplate = new DocumentTemplate
         {
-            TemplateName = "Playfield",
-            Description = "Playfield",
-            IconUri = ResourcePlayfieldIconUri
+            TemplateName = "Model",
+            IconUri = ContentModelIconUri
+        };
+
+        public static IDocumentTemplate MaterialTemplate = new DocumentTemplate
+        {
+            TemplateName = "Material",
+            IconUri = ContentMaterialIconUri
+        };
+
+        public static IDocumentTemplate StageTemplate = new DocumentTemplate
+        {
+            TemplateName = "Stage",
+            IconUri = ContentStageIconUri
         };
     }
 }

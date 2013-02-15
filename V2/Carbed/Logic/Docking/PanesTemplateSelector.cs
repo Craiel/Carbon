@@ -15,11 +15,12 @@ namespace Carbed.Logic.Docking
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if (item is IModelViewModel) return ModelTemplate;
             if (item is IFontViewModel) return FontTemplate;
             if (item is IResourceExplorerViewModel) return ResourceExplorerTemplate;
             if (item is IContentExplorerViewModel) return ContentExplorerTemplate;
             if (item is IPropertyViewModel) return PropertiesTemplate;
+
+            if (item is IResourceViewModel) return ModelTemplate;
             
             // Can add more templates here if needed
             return base.SelectTemplate(item, container);

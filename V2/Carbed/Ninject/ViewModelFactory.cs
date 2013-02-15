@@ -33,14 +33,14 @@ namespace Carbed.Ninject
             return this.kernel.Get<IFontViewModel>(new ConstructorArgument("data", data));
         }
 
-        public IPlayfieldViewModel GetPlayfieldViewModel(PlayfieldEntry data)
+        public IStageViewModel GetPlayfieldViewModel(PlayfieldEntry data)
         {
-            return this.kernel.Get<IPlayfieldViewModel>(new ConstructorArgument("data", data));
+            return this.kernel.Get<IStageViewModel>(new ConstructorArgument("data", data));
         }
 
-        public IModelViewModel GetModelViewModel(SourceModel data)
+        public IResourceViewModel GetResourceViewModel(ResourceEntry data)
         {
-            return this.kernel.Get<IModelViewModel>(new ConstructorArgument("data", data));
+            return this.kernel.Get<IResourceViewModel>(new ConstructorArgument("data", data));
         }
     }
 }

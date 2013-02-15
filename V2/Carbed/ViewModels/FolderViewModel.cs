@@ -3,25 +3,19 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 using Carbed.Contracts;
-using Carbed.Logic;
 using Carbed.Logic.MVVM;
 
-using Carbon.Editor.Resource;
 using Carbon.Engine.Contracts;
 
 namespace Carbed.ViewModels
 {
-    public class FolderViewModel : CarbedBase, IFolderViewModel
+    public class FolderViewModel : DocumentViewModel, IFolderViewModel
     {
         private readonly ICarbedLogic logic;
         private readonly IViewModelFactory viewModelFactory;
-        private readonly ObservableCollection<IFolderViewModel> subFolders;
-        private readonly ObservableCollection<IResourceViewModel> content;
-        private readonly IPropertyViewModel propertyViewModel;
+        private readonly ObservableCollection<ICarbedDocument> content;
         private readonly IMainViewModel mainViewModel;
-        private readonly IUndoRedoManager undoRedoManager;
 
-        private bool isSelected;
         private bool isExpanded;
 
         private IFolderViewModel parent;
@@ -32,38 +26,32 @@ namespace Carbed.ViewModels
         // Constructor
         // -------------------------------------------------------------------
         public FolderViewModel(IEngineFactory factory)
+            : base(factory)
         {
             this.logic = factory.Get<ICarbedLogic>();
             this.viewModelFactory = factory.Get<IViewModelFactory>();
-            this.propertyViewModel = factory.Get<IPropertyViewModel>();
             this.mainViewModel = factory.Get<IMainViewModel>();
-            this.undoRedoManager = factory.Get<IUndoRedoManager>();
 
-            this.subFolders = new ObservableCollection<IFolderViewModel>();
-            this.content = new ObservableCollection<IResourceViewModel>();
+            this.content = new ObservableCollection<ICarbedDocument>();
 
-            this.CommandAddFolder = new RelayCommand(this.OnAddFolder, this.CanAddFolder);
+            this.CommandAddFolder = new RelayCommand(this.OnAddFolder);
             this.CommandDeleteFolder = new RelayCommand(this.OnDeleteFolder, this.CanDeleteFolder);
             this.CommandExpandAll = new RelayCommand(this.OnExpandAll, this.CanExpandAll);
             this.CommandCollapseAll = new RelayCommand(this.OnCollapseAll, this.CanCollapseAll);
-
-            this.undoRedoManager.RegisterGroup(this);
-
-            this.CreateViewModels();
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public bool HasName
+        public override string Title
         {
             get
             {
-                return string.IsNullOrEmpty(this.name);
+                return this.Name;
             }
         }
 
-        public string Name
+        public override string Name
         {
             get
             {
@@ -86,32 +74,14 @@ namespace Carbed.ViewModels
             }
         }
 
-        public ReadOnlyObservableCollection<IResourceViewModel> Content
+        public ReadOnlyObservableCollection<ICarbedDocument> Content
         {
             get
             {
-                return new ReadOnlyObservableCollection<IResourceViewModel>(this.content);
+                return new ReadOnlyObservableCollection<ICarbedDocument>(this.content);
             }
         }
-
-        public bool IsSelected
-        {
-            get
-            {
-                return this.isSelected;
-            }
-            set
-            {
-                if (this.isSelected != value)
-                {
-                    this.isSelected = value;
-                    this.propertyViewModel.SetActivation(this, value);
-                    this.undoRedoManager.ActivateGroup(this);
-                    this.NotifyPropertyChanged();
-                }
-            }
-        }
-
+        
         public bool IsExpanded
         {
             get
@@ -169,7 +139,6 @@ namespace Carbed.ViewModels
                 throw new InvalidOperationException("Content was already added");
             }
 
-            this.data.Contents.Add(newContent.Data);
             this.content.Add(newContent);
         }
 
@@ -180,24 +149,41 @@ namespace Carbed.ViewModels
                 throw new InvalidOperationException("Folder does not contain content to be removed");
             }
 
-            this.data.Contents.Remove(oldContent.Data);
             this.content.Remove(oldContent);
         }
 
         public void SetExpand(bool expanded)
         {
             this.IsExpanded = expanded;
-            foreach (IFolderViewModel child in this.subFolders)
+            foreach (ICarbedDocument child in this.content)
             {
-                var vm = child;
-                if (vm != null)
+                if ((child as IFolderViewModel) == null)
                 {
-                    vm.SetExpand(expanded);
+                    continue;
                 }
+
+                ((IFolderViewModel)child).SetExpand(expanded);
             }
         }
 
-        
+        public void DeleteFolder(IFolderViewModel folder)
+        {
+            this.content.Remove(folder);
+        }
+
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected override object CreateMemento()
+        {
+            return this.name;
+        }
+
+        protected override void RestoreMemento(object memento)
+        {
+            string oldName = memento as string;
+            this.name = oldName;
+        }
 
         // -------------------------------------------------------------------
         // Private
@@ -205,42 +191,7 @@ namespace Carbed.ViewModels
         private void OnAddFolder(object obj)
         {
             var vm = this.viewModelFactory.GetFolderViewModel();
-            this.subFolders.Add(vm);
-        }
-
-        private bool CanAddFolder(object obj)
-        {
-            return this.logic.Project != null;
-        }
-
-        private void ClearViewModels()
-        {
-            this.content.Clear();
-        }
-
-        private void CreateViewModels()
-        {
-            this.ClearViewModels();
-            foreach (SourceFolderContent child in this.data.Contents)
-            {
-                var folder = child as SourceProjectFolder;
-                if (folder != null)
-                {
-                    var vm = this.viewModelFactory.GetFolderViewModel(folder);
-                    vm.Parent = this;
-                    this.content.Add(vm);
-                    continue;
-                }
-
-                var mesh = child as SourceModel;
-                if (mesh != null)
-                {
-                    var vm = this.viewModelFactory.GetModelViewModel(mesh);
-                    vm.Parent = this;
-                    this.content.Add(vm);
-                    continue;
-                }
-            }
+            this.content.Add(vm);
         }
 
         private void OnExpandAll(object obj)
@@ -265,36 +216,12 @@ namespace Carbed.ViewModels
 
         private void OnDeleteFolder(object obj)
         {
-            this.parent.DeleteContent(this);
+            this.parent.DeleteFolder(this);
         }
 
         private bool CanDeleteFolder(object obj)
         {
             return true;
-        }
-
-        private void CreateUndoState()
-        {
-            var memento = this.CreateMemento();
-            this.undoRedoManager.AddOperation(() => this.RestoreMemento(memento), "FolderChange");
-        }
-
-        private object CreateMemento()
-        {
-            return this.data.Clone();
-        }
-
-        private void RestoreMemento(object memento)
-        {
-            SourceProjectFolder source = memento as SourceProjectFolder;
-            if (source == null)
-            {
-                throw new ArgumentException();
-            }
-
-            this.CreateUndoState();
-            this.data.LoadFrom(source);
-            this.NotifyPropertyChanged(string.Empty);
         }
     }
 }

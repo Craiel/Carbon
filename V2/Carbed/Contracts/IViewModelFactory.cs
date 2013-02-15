@@ -7,8 +7,8 @@
         IFolderViewModel GetFolderViewModel();
 
         IFontViewModel GetFontViewModel(FontEntry data);
-        IPlayfieldViewModel GetPlayfieldViewModel(PlayfieldEntry data);
+        IStageViewModel GetPlayfieldViewModel(PlayfieldEntry data);
 
-        IModelViewModel GetModelViewModel(ResourceEntry data);
+        IResourceViewModel GetResourceViewModel(ResourceEntry data);
     }
 }

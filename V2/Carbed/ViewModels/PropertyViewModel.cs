@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 using Carbed.Contracts;
 using Carbed.Views.Properties;
@@ -86,7 +85,7 @@ namespace Carbed.ViewModels
                     this.PropertyControl = new FontProperties { DataContext = this.activeContext };
                 }
 
-                if (this.activeContext is IModelViewModel)
+                if (this.activeContext is IResourceViewModel)
                 {
                     this.PropertyControl = new MeshProperties { DataContext = this.activeContext };
                 }

@@ -1,7 +1,5 @@
 ﻿using Carbed.Contracts;
 
-using Carbon.Editor.Resource;
-
 namespace Carbed.ViewModels
 {
     public class ResourceExplorerViewModel : ToolViewModel, IResourceExplorerViewModel
@@ -9,7 +7,7 @@ namespace Carbed.ViewModels
         private readonly ICarbedLogic logic;
         private readonly IViewModelFactory viewModelFactory;
 
-        private IFolderViewModel content;
+        private IFolderViewModel root;
         
         // -------------------------------------------------------------------
         // Constructor
@@ -30,12 +28,12 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.logic.Project != null)
+                if (this.logic.ProjectResources != null)
                 {
-                    return string.Format("Project '{0}'", this.logic.Project.Name);
+                    //return string.Format("Project '{0}'", this.logic.Project.Name);
                 }
 
-                return "Project <no project loaded>";
+                return "Resource Explorer";
             }
         }
 
@@ -43,7 +41,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return this.content;
+                return this.root;
             }
         }
 
@@ -52,9 +50,9 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         private void ClearViewModels()
         {
-            if (this.content != null)
+            if (this.root != null)
             {
-                this.content = null;
+                this.root = null;
             }
         }
 
@@ -62,16 +60,16 @@ namespace Carbed.ViewModels
         {
             this.ClearViewModels();
 
-            if (this.logic.Project == null)
+            if (this.logic.ProjectResources == null)
             {
                 return;
             }
 
-            this.content = this.viewModelFactory.GetFolderViewModel(this.logic.Project.Root);
+            this.root = this.viewModelFactory.GetFolderViewModel();
             this.NotifyPropertyChanged("Root");
         }
 
-        private void OnProjectChanged(SourceProject project)
+        private void OnProjectChanged()
         {
             this.CreateViewModels();
             this.NotifyPropertyChanged(string.Empty);

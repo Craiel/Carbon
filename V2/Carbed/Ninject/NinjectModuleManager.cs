@@ -39,8 +39,8 @@ namespace Carbed.Ninject
                 this.Bind<IProjectViewModel>().To<ProjectViewModel>();
                 this.Bind<IFolderViewModel>().To<FolderViewModel>();
                 this.Bind<IFontViewModel>().To<FontViewModel>();
-                this.Bind<IPlayfieldViewModel>().To<PlayfieldViewModel>();
-                this.Bind<IModelViewModel>().To<ModelViewModel>();
+                this.Bind<IStageViewModel>().To<StageViewModel>();
+                this.Bind<IResourceViewModel>().To<ResourceViewModel>();
 
                 // Tool views
                 this.Bind<IResourceExplorerViewModel>().To<ResourceExplorerViewModel>().InSingletonScope();

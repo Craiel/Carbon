@@ -1,18 +1,16 @@
-﻿using Carbon.Engine.Contracts;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
+
+using Carbed.Contracts;
+using Carbed.Logic.MVVM;
+
+using Carbon.Engine.Contracts;
+using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Windows.Input;
-
-    using Carbon.Editor.Resource;
-    using Carbon.Engine.Resource;
-    using Carbon.Engine.Resource.Content;
-
-    using global::Carbed.Contracts;
-    using global::Carbed.Logic.MVVM;
-
     public enum ExplorableContent
     {
         Font
@@ -52,12 +50,12 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.logic.Project != null)
+                if (this.logic.ProjectContent != null)
                 {
-                    return string.Format("Project '{0}'", this.logic.Project.Name);
+                    //return string.Format("Project '{0}'", this.logic.Project.Name);
                 }
 
-                return "Project <no project loaded>";
+                return "Content Explorer";
             }
         }
 
@@ -118,7 +116,7 @@ namespace Carbed.ViewModels
                 return;
             }
 
-            // Todo: Support all content entries that we have a viewmodel for
+            // Todo: Support all content entries that we have a view model for
             IList<FontEntry> results = this.logic.ProjectContent.TypedLoad(new ContentQuery<FontEntry>()).ToList<FontEntry>();
             for (int i = 0; i < results.Count; i++)
             {
@@ -128,7 +126,7 @@ namespace Carbed.ViewModels
             this.NotifyPropertyChanged("Documents");
         }
 
-        private void OnProjectChanged(SourceProject project)
+        private void OnProjectChanged()
         {
             this.UpdateDocuments();
             this.NotifyPropertyChanged(string.Empty);

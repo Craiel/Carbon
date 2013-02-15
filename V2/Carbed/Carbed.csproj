@@ -109,9 +109,8 @@
     <Compile Include="Contracts\ICarbedTool.cs" />
     <Compile Include="Contracts\ICarbedLog.cs" />
     <Compile Include="Contracts\IMaterialViewModel.cs" />
-    <Compile Include="Contracts\IModelViewModel.cs" />
     <Compile Include="Contracts\INewDialogViewModel.cs" />
-    <Compile Include="Contracts\IPlayfieldViewModel.cs" />
+    <Compile Include="Contracts\IStageViewModel.cs" />
     <Compile Include="Contracts\IResourceExplorerViewModel.cs" />
     <Compile Include="Contracts\IFolderViewModel.cs" />
     <Compile Include="Contracts\IPropertyViewModel.cs" />
@@ -120,6 +119,7 @@
     <Compile Include="Contracts\IOperationProgress.cs" />
     <Compile Include="Contracts\IProjectViewModel.cs" />
     <Compile Include="Contracts\IResourceViewModel.cs" />
+    <Compile Include="Contracts\ITextureViewModel.cs" />
     <Compile Include="Contracts\IUndoRedoGroup.cs" />
     <Compile Include="Contracts\IUndoRedoManager.cs" />
     <Compile Include="Contracts\IViewModelFactory.cs" />
@@ -151,8 +151,7 @@
     <Compile Include="StaticResources.cs" />
     <Compile Include="ViewModels\ContentExplorerViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
-    <Compile Include="ViewModels\ModelViewModel.cs" />
-    <Compile Include="ViewModels\PlayfieldViewModel.cs" />
+    <Compile Include="ViewModels\StageViewModel.cs" />
     <Compile Include="ViewModels\DocumentViewModel.cs" />
     <Compile Include="ViewModels\ResourceViewModel.cs" />
     <Compile Include="ViewModels\NewDialogViewModel.cs" />
@@ -162,6 +161,7 @@
     <Compile Include="ViewModels\FontViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModel.cs" />
+    <Compile Include="ViewModels\TextureViewModel.cs" />
     <Compile Include="ViewModels\ToolViewModel.cs" />
     <Compile Include="Views\ContentExplorerView.xaml.cs">
       <DependentUpon>ContentExplorerView.xaml</DependentUpon>

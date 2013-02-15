@@ -12,7 +12,7 @@ namespace Carbed.ViewModels
 {
     using Carbon.Engine.Resource.Content;
 
-    public class PlayfieldViewModel : ContentViewModel, IPlayfieldViewModel
+    public class StageViewModel : ContentViewModel, IStageViewModel
     {
         private readonly PlayfieldEntry data;
         private readonly ICarbonBuilder builder;
@@ -20,7 +20,7 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public PlayfieldViewModel(IEngineFactory factory, PlayfieldEntry data)
+        public StageViewModel(IEngineFactory factory, PlayfieldEntry data)
             : base(factory, data)
         {
             this.data = data;

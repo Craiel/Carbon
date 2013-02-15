@@ -13,6 +13,7 @@ using Carbed.Logic.MVVM;
 using Carbed.Views;
 
 using Carbon.Engine.Contracts;
+using Carbon.Engine.Resource.Content;
 
 using Core.Utils.Contracts;
 
@@ -255,7 +256,7 @@ namespace Carbed.ViewModels
                 this.OnCloseProject(null);
             }
 
-            if (this.logic.Project != null)
+            if (this.logic.ProjectContent != null)
             {
                 if (
                     MessageBox.Show(
@@ -286,7 +287,7 @@ namespace Carbed.ViewModels
 
         private bool CanCreateResource(object obj)
         {
-            return this.logic.Project != null;
+            return this.logic.ProjectResources != null;
         }
 
         private void OnUndoRedoManagerChanged(object sender, PropertyChangedEventArgs args)
@@ -332,7 +333,7 @@ namespace Carbed.ViewModels
 
         private bool CanCloseProject(object obj)
         {
-            return this.logic.Project != null;
+            return this.logic.ProjectContent != null;
         }
 
         private void OnCloseProject(object obj)
@@ -367,7 +368,7 @@ namespace Carbed.ViewModels
 
         private bool CanSaveProject(object obj)
         {
-            return this.logic.Project != null;
+            return this.logic.ProjectContent != null;
         }
 
         private void OnSaveProject(object obj)
@@ -432,27 +433,42 @@ namespace Carbed.ViewModels
         {
             var globalMain = new DocumentTemplateCategory { Name = "Project" };
             var contentMain = new DocumentTemplateCategory { Name = "Content" };
+            var resourceMain = new DocumentTemplateCategory { Name = "Resource" };
 
             this.documentTemplateCategories.Clear();
             this.documentTemplateCategories.Add(globalMain);
             this.documentTemplateCategories.Add(contentMain);
+            this.documentTemplateCategories.Add(resourceMain);
 
             StaticResources.ProjectTemplate.CommandCreate = this.CommandNewProject;
             StaticResources.ProjectTemplate.Categories.Add(globalMain);
             this.documentTemplates.Add(StaticResources.ProjectTemplate);
 
-            StaticResources.ResourceTemplate.Categories.Add(globalMain);
-            this.documentTemplates.Add(StaticResources.ResourceTemplate);
+            StaticResources.MaterialTemplate.CommandCreate = this.CommandNewMaterial;
+            StaticResources.MaterialTemplate.Categories.Add(contentMain);
+            this.documentTemplates.Add(StaticResources.MaterialTemplate);
 
-            /*StaticResources.FontTemplate.CommandCreate = this.engineResourceCommands[EngineResourceType.Font];
-            StaticResources.FontTemplate.CreateParameter = EngineResourceType.Font;
+            StaticResources.StageTemplate.CommandCreate = this.CommandNewStage;
+            StaticResources.StageTemplate.Categories.Add(contentMain);
+            this.documentTemplates.Add(StaticResources.StageTemplate);
+
+            StaticResources.FontTemplate.CommandCreate = this.CommandNewFont;
             StaticResources.FontTemplate.Categories.Add(contentMain);
             this.documentTemplates.Add(StaticResources.FontTemplate);
 
-            StaticResources.ModelTemplate.CommandCreate = this.projectResourceCommands[ProjectResourceType.Model];
-            StaticResources.ModelTemplate.CreateParameter = ProjectResourceType.Model;
+            StaticResources.ModelTemplate.CommandCreate = this.CommandNewModel;
             StaticResources.ModelTemplate.Categories.Add(contentMain);
-            this.documentTemplates.Add(StaticResources.ModelTemplate);*/
+            this.documentTemplates.Add(StaticResources.ModelTemplate);
+
+            StaticResources.TextureTemplate.CommandCreate = this.CommandNewResource;
+            StaticResources.TextureTemplate.CreateParameter = ResourceType.Texture;
+            StaticResources.TextureTemplate.Categories.Add(contentMain);
+            this.documentTemplates.Add(StaticResources.TextureTemplate);
+
+            StaticResources.MeshTemplate.CommandCreate = this.CommandNewResource;
+            StaticResources.TextureTemplate.CreateParameter = ResourceType.Texture;
+            StaticResources.TextureTemplate.Categories.Add(contentMain);
+            this.documentTemplates.Add(StaticResources.TextureTemplate);
         }
         
         private void InsertFolderContent(IResourceViewModel content)
@@ -494,7 +510,7 @@ namespace Carbed.ViewModels
 
         private bool CanBuild(object obj)
         {
-            return this.logic.Project != null;
+            return this.logic.ProjectContent != null;
         }
 
         private void RestoreProjectLayout()

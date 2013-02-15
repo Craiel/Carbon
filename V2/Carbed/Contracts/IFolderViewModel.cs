@@ -3,14 +3,11 @@ using System.Windows.Input;
 
 namespace Carbed.Contracts
 {
-    public interface IFolderViewModel
+    public interface IFolderViewModel : ICarbedDocument
     {
-        string Name { get; set; }
-
-        bool HasName { get; }
         bool IsExpanded { get; set; }
 
-        ReadOnlyObservableCollection<IResourceViewModel> Content { get; }
+        ReadOnlyObservableCollection<ICarbedDocument> Content { get; }
 
         ICommand CommandAddFolder { get; }
         ICommand CommandDeleteFolder { get; }
@@ -21,5 +18,7 @@ namespace Carbed.Contracts
         void AddContent(IResourceViewModel content);
         void DeleteContent(IResourceViewModel content);
         void SetExpand(bool expanded);
+
+        void DeleteFolder(IFolderViewModel folder);
     }
 }

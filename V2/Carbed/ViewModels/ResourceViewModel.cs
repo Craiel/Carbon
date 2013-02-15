@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 
 using Carbed.Contracts;
+using Carbed.Logic.MVVM;
 
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Resource.Content;
@@ -11,6 +13,8 @@ namespace Carbed.ViewModels
     public abstract class ResourceViewModel : DocumentViewModel, IResourceViewModel
     {
         private readonly ResourceEntry data;
+
+        private ICommand commandSelectFile;
 
         private IFolderViewModel parent;
         private string fileName;
@@ -77,7 +81,23 @@ namespace Carbed.ViewModels
         }
 
         public bool IsExpanded { get; set; }
-        
+
+        public string FileName
+        {
+            get
+            {
+                return this.data.SourcePath;
+            }
+        }
+
+        public ICommand CommandSelectFile
+        {
+            get
+            {
+                return this.commandSelectFile ?? (this.commandSelectFile = new RelayCommand(this.OnSelectFile));
+            }
+        }
+
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
@@ -104,7 +124,7 @@ namespace Carbed.ViewModels
 
         protected override void RestoreMemento(object memento)
         {
-            /*SourceFolderContent source = memento as SourceFolderContent;
+            ResourceEntry source = memento as ResourceEntry;
             if (source == null)
             {
                 throw new ArgumentException();
@@ -112,15 +132,23 @@ namespace Carbed.ViewModels
 
             this.CreateUndoState();
             this.data.LoadFrom(source);
-            this.NotifyPropertyChanged(string.Empty);*/
+            this.NotifyPropertyChanged(string.Empty);
         }
 
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
         private void RenameFile(string newName)
         {
             throw new NotImplementedException();
         }
 
         private void MoveFile(IFolderViewModel newParent)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnSelectFile(object obj)
         {
             throw new NotImplementedException();
         }
