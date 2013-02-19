@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Threading;
-using System.Xml.Serialization;
 
 using Carbed.Contracts;
 using Carbed.Views;
 
-using Carbon.Editor.Contracts;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Resource;
 using Carbon.Engine.Resource.Content;
 
 using Core.Utils.Contracts;
@@ -22,6 +20,9 @@ namespace Carbed.Logic
     {
         private readonly IEngineFactory engineFactory;
         private readonly ILog log;
+        private readonly IViewModelFactory viewModelFactory;
+
+        private readonly List<IMaterialViewModel> materials;
         
         private IContentManager projectContent;
         private IResourceManager projectResources;
@@ -35,6 +36,9 @@ namespace Carbed.Logic
         {
             this.engineFactory = factory;
             this.log = factory.Get<ICarbedLog>().AquireContextLog("Logic");
+            this.viewModelFactory = factory.Get<IViewModelFactory>();
+
+            this.materials = new List<IMaterialViewModel>();
         }
 
         // -------------------------------------------------------------------
@@ -42,24 +46,25 @@ namespace Carbed.Logic
         // -------------------------------------------------------------------
         public event ProjectChangedEventHandler ProjectChanged;
         
-        public IContentManager ProjectContent
+        public bool HasProjectLoaded
         {
             get
             {
-                return this.projectContent;
+                return this.projectContent != null;
             }
         }
 
-        public IResourceManager ProjectResources
+        public IReadOnlyCollection<IMaterialViewModel> Materials
         {
             get
             {
-                return this.projectResources;
+                return this.materials.AsReadOnly();
             }
         }
 
         public void NewProject()
         {
+            this.CloseProject();
             this.tempLocation = Path.GetTempPath();
             this.InitializeProject(this.tempLocation);
             this.NotifyProjectChanged();
@@ -67,6 +72,8 @@ namespace Carbed.Logic
 
         public void CloseProject()
         {
+            this.Unload();
+
             if (this.projectContent != null)
             {
                 // Todo: this will probably cause issues if resources are still in use somewhere
@@ -88,26 +95,21 @@ namespace Carbed.Logic
 
         public void OpenProject(string file)
         {
+            this.CloseProject();
+
             if (string.IsNullOrEmpty(file) || !File.Exists(file))
             {
                 throw new ArgumentException("Invalid File specified: " + file);
             }
 
             this.InitializeProject(Path.GetDirectoryName(file));
+            this.Reload();
             this.NotifyProjectChanged();
         }
 
         public void SaveProject(string file)
         {
             throw new NotImplementedException();
-        }
-
-        public void Build(string folder)
-        {
-            throw new NotImplementedException();
-            /*var task = new Task(() => this.carbonBuilder.Build(folder, this.project));
-            TaskProgress.Message = string.Format("Building {0}", this.project.Name);
-            new TaskProgress(new[] { task });*/
         }
 
         public static void DoEvents(Dispatcher dispatcher)
@@ -127,6 +129,45 @@ namespace Carbed.Logic
             Dispatcher.PushFrame(frame);
         }
 
+        public void Reload()
+        {
+            this.Unload();
+
+            ContentQueryResult<MaterialEntry> materialData = this.projectContent.TypedLoad(new ContentQuery<MaterialEntry>());
+            var materialEntries = materialData.ToList<MaterialEntry>();
+            foreach (MaterialEntry entry in materialEntries)
+            {
+                this.materials.Add(this.viewModelFactory.GetMaterialViewModel(entry));
+            }
+        }
+
+        public IMaterialViewModel AddMaterial()
+        {
+            var vm = this.viewModelFactory.GetMaterialViewModel(new MaterialEntry());
+            this.materials.Insert(0, vm);
+            return vm;
+        }
+
+        public void Save(IMaterialViewModel material)
+        {
+            if (this.projectContent == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            material.Save(this.projectContent);
+        }
+
+        public void Delete(IMaterialViewModel material)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMaterialViewModel Clone(IMaterialViewModel source)
+        {
+            throw new NotImplementedException();
+        }
+
         public IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue)
         {
             if (primaryKeyValue == null)
@@ -140,6 +181,11 @@ namespace Carbed.Logic
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
+        private void Unload()
+        {
+            this.materials.Clear();
+        }
+
         private void InitializeProject(string rootPath)
         {
             string resourcePath = Path.Combine(rootPath, "Data");

@@ -61,7 +61,7 @@
             <fluent:RibbonTabItem Header="View">
                 <fluent:RibbonGroupBox>
                     <fluent:Button Command="{Binding Path=CommandOpenResourceExplorer}" Header="Resource Explorer"/>
-                    <fluent:Button Command="{Binding Path=CommandOpenContentExplorer}" Header="Content Explorer"/>
+                    <fluent:Button Command="{Binding Path=CommandOpenMaterialExplorer}" Header="Material Explorer"/>
                     <fluent:Button Command="{Binding Path=CommandOpenProperties}" Header="Properties"/>
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
@@ -100,12 +100,12 @@
                             <views:ResourceExplorerView/>
                         </DataTemplate>
                     </local:PanesTemplateSelector.ResourceExplorerTemplate>
-                    
-                    <local:PanesTemplateSelector.ContentExplorerTemplate>
+
+                    <local:PanesTemplateSelector.MaterialExplorerTemplate>
                         <DataTemplate>
-                            <views:ContentExplorerView/>
+                            <views:MaterialExplorerView/>
                         </DataTemplate>
-                    </local:PanesTemplateSelector.ContentExplorerTemplate>
+                    </local:PanesTemplateSelector.MaterialExplorerTemplate>
                     
                     <local:PanesTemplateSelector.PropertiesTemplate>
                         <DataTemplate>

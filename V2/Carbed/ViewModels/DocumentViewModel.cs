@@ -16,6 +16,7 @@ namespace Carbed.ViewModels
         private readonly IUndoRedoManager undoRedoManager;
 
         private ICommand commandOpen;
+        private ICommand commandSave;
         private ICommand commandClose;
         private ICommand commandDelete;
         
@@ -87,6 +88,14 @@ namespace Carbed.ViewModels
             }
         }
 
+        public ICommand CommandSave
+        {
+            get
+            {
+                return this.commandSave ?? (this.commandSave = new RelayCommand(this.OnSave, this.CanSave));
+            }
+        }
+
         public ICommand CommandClose
         {
             get
@@ -119,7 +128,15 @@ namespace Carbed.ViewModels
 
         protected virtual bool CanOpen(object arg)
         {
-            // Todo
+            return true;
+        }
+
+        protected virtual void OnSave(object obj)
+        {
+        }
+
+        protected virtual bool CanSave(object obj)
+        {
             return true;
         }
 
@@ -130,7 +147,6 @@ namespace Carbed.ViewModels
 
         protected virtual bool CanClose(object arg)
         {
-            // Todo
             return true;
         }
 

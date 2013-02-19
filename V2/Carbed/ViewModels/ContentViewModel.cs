@@ -26,6 +26,8 @@ namespace Carbed.ViewModels
         {
             this.logic = factory.Get<ICarbedLogic>();
             this.data = data;
+
+            this.name = new MetaDataEntry(){Key = "name", Value = "testme 123"};
         }
 
         // -------------------------------------------------------------------
@@ -116,6 +118,17 @@ namespace Carbed.ViewModels
             this.CreateUndoState();
             this.data.LoadFrom(source);
             this.NotifyPropertyChanged(string.Empty);
+        }
+
+        protected void Save(IContentManager target)
+        {
+            if (this.name == null)
+            {
+                throw new InvalidOperationException("Can not save without setting a name first");
+            }
+
+            target.Save(ref this.name);
+            this.NotifyPropertyChanged();
         }
     }
 }

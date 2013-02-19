@@ -30,6 +30,11 @@ namespace Carbed.Contracts
         IOperationProgress OperationProgress { get; }
 
         ICommand CommandNewProject { get; }
+        ICommand CommandNewMaterial { get; }
+        ICommand CommandNewStage { get; }
+        ICommand CommandNewFont { get; }
+        ICommand CommandNewModel { get; }
+        ICommand CommandNewResource { get; }
 
         ICommand CommandOpenProject { get; }
         ICommand CommandCloseProject { get; }
@@ -43,7 +48,7 @@ namespace Carbed.Contracts
         ICommand CommandExit { get; }
 
         ICommand CommandOpenResourceExplorer { get; }
-        ICommand CommandOpenContentExplorer { get; }
+        ICommand CommandOpenMaterialExplorer { get; }
         ICommand CommandOpenProperties { get; }
         ICommand CommandOpenNewDialog { get; }
 

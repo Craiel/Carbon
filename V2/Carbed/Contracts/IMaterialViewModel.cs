@@ -1,6 +1,8 @@
 ﻿using System.Windows.Input;
 using System.Windows.Media;
 
+using Carbon.Engine.Contracts.Resource;
+
 namespace Carbed.Contracts
 {
     public interface IMaterialViewModel : ICarbedDocument
@@ -11,5 +13,7 @@ namespace Carbed.Contracts
         ImageSource PreviewTransparencyImage { get; }
 
         ICommand CommandUpdatePreview { get; }
+
+        void Save(IContentManager target);
     }
 }

@@ -4,23 +4,27 @@ using Carbon.Engine.Resource.Content;
 
 namespace Carbed.Contracts
 {
-    using Carbon.Engine.Contracts.Resource;
-
     public delegate void ProjectChangedEventHandler();
 
     public interface ICarbedLogic : ICarbedBase
     {
         event ProjectChangedEventHandler ProjectChanged;
-        
-        IContentManager ProjectContent { get; }
-        IResourceManager ProjectResources { get; }
+
+        bool HasProjectLoaded { get; }
+
+        IReadOnlyCollection<IMaterialViewModel> Materials { get; }
         
         void NewProject();
         void CloseProject();
         void OpenProject(string file);
         void SaveProject(string file);
 
-        void Build(string folder);
+        void Reload();
+
+        IMaterialViewModel AddMaterial();
+        void Save(IMaterialViewModel material);
+        void Delete(IMaterialViewModel material);
+        IMaterialViewModel Clone(IMaterialViewModel source);
 
         IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue);
     }

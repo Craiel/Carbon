@@ -107,6 +107,13 @@ namespace Carbon.Engine.Resource
             }
         }
 
+        public void Save<T>(ref T content) where T : ICarbonContent
+        {
+            ICarbonContent typed = content;
+            this.Save(ref typed);
+            content = (T)typed;
+        }
+
         public ContentLink ResolveLink(int id)
         {
             if (!this.contentLinkCache.ContainsKey(id))

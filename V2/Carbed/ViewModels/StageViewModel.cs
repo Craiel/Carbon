@@ -5,7 +5,6 @@ using System.Windows.Input;
 using Carbed.Contracts;
 using Carbed.Logic.MVVM;
 
-using Carbon.Editor.Contracts;
 using Carbon.Engine.Contracts;
 
 namespace Carbed.ViewModels
@@ -14,21 +13,19 @@ namespace Carbed.ViewModels
 
     public class StageViewModel : ContentViewModel, IStageViewModel
     {
-        private readonly PlayfieldEntry data;
-        private readonly ICarbonBuilder builder;
+        private readonly StageEntry data;
         
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public StageViewModel(IEngineFactory factory, PlayfieldEntry data)
+        public StageViewModel(IEngineFactory factory, StageEntry data)
             : base(factory, data)
         {
             this.data = data;
-            this.builder = factory.Get<ICarbonBuilder>();
 
             this.CommandUpdatePreview = new RelayCommand(this.OnUpdatePreview, this.CanPreview);
 
-            this.Template = StaticResources.PlayfieldTemplate;
+            this.Template = StaticResources.StageTemplate;
 
             this.UpdatePreview();
         }
@@ -48,7 +45,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return StaticResources.ResourcePlayfieldIconUri;
+                return StaticResources.ContentStageIconUri;
             }
         }
         

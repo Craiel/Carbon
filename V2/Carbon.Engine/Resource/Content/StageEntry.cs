@@ -1,7 +1,7 @@
 ﻿namespace Carbon.Engine.Resource.Content
 {
-    [ContentEntry("Playfield")]
-    public class PlayfieldEntry : ContentEntry
+    [ContentEntry("Stage")]
+    public class StageEntry : ContentEntry
     {
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
         public int? Id { get; set; }

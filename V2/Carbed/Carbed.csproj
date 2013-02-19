@@ -108,6 +108,7 @@
     <Compile Include="Contracts\ICarbedLogic.cs" />
     <Compile Include="Contracts\ICarbedTool.cs" />
     <Compile Include="Contracts\ICarbedLog.cs" />
+    <Compile Include="Contracts\IMaterialExplorerViewModel.cs" />
     <Compile Include="Contracts\IMaterialViewModel.cs" />
     <Compile Include="Contracts\INewDialogViewModel.cs" />
     <Compile Include="Contracts\IStageViewModel.cs" />
@@ -130,7 +131,6 @@
     <Compile Include="Logic\CarbedBase.cs" />
     <Compile Include="Logic\CarbedLogic.cs" />
     <Compile Include="Logic\CarbedLog.cs" />
-    <Compile Include="Logic\ContentExplorerTemplateSelector.cs" />
     <Compile Include="Logic\MVVM\CommandReference.cs" />
     <Compile Include="Logic\MVVM\Converters.cs" />
     <Compile Include="Logic\Docking\ActiveDocumentConverter.cs" />
@@ -151,6 +151,8 @@
     <Compile Include="StaticResources.cs" />
     <Compile Include="ViewModels\ContentExplorerViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
+    <Compile Include="ViewModels\MaterialViewModel.cs" />
+    <Compile Include="ViewModels\MaterialExplorerViewModel.cs" />
     <Compile Include="ViewModels\StageViewModel.cs" />
     <Compile Include="ViewModels\DocumentViewModel.cs" />
     <Compile Include="ViewModels\ResourceViewModel.cs" />
@@ -163,8 +165,8 @@
     <Compile Include="ViewModels\ProjectViewModel.cs" />
     <Compile Include="ViewModels\TextureViewModel.cs" />
     <Compile Include="ViewModels\ToolViewModel.cs" />
-    <Compile Include="Views\ContentExplorerView.xaml.cs">
-      <DependentUpon>ContentExplorerView.xaml</DependentUpon>
+    <Compile Include="Views\MaterialExplorerView.xaml.cs">
+      <DependentUpon>MaterialExplorerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ModelView.xaml.cs">
       <DependentUpon>ModelView.xaml</DependentUpon>
@@ -260,7 +262,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ContentExplorerView.xaml">
+    <Page Include="Views\MaterialExplorerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

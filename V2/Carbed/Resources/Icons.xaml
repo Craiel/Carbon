@@ -22,6 +22,6 @@
     <Image Width="24" x:Key="IconNewFolder" Source="{Binding Source={x:Static carbed:StaticResources.NewFolderIconUri}}"/>
     <Image Width="24" x:Key="IconNewResource" Source="{Binding Source={x:Static carbed:StaticResources.NewResourceIconUri}}"/>
     <Image Width="24" x:Key="IconNewContent" Source="{Binding Source={x:Static carbed:StaticResources.NewContentIconUri}}"/>
-    <Image Width="24" x:Key="IconResourceFont" Source="{Binding Source={x:Static carbed:StaticResources.ResourceFontIconUri}}"/>
+    <Image Width="24" x:Key="IconResourceFont" Source="{Binding Source={x:Static carbed:StaticResources.PlaceholderIconUri}}"/>
     
 </ResourceDictionary>

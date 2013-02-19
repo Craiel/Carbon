@@ -1,8 +1,8 @@
 ﻿namespace Carbed.Views
 {
-    public partial class ContentExplorerView
+    public partial class MaterialExplorerView
     {
-        public ContentExplorerView()
+        public MaterialExplorerView()
         {
             InitializeComponent();
         }

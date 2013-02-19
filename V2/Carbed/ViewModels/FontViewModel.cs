@@ -9,7 +9,6 @@ using System.Windows.Media;
 using Carbed.Contracts;
 using Carbed.Logic.MVVM;
 
-using Carbon.Editor.Contracts;
 using Carbon.Engine.Contracts;
 
 namespace Carbed.ViewModels
@@ -20,7 +19,6 @@ namespace Carbed.ViewModels
     {
         private readonly FontEntry data;
         private readonly List<Font> selectableFonts;
-        private readonly ICarbonBuilder builder;
 
         private ImageSource previewImage;
 
@@ -34,7 +32,6 @@ namespace Carbed.ViewModels
             : base(factory, data)
         {
             this.data = data;
-            this.builder = factory.Get<ICarbonBuilder>();
             this.selectableFonts = new List<Font>
                 {
                     new Font("Arial", 10, FontStyle.Regular),
@@ -64,7 +61,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return StaticResources.ResourceFontIconUri;
+                return StaticResources.ContentFontIconUri;
             }
         }
         

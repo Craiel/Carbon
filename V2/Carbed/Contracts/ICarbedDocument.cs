@@ -13,6 +13,7 @@ namespace Carbed.Contracts
         Uri IconUri { get; }
 
         ICommand CommandOpen { get; }
+        ICommand CommandSave { get; }
         ICommand CommandClose { get; }
         ICommand CommandDelete { get; }
     }

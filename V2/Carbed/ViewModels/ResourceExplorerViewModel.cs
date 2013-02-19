@@ -17,8 +17,6 @@ namespace Carbed.ViewModels
             this.logic = logic;
             this.logic.ProjectChanged += this.OnProjectChanged;
             this.viewModelFactory = viewModelFactory;
-
-            this.CreateViewModels();
         }
 
         // -------------------------------------------------------------------
@@ -28,7 +26,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.logic.ProjectResources != null)
+                if (this.logic.HasProjectLoaded)
                 {
                     //return string.Format("Project '{0}'", this.logic.Project.Name);
                 }
@@ -60,7 +58,7 @@ namespace Carbed.ViewModels
         {
             this.ClearViewModels();
 
-            if (this.logic.ProjectResources == null)
+            if (!this.logic.HasProjectLoaded)
             {
                 return;
             }

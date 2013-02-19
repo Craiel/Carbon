@@ -1,6 +1,5 @@
 ﻿using Carbed.Contracts;
 
-using Carbon.Editor.Resource;
 using Carbon.Engine.Resource.Content;
 
 using Ninject;
@@ -33,9 +32,14 @@ namespace Carbed.Ninject
             return this.kernel.Get<IFontViewModel>(new ConstructorArgument("data", data));
         }
 
-        public IStageViewModel GetPlayfieldViewModel(PlayfieldEntry data)
+        public IStageViewModel GetStageViewModel(StageEntry data)
         {
             return this.kernel.Get<IStageViewModel>(new ConstructorArgument("data", data));
+        }
+
+        public IMaterialViewModel GetMaterialViewModel(MaterialEntry data)
+        {
+            return this.kernel.Get<IMaterialViewModel>(new ConstructorArgument("data", data));
         }
 
         public IResourceViewModel GetResourceViewModel(ResourceEntry data)

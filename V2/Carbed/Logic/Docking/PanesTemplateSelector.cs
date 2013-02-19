@@ -10,14 +10,14 @@ namespace Carbed.Logic.Docking
         public DataTemplate ModelTemplate { get; set; }
         public DataTemplate FontTemplate { get; set; }
         public DataTemplate ResourceExplorerTemplate { get; set; }
-        public DataTemplate ContentExplorerTemplate { get; set; }
+        public DataTemplate MaterialExplorerTemplate { get; set; }
         public DataTemplate PropertiesTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             if (item is IFontViewModel) return FontTemplate;
             if (item is IResourceExplorerViewModel) return ResourceExplorerTemplate;
-            if (item is IContentExplorerViewModel) return ContentExplorerTemplate;
+            if (item is IMaterialExplorerViewModel) return MaterialExplorerTemplate;
             if (item is IPropertyViewModel) return PropertiesTemplate;
 
             if (item is IResourceViewModel) return ModelTemplate;

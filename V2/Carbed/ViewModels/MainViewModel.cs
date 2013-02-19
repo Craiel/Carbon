@@ -36,7 +36,7 @@ namespace Carbed.ViewModels
         private readonly IOperationProgress operationProgress;
         private readonly IPropertyViewModel propertyViewModel;
         private readonly IResourceExplorerViewModel projectExplorerViewModel;
-        private readonly IContentExplorerViewModel contentExplorerViewModel;
+        private readonly IMaterialExplorerViewModel materialExplorerViewModel;
 
         private readonly List<IDocumentTemplate> documentTemplates;
         private readonly List<IDocumentTemplateCategory> documentTemplateCategories;
@@ -63,15 +63,20 @@ namespace Carbed.ViewModels
             this.operationProgress = factory.Get<IOperationProgress>();
             this.propertyViewModel = factory.Get<IPropertyViewModel>();
             this.projectExplorerViewModel = factory.Get<IResourceExplorerViewModel>();
-            this.contentExplorerViewModel = factory.Get<IContentExplorerViewModel>();
+            this.materialExplorerViewModel = factory.Get<IMaterialExplorerViewModel>();
             
             this.documentTemplates = new List<IDocumentTemplate>();
             this.documentTemplateCategories = new List<IDocumentTemplateCategory>();
-
+            
             this.ToolWindows = new ObservableCollection<ICarbedTool>();
             this.Documents = new ObservableCollection<ICarbedDocument>();
 
             this.CommandNewProject = new RelayCommand(this.OnNewProject);
+            this.CommandNewMaterial = new RelayCommand(this.OnNewMaterial, this.CanCreateContent);
+            this.CommandNewStage = new RelayCommand(this.OnNewStage, this.CanCreateContent);
+            this.CommandNewFont = new RelayCommand(this.OnNewFont, this.CanCreateContent);
+            this.CommandNewModel = new RelayCommand(this.OnNewModel, this.CanCreateContent);
+            this.CommandNewResource = new RelayCommand(this.OnNewResource, this.CanCreateResource);
             this.CommandOpenProject = new RelayCommand(this.OnOpenProject);
             this.CommandUndo = new RelayCommand(this.OnUndo, this.CanUndo);
             this.CommandRedo = new RelayCommand(this.OnRedo, this.CanRedo);
@@ -81,9 +86,10 @@ namespace Carbed.ViewModels
             this.CommandBuild = new RelayCommand(this.OnBuild, this.CanBuild);
             this.CommandExit = new RelayCommand(this.OnExit);
             this.CommandOpenResourceExplorer = new RelayCommand(this.OnShowResourceExplorer);
-            this.CommandOpenContentExplorer = new RelayCommand(this.OnShowContentExplorer);
+            this.CommandOpenMaterialExplorer = new RelayCommand(this.OnShowMaterialExplorer);
             this.CommandOpenProperties = new RelayCommand(this.OnShowProperties);
             this.CommandOpenNewDialog = new RelayCommand(this.OnNewDialog);
+            this.CommandReload = new RelayCommand(this.OnReload, this.CanReload);
             
             this.eventRelay.Subscribe<EventWindowClosing>(this.OnMainWindowClosing);
             
@@ -201,6 +207,11 @@ namespace Carbed.ViewModels
         }
 
         public ICommand CommandNewProject { get; private set; }
+        public ICommand CommandNewMaterial { get; private set; }
+        public ICommand CommandNewStage { get; private set; }
+        public ICommand CommandNewFont { get; private set; }
+        public ICommand CommandNewModel { get; private set; }
+        public ICommand CommandNewResource { get; private set; }
 
         public ICommand CommandOpenProject { get; private set; }
         public ICommand CommandCloseProject { get; private set; }
@@ -214,8 +225,10 @@ namespace Carbed.ViewModels
 
         public ICommand CommandExit { get; private set; }
 
+        public ICommand CommandReload { get; private set; }
+
         public ICommand CommandOpenResourceExplorer { get; private set; }
-        public ICommand CommandOpenContentExplorer { get; private set; }
+        public ICommand CommandOpenMaterialExplorer { get; private set; }
         public ICommand CommandOpenProperties { get; private set; }
         public ICommand CommandOpenNewDialog { get; private set; }
 
@@ -256,7 +269,7 @@ namespace Carbed.ViewModels
                 this.OnCloseProject(null);
             }
 
-            if (this.logic.ProjectContent != null)
+            if (this.logic.HasProjectLoaded)
             {
                 if (
                     MessageBox.Show(
@@ -277,6 +290,41 @@ namespace Carbed.ViewModels
             this.NotifyProjectChange();
         }
 
+        private void OnNewResource(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnNewModel(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnNewFont(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnNewStage(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnNewMaterial(object obj)
+        {
+            this.logic.AddMaterial();
+        }
+
+        private void OnReload(object obj)
+        {
+            this.logic.Reload();
+        }
+
+        private bool CanReload(object obj)
+        {
+            return this.logic.HasProjectLoaded;
+        }
+
         private void OnNewDialog(object obj)
         {
             this.currentCreationContext = obj as IFolderViewModel;
@@ -285,9 +333,14 @@ namespace Carbed.ViewModels
             view.ShowDialog();
         }
 
+        private bool CanCreateContent(object obj)
+        {
+            return this.logic.HasProjectLoaded;
+        }
+
         private bool CanCreateResource(object obj)
         {
-            return this.logic.ProjectResources != null;
+            return this.logic.HasProjectLoaded;
         }
 
         private void OnUndoRedoManagerChanged(object sender, PropertyChangedEventArgs args)
@@ -333,7 +386,7 @@ namespace Carbed.ViewModels
 
         private bool CanCloseProject(object obj)
         {
-            return this.logic.ProjectContent != null;
+            return this.logic.HasProjectLoaded;
         }
 
         private void OnCloseProject(object obj)
@@ -368,7 +421,7 @@ namespace Carbed.ViewModels
 
         private bool CanSaveProject(object obj)
         {
-            return this.logic.ProjectContent != null;
+            return this.logic.HasProjectLoaded;
         }
 
         private void OnSaveProject(object obj)
@@ -411,11 +464,11 @@ namespace Carbed.ViewModels
             }
         }
 
-        private void OnShowContentExplorer(object obj)
+        private void OnShowMaterialExplorer(object obj)
         {
-            if (!this.ToolWindows.Contains(this.contentExplorerViewModel))
+            if (!this.ToolWindows.Contains(this.materialExplorerViewModel))
             {
-                this.ToolWindows.Add(this.contentExplorerViewModel);
+                this.ToolWindows.Add(this.materialExplorerViewModel);
             }
         }
 
@@ -462,13 +515,13 @@ namespace Carbed.ViewModels
 
             StaticResources.TextureTemplate.CommandCreate = this.CommandNewResource;
             StaticResources.TextureTemplate.CreateParameter = ResourceType.Texture;
-            StaticResources.TextureTemplate.Categories.Add(contentMain);
+            StaticResources.TextureTemplate.Categories.Add(resourceMain);
             this.documentTemplates.Add(StaticResources.TextureTemplate);
 
             StaticResources.MeshTemplate.CommandCreate = this.CommandNewResource;
-            StaticResources.TextureTemplate.CreateParameter = ResourceType.Texture;
-            StaticResources.TextureTemplate.Categories.Add(contentMain);
-            this.documentTemplates.Add(StaticResources.TextureTemplate);
+            StaticResources.MeshTemplate.CreateParameter = ResourceType.Mesh;
+            StaticResources.MeshTemplate.Categories.Add(resourceMain);
+            this.documentTemplates.Add(StaticResources.MeshTemplate);
         }
         
         private void InsertFolderContent(IResourceViewModel content)
@@ -505,12 +558,13 @@ namespace Carbed.ViewModels
                 }
             }
 
-            this.logic.Build(folder);
+            throw new NotImplementedException();
+            //this.logic.Build(folder);
         }
 
         private bool CanBuild(object obj)
         {
-            return this.logic.ProjectContent != null;
+            return this.logic.HasProjectLoaded;
         }
 
         private void RestoreProjectLayout()
