@@ -29,5 +29,68 @@
 
         [ContentEntryElement]
         public ResourceLink SpecularTexture { get; set; }
+
+        public override Contracts.Resource.ICarbonContent Clone(bool fullCopy = false)
+        {
+            var clone = new MaterialEntry();
+            clone.LoadFrom(this);
+            if (fullCopy)
+            {
+                clone.Id = this.Id;
+                if (clone.DiffuseTexture != null)
+                {
+                    clone.DiffuseTexture.Id = this.DiffuseTexture.Id;
+                }
+
+                if (clone.NormalTexture != null)
+                {
+                    clone.NormalTexture.Id = this.NormalTexture.Id;
+                }
+
+                if (clone.SpecularTexture != null)
+                {
+                    clone.SpecularTexture.Id = this.SpecularTexture.Id;
+                }
+
+                if (clone.AlphaTexture != null)
+                {
+                    clone.AlphaTexture.Id = this.AlphaTexture.Id;
+                }
+            }
+
+            return clone;
+        }
+
+        public override void LoadFrom(Contracts.Resource.ICarbonContent source)
+        {
+            var other = source as MaterialEntry;
+            this.ColorR = other.ColorR;
+            this.ColorG = other.ColorG;
+            this.ColorB = other.ColorB;
+            this.ColorA = other.ColorA;
+            if (other.DiffuseTexture != null)
+            {
+                this.DiffuseTexture = new ResourceLink();
+                this.DiffuseTexture.LoadFrom(other.DiffuseTexture);
+            }
+
+            if (other.NormalTexture != null)
+            {
+                this.NormalTexture = new ResourceLink();
+                this.NormalTexture.LoadFrom(other.NormalTexture);
+            }
+
+            if (other.SpecularTexture != null)
+            {
+                this.SpecularTexture = new ResourceLink();
+                this.SpecularTexture.LoadFrom(other.SpecularTexture);
+            }
+
+            if (other.AlphaTexture != null)
+            {
+                this.AlphaTexture = new ResourceLink();
+                this.AlphaTexture.LoadFrom(other.AlphaTexture);
+            }
+        }
     }
 }

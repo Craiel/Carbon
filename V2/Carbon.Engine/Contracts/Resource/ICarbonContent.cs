@@ -3,7 +3,7 @@
     public interface ICarbonContent
     {
         // These are for undo / redo support
-        ICarbonContent Clone();
+        ICarbonContent Clone(bool fullCopy = false);
         void LoadFrom(ICarbonContent source);
     }
 }

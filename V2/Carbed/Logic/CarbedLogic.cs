@@ -65,7 +65,7 @@ namespace Carbed.Logic
         public void NewProject()
         {
             this.CloseProject();
-            this.tempLocation = Path.GetTempPath();
+            this.tempLocation = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             this.InitializeProject(this.tempLocation);
             this.NotifyProjectChanged();
         }
@@ -93,23 +93,41 @@ namespace Carbed.Logic
             this.NotifyProjectChanged();
         }
 
-        public void OpenProject(string file)
+        public void OpenProject(string path)
         {
             this.CloseProject();
 
-            if (string.IsNullOrEmpty(file) || !File.Exists(file))
+            if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentException("Invalid File specified: " + file);
+                throw new ArgumentException("Invalid Path specified: " + path);
             }
 
-            this.InitializeProject(Path.GetDirectoryName(file));
+            this.InitializeProject(Path.GetDirectoryName(path));
             this.Reload();
             this.NotifyProjectChanged();
         }
 
         public void SaveProject(string file)
         {
-            throw new NotImplementedException();
+            this.log.Warning("Saving into different file is not fully supported yet!");
+            /*
+             * Todo:
+             * - Choose a target path instead of file
+             * - Move the Resources from the temporary folder as well
+             * - Cleanup the temporary data
+             */
+            ResourceLink currentRoot = this.projectContent.Root;
+            ResourceLink newRoot = new ResourceLink { Path = file };
+
+            this.CloseProject();
+
+            // Move the database file over to our new location
+            if (File.Exists(currentRoot.Path))
+            {
+                File.Copy(currentRoot.Path, newRoot.Path);
+            }
+            
+            this.OpenProject(file);
         }
 
         public static void DoEvents(Dispatcher dispatcher)
@@ -137,7 +155,10 @@ namespace Carbed.Logic
             var materialEntries = materialData.ToList<MaterialEntry>();
             foreach (MaterialEntry entry in materialEntries)
             {
-                this.materials.Add(this.viewModelFactory.GetMaterialViewModel(entry));
+                IMaterialViewModel vm = this.viewModelFactory.GetMaterialViewModel(entry);
+                // Todo: Move this into a seperate task into the loading vm
+                vm.Load();
+                this.materials.Add(vm);
             }
         }
 
@@ -175,7 +196,10 @@ namespace Carbed.Logic
                 return null;
             }
 
-            throw new NotImplementedException();
+            // Todo: Add caching for this
+            return
+                this.projectContent.TypedLoad(
+                    new ContentQuery<MetaDataEntry>().IsEqual("Id", primaryKeyValue)).ToList<MetaDataEntry>();
         }
 
         // -------------------------------------------------------------------

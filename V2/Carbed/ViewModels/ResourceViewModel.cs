@@ -119,7 +119,7 @@ namespace Carbed.ViewModels
 
         protected override object CreateMemento()
         {
-            return this.data.Clone();
+            return this.data.Clone(fullCopy: true);
         }
 
         protected override void RestoreMemento(object memento)

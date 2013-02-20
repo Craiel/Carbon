@@ -182,7 +182,7 @@ namespace Carbon.Engine.Resource
                 return this.contentManager.ResolveLink(id.Value);
             }
 
-            return targetType.ConvertValue(source);
+            return type.ConvertValue(source);
         }
     }
 }

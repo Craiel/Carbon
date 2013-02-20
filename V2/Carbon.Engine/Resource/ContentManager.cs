@@ -57,6 +57,14 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public ResourceLink Root
+        {
+            get
+            {
+                return this.root;
+            }
+        }
+
         public ContentQueryResult<T> TypedLoad<T>(ContentQuery<T> criteria) where T : ICarbonContent
         {
             return new ContentQueryResult<T>(this, this.log, this.GetCommand(criteria));
@@ -389,6 +397,11 @@ namespace Carbon.Engine.Resource
                 return cast.Id.ToString();
             }
 
+            if (type.IsEnum)
+            {
+                return ((int)value).ToString();
+            }
+
             return string.Format("'{0}'", value);
         }
 
@@ -552,7 +565,8 @@ namespace Carbon.Engine.Resource
                 return string.Concat("VARCHAR", arguments);
             }
 
-            if (internalType == typeof(int)
+            if (internalType.IsEnum
+                || internalType == typeof(int)
                 || internalType == typeof(uint)
                 || internalType == typeof(long)
                 || internalType == typeof(ulong)

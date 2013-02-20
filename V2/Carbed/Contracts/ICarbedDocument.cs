@@ -16,5 +16,7 @@ namespace Carbed.Contracts
         ICommand CommandSave { get; }
         ICommand CommandClose { get; }
         ICommand CommandDelete { get; }
+
+        void Load();
     }
 }

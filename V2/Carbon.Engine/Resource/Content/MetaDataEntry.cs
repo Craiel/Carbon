@@ -1,5 +1,11 @@
 ﻿namespace Carbon.Engine.Resource.Content
 {
+    public enum MetaDataKey
+    {
+        Unknown = 0,
+        Name = 10,
+    }
+
     [ContentEntry("MetaData")]
     public class MetaDataEntry : ContentEntry
     {
@@ -10,7 +16,7 @@
         public ContentLink ContentId { get; set; }
 
         [ContentEntryElement]
-        public string Key { get; set; }
+        public MetaDataKey Key { get; set; }
 
         [ContentEntryElement]
         public string Value { get; set; }

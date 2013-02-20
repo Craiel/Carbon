@@ -89,6 +89,11 @@ namespace Carbed.ViewModels
                 {
                     this.PropertyControl = new MeshProperties { DataContext = this.activeContext };
                 }
+
+                if (this.activeContext is IMaterialViewModel)
+                {
+                    this.PropertyControl = new MaterialProperties { DataContext = this.activeContext };
+                }
             }
 
             this.NotifyPropertyChanged("PropertyControl");
