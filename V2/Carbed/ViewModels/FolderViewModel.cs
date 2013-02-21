@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows.Input;
 
 using Carbed.Contracts;
 using Carbed.Logic.MVVM;
 
 using Carbon.Engine.Contracts;
+using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
@@ -15,22 +18,22 @@ namespace Carbed.ViewModels
         private readonly IViewModelFactory viewModelFactory;
         private readonly ObservableCollection<ICarbedDocument> content;
         private readonly IMainViewModel mainViewModel;
+        private readonly ResourceTree data;
 
         private bool isExpanded;
 
         private IFolderViewModel parent;
 
-        private string name;
-
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public FolderViewModel(IEngineFactory factory)
+        public FolderViewModel(IEngineFactory factory, ResourceTree data)
             : base(factory)
         {
             this.logic = factory.Get<ICarbedLogic>();
             this.viewModelFactory = factory.Get<IViewModelFactory>();
             this.mainViewModel = factory.Get<IMainViewModel>();
+            this.data = data;
 
             this.content = new ObservableCollection<ICarbedDocument>();
 
@@ -43,11 +46,11 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override string Title
+        public override bool IsChanged
         {
             get
             {
-                return this.Name;
+                return this.data.IsChanged;
             }
         }
 
@@ -55,22 +58,41 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (string.IsNullOrEmpty(this.name))
+                if (string.IsNullOrEmpty(this.data.Name))
                 {
                     return "<no name>";
                 }
 
-                return this.name;
+                return this.data.Name;
             }
             set
             {
-                if (this.name != value)
+                if (this.data.Name != value)
                 {
                     this.CreateUndoState();
-                    this.name = value;
+                    this.data.Name = value;
                     this.NotifyPropertyChanged();
-                    this.NotifyPropertyChanged("HasName");
+                    this.NotifyPropertyChanged("IsChanged");
                 }
+            }
+        }
+
+        public string FullPath
+        {
+            get
+            {
+                string name = this.data.Name;
+                if (this.parent != null)
+                {
+                    if (string.IsNullOrEmpty(name))
+                    {
+                        return this.parent.FullPath;
+                    }
+
+                    return Path.Combine(this.parent.FullPath, name);
+                }
+
+                return name ?? string.Empty;
             }
         }
 
@@ -171,26 +193,45 @@ namespace Carbed.ViewModels
             this.content.Remove(folder);
         }
 
+        public override void Load()
+        {
+            base.Load();
+
+            if (this.data.Id == null)
+            {
+                return;
+            }
+
+            this.logic.GetResourceTreeChildren((int)this.data.Id);
+        }
+
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
         protected override object CreateMemento()
         {
-            return this.name;
+            return this.data.Clone(fullCopy: true);
         }
 
         protected override void RestoreMemento(object memento)
         {
-            string oldName = memento as string;
-            this.name = oldName;
-        }
+            ICarbonContent source = memento as ICarbonContent;
+            if (source == null)
+            {
+                throw new ArgumentException();
+            }
 
+            this.CreateUndoState();
+            this.data.LoadFrom(source);
+            this.NotifyPropertyChanged(string.Empty);
+        }
+        
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
         private void OnAddFolder(object obj)
         {
-            var vm = this.viewModelFactory.GetFolderViewModel();
+            var vm = this.viewModelFactory.GetFolderViewModel(new ResourceTree());
             this.content.Add(vm);
         }
 

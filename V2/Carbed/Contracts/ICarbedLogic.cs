@@ -13,6 +13,7 @@ namespace Carbed.Contracts
         bool HasProjectLoaded { get; }
 
         IReadOnlyCollection<IMaterialViewModel> Materials { get; }
+        IReadOnlyCollection<IFolderViewModel> Folders { get; }
         
         void NewProject();
         void CloseProject();
@@ -26,6 +27,12 @@ namespace Carbed.Contracts
         void Delete(IMaterialViewModel material);
         IMaterialViewModel Clone(IMaterialViewModel source);
 
+        IFolderViewModel AddFolder { get; }
+        void Save(IFolderViewModel folder);
+        void Delete(IFolderViewModel folder);
+        IFolderViewModel Clone(IFolderViewModel source);
+
         IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue);
+        IList<ResourceTree> GetResourceTreeChildren(int parent);
     }
 }

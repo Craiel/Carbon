@@ -113,6 +113,8 @@ namespace Carbon.Engine.Resource
                 int lastId = reader.GetInt32(0);
                 primaryKeyProperty.Info.SetValue(content, lastId);
             }
+
+            content.LockChangeState();
         }
 
         public void Save<T>(ref T content) where T : ICarbonContent
@@ -309,7 +311,8 @@ namespace Carbon.Engine.Resource
 
         private string BuildEqualsSegment(ContentCriterion criterion)
         {
-            if (criterion.Values == null || criterion.Values.Length == 0)
+            if (criterion.Values == null || criterion.Values.Length == 0 ||
+                (criterion.Values.Length == 1 && criterion.Values[0] == null))
             {
                 return criterion.Negate
                            ? string.Format("{0} IS NOT NULL", criterion.PropertyInfo.Name)

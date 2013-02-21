@@ -8,13 +8,24 @@
     [ContentEntry("Script")]
     public class ScriptEntry : ContentEntry
     {
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [ContentEntryElement]
         public ScriptType Type { get; set; }
 
         [ContentEntryElement]
         public ResourceLink Script { get; set; }
+
+        public override bool IsNew
+        {
+            get
+            {
+                return this.Id == null;
+            }
+        }
     }
 }

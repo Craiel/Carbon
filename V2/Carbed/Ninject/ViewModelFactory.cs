@@ -22,9 +22,9 @@ namespace Carbed.Ninject
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public IFolderViewModel GetFolderViewModel()
+        public IFolderViewModel GetFolderViewModel(ResourceTree data)
         {
-            return this.kernel.Get<IFolderViewModel>();
+            return this.kernel.Get<IFolderViewModel>(new ConstructorArgument("data", data));
         }
 
         public IFontViewModel GetFontViewModel(FontEntry data)

@@ -177,6 +177,7 @@
     <Compile Include="Resource\Content\FontEntry.cs" />
     <Compile Include="Resource\Content\MaterialEntry.cs" />
     <Compile Include="Resource\Content\MetaDataEntry.cs" />
+    <Compile Include="Resource\Content\ResourceTree.cs" />
     <Compile Include="Resource\Content\StageEntry.cs" />
     <Compile Include="Resource\Content\PlayfieldRegionEntry.cs" />
     <Compile Include="Resource\Content\ResourceEntry.cs" />

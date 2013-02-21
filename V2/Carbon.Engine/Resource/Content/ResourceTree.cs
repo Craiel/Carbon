@@ -1,13 +1,7 @@
 ﻿namespace Carbon.Engine.Resource.Content
 {
-    public enum MetaDataKey
-    {
-        Unknown = 0,
-        Name = 10,
-    }
-
-    [ContentEntry("MetaData")]
-    public class MetaDataEntry : ContentEntry
+    [ContentEntry("ResourceTree")]
+    public class ResourceTree : ContentEntry
     {
         // -------------------------------------------------------------------
         // Public
@@ -16,16 +10,13 @@
         public int? Id { get; set; }
 
         [ContentEntryElement]
-        public ContentLink ContentId { get; set; }
+        public ContentLink Parent { get; set; }
 
         [ContentEntryElement]
-        public MetaDataKey Key { get; set; }
+        public string Name { get; set; }
 
         [ContentEntryElement]
-        public string Value { get; set; }
-
-        [ContentEntryElement]
-        public int? ValueInt { get; set; }
+        public string FullPath { get; set; }
 
         public override bool IsNew
         {

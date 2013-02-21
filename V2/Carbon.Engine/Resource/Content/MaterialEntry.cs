@@ -3,6 +3,9 @@
     [ContentEntry("Material")]
     public class MaterialEntry : ContentEntry
     {
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
         public int? Id { get; set; }
 
@@ -29,6 +32,14 @@
 
         [ContentEntryElement]
         public ResourceLink SpecularTexture { get; set; }
+
+        public override bool IsNew
+        {
+            get
+            {
+                return this.Id == null;
+            }
+        }
 
         public override Contracts.Resource.ICarbonContent Clone(bool fullCopy = false)
         {

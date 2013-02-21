@@ -10,35 +10,6 @@
                 <ResourceDictionary Source="/Resources/Icons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <x:Array Type="Brush" x:Key="EntryForegroundColors">
-                <SolidColorBrush Color="Black"/>
-                <SolidColorBrush Color="Red"/>
-            </x:Array>
-
-            <DataTemplate x:Key="FontTemplate">
-                <StackPanel Orientation="Horizontal">
-                    <StackPanel.Resources>
-                        <mvvm:CommandReference x:Key="CommandOpenReference" Command="{Binding Path=CommandOpen}" />
-                        <mvvm:CommandReference x:Key="CommandDeleteReference" Command="{Binding Path=CommandDelete}" />
-                    </StackPanel.Resources>
-                    <StackPanel.InputBindings>
-                        <MouseBinding Command="{StaticResource CommandOpenReference}" MouseAction="LeftDoubleClick" />
-                        <KeyBinding Key="ENTER" Command="{StaticResource CommandOpenReference}" />
-                        <KeyBinding Key="Delete" Command="{StaticResource CommandDeleteReference}" />
-                    </StackPanel.InputBindings>
-                    
-                    <StackPanel.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Open" Command="{Binding Path=CommandOpen}" Icon="{StaticResource IconOpen}"/>
-                            <Separator/>
-                            <MenuItem Header="Delete" Command="{Binding Path=CommandDelete}" Icon="{StaticResource IconDelete}"/>
-                        </ContextMenu>
-                    </StackPanel.ContextMenu>
-                    <Image Width="20" Height="20" Margin="2" Source="{Binding Path=IconUri, Converter={StaticResource UriToImageConverter}, ConverterParameter=32}"/>
-                    <TextBlock Text="{Binding Path=Title}" Margin="2" Foreground="{Binding Path=HasName, Converter={StaticResource BooleanToColorConverter}, ConverterParameter={StaticResource EntryForegroundColors}}"/>
-                </StackPanel>
-            </DataTemplate>
-
             <DataTemplate x:Key="ModelTemplate">
                 <StackPanel Orientation="Horizontal" ToolTip="{Binding Path=FileName}">
                     <StackPanel.Resources>
@@ -59,7 +30,7 @@
                         </ContextMenu>
                     </StackPanel.ContextMenu>
                     <Image Width="20" Height="20" Margin="2" Source="{Binding Path=IconUri, Converter={StaticResource UriToImageConverter}, ConverterParameter=32}"/>
-                    <TextBlock Text="{Binding Path=Title}" Margin="2" Foreground="{Binding Path=HasName, Converter={StaticResource BooleanToColorConverter}, ConverterParameter={StaticResource EntryForegroundColors}}"/>
+                    <TextBlock Text="{Binding Path=Title}" Margin="2"/>
                 </StackPanel>
             </DataTemplate>
 
@@ -81,7 +52,7 @@
             <DataTemplate x:Key="FolderTemplate">
                 <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource FolderContextMenu}">
                     <Image Width="20" Height="20" Margin="2" Source="{Binding Source={x:Static carbed:StaticResources.FolderIconUri}, Converter={StaticResource UriToImageConverter}, ConverterParameter=32}"/>
-                    <TextBlock Text="{Binding Path=Name}" Margin="2" Foreground="{Binding Path=HasName, Converter={StaticResource BooleanToColorConverter}, ConverterParameter={StaticResource EntryForegroundColors}}"/>
+                    <TextBlock Text="{Binding Path=Name}" Margin="2"/>
                 </StackPanel>
             </DataTemplate>
 
@@ -94,11 +65,25 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <!--ItemTemplateSelector="{StaticResource ExplorerTemplateSelector}" -->
-    <TreeView DataContext="{Binding Path=Root}" 
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <StackPanel>
+                <Button Command="{Binding Path=CommandSave}" Content="{StaticResource IconSave}"/>
+            </StackPanel>
+        </Grid>
+
+        <!--ItemTemplateSelector="{StaticResource ExplorerTemplateSelector}" -->
+    <TreeView DataContext="{Binding Path=Folders}" 
               ItemsSource="{Binding Path=Content}"
-              ItemTemplateSelector="{StaticResource ExplorerTemplateSelector}"
-              ContextMenu="{StaticResource FolderContextMenu}">
+              ItemTemplateSelector="{StaticResource ExplorerTemplateSelector}">
         <TreeView.Resources>
             <Style TargetType="{x:Type TreeViewItem}">
                 <Setter Property="BorderThickness" Value="1"/>
@@ -138,5 +123,12 @@
                 </Style.Resources>
             </Style>
         </TreeView.Resources>
+        <TreeView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add Folder" Icon="{StaticResource IconNewFolder}" Command="{Binding Path=CommandAddFolder}"/>
+                </ContextMenu>
+            </TreeView.ContextMenu>
     </TreeView>
+
+    </DockPanel>
 </UserControl>

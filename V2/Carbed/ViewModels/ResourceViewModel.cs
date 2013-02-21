@@ -36,11 +36,11 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override string Title
+        public override bool IsChanged
         {
             get
             {
-                return this.Name ?? "<no name>";
+                return this.data.IsChanged;
             }
         }
 

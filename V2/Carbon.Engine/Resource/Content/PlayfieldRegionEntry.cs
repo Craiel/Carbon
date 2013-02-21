@@ -3,8 +3,11 @@
     [ContentEntry("PlayfieldRegion")]
     public class PlayfieldRegionEntry : ContentEntry
     {
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [ContentEntryElement]
         public ContentLink Playfield { get; set; }
@@ -22,5 +25,13 @@
         public float SizeY { get; set; }
         [ContentEntryElement]
         public float SizeZ { get; set; }
+
+        public override bool IsNew
+        {
+            get
+            {
+                return this.Id == null;
+            }
+        }
     }
 }

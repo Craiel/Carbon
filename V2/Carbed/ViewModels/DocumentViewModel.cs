@@ -39,13 +39,11 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         public abstract string Name { get; set; }
 
-        public abstract string Title { get; }
-
-        public bool HasName
+        public virtual bool IsChanged
         {
             get
             {
-                return string.IsNullOrEmpty(this.Name);
+                return false;
             }
         }
         
@@ -137,7 +135,7 @@ namespace Carbed.ViewModels
 
         protected virtual bool CanSave(object obj)
         {
-            return true;
+            return this.IsChanged;
         }
 
         protected virtual void OnClose(object arg)

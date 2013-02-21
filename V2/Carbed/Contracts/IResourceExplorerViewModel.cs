@@ -1,7 +1,13 @@
-﻿namespace Carbed.Contracts
+﻿using System.Collections.Generic;
+using System.Windows.Input;
+
+namespace Carbed.Contracts
 {
     public interface IResourceExplorerViewModel : ICarbedTool
     {
-        IFolderViewModel Root { get; }
+        IReadOnlyCollection<IFolderViewModel> Folders { get; }
+
+        ICommand CommandSave { get; }
+        ICommand CommandAddFolder { get; }
     }
 }

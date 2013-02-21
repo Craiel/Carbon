@@ -6,9 +6,8 @@ namespace Carbed.Contracts
     public interface ICarbedDocument : ICarbedBase
     {
         string Name { get; set; }
-        string Title { get; }
 
-        bool HasName { get; }
+        bool IsChanged { get; }
         
         Uri IconUri { get; }
 

@@ -24,14 +24,6 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override string Title
-        {
-            get
-            {
-                return this.data.Name ?? "<no name>";
-            }
-        }
-
         public override string Name
         {
             get
@@ -50,7 +42,7 @@ namespace Carbed.ViewModels
                     this.CreateUndoState();
                     this.data.Name = value;
                     this.NotifyPropertyChanged();
-                    this.NotifyPropertyChanged("HasName");
+                    this.NotifyPropertyChanged("IsChanged");
                 }
             }
         }

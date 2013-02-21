@@ -10,7 +10,7 @@ namespace Carbed.Contracts
         ImageSource PreviewDiffuseImage { get; }
         ImageSource PreviewNormalImage { get; }
         ImageSource PreviewSpecularImage { get; }
-        ImageSource PreviewTransparencyImage { get; }
+        ImageSource PreviewAlphaImage { get; }
 
         ICommand CommandUpdatePreview { get; }
 

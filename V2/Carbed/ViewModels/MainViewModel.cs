@@ -532,7 +532,13 @@ namespace Carbed.ViewModels
             }
             else
             {
-                this.projectExplorerViewModel.Root.AddContent(content);
+                IFolderViewModel folder = this.projectExplorerViewModel.Folders.LastOrDefault();
+                if (folder == null)
+                {
+                    throw new InvalidOperationException("No folder was present to hold the content");
+                }
+
+                folder.AddContent(content);
             }
         }
 

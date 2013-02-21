@@ -19,12 +19,12 @@ namespace Carbed.ViewModels
         private ImageSource previewDiffuseImage;
         private ImageSource previewNormalImage;
         private ImageSource previewSpecularImage;
-        private ImageSource previewTransparencyImage;
+        private ImageSource previewAlphaImage;
 
         private ResourceEntry diffuseResource;
         private ResourceEntry normalResource;
         private ResourceEntry specularResource;
-        private ResourceEntry transparencyResource;
+        private ResourceEntry alphaResource;
         
         // -------------------------------------------------------------------
         // Constructor
@@ -46,11 +46,12 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override string Title
+        public override bool IsChanged
         {
             get
             {
-                return this.Name ?? "<no name>";
+                return this.data.IsChanged || this.diffuseResource.IsChanged || this.normalResource.IsChanged ||
+                       this.specularResource.IsChanged || this.alphaResource.IsChanged;
             }
         }
         
@@ -86,11 +87,11 @@ namespace Carbed.ViewModels
             }
         }
 
-        public ImageSource PreviewTransparencyImage
+        public ImageSource PreviewAlphaImage
         {
             get
             {
-                return this.previewTransparencyImage;
+                return this.previewAlphaImage;
             }
         }
         
@@ -116,9 +117,9 @@ namespace Carbed.ViewModels
                 target.Save(ref this.specularResource);
             }
 
-            if (this.transparencyResource != null)
+            if (this.alphaResource != null)
             {
-                target.Save(ref this.transparencyResource);
+                target.Save(ref this.alphaResource);
             }
 
             this.NotifyPropertyChanged();

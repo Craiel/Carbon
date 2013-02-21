@@ -4,7 +4,7 @@
 
     public interface IViewModelFactory
     {
-        IFolderViewModel GetFolderViewModel();
+        IFolderViewModel GetFolderViewModel(ResourceTree data);
 
         IFontViewModel GetFontViewModel(FontEntry data);
         IStageViewModel GetStageViewModel(StageEntry data);

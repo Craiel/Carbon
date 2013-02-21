@@ -49,14 +49,14 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override string Title
+        public override bool IsChanged
         {
             get
             {
-                return this.Name ?? "<no name>";
+                return this.data.IsChanged || this.font.IsChanged || this.size.IsChanged;
             }
         }
-        
+
         public override Uri IconUri
         {
             get
@@ -80,6 +80,7 @@ namespace Carbed.ViewModels
                     this.size.ValueInt = value;
                     this.UpdatePreview();
                     this.NotifyPropertyChanged();
+                    this.NotifyPropertyChanged("IsChanged");
                 }
             }
         }
@@ -110,6 +111,7 @@ namespace Carbed.ViewModels
                 this.font.Value = value == null ? null : value.Name;
                 this.UpdatePreview();
                 this.NotifyPropertyChanged();
+                this.NotifyPropertyChanged("IsChanged");
             }
         }
 

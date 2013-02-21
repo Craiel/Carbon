@@ -146,6 +146,13 @@ namespace Carbon.Engine.Resource
                     properties[p].Info.SetValue(entry, translatedValue);
                 }
 
+                // Lock the change state if we are dealing with content objects
+                // Todo: Might want to turn this behavior off for the client
+                if (entry as ICarbonContent != null)
+                {
+                    ((ICarbonContent)entry).LockChangeState();
+                }
+
                 processed.Add(entry);
             }
 

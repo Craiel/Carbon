@@ -38,6 +38,14 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public override bool IsChanged
+        {
+            get
+            {
+                return this.data.IsChanged;
+            }
+        }
+
         public override string Name
         {
             get
@@ -74,7 +82,7 @@ namespace Carbed.ViewModels
 
                     this.name.Value = value;
                     this.NotifyPropertyChanged();
-                    this.NotifyPropertyChanged("HasName");
+                    this.NotifyPropertyChanged("IsChanged");
                 }
             }
         }

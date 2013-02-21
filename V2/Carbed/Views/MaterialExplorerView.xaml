@@ -94,7 +94,7 @@
                             </ContextMenu>
                         </StackPanel.ContextMenu>
                         <Image Width="20" Height="20" Margin="2" Source="{Binding Path=IconUri, Converter={StaticResource UriToImageConverter}, ConverterParameter=32}"/>
-                        <TextBlock Text="{Binding Path=Title}" Margin="2" Foreground="{Binding Path=HasName, Converter={StaticResource BooleanToColorConverter}, ConverterParameter={StaticResource EntryForegroundColors}}"/>
+                        <TextBlock Text="{Binding Path=Title}" Margin="2"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

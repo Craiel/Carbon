@@ -23,6 +23,7 @@ namespace Carbed.Logic
         private readonly IViewModelFactory viewModelFactory;
 
         private readonly List<IMaterialViewModel> materials;
+        private readonly List<IFolderViewModel> folders;
         
         private IContentManager projectContent;
         private IResourceManager projectResources;
@@ -39,6 +40,7 @@ namespace Carbed.Logic
             this.viewModelFactory = factory.Get<IViewModelFactory>();
 
             this.materials = new List<IMaterialViewModel>();
+            this.folders = new List<IFolderViewModel>();
         }
 
         // -------------------------------------------------------------------
@@ -59,6 +61,14 @@ namespace Carbed.Logic
             get
             {
                 return this.materials.AsReadOnly();
+            }
+        }
+
+        public IReadOnlyCollection<IFolderViewModel> Folders
+        {
+            get
+            {
+                return this.folders.AsReadOnly();
             }
         }
 
@@ -160,6 +170,15 @@ namespace Carbed.Logic
                 vm.Load();
                 this.materials.Add(vm);
             }
+
+            ContentQueryResult<ResourceTree> treeData = this.projectContent.TypedLoad(new ContentQuery<ResourceTree>().IsEqual("Parent", null));
+            var treeEntries = treeData.ToList<ResourceTree>();
+            foreach (ResourceTree entry in treeEntries)
+            {
+                IFolderViewModel vm = this.viewModelFactory.GetFolderViewModel(entry);
+                vm.Load();
+                this.folders.Add(vm);
+            }
         }
 
         public IMaterialViewModel AddMaterial()
@@ -202,12 +221,20 @@ namespace Carbed.Logic
                     new ContentQuery<MetaDataEntry>().IsEqual("Id", primaryKeyValue)).ToList<MetaDataEntry>();
         }
 
+        public IList<ResourceTree> GetResourceTreeChildren(int parent)
+        {
+            // Todo: Cache if this gets to slow
+            ContentQueryResult<ResourceTree> treeData = this.projectContent.TypedLoad(new ContentQuery<ResourceTree>().IsEqual("Parent", parent));
+            return treeData.ToList<ResourceTree>();
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
         private void Unload()
         {
             this.materials.Clear();
+            this.folders.Clear();
         }
 
         private void InitializeProject(string rootPath)

@@ -1,22 +1,26 @@
-﻿using Carbed.Contracts;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Input;
+
+using Carbed.Contracts;
+using Carbed.Logic.MVVM;
 
 namespace Carbed.ViewModels
 {
     public class ResourceExplorerViewModel : ToolViewModel, IResourceExplorerViewModel
     {
         private readonly ICarbedLogic logic;
-        private readonly IViewModelFactory viewModelFactory;
-
-        private IFolderViewModel root;
         
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ResourceExplorerViewModel(ICarbedLogic logic, IViewModelFactory viewModelFactory)
+        public ResourceExplorerViewModel(ICarbedLogic logic)
         {
             this.logic = logic;
             this.logic.ProjectChanged += this.OnProjectChanged;
-            this.viewModelFactory = viewModelFactory;
+
+            this.CommandSave = new RelayCommand(this.OnSave, this.CanSave);
+            this.CommandAddFolder = new RelayCommand(this.OnAddFolder, this.CanAddFolder);
         }
 
         // -------------------------------------------------------------------
@@ -35,42 +39,46 @@ namespace Carbed.ViewModels
             }
         }
 
-        public IFolderViewModel Root
+        public IReadOnlyCollection<IFolderViewModel> Folders
         {
             get
             {
-                return this.root;
+                return this.logic.Folders;
             }
         }
+
+        public ICommand CommandSave { get; private set; }
+        public ICommand CommandAddFolder { get; private set; }
 
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void ClearViewModels()
-        {
-            if (this.root != null)
-            {
-                this.root = null;
-            }
-        }
-
-        private void CreateViewModels()
-        {
-            this.ClearViewModels();
-
-            if (!this.logic.HasProjectLoaded)
-            {
-                return;
-            }
-
-            this.root = this.viewModelFactory.GetFolderViewModel();
-            this.NotifyPropertyChanged("Root");
-        }
-
         private void OnProjectChanged()
         {
-            this.CreateViewModels();
-            this.NotifyPropertyChanged(string.Empty);
+            this.NotifyPropertyChanged("Folders");
+        }
+
+        private void OnSave(object obj)
+        {
+            foreach (IFolderViewModel folder in Folders)
+            {
+                folder.CommandSave.Execute(obj);
+            }
+        }
+
+        private bool CanSave(object obj)
+        {
+            return this.Folders.Any(x => x.CommandSave.CanExecute(obj));
+        }
+
+        private void OnAddFolder(object obj)
+        {
+            this.logic.AddFolder();
+        }
+
+        private bool CanAddFolder(object obj)
+        {
+            return this.logic.HasProjectLoaded;
         }
     }
 }

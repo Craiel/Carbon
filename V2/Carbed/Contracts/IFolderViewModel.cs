@@ -7,6 +7,8 @@ namespace Carbed.Contracts
     {
         bool IsExpanded { get; set; }
 
+        string FullPath { get; }
+
         ReadOnlyObservableCollection<ICarbedDocument> Content { get; }
 
         ICommand CommandAddFolder { get; }
