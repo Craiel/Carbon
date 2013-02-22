@@ -18,7 +18,8 @@ namespace Carbed.ViewModels
         private readonly IViewModelFactory viewModelFactory;
         private readonly ObservableCollection<ICarbedDocument> content;
         private readonly IMainViewModel mainViewModel;
-        private readonly ResourceTree data;
+
+        private ResourceTree data;
 
         private bool isExpanded;
 
@@ -203,6 +204,12 @@ namespace Carbed.ViewModels
             }
 
             this.logic.GetResourceTreeChildren((int)this.data.Id);
+        }
+
+        public void Save(IContentManager target)
+        {
+            target.Save(ref this.data);
+            this.NotifyPropertyChanged();
         }
 
         // -------------------------------------------------------------------

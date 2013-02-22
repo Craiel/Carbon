@@ -3,7 +3,6 @@ using System.Threading;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
-using Carbon.Engine.Resource;
 
 using Core.Utils;
 using Core.Utils.Contracts;
@@ -13,8 +12,6 @@ using SlimDX.Windows;
 
 namespace Carbon.Engine.Logic
 {
-    using Carbon.Engine.Resource.Content;
-
     public struct EngineContent
     {
         public string FallbackTexture;
@@ -190,8 +187,6 @@ namespace Carbon.Engine.Logic
 
         protected void SetEngineContent(EngineContent content)
         {
-            var link = new ResourceLink { Path = @"Textures\checkerboard.dds" };
-            this.graphics.TextureManager.Fallback = this.graphics.TextureManager.Register(link);
         }
 
         // -------------------------------------------------------------------

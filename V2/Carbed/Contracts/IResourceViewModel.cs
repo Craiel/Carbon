@@ -6,8 +6,6 @@ namespace Carbed.Contracts
     {
         bool IsExpanded { get; set; }
 
-        string FileName { get; }
-
         IFolderViewModel Parent { get; set; }
 
         ICommand CommandSelectFile { get; }

@@ -17,7 +17,8 @@ namespace Carbed.ViewModels
         private ICommand commandSelectFile;
 
         private IFolderViewModel parent;
-        private string fileName;
+
+        private MetaDataEntry name;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -26,11 +27,6 @@ namespace Carbed.ViewModels
             : base(factory)
         {
             this.data = data;
-
-            if (this.data.Resource != null && !string.IsNullOrEmpty(this.data.Resource.Path))
-            {
-                this.fileName = System.IO.Path.GetFileName(this.data.Resource.Path);
-            }
         }
 
         // -------------------------------------------------------------------
@@ -48,20 +44,20 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (string.IsNullOrEmpty(this.fileName))
+                if (this.name == null || string.IsNullOrEmpty(this.name.Value))
                 {
                     return "<no name>";
                 }
 
-                return this.fileName;
+                return this.name.Value;
             }
 
             set
             {
-                if (this.fileName != value)
+                /*if (this.fileName != value)
                 {
                     this.RenameFile(value);
-                }
+                }*/
             }
         }
 
@@ -81,14 +77,6 @@ namespace Carbed.ViewModels
         }
 
         public bool IsExpanded { get; set; }
-
-        public string FileName
-        {
-            get
-            {
-                return this.data.SourcePath;
-            }
-        }
 
         public ICommand CommandSelectFile
         {

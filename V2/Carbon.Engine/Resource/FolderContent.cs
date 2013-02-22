@@ -29,7 +29,7 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override Stream Load(string hash, string key)
+        public override Stream Load(string hash)
         {
             string fileName = Path.Combine(this.folder, hash.Replace('/', '.'));
 

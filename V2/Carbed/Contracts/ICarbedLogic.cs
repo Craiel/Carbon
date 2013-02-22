@@ -27,7 +27,7 @@ namespace Carbed.Contracts
         void Delete(IMaterialViewModel material);
         IMaterialViewModel Clone(IMaterialViewModel source);
 
-        IFolderViewModel AddFolder { get; }
+        IFolderViewModel AddFolder();
         void Save(IFolderViewModel folder);
         void Delete(IFolderViewModel folder);
         IFolderViewModel Clone(IFolderViewModel source);

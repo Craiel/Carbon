@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 
+using Carbon.Engine.Contracts.Resource;
+
 namespace Carbed.Contracts
 {
     public interface IFolderViewModel : ICarbedDocument
@@ -22,5 +24,7 @@ namespace Carbed.Contracts
         void SetExpand(bool expanded);
 
         void DeleteFolder(IFolderViewModel folder);
+
+        void Save(IContentManager target);
     }
 }

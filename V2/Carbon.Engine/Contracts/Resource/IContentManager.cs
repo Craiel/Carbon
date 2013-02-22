@@ -7,8 +7,6 @@ namespace Carbon.Engine.Contracts.Resource
 {
     public interface IContentManager : IDisposable
     {
-        ResourceLink Root { get; }
-
         ContentQueryResult<T> TypedLoad<T>(ContentQuery<T> criteria) where T : ICarbonContent;
         ContentQueryResult Load(ContentQuery criteria);
 

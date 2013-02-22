@@ -24,7 +24,8 @@ namespace Carbed.Logic
 
         private readonly List<IMaterialViewModel> materials;
         private readonly List<IFolderViewModel> folders;
-        
+
+        private string projectPath;
         private IContentManager projectContent;
         private IResourceManager projectResources;
 
@@ -126,15 +127,13 @@ namespace Carbed.Logic
              * - Move the Resources from the temporary folder as well
              * - Cleanup the temporary data
              */
-            ResourceLink currentRoot = this.projectContent.Root;
-            ResourceLink newRoot = new ResourceLink { Path = file };
 
             this.CloseProject();
 
             // Move the database file over to our new location
-            if (File.Exists(currentRoot.Path))
+            if (File.Exists(projectPath))
             {
-                File.Copy(currentRoot.Path, newRoot.Path);
+                File.Copy(projectPath, file);
             }
             
             this.OpenProject(file);
@@ -208,6 +207,33 @@ namespace Carbed.Logic
             throw new NotImplementedException();
         }
 
+        public IFolderViewModel AddFolder()
+        {
+            var vm = this.viewModelFactory.GetFolderViewModel(new ResourceTree());
+            this.folders.Insert(0, vm);
+            return vm;
+        }
+
+        public void Save(IFolderViewModel folder)
+        {
+            if (this.projectContent == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            folder.Save(this.projectContent);
+        }
+
+        public void Delete(IFolderViewModel folder)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFolderViewModel Clone(IFolderViewModel source)
+        {
+            throw new NotImplementedException();
+        }
+
         public IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue)
         {
             if (primaryKeyValue == null)
@@ -243,7 +269,7 @@ namespace Carbed.Logic
             this.projectResources = this.engineFactory.GetResourceManager(resourcePath);
 
             string contentPath = Path.Combine(rootPath, "Main.db");
-            this.projectContent = this.engineFactory.GetContentManager(this.projectResources, new ResourceLink { Path = contentPath });
+            this.projectContent = this.engineFactory.GetContentManager(this.projectResources, contentPath);
         }
 
         private void NotifyProjectChanged()

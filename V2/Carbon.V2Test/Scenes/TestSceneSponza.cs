@@ -113,7 +113,8 @@ namespace Carbon.V2Test.Scenes
                 }
             }
 
-            var materialResource = new MaterialEntry { DiffuseTexture = new ResourceLink { Path = @"Textures\checkerboard.dds" } };
+            ResourceLink link = this.resourceManager.GetLink(@"Textures\checkerboard.dds");
+            var materialResource = new MaterialEntry { DiffuseTexture = link };
             this.checkerboardMaterial = new Material(graphics, materialResource);
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
             this.normalDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1002));
@@ -124,8 +125,8 @@ namespace Carbon.V2Test.Scenes
             this.gBufferDepthTexture = new Material(this.graphics.TextureManager.GetRegisterReference(14));
             this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));
 
-            var source = new ResourceLink { Path = @"Models\sponza.dae" };
-            var resource = this.resourceManager.Load<RawResource>(ref source);
+            link = this.resourceManager.GetLink(@"Models\sponza.dae");
+            var resource = this.resourceManager.Load<RawResource>(link);
             if (resource != null)
             {
                 /*ColladaModel testModel = ColladaModel.Load(resource.Data);

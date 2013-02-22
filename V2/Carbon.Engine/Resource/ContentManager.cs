@@ -12,19 +12,14 @@ using Core.Utils.Contracts;
 
 namespace Carbon.Engine.Resource
 {
-    using System.IO;
-
-    using Carbon.Engine.Resource.Resources;
-
     public class ContentManager : IContentManager
     {
         private const string SqlNotNull = " NOT NULL";
         private const string SqlLastId = "SELECT last_insert_rowid()";
 
-        private readonly IResourceManager resourceManager;
         private readonly ILog log;
 
-        private readonly ResourceLink root;
+        private readonly string root;
 
         private readonly SQLiteFactory factory;
         private readonly IList<string> checkedTableList;
@@ -37,9 +32,8 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ContentManager(IResourceManager resourceManager, IEngineLog log, ResourceLink root)
+        public ContentManager(IEngineLog log, string root)
         {
-            this.resourceManager = resourceManager;
             this.log = log.AquireContextLog("ContentManager");
             this.root = root;
 
@@ -57,14 +51,6 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public ResourceLink Root
-        {
-            get
-            {
-                return this.root;
-            }
-        }
-
         public ContentQueryResult<T> TypedLoad<T>(ContentQuery<T> criteria) where T : ICarbonContent
         {
             return new ContentQueryResult<T>(this, this.log, this.GetCommand(criteria));
@@ -157,16 +143,7 @@ namespace Carbon.Engine.Resource
         {
             if (string.IsNullOrEmpty(link.Hash))
             {
-                if (string.IsNullOrEmpty(link.Path))
-                {
-                    throw new DataException("Source has to be supplied if hash is null");
-                }
-
-                using (var fileStream = new FileStream(link.Path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    var resource = new RawResource(fileStream);
-                    this.resourceManager.Store(ref link, resource);
-                }
+                throw new DataException("Link has no hash provided");
             }
 
             var cast = (ICarbonContent)link;
@@ -437,7 +414,7 @@ namespace Carbon.Engine.Resource
             // - Release the resource
             this.connection = (SQLiteConnection)this.factory.CreateConnection();
             //this.connection.ConnectionString = "Data Source=:memory:";
-            this.connection.ConnectionString = string.Format("Data Source={0}", this.root.Path);
+            this.connection.ConnectionString = string.Format("Data Source={0}", this.root);
             this.connection.Open();
         }
 

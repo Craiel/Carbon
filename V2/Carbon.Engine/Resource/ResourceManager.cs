@@ -13,7 +13,7 @@ namespace Carbon.Engine.Resource
 
     public abstract class ResourceContent
     {
-        public abstract Stream Load(string hash, string key);
+        public abstract Stream Load(string hash);
         public abstract bool Store(string hash, ICarbonResource data);
         public abstract bool Replace(string hash, ICarbonResource data);
     }
@@ -44,17 +44,22 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public T Load<T>(ref ResourceLink link) where T : ICarbonResource
+        public ResourceLink GetLink(string path)
+        {
+            byte[] hashData = this.hashProvider.ComputeHash(Encoding.UTF8.GetBytes(path));
+            var link = new ResourceLink { Hash = Convert.ToBase64String(hashData) };
+            return link;
+        }
+
+        public T Load<T>(ResourceLink link) where T : ICarbonResource
         {
             System.Diagnostics.Trace.TraceWarning("Loading Resource {0}", link);
-            this.ProcessResourceLink(ref link);
-
             if (!this.cache.ContainsKey(link.Hash))
             {
                 for (int i = 0; i < this.content.Count; i++)
                 {
                     ResourceContent resourceContent = this.content[i];
-                    Stream dataStream = resourceContent.Load(link.Hash, link.Path);
+                    Stream dataStream = resourceContent.Load(link.Hash);
                     if (dataStream != null)
                     {
                         dataStream.Position = 0;
@@ -77,11 +82,9 @@ namespace Carbon.Engine.Resource
             return (T)this.cache[link.Hash];
         }
 
-        public void Store(ref ResourceLink link, ICarbonResource resource)
+        public void Store(ResourceLink link, ICarbonResource resource)
         {
             System.Diagnostics.Trace.TraceWarning("Storing Resource {0} ({1})", link, resource.GetType());
-            this.ProcessResourceLink(ref link);
-
             for (int i = 0; i < this.content.Count; i++)
             {
                 ResourceContent resourceContent = this.content[i];
@@ -93,9 +96,8 @@ namespace Carbon.Engine.Resource
             }
         }
 
-        public void Replace(ref ResourceLink link, ICarbonResource resource)
+        public void Replace(ResourceLink link, ICarbonResource resource)
         {
-            this.ProcessResourceLink(ref link);
             for (int i = 0; i < this.content.Count; i++)
             {
                 ResourceContent resourceContent = this.content[i];
@@ -113,9 +115,8 @@ namespace Carbon.Engine.Resource
             throw new InvalidDataException("Resource could not be replaced, no existing resource was found");
         }
 
-        public void StoreOrReplace(ref ResourceLink link, ICarbonResource resource)
+        public void StoreOrReplace(ResourceLink link, ICarbonResource resource)
         {
-            this.ProcessResourceLink(ref link);
             for (int i = 0; i < this.content.Count; i++)
             {
                 ResourceContent resourceContent = this.content[i];
@@ -157,20 +158,6 @@ namespace Carbon.Engine.Resource
             }
 
             this.content.Add(newContent);
-        }
-
-        private void ProcessResourceLink(ref ResourceLink link)
-        {
-            if (link.Hash == null && string.IsNullOrEmpty(link.Path))
-            {
-                throw new ArgumentException("Resource link data is invalid, source has to be supplied");
-            }
-
-            if (link.Hash == null)
-            {
-                byte[] hashData = this.hashProvider.ComputeHash(Encoding.UTF8.GetBytes(link.Path));
-                link.Hash = Convert.ToBase64String(hashData);
-            }
         }
     }
 }

@@ -6,7 +6,6 @@ using System.Linq;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Resource;
-using Carbon.Engine.Resource;
 using Carbon.Engine.Resource.Resources;
 
 using Core.Utils.Contracts;
@@ -247,7 +246,7 @@ namespace Carbon.Engine.Logic
                 case TextureReferenceType.Resource:
                     {
                         var res = reference.Resource;
-                        var textureResource = this.resourceManager.Load<RawResource>(ref res);
+                        var textureResource = this.resourceManager.Load<RawResource>(res);
                         if (textureResource != null)
                         {
                             return textureResource.Data;
