@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Carbon.Engine.Resource.Content
+﻿namespace Carbon.Engine.Resource.Content
 {
     public enum ContentLinkType
     {

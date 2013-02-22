@@ -24,19 +24,13 @@ namespace Carbon.Engine.Resource.Content
         public ResourceType Type { get; set; }
 
         [ContentEntryElement]
-        public string SourcePath { get; set; }
+        public string Hash { get; set; }
 
         [ContentEntryElement]
         public ContentLink TreeNode { get; set; }
 
         [ContentEntryElement]
         public byte[] Md5 { get; set; }
-
-        [ContentEntryElement]
-        public DateTime LastRefreshTime { get; set; }
-
-        [ContentEntryElement]
-        public ResourceLink Resource { get; set; }
 
         public override bool IsNew
         {

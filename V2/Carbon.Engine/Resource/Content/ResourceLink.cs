@@ -11,13 +11,7 @@
 
         [ContentEntryElement]
         public string Hash { get; set; }
-
-        [ContentEntryElement]
-        public string Path { get; set; }
-
-        [ContentEntryElement]
-        public bool Mutable { get; set; }
-
+        
         public override bool IsNew
         {
             get
