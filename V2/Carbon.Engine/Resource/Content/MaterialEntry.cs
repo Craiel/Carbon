@@ -22,16 +22,16 @@
         public float ColorA { get; set; }
 
         [ContentEntryElement]
-        public ResourceLink DiffuseTexture { get; set; }
+        public ContentLink DiffuseTexture { get; set; }
 
         [ContentEntryElement]
-        public ResourceLink NormalTexture { get; set; }
+        public ContentLink NormalTexture { get; set; }
 
         [ContentEntryElement]
-        public ResourceLink AlphaTexture { get; set; }
+        public ContentLink AlphaTexture { get; set; }
 
         [ContentEntryElement]
-        public ResourceLink SpecularTexture { get; set; }
+        public ContentLink SpecularTexture { get; set; }
 
         public override bool IsNew
         {
@@ -81,25 +81,25 @@
             this.ColorA = other.ColorA;
             if (other.DiffuseTexture != null)
             {
-                this.DiffuseTexture = new ResourceLink();
+                this.DiffuseTexture = new ContentLink();
                 this.DiffuseTexture.LoadFrom(other.DiffuseTexture);
             }
 
             if (other.NormalTexture != null)
             {
-                this.NormalTexture = new ResourceLink();
+                this.NormalTexture = new ContentLink();
                 this.NormalTexture.LoadFrom(other.NormalTexture);
             }
 
             if (other.SpecularTexture != null)
             {
-                this.SpecularTexture = new ResourceLink();
+                this.SpecularTexture = new ContentLink();
                 this.SpecularTexture.LoadFrom(other.SpecularTexture);
             }
 
             if (other.AlphaTexture != null)
             {
-                this.AlphaTexture = new ResourceLink();
+                this.AlphaTexture = new ContentLink();
                 this.AlphaTexture.LoadFrom(other.AlphaTexture);
             }
         }

@@ -15,5 +15,6 @@ namespace Carbed.Contracts
         ICommand CommandUpdatePreview { get; }
 
         void Save(IContentManager target);
+        void Delete(IContentManager target);
     }
 }

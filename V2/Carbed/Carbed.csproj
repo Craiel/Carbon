@@ -143,7 +143,6 @@
     <Compile Include="Logic\MVVM\ListBoxSelectionSynchronization.cs" />
     <Compile Include="Logic\MVVM\OneWayBinding.cs" />
     <Compile Include="Logic\OperationProgress.cs" />
-    <Compile Include="Logic\ResourceExplorerTemplateSelector.cs" />
     <Compile Include="Logic\MVVM\RelayCommand.cs" />
     <Compile Include="Logic\MVVM\TreeViewExtension.cs" />
     <Compile Include="Logic\UndoRedoManager.cs" />

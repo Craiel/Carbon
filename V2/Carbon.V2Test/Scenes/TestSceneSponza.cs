@@ -113,7 +113,7 @@ namespace Carbon.V2Test.Scenes
                 }
             }
 
-            ResourceLink link = this.resourceManager.GetLink(@"Textures\checkerboard.dds");
+            /*ResourceLink link = this.resourceManager.GetLink(@"Textures\checkerboard.dds");
             var materialResource = new MaterialEntry { DiffuseTexture = link };
             this.checkerboardMaterial = new Material(graphics, materialResource);
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
@@ -123,20 +123,20 @@ namespace Carbon.V2Test.Scenes
             this.gBufferDiffuseAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(12));
             this.gBufferSpecularAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(13));
             this.gBufferDepthTexture = new Material(this.graphics.TextureManager.GetRegisterReference(14));
-            this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));
+            this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));*/
 
-            link = this.resourceManager.GetLink(@"Models\sponza.dae");
+            /*link = this.resourceManager.GetLink(@"Models\sponza.dae");
             var resource = this.resourceManager.Load<RawResource>(link);
             if (resource != null)
             {
-                /*ColladaModel testModel = ColladaModel.Load(resource.Data);
+                ColladaModel testModel = ColladaModel.Load(resource.Data);
                 ColladaCarbonConverter.Convert("sponza", testModel);
                 node.Material = this.redColorMaterial;
                 node.Scale = new Vector3(0.01f);
                 //node.Rotation = Quaternion.RotationAxis(Vector3.UnitY, MathExtension.DegreesToRadians(30));
                 node.Position = new Vector4(0, 0, 0, 1);
-                this.root.AddChild(node);*/
-            }
+                this.root.AddChild(node);
+            }*/
         }
 
         public override void Resize(int width, int height)

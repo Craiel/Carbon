@@ -9,10 +9,10 @@ using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource;
 using Carbon.Engine.Resource.Content;
 
+using Core.Utils.Contracts;
+
 namespace Carbed.ViewModels
 {
-    using Core.Utils.Contracts;
-
     public abstract class ContentViewModel : DocumentViewModel
     {
         private readonly ICarbedLogic logic;
@@ -38,6 +38,14 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public override bool IsNamed
+        {
+            get
+            {
+                return this.name != null && !string.IsNullOrEmpty(this.name.Value);
+            }
+        }
+
         public override bool IsChanged
         {
             get
@@ -57,6 +65,7 @@ namespace Carbed.ViewModels
 
                 return this.name.Value;
             }
+
             set
             {
                 if (this.name == null && value == null)
@@ -119,6 +128,14 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
+        protected ILog Log
+        {
+            get
+            {
+                return this.log;
+            }
+        }
+
         protected override void OnDelete(object arg)
         {
             if (MessageBox.Show(
@@ -141,7 +158,7 @@ namespace Carbed.ViewModels
 
         protected override void RestoreMemento(object memento)
         {
-            ICarbonContent source = memento as ICarbonContent;
+            var source = memento as ICarbonContent;
             if (source == null)
             {
                 throw new ArgumentException();
@@ -159,8 +176,28 @@ namespace Carbed.ViewModels
                 throw new InvalidOperationException("Can not save without setting a name first");
             }
 
-            target.Save(ref this.name);
-            this.NotifyPropertyChanged();
+            if (this.data.IsChanged || this.data.IsNew)
+            {
+                target.Save(this.data);
+            }
+
+            if (this.name.IsChanged || this.name.IsNew)
+            {
+                target.Save(this.name);
+            }
+        }
+
+        protected void Delete(IContentManager target)
+        {
+            if (!this.data.IsNew)
+            {
+                target.Delete(this.data);
+            }
+
+            if (this.name != null && !this.name.IsNew)
+            {
+                target.Delete(this.name);
+            }
         }
 
         protected virtual void LoadMetadata(IList<MetaDataEntry> metaData)

@@ -126,9 +126,9 @@ namespace Carbon.V2Test.Scenes
             testLight = new Light { Color = new Vector4(1), Type = LightType.Spot, Range = 10.0f, SpecularPower = 10.0f, Direction = Vector3.UnitY, SpotAngles = new Vector2(5, 10) };
             this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(35f, 0.5f, 20f, 1) });
 
-            ResourceLink link = this.resourceManager.GetLink(@"..\SourceData\Textures\checkerboard.dds");
+            /*ResourceLink link = this.resourceManager.GetLink(@"..\SourceData\Textures\checkerboard.dds");
             ICarbonContent materialResource = new MaterialEntry { DiffuseTexture = link };
-            this.contentManager.Save(ref materialResource);
+            this.contentManager.Save(materialResource);
             var test =
                 this.contentManager.TypedLoad(
                     new ContentQuery<MaterialEntry>().Contains("Id", new[] { (object)0, 1, 2, 3 }))
@@ -146,7 +146,7 @@ namespace Carbon.V2Test.Scenes
             this.gBufferDiffuseAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(12));
             this.gBufferSpecularAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(13));
             this.gBufferDepthTexture = new Material(this.graphics.TextureManager.GetRegisterReference(14));
-            this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));
+            this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));*/
 
             /*PositionNormalVertex[] meshData;
             uint[] indices;

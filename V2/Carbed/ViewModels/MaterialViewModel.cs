@@ -101,25 +101,51 @@ namespace Carbed.ViewModels
         {
             base.Save(target);
 
-            target.Save(ref this.data);
-            if (this.diffuseResource != null)
+            if (this.diffuseResource != null && (this.diffuseResource.IsNew || this.diffuseResource.IsChanged))
             {
-                target.Save(ref this.diffuseResource);
+                target.Save(this.diffuseResource);
             }
 
-            if (this.normalResource != null)
+            if (this.normalResource != null && (this.normalResource.IsNew || this.normalResource.IsChanged))
             {
-                target.Save(ref this.normalResource);
+                target.Save(this.normalResource);
             }
 
-            if (this.specularResource != null)
+            if (this.specularResource != null && (this.specularResource.IsNew || this.specularResource.IsChanged))
             {
-                target.Save(ref this.specularResource);
+                target.Save(this.specularResource);
             }
 
-            if (this.alphaResource != null)
+            if (this.alphaResource != null && (this.alphaResource.IsNew || this.alphaResource.IsChanged))
             {
-                target.Save(ref this.alphaResource);
+                target.Save(this.alphaResource);
+            }
+
+            this.NotifyPropertyChanged();
+        }
+
+        public new void Delete(IContentManager target)
+        {
+            base.Delete(target);
+
+            if (this.diffuseResource != null && !this.diffuseResource.IsNew)
+            {
+                target.Delete(this.diffuseResource);
+            }
+
+            if (this.normalResource != null && !this.normalResource.IsNew)
+            {
+                target.Delete(this.diffuseResource);
+            }
+
+            if (this.specularResource != null && !this.specularResource.IsNew)
+            {
+                target.Delete(this.diffuseResource);
+            }
+
+            if (this.alphaResource != null && !this.alphaResource.IsNew)
+            {
+                target.Delete(this.diffuseResource);
             }
 
             this.NotifyPropertyChanged();

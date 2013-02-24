@@ -39,7 +39,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.logic.HasProjectLoaded)
+                if (this.logic.IsProjectLoaded)
                 {
                     //return string.Format("Project '{0}'", this.logic.Project.Name);
                 }
@@ -90,7 +90,7 @@ namespace Carbed.ViewModels
         {
             this.documents.Clear();
 
-            if (!this.logic.HasProjectLoaded)
+            if (!this.logic.IsProjectLoaded)
             {
                 return;
             }
@@ -112,7 +112,7 @@ namespace Carbed.ViewModels
 
         private bool CanReload(object obj)
         {
-            return this.logic.HasProjectLoaded;
+            return this.logic.IsProjectLoaded;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="Carbed.Views.ResourceExplorerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:carbed="clr-namespace:Carbed"
-             xmlns:logic="clr-namespace:Carbed.Logic" xmlns:mvvm="clr-namespace:Carbed.Logic.MVVM">
+             xmlns:mvvm="clr-namespace:Carbed.Logic.MVVM">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -9,34 +9,6 @@
                 <ResourceDictionary Source="/Resources/Converters.xaml"/>
                 <ResourceDictionary Source="/Resources/Icons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            <DataTemplate x:Key="ModelTemplate">
-                <StackPanel Orientation="Horizontal" ToolTip="{Binding Path=FileName}">
-                    <StackPanel.Resources>
-                        <mvvm:CommandReference x:Key="CommandOpenReference" Command="{Binding Path=CommandOpen}" />
-                        <mvvm:CommandReference x:Key="CommandDeleteReference" Command="{Binding Path=CommandDelete}" />
-                    </StackPanel.Resources>
-                    <StackPanel.InputBindings>
-                        <MouseBinding Command="{StaticResource CommandOpenReference}" MouseAction="LeftDoubleClick" />
-                        <KeyBinding Key="ENTER" Command="{StaticResource CommandOpenReference}" />
-                        <KeyBinding Key="Delete" Command="{StaticResource CommandDeleteReference}" />
-                    </StackPanel.InputBindings>
-
-                    <StackPanel.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Open" Command="{Binding Path=CommandOpen}" Icon="{StaticResource IconOpen}"/>
-                            <Separator/>
-                            <MenuItem Header="Delete" Command="{Binding Path=CommandDelete}" Icon="{StaticResource IconDelete}"/>
-                        </ContextMenu>
-                    </StackPanel.ContextMenu>
-                    <Image Width="20" Height="20" Margin="2" Source="{Binding Path=IconUri, Converter={StaticResource UriToImageConverter}, ConverterParameter=32}"/>
-                    <TextBlock Text="{Binding Path=Title}" Margin="2"/>
-                </StackPanel>
-            </DataTemplate>
-
-            <DataTemplate x:Key="GenericTemplate">
-                <TextBlock Text="{Binding Path=Title}"/>
-            </DataTemplate>
 
             <ContextMenu x:Key="FolderContextMenu">
                 <MenuItem Header="Expand All" Command="{Binding Path=CommandExpandAll}"/>
@@ -55,13 +27,7 @@
                     <TextBlock Text="{Binding Path=Name}" Margin="2"/>
                 </StackPanel>
             </DataTemplate>
-
-            <!--This one is needed cause the root elements don't update properly with style-->
-            <logic:ResourceExplorerTemplateSelector x:Key="ExplorerTemplateSelector" 
-                                                   ModelTemplate="{StaticResource ModelTemplate}"
-                                                   FolderTemplate="{StaticResource FolderTemplate}"
-                                                   GenericDocumentTemplate="{StaticResource GenericTemplate}">
-            </logic:ResourceExplorerTemplateSelector>
+            
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -81,16 +47,13 @@
         </Grid>
 
         <!--ItemTemplateSelector="{StaticResource ExplorerTemplateSelector}" -->
-    <TreeView DataContext="{Binding Path=Folders}" 
-              ItemsSource="{Binding Path=Content}"
-              ItemTemplateSelector="{StaticResource ExplorerTemplateSelector}">
+        <TreeView ItemsSource="{Binding Path=Folders}" ItemTemplate="{StaticResource FolderTemplate}">
         <TreeView.Resources>
             <Style TargetType="{x:Type TreeViewItem}">
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="ItemsSource" Value="{Binding Path=Content}"/>
+                <Setter Property="ItemsSource" Value="{Binding Path=Folders}"/>
                 <Setter Property="IsSelected" Value="{Binding Path=IsSelected}"/>
                 <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded}"/>
-                <Setter Property="ItemTemplateSelector" Value="{StaticResource ExplorerTemplateSelector}"/>
                 <Style.Triggers>
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="BorderBrush" Value="#7DA2CE"/>
@@ -126,6 +89,8 @@
         <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Add Folder" Icon="{StaticResource IconNewFolder}" Command="{Binding Path=CommandAddFolder}"/>
+                    <Separator/>
+                    <MenuItem Header="Reload" Icon="{StaticResource IconReload}" Command="{Binding Path=CommandReload}"/>
                 </ContextMenu>
             </TreeView.ContextMenu>
     </TreeView>

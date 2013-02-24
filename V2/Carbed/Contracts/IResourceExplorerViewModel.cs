@@ -9,5 +9,6 @@ namespace Carbed.Contracts
 
         ICommand CommandSave { get; }
         ICommand CommandAddFolder { get; }
+        ICommand CommandReload { get; }
     }
 }

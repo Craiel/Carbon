@@ -167,17 +167,6 @@ namespace Carbon.Engine.Resource
                 targetType = targetType.GetGenericArguments()[0];
             }
 
-            if (targetType == typeof(ResourceLink))
-            {
-                int? id = (int?)typeof(int?).ConvertValue(source);
-                if (id == null)
-                {
-                    return null;
-                }
-
-                return this.contentManager.ResolveResourceLink(id.Value);
-            }
-
             if (targetType == typeof(ContentLink))
             {
                 int? id = (int?)typeof(int?).ConvertValue(source);

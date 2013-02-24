@@ -39,6 +39,14 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         public abstract string Name { get; set; }
 
+        public virtual bool IsNamed
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public virtual bool IsChanged
         {
             get
@@ -66,6 +74,7 @@ namespace Carbed.ViewModels
             {
                 return this.isSelected;
             }
+
             set
             {
                 if (this.isSelected != value)

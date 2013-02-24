@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Threading;
 
@@ -49,7 +50,7 @@ namespace Carbed.Logic
         // -------------------------------------------------------------------
         public event ProjectChangedEventHandler ProjectChanged;
         
-        public bool HasProjectLoaded
+        public bool IsProjectLoaded
         {
             get
             {
@@ -199,7 +200,7 @@ namespace Carbed.Logic
 
         public void Delete(IMaterialViewModel material)
         {
-            throw new NotImplementedException();
+            material.Delete(this.projectContent);
         }
 
         public IMaterialViewModel Clone(IMaterialViewModel source)
@@ -210,7 +211,7 @@ namespace Carbed.Logic
         public IFolderViewModel AddFolder()
         {
             var vm = this.viewModelFactory.GetFolderViewModel(new ResourceTree());
-            this.folders.Insert(0, vm);
+            this.folders.Add(vm);
             return vm;
         }
 
@@ -226,7 +227,7 @@ namespace Carbed.Logic
 
         public void Delete(IFolderViewModel folder)
         {
-            throw new NotImplementedException();
+            folder.Delete(this.projectContent);
         }
 
         public IFolderViewModel Clone(IFolderViewModel source)
@@ -247,11 +248,11 @@ namespace Carbed.Logic
                     new ContentQuery<MetaDataEntry>().IsEqual("Id", primaryKeyValue)).ToList<MetaDataEntry>();
         }
 
-        public IList<ResourceTree> GetResourceTreeChildren(int parent)
+        public IList<IFolderViewModel> GetResourceTreeChildren(int parent)
         {
             // Todo: Cache if this gets to slow
-            ContentQueryResult<ResourceTree> treeData = this.projectContent.TypedLoad(new ContentQuery<ResourceTree>().IsEqual("Parent", parent));
-            return treeData.ToList<ResourceTree>();
+            IList<ResourceTree> treeData = this.projectContent.TypedLoad(new ContentQuery<ResourceTree>().IsEqual("Parent", parent)).ToList<ResourceTree>();
+            return treeData.Select(resourceTree => this.viewModelFactory.GetFolderViewModel(resourceTree)).ToList();
         }
 
         // -------------------------------------------------------------------

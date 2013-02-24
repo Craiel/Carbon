@@ -153,8 +153,8 @@ namespace Carbon.Engine.Logic
 
             byte[] md5;
             string sourceData = this.ReadSource(sourceFile, out md5);
-            ResourceLink link = this.resourceManager.GetLink(cachedKey);
-            var shader = this.resourceManager.Load<CompiledShader>(link);
+            string hash = ResourceManager.BuildResourceHash(cachedKey);
+            var shader = this.resourceManager.Load<CompiledShader>(hash);
             if (shader != null)
             {
                 if (md5.SequenceEqual(shader.SourceMd5))
@@ -165,14 +165,14 @@ namespace Carbon.Engine.Logic
                 System.Diagnostics.Trace.TraceInformation("Re-Compiling shader {0} -> {1}", sourceFile, cachedKey);
                 ShaderBytecode shaderData = ShaderBytecode.Compile(sourceData, description.Entry, description.Profile, ShaderFlags.None, EffectFlags.None, description.Macros, this.includeHandler);
                 shader = new CompiledShader(md5, shaderData);
-                this.resourceManager.Replace(link, shader);
+                this.resourceManager.Replace(hash, shader);
             }
             else
             {
                 System.Diagnostics.Trace.TraceInformation("Compiling shader {0} -> {1}", sourceFile, cachedKey);
                 ShaderBytecode shaderData = ShaderBytecode.Compile(sourceData, description.Entry, description.Profile, ShaderFlags.None, EffectFlags.None, description.Macros, this.includeHandler);
                 shader = new CompiledShader(md5, shaderData);
-                this.resourceManager.Store(link, shader);
+                this.resourceManager.Store(hash, shader);
             }
             
             return shader;

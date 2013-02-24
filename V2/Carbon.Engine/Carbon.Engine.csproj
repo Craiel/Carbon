@@ -182,7 +182,6 @@
     <Compile Include="Resource\Content\PlayfieldRegionEntry.cs" />
     <Compile Include="Resource\Content\ResourceEntry.cs" />
     <Compile Include="Resource\Content\ScriptEntry.cs" />
-    <Compile Include="Resource\Content\ResourceLink.cs" />
     <Compile Include="Resource\Resources\MeshResource.cs" />
     <Compile Include="Resource\Resources\FontResource.cs" />
     <Compile Include="Resource\FolderContent.cs" />

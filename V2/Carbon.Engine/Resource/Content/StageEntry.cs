@@ -17,7 +17,7 @@
         public float SizeZ { get; set; }
 
         [ContentEntryElement]
-        public ResourceLink StaticModel { get; set; }
+        public ContentLink StaticModel { get; set; }
 
         public override bool IsNew
         {

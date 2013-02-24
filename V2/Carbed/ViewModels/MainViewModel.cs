@@ -269,7 +269,7 @@ namespace Carbed.ViewModels
                 this.OnCloseProject(null);
             }
 
-            if (this.logic.HasProjectLoaded)
+            if (this.logic.IsProjectLoaded)
             {
                 if (
                     MessageBox.Show(
@@ -322,7 +322,7 @@ namespace Carbed.ViewModels
 
         private bool CanReload(object obj)
         {
-            return this.logic.HasProjectLoaded;
+            return this.logic.IsProjectLoaded;
         }
 
         private void OnNewDialog(object obj)
@@ -335,12 +335,12 @@ namespace Carbed.ViewModels
 
         private bool CanCreateContent(object obj)
         {
-            return this.logic.HasProjectLoaded;
+            return this.logic.IsProjectLoaded;
         }
 
         private bool CanCreateResource(object obj)
         {
-            return this.logic.HasProjectLoaded;
+            return this.logic.IsProjectLoaded;
         }
 
         private void OnUndoRedoManagerChanged(object sender, PropertyChangedEventArgs args)
@@ -386,7 +386,7 @@ namespace Carbed.ViewModels
 
         private bool CanCloseProject(object obj)
         {
-            return this.logic.HasProjectLoaded;
+            return this.logic.IsProjectLoaded;
         }
 
         private void OnCloseProject(object obj)
@@ -421,7 +421,7 @@ namespace Carbed.ViewModels
 
         private bool CanSaveProject(object obj)
         {
-            return this.logic.HasProjectLoaded;
+            return this.logic.IsProjectLoaded;
         }
 
         private void OnSaveProject(object obj)
@@ -570,7 +570,7 @@ namespace Carbed.ViewModels
 
         private bool CanBuild(object obj)
         {
-            return this.logic.HasProjectLoaded;
+            return this.logic.IsProjectLoaded;
         }
 
         private void RestoreProjectLayout()

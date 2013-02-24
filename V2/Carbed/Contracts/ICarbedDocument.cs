@@ -7,6 +7,7 @@ namespace Carbed.Contracts
     {
         string Name { get; set; }
 
+        bool IsNamed { get; }
         bool IsChanged { get; }
         
         Uri IconUri { get; }

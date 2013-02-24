@@ -20,9 +20,9 @@ namespace Carbon.Engine.Resource
 
     public class ResourceManager : IResourceManager
     {
+        private static readonly SHA1 HashProvider = SHA1.Create();
+
         private readonly IList<ResourceContent> content;
-        
-        private readonly SHA1 hashProvider;
 
         private readonly Hashtable cache;
 
@@ -31,9 +31,14 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         public ResourceManager(string root)
         {
-            this.hashProvider = SHA1.Create();
             this.cache = new Hashtable();
             this.content = new List<ResourceContent> { new FolderContent(root, true) };
+        }
+
+        public static string BuildResourceHash(string path)
+        {
+            byte[] hashData = HashProvider.ComputeHash(Encoding.UTF8.GetBytes(path));
+            return Convert.ToBase64String(hashData);
         }
 
         public void Dispose()
@@ -44,68 +49,61 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public ResourceLink GetLink(string path)
+        public T Load<T>(string hash) where T : ICarbonResource
         {
-            byte[] hashData = this.hashProvider.ComputeHash(Encoding.UTF8.GetBytes(path));
-            var link = new ResourceLink { Hash = Convert.ToBase64String(hashData) };
-            return link;
-        }
-
-        public T Load<T>(ResourceLink link) where T : ICarbonResource
-        {
-            System.Diagnostics.Trace.TraceWarning("Loading Resource {0}", link);
-            if (!this.cache.ContainsKey(link.Hash))
+            System.Diagnostics.Trace.TraceWarning("Loading Resource {0}", hash);
+            if (!this.cache.ContainsKey(hash))
             {
                 for (int i = 0; i < this.content.Count; i++)
                 {
                     ResourceContent resourceContent = this.content[i];
-                    Stream dataStream = resourceContent.Load(link.Hash);
+                    Stream dataStream = resourceContent.Load(hash);
                     if (dataStream != null)
                     {
                         dataStream.Position = 0;
                         T resource = (T)Activator.CreateInstance(typeof(T), new[] { dataStream });
-                        this.cache.Add(link.Hash, resource);
+                        this.cache.Add(hash, resource);
                         return resource;
                     }
                 }
 
-                System.Diagnostics.Trace.TraceWarning("Resource not found {0}", link);
+                System.Diagnostics.Trace.TraceWarning("Resource not found {0}", hash);
                 return default(T);
             }
 
-            if (this.cache[link.Hash].GetType() != typeof(T))
+            if (this.cache[hash].GetType() != typeof(T))
             {
                 System.Diagnostics.Trace.TraceError("Resource was not in the requested format, was {0} but expected {1}", this.cache.GetType(), typeof(T));
                 return default(T);
             }
 
-            return (T)this.cache[link.Hash];
+            return (T)this.cache[hash];
         }
 
-        public void Store(ResourceLink link, ICarbonResource resource)
+        public void Store(string hash, ICarbonResource resource)
         {
-            System.Diagnostics.Trace.TraceWarning("Storing Resource {0} ({1})", link, resource.GetType());
+            System.Diagnostics.Trace.TraceWarning("Storing Resource {0} ({1})", hash, resource.GetType());
             for (int i = 0; i < this.content.Count; i++)
             {
                 ResourceContent resourceContent = this.content[i];
-                if (resourceContent.Store(link.Hash, resource))
+                if (resourceContent.Store(hash, resource))
                 {
-                    this.cache.Add(link.Hash, resource);
+                    this.cache.Add(hash, resource);
                     return;
                 }
             }
         }
 
-        public void Replace(ResourceLink link, ICarbonResource resource)
+        public void Replace(string hash, ICarbonResource resource)
         {
             for (int i = 0; i < this.content.Count; i++)
             {
                 ResourceContent resourceContent = this.content[i];
-                if (resourceContent.Replace(link.Hash, resource))
+                if (resourceContent.Replace(hash, resource))
                 {
-                    if (!this.cache.ContainsKey(link.Hash))
+                    if (!this.cache.ContainsKey(hash))
                     {
-                        this.cache.Add(link.Hash, resource);
+                        this.cache.Add(hash, resource);
                     }
 
                     return;
@@ -115,16 +113,16 @@ namespace Carbon.Engine.Resource
             throw new InvalidDataException("Resource could not be replaced, no existing resource was found");
         }
 
-        public void StoreOrReplace(ResourceLink link, ICarbonResource resource)
+        public void StoreOrReplace(string hash, ICarbonResource resource)
         {
             for (int i = 0; i < this.content.Count; i++)
             {
                 ResourceContent resourceContent = this.content[i];
-                if (resourceContent.Replace(link.Hash, resource))
+                if (resourceContent.Replace(hash, resource))
                 {
-                    if (!this.cache.ContainsKey(link.Hash))
+                    if (!this.cache.ContainsKey(hash))
                     {
-                        this.cache.Add(link.Hash, resource);
+                        this.cache.Add(hash, resource);
                     }
 
                     return;
@@ -134,9 +132,9 @@ namespace Carbon.Engine.Resource
             for (int i = 0; i < this.content.Count; i++)
             {
                 ResourceContent resourceContent = this.content[i];
-                if (resourceContent.Store(link.Hash, resource))
+                if (resourceContent.Store(hash, resource))
                 {
-                    this.cache.Add(link.Hash, resource);
+                    this.cache.Add(hash, resource);
                     return;
                 }
             }

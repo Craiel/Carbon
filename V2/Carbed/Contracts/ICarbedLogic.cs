@@ -10,7 +10,7 @@ namespace Carbed.Contracts
     {
         event ProjectChangedEventHandler ProjectChanged;
 
-        bool HasProjectLoaded { get; }
+        bool IsProjectLoaded { get; }
 
         IReadOnlyCollection<IMaterialViewModel> Materials { get; }
         IReadOnlyCollection<IFolderViewModel> Folders { get; }
@@ -33,6 +33,6 @@ namespace Carbed.Contracts
         IFolderViewModel Clone(IFolderViewModel source);
 
         IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue);
-        IList<ResourceTree> GetResourceTreeChildren(int parent);
+        IList<IFolderViewModel> GetResourceTreeChildren(int parent);
     }
 }

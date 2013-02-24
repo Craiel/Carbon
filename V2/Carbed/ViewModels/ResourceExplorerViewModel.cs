@@ -21,6 +21,7 @@ namespace Carbed.ViewModels
 
             this.CommandSave = new RelayCommand(this.OnSave, this.CanSave);
             this.CommandAddFolder = new RelayCommand(this.OnAddFolder, this.CanAddFolder);
+            this.CommandReload = new RelayCommand(this.OnReload, this.CanReload);
         }
 
         // -------------------------------------------------------------------
@@ -30,7 +31,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.logic.HasProjectLoaded)
+                if (this.logic.IsProjectLoaded)
                 {
                     //return string.Format("Project '{0}'", this.logic.Project.Name);
                 }
@@ -49,6 +50,7 @@ namespace Carbed.ViewModels
 
         public ICommand CommandSave { get; private set; }
         public ICommand CommandAddFolder { get; private set; }
+        public ICommand CommandReload { get; private set; }
 
         // -------------------------------------------------------------------
         // Private
@@ -68,17 +70,28 @@ namespace Carbed.ViewModels
 
         private bool CanSave(object obj)
         {
-            return this.Folders.Any(x => x.CommandSave.CanExecute(obj));
+            return true;
         }
 
         private void OnAddFolder(object obj)
         {
             this.logic.AddFolder();
+            this.NotifyPropertyChanged("Folders");
         }
 
         private bool CanAddFolder(object obj)
         {
-            return this.logic.HasProjectLoaded;
+            return this.logic.IsProjectLoaded;
+        }
+
+        private void OnReload(object obj)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private bool CanReload(object obj)
+        {
+            return this.logic.IsProjectLoaded;
         }
     }
 }

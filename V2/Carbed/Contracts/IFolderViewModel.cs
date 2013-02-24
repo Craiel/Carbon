@@ -9,7 +9,11 @@ namespace Carbed.Contracts
     {
         bool IsExpanded { get; set; }
 
+        int? Id { get; }
+
         string FullPath { get; }
+
+        IFolderViewModel Parent { get; set; }
 
         ReadOnlyObservableCollection<ICarbedDocument> Content { get; }
 
@@ -26,5 +30,6 @@ namespace Carbed.Contracts
         void DeleteFolder(IFolderViewModel folder);
 
         void Save(IContentManager target);
+        void Delete(IContentManager target);
     }
 }

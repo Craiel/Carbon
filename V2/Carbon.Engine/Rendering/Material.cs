@@ -21,7 +21,8 @@ namespace Carbon.Engine.Rendering
 
             this.Color = new Vector4(content.ColorR, content.ColorG, content.ColorB, content.ColorA);
 
-            if (content.DiffuseTexture != null)
+            // Todo: ContentLink change requires more to get the registration working
+            /*if (content.DiffuseTexture != null)
             {
                 this.DiffuseTexture = graphics.TextureManager.Register(content.DiffuseTexture);
             }
@@ -39,7 +40,7 @@ namespace Carbon.Engine.Rendering
             if (content.AlphaTexture != null)
             {
                 this.AlphaTexture = graphics.TextureManager.Register(content.AlphaTexture);
-            }
+            }*/
         }
 
         public Material(TextureReference diffuseReference)

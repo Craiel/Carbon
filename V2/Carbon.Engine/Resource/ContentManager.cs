@@ -25,7 +25,6 @@ namespace Carbon.Engine.Resource
         private readonly IList<string> checkedTableList;
 
         private readonly IDictionary<int, ContentLink> contentLinkCache;
-        private readonly IDictionary<int, ResourceLink> resourceLinkCache;
 
         private SQLiteConnection connection;
 
@@ -39,7 +38,6 @@ namespace Carbon.Engine.Resource
 
             this.factory = new SQLiteFactory();
             this.checkedTableList = new List<string>();
-            this.resourceLinkCache = new Dictionary<int, ResourceLink>();
             this.contentLinkCache = new Dictionary<int, ContentLink>();
         }
 
@@ -61,7 +59,7 @@ namespace Carbon.Engine.Resource
             return new ContentQueryResult(this, this.log, this.GetCommand(criteria));
         }
 
-        public void Save(ref ICarbonContent content)
+        public void Save(ICarbonContent content)
         {
             this.Connect();
             this.CheckTable(content.GetType());
@@ -71,12 +69,12 @@ namespace Carbon.Engine.Resource
             ContentReflectionProperty primaryKeyProperty = ContentReflection.GetPrimaryKeyPropertyInfo(content.GetType());
             if (primaryKeyProperty.Info.GetValue(content) == null)
             {
-                command.CommandText = this.BuildInsertStatement(ref content);
+                command.CommandText = this.BuildInsertStatement(content);
                 needPrimaryKeyUpdate = true;
             }
             else
             {
-                command.CommandText = this.BuildUpdateStatement(ref content);
+                command.CommandText = this.BuildUpdateStatement(content);
             }
             
             this.log.Debug("ContentManager.Save<{0}>: {1}", content.GetType(), command.CommandText);
@@ -103,11 +101,9 @@ namespace Carbon.Engine.Resource
             content.LockChangeState();
         }
 
-        public void Save<T>(ref T content) where T : ICarbonContent
+        public void Delete(ICarbonContent content)
         {
-            ICarbonContent typed = content;
-            this.Save(ref typed);
-            content = (T)typed;
+            throw new NotImplementedException();
         }
 
         public ContentLink ResolveLink(int id)
@@ -120,37 +116,7 @@ namespace Carbon.Engine.Resource
 
             return this.contentLinkCache[id];
         }
-
-        public void StoreLink(ref ContentLink link)
-        {
-            var cast = (ICarbonContent)link;
-            this.Save(ref cast);
-            link = (ContentLink)cast;
-        }
-
-        public ResourceLink ResolveResourceLink(int id)
-        {
-            if (!this.resourceLinkCache.ContainsKey(id))
-            {
-                ContentQueryResult result = this.Load(new ContentQuery(typeof(ResourceLink)).IsEqual("Id", id));
-                this.resourceLinkCache.Add(id, (ResourceLink)result.UniqueResult(typeof(ResourceLink)));
-            }
-
-            return this.resourceLinkCache[id];
-        }
-
-        public void StoreResourceLink(ref ResourceLink link)
-        {
-            if (string.IsNullOrEmpty(link.Hash))
-            {
-                throw new DataException("Link has no hash provided");
-            }
-
-            var cast = (ICarbonContent)link;
-            this.Save(ref cast);
-            link = (ResourceLink)cast;
-        }
-
+        
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
@@ -175,23 +141,38 @@ namespace Carbon.Engine.Resource
             return this.AssembleStatement(what, where, order);
         }
 
-        private string BuildInsertStatement(ref ICarbonContent content)
+        private string BuildInsertStatement(ICarbonContent content)
         {
             string insert = this.BuildInsert(content.GetType());
-            string what = this.ProcessInsertValues(ref content);
+            string what = string.Join(", ", this.ProcessValuesForStorage(content));
             return string.Format("{0} VALUES ({1})", insert, what);
         }
 
-        private string BuildUpdateStatement(ref ICarbonContent content)
+        private string BuildUpdateStatement(ICarbonContent content)
         {
-            string update = this.BuildUpdate(content.GetType());
-            string what = this.ProcessInsertValues(ref content);
-            return string.Format("{0} VALUES ({1})", update, what);
+            IList<string> values = this.ProcessValuesForStorage(content);
+
+            // Get the table
+            string tableName = ContentReflection.GetTableName(content.GetType());
+
+            // Build the primary key where clause so we update the proper entry
+            ContentReflectionProperty keyInfo = ContentReflection.GetPrimaryKeyPropertyInfo(content.GetType());
+            string where = string.Format("{0} = {1}", keyInfo.Name, keyInfo.Info.GetValue(content));
+
+            // Fetch all values to update
+            IList<ContentReflectionProperty> properties = ContentReflection.GetPropertyInfos(content.GetType());
+            IList<string> segments = new List<string>();
+            for (int i = 0; i < properties.Count; i++)
+            {
+                segments.Add(string.Format("{0} = {1}", properties[i].Name, values[i]));
+            }
+
+            return string.Format("UPDATE {0} SET {1} WHERE {2}", tableName, string.Join(", ", segments), where);
         }
 
         private string AssembleStatement(string what, string where, string order)
         {
-            StringBuilder builder = new StringBuilder(what);
+            var builder = new StringBuilder(what);
             if (!string.IsNullOrEmpty(where))
             {
                 builder.AppendFormat(" WHERE {0}", where);
@@ -210,7 +191,7 @@ namespace Carbon.Engine.Resource
             string tableName = ContentReflection.GetTableName(targetType);
 
             IList<ContentReflectionProperty> properties = ContentReflection.GetPropertyInfos(targetType);
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             foreach (ContentReflectionProperty property in properties)
             {
                 if (builder.Length > 0)
@@ -229,7 +210,7 @@ namespace Carbon.Engine.Resource
             string tableName = ContentReflection.GetTableName(targetType);
 
             IList<ContentReflectionProperty> properties = ContentReflection.GetPropertyInfos(targetType);
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             foreach (ContentReflectionProperty property in properties)
             {
                 if (builder.Length > 0)
@@ -241,25 +222,6 @@ namespace Carbon.Engine.Resource
             }
 
             return string.Format("INSERT INTO {0} ({1})", tableName, builder);
-        }
-
-        private string BuildUpdate(Type targetType)
-        {
-            string tableName = ContentReflection.GetTableName(targetType);
-
-            IList<ContentReflectionProperty> properties = ContentReflection.GetPropertyInfos(targetType);
-            StringBuilder builder = new StringBuilder();
-            foreach (ContentReflectionProperty property in properties)
-            {
-                if (builder.Length > 0)
-                {
-                    builder.Append(", ");
-                }
-
-                builder.Append(property.Name);
-            }
-
-            return string.Format("UPDATE {0} ({1})", tableName, builder);
         }
 
         private string BuildWhereClause(IEnumerable<ContentCriterion> criteria)
@@ -339,21 +301,21 @@ namespace Carbon.Engine.Resource
             return segmentString;
         }
 
-        private string ProcessInsertValues(ref ICarbonContent entry)
+        private IList<string> ProcessValuesForStorage(ICarbonContent entry)
         {
             IList<ContentReflectionProperty> properties = ContentReflection.GetPropertyInfos(entry.GetType());
             IList<string> segments = new List<string>();
             foreach (ContentReflectionProperty property in properties)
             {
                 object value = property.Info.GetValue(entry);
-                segments.Add(this.TranslateInsertValue(ref value));
+                segments.Add(this.TranslateInsertValue(value));
                 property.Info.SetValue(entry, value);
             }
 
-            return string.Join(", ", segments);
+            return segments;
         }
 
-        private string TranslateInsertValue(ref object value)
+        private string TranslateInsertValue(object value)
         {
             if (value == null)
             {
@@ -363,20 +325,10 @@ namespace Carbon.Engine.Resource
             Type type = value.GetType();
             if (type == typeof(ContentLink))
             {
-                var cast = (ContentLink)value;
-                this.StoreLink(ref cast);
-                value = cast;
-                return cast.Id.ToString();
+                this.Save((ContentLink)value);
+                return ((ContentLink)value).Id.ToString();
             }
-
-            if (type == typeof(ResourceLink))
-            {
-                var cast = (ResourceLink)value;
-                this.StoreResourceLink(ref cast);
-                value = cast;
-                return cast.Id.ToString();
-            }
-
+            
             if (type.IsEnum)
             {
                 return ((int)value).ToString();
@@ -551,7 +503,6 @@ namespace Carbon.Engine.Resource
                 || internalType == typeof(long)
                 || internalType == typeof(ulong)
                 || internalType == typeof(bool)
-                || internalType == typeof(ResourceLink)
                 || internalType == typeof(ContentLink))
             {
                 return string.Concat("INTEGER", arguments);

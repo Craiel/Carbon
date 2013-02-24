@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Input;
@@ -12,14 +13,14 @@ using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
-    public class FolderViewModel : DocumentViewModel, IFolderViewModel
+    public class FolderViewModel : ContentViewModel, IFolderViewModel
     {
         private readonly ICarbedLogic logic;
         private readonly IViewModelFactory viewModelFactory;
+        private readonly ObservableCollection<IFolderViewModel> folders;
         private readonly ObservableCollection<ICarbedDocument> content;
         private readonly IMainViewModel mainViewModel;
-
-        private ResourceTree data;
+        private readonly ResourceTree data;
 
         private bool isExpanded;
 
@@ -29,13 +30,14 @@ namespace Carbed.ViewModels
         // Constructor
         // -------------------------------------------------------------------
         public FolderViewModel(IEngineFactory factory, ResourceTree data)
-            : base(factory)
+            : base(factory, data)
         {
             this.logic = factory.Get<ICarbedLogic>();
             this.viewModelFactory = factory.Get<IViewModelFactory>();
             this.mainViewModel = factory.Get<IMainViewModel>();
             this.data = data;
 
+            this.folders = new ObservableCollection<IFolderViewModel>();
             this.content = new ObservableCollection<ICarbedDocument>();
 
             this.CommandAddFolder = new RelayCommand(this.OnAddFolder);
@@ -55,34 +57,25 @@ namespace Carbed.ViewModels
             }
         }
 
-        public override string Name
+        public int? Id
         {
             get
             {
-                if (string.IsNullOrEmpty(this.data.Name))
-                {
-                    return "<no name>";
-                }
-
-                return this.data.Name;
-            }
-            set
-            {
-                if (this.data.Name != value)
-                {
-                    this.CreateUndoState();
-                    this.data.Name = value;
-                    this.NotifyPropertyChanged();
-                    this.NotifyPropertyChanged("IsChanged");
-                }
+                return this.data.Id;
             }
         }
-
+        
         public string FullPath
         {
             get
             {
-                string name = this.data.Name;
+                if (!this.IsNamed)
+                {
+                    this.Log.Warning("FullPath queried with name not being set yet!");
+                    return string.Empty;
+                }
+
+                string name = this.Name;
                 if (this.parent != null)
                 {
                     if (string.IsNullOrEmpty(name))
@@ -94,6 +87,14 @@ namespace Carbed.ViewModels
                 }
 
                 return name ?? string.Empty;
+            }
+        }
+
+        public ReadOnlyObservableCollection<IFolderViewModel> Folders
+        {
+            get
+            {
+                return new ReadOnlyObservableCollection<IFolderViewModel>(this.folders);
             }
         }
 
@@ -191,7 +192,7 @@ namespace Carbed.ViewModels
 
         public void DeleteFolder(IFolderViewModel folder)
         {
-            this.content.Remove(folder);
+            this.folders.Remove(folder);
         }
 
         public override void Load()
@@ -203,12 +204,42 @@ namespace Carbed.ViewModels
                 return;
             }
 
-            this.logic.GetResourceTreeChildren((int)this.data.Id);
+            this.folders.Clear();
+            IList<IFolderViewModel> children = this.logic.GetResourceTreeChildren((int)this.data.Id);
+            foreach (IFolderViewModel child in children)
+            {
+                this.folders.Add(child);
+            }
         }
 
-        public void Save(IContentManager target)
+        public new void Save(IContentManager target)
         {
-            target.Save(ref this.data);
+            // Update our parent id information before saving
+            if (this.parent != null && this.data.Parent != this.parent.Id)
+            {
+                this.data.Parent = this.parent.Id;
+            }
+
+            base.Save(target);
+
+            // Save all our children as well
+            foreach (IFolderViewModel folder in this.Folders)
+            {
+                folder.Save(target);
+            }
+
+            this.NotifyPropertyChanged();
+        }
+
+        public new void Delete(IContentManager target)
+        {
+            base.Delete(target);
+
+            foreach (IFolderViewModel folder in this.Folders)
+            {
+                folder.Delete(target);
+            }
+
             this.NotifyPropertyChanged();
         }
 
@@ -222,7 +253,7 @@ namespace Carbed.ViewModels
 
         protected override void RestoreMemento(object memento)
         {
-            ICarbonContent source = memento as ICarbonContent;
+            var source = memento as ICarbonContent;
             if (source == null)
             {
                 throw new ArgumentException();
@@ -232,6 +263,16 @@ namespace Carbed.ViewModels
             this.data.LoadFrom(source);
             this.NotifyPropertyChanged(string.Empty);
         }
+
+        protected override void OnSave(object obj)
+        {
+            this.logic.Save(this);
+        }
+
+        protected override void OnDelete(object arg)
+        {
+            this.logic.Delete(this);
+        }
         
         // -------------------------------------------------------------------
         // Private
@@ -239,7 +280,8 @@ namespace Carbed.ViewModels
         private void OnAddFolder(object obj)
         {
             var vm = this.viewModelFactory.GetFolderViewModel(new ResourceTree());
-            this.content.Add(vm);
+            vm.Parent = this;
+            this.folders.Add(vm);
         }
 
         private void OnExpandAll(object obj)
@@ -264,7 +306,11 @@ namespace Carbed.ViewModels
 
         private void OnDeleteFolder(object obj)
         {
-            this.parent.DeleteFolder(this);
+            this.logic.Delete(this);
+            if (this.parent != null)
+            {
+                this.parent.DeleteFolder(this);
+            }
         }
 
         private bool CanDeleteFolder(object obj)

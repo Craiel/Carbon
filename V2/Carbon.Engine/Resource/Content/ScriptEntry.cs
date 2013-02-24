@@ -18,7 +18,7 @@
         public ScriptType Type { get; set; }
 
         [ContentEntryElement]
-        public ResourceLink Script { get; set; }
+        public ContentLink Script { get; set; }
 
         public override bool IsNew
         {

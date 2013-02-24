@@ -14,8 +14,6 @@ using SlimDX.Direct3D11;
 
 namespace Carbon.Engine.Logic
 {
-    using Carbon.Engine.Resource.Content;
-
     public enum TextureReferenceType
     {
         Resource,
@@ -32,9 +30,9 @@ namespace Carbon.Engine.Logic
             this.Type = registerReference ? TextureReferenceType.Register : TextureReferenceType.View;
         }
 
-        internal TextureReference(ResourceLink resource, int register)
+        internal TextureReference(string resourceHash, int register)
         {
-            this.Resource = resource;
+            this.ResourceHash = resourceHash;
             this.Register = register;
             this.Type = TextureReferenceType.Resource;
         }
@@ -48,7 +46,7 @@ namespace Carbon.Engine.Logic
 
         public TextureReferenceType Type { get; private set; }
 
-        public ResourceLink Resource { get; private set; }
+        public string ResourceHash { get; private set; }
 
         public byte[] Data { get; private set; }
 
@@ -58,7 +56,7 @@ namespace Carbon.Engine.Logic
 
         public override int GetHashCode()
         {
-            return Tuple.Create(this.Resource).GetHashCode();
+            return Tuple.Create(this.ResourceHash).GetHashCode();
         }
     }
 
@@ -107,11 +105,11 @@ namespace Carbon.Engine.Logic
             return reference;
         }
 
-        public TextureReference RegisterStatic(ResourceLink resource, int register)
+        public TextureReference RegisterStatic(string hash, int register)
         {
             this.CheckStaticRegister(register);
 
-            var reference = new TextureReference(resource, register);
+            var reference = new TextureReference(hash, register);
             this.textureRegister.Add(register, reference);
             return reference;
         }
@@ -125,9 +123,9 @@ namespace Carbon.Engine.Logic
             return reference;
         }
 
-        public TextureReference Register(ResourceLink resource)
+        public TextureReference Register(string hash)
         {
-            var reference = new TextureReference(resource, this.nextRegister);
+            var reference = new TextureReference(hash, this.nextRegister);
             this.textureRegister.Add(reference.Register, reference);
             this.nextRegister++;
             return reference;
@@ -229,7 +227,7 @@ namespace Carbon.Engine.Logic
 
             if (this.textureRegister.ContainsKey(register))
             {
-                throw new ArgumentException(string.Format("Static register is already taken ({0}) by {1}", register, this.textureRegister[register].Resource));
+                throw new ArgumentException(string.Format("Static register is already taken ({0}) by {1}", register, this.textureRegister[register].ResourceHash));
             }
         }
 
@@ -245,8 +243,7 @@ namespace Carbon.Engine.Logic
             {
                 case TextureReferenceType.Resource:
                     {
-                        var res = reference.Resource;
-                        var textureResource = this.resourceManager.Load<RawResource>(res);
+                        var textureResource = this.resourceManager.Load<RawResource>(reference.ResourceHash);
                         if (textureResource != null)
                         {
                             return textureResource.Data;
