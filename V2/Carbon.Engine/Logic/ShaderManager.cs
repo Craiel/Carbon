@@ -4,6 +4,8 @@ using System.Security.Cryptography;
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource;
 
+using Core.Utils;
+
 using SlimDX;
 using SlimDX.D3DCompiler;
 using SlimDX.Direct3D11;
@@ -153,7 +155,7 @@ namespace Carbon.Engine.Logic
 
             byte[] md5;
             string sourceData = this.ReadSource(sourceFile, out md5);
-            string hash = ResourceManager.BuildResourceHash(cachedKey);
+            string hash = HashUtils.BuildResourceHash(cachedKey);
             var shader = this.resourceManager.Load<CompiledShader>(hash);
             if (shader != null)
             {

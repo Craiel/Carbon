@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 
 using Carbed.Contracts;
@@ -10,6 +11,8 @@ using Carbed.Logic.MVVM;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource.Content;
+
+using Core.Utils;
 
 namespace Carbed.ViewModels
 {
@@ -26,6 +29,12 @@ namespace Carbed.ViewModels
 
         private IFolderViewModel parent;
 
+        private ICommand commandAddFolder;
+        private ICommand commandDeleteFolder;
+        private ICommand commandExpandAll;
+        private ICommand commandCollapseAll;
+        private ICommand commandCopyPath;
+
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -39,11 +48,6 @@ namespace Carbed.ViewModels
 
             this.folders = new ObservableCollection<IFolderViewModel>();
             this.content = new ObservableCollection<ICarbedDocument>();
-
-            this.CommandAddFolder = new RelayCommand(this.OnAddFolder);
-            this.CommandDeleteFolder = new RelayCommand(this.OnDeleteFolder, this.CanDeleteFolder);
-            this.CommandExpandAll = new RelayCommand(this.OnExpandAll, this.CanExpandAll);
-            this.CommandCollapseAll = new RelayCommand(this.OnCollapseAll, this.CanCollapseAll);
         }
 
         // -------------------------------------------------------------------
@@ -140,9 +144,22 @@ namespace Carbed.ViewModels
             }
         }
 
-        public ICommand CommandAddFolder { get; private set; }
+        public ICommand CommandAddFolder
+        {
+            get
+            {
+                return this.commandAddFolder ?? (this.commandAddFolder = new RelayCommand(this.OnAddFolder));
+            }
+        }
 
-        public ICommand CommandDeleteFolder { get; private set; }
+        public ICommand CommandDeleteFolder
+        {
+            get
+            {
+                return this.commandDeleteFolder ??
+                       (this.commandDeleteFolder = new RelayCommand(this.OnDeleteFolder, this.CanDeleteFolder));
+            }
+        }
 
         public ICommand CommandOpenNewDialog
         {
@@ -152,9 +169,31 @@ namespace Carbed.ViewModels
             }
         }
 
-        public ICommand CommandExpandAll { get; private set; }
+        public ICommand CommandExpandAll
+        {
+            get
+            {
+                return this.commandExpandAll ??
+                       (this.commandExpandAll = new RelayCommand(this.OnExpandAll, this.CanExpandAll));
+            }
+        }
 
-        public ICommand CommandCollapseAll { get; private set; }
+        public ICommand CommandCollapseAll
+        {
+            get
+            {
+                return this.commandCollapseAll ??
+                       (this.commandCollapseAll = new RelayCommand(this.OnCollapseAll, this.CanCollapseAll));
+            }
+        }
+
+        public ICommand CommandCopyPath
+        {
+            get
+            {
+                return this.commandCopyPath ?? (this.commandCopyPath = new RelayCommand(this.OnCopyPath));
+            }
+        }
 
         public void AddContent(IResourceViewModel newContent)
         {
@@ -166,7 +205,7 @@ namespace Carbed.ViewModels
             this.content.Add(newContent);
         }
 
-        public void DeleteContent(IResourceViewModel oldContent)
+        public void RemoveContent(IResourceViewModel oldContent)
         {
             if (!this.content.Contains(oldContent))
             {
@@ -190,7 +229,7 @@ namespace Carbed.ViewModels
             }
         }
 
-        public void DeleteFolder(IFolderViewModel folder)
+        public void RemoveFolder(IFolderViewModel folder)
         {
             this.folders.Remove(folder);
         }
@@ -208,6 +247,7 @@ namespace Carbed.ViewModels
             IList<IFolderViewModel> children = this.logic.GetResourceTreeChildren((int)this.data.Id);
             foreach (IFolderViewModel child in children)
             {
+                child.Load();
                 this.folders.Add(child);
             }
         }
@@ -220,6 +260,7 @@ namespace Carbed.ViewModels
                 this.data.Parent = this.parent.Id;
             }
 
+            this.data.Hash = HashUtils.BuildResourceHash(this.FullPath);
             base.Save(target);
 
             // Save all our children as well
@@ -235,9 +276,15 @@ namespace Carbed.ViewModels
         {
             base.Delete(target);
 
-            foreach (IFolderViewModel folder in this.Folders)
+            IList<IFolderViewModel> deleteQueue = new List<IFolderViewModel>(this.folders);
+            foreach (IFolderViewModel folder in deleteQueue)
             {
                 folder.Delete(target);
+            }
+
+            if (this.parent != null)
+            {
+                this.parent.RemoveFolder(this);
             }
 
             this.NotifyPropertyChanged();
@@ -307,15 +354,16 @@ namespace Carbed.ViewModels
         private void OnDeleteFolder(object obj)
         {
             this.logic.Delete(this);
-            if (this.parent != null)
-            {
-                this.parent.DeleteFolder(this);
-            }
         }
 
         private bool CanDeleteFolder(object obj)
         {
             return true;
+        }
+
+        private void OnCopyPath(object obj)
+        {
+            Clipboard.SetText(this.FullPath);
         }
     }
 }

@@ -7,6 +7,14 @@ namespace Core.Utils
 {
     public static class HashUtils
     {
+        private static readonly SHA1 HashProvider = SHA1.Create();
+
+        public static string BuildResourceHash(string path)
+        {
+            byte[] hashData = HashProvider.ComputeHash(Encoding.UTF8.GetBytes(path));
+            return Convert.ToBase64String(hashData);
+        }
+
         public static int CombineObjectHashes(object[] data)
         {
             var hashCodes = new byte[data.Length][];

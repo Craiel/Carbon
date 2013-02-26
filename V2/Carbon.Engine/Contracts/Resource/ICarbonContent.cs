@@ -10,5 +10,6 @@
         void LoadFrom(ICarbonContent source);
 
         void LockChangeState();
+        void Invalidate();
     }
 }

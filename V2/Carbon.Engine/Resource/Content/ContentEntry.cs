@@ -11,6 +11,11 @@ namespace Carbon.Engine.Resource.Content
     {
         private int changeState;
 
+        protected ContentEntry()
+        {
+            this.IsValid = true;
+        }
+
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
@@ -23,6 +28,8 @@ namespace Carbon.Engine.Resource.Content
                 return this.GetState() != this.changeState;
             }
         }
+
+        public bool IsValid { get; private set; }
 
         public virtual ICarbonContent Clone(bool fullCopy = false)
         {
@@ -37,6 +44,11 @@ namespace Carbon.Engine.Resource.Content
         public void LockChangeState()
         {
             this.changeState = this.GetState();
+        }
+
+        public void Invalidate()
+        {
+            this.IsValid = false;
         }
 
         // -------------------------------------------------------------------

@@ -10,6 +10,6 @@
         IStageViewModel GetStageViewModel(StageEntry data);
         IMaterialViewModel GetMaterialViewModel(MaterialEntry data);
 
-        IResourceViewModel GetResourceViewModel(ResourceEntry data);
+        ITextureViewModel GetTextureViewModel(ResourceEntry data);
     }
 }

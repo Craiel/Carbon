@@ -103,7 +103,20 @@ namespace Carbon.Engine.Resource
 
         public void Delete(ICarbonContent content)
         {
-            throw new NotImplementedException();
+            this.Connect();
+            this.CheckTable(content.GetType());
+
+            SQLiteCommand command = this.connection.CreateCommand();
+            command.CommandText = this.BuildDeleteStatement(content);
+
+            this.log.Debug("ContentManager.Delete<{0}>: {1}", content.GetType(), command.CommandText);
+            int affected = command.ExecuteNonQuery();
+            if (affected != 1)
+            {
+                throw new InvalidOperationException("Expected 1 row affected but got "+ affected);
+            }
+
+            content.Invalidate();
         }
 
         public ContentLink ResolveLink(int id)
@@ -168,6 +181,18 @@ namespace Carbon.Engine.Resource
             }
 
             return string.Format("UPDATE {0} SET {1} WHERE {2}", tableName, string.Join(", ", segments), where);
+        }
+
+        private string BuildDeleteStatement(ICarbonContent content)
+        {
+            // Get the table
+            string tableName = ContentReflection.GetTableName(content.GetType());
+
+            // Build the primary key where clause so we update the proper entry
+            ContentReflectionProperty keyInfo = ContentReflection.GetPrimaryKeyPropertyInfo(content.GetType());
+            string where = string.Format("{0} = {1}", keyInfo.Name, keyInfo.Info.GetValue(content));
+
+            return string.Format("DELETE FROM {0} WHERE {1}", tableName, where);
         }
 
         private string AssembleStatement(string what, string where, string order)

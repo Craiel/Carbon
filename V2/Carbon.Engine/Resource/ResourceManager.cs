@@ -2,15 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 
 using Carbon.Engine.Contracts.Resource;
 
 namespace Carbon.Engine.Resource
 {
-    using Carbon.Engine.Resource.Content;
-
     public abstract class ResourceContent
     {
         public abstract Stream Load(string hash);
@@ -20,8 +16,6 @@ namespace Carbon.Engine.Resource
 
     public class ResourceManager : IResourceManager
     {
-        private static readonly SHA1 HashProvider = SHA1.Create();
-
         private readonly IList<ResourceContent> content;
 
         private readonly Hashtable cache;
@@ -33,12 +27,6 @@ namespace Carbon.Engine.Resource
         {
             this.cache = new Hashtable();
             this.content = new List<ResourceContent> { new FolderContent(root, true) };
-        }
-
-        public static string BuildResourceHash(string path)
-        {
-            byte[] hashData = HashProvider.ComputeHash(Encoding.UTF8.GetBytes(path));
-            return Convert.ToBase64String(hashData);
         }
 
         public void Dispose()

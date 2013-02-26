@@ -292,7 +292,13 @@ namespace Carbed.ViewModels
 
         private void OnNewResource(object obj)
         {
-            throw new NotImplementedException();
+            if (this.currentCreationContext == null)
+            {
+                throw new InvalidOperationException("New resource can not be created without context");
+            }
+
+            IResourceViewModel vm = this.logic.AddResource();
+            this.currentCreationContext.AddContent(vm);
         }
 
         private void OnNewModel(object obj)

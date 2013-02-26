@@ -6,25 +6,24 @@ using Carbed.Contracts;
 using Carbed.Logic.MVVM;
 
 using Carbon.Engine.Contracts;
+using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
-    public abstract class ResourceViewModel : DocumentViewModel, IResourceViewModel
+    public abstract class ResourceViewModel : ContentViewModel, IResourceViewModel
     {
         private readonly ResourceEntry data;
 
         private ICommand commandSelectFile;
 
         private IFolderViewModel parent;
-
-        private MetaDataEntry name;
-
+        
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
         protected ResourceViewModel(IEngineFactory factory, ResourceEntry data)
-            : base(factory)
+            : base(factory, data)
         {
             this.data = data;
         }
@@ -39,28 +38,7 @@ namespace Carbed.ViewModels
                 return this.data.IsChanged;
             }
         }
-
-        public override string Name
-        {
-            get
-            {
-                if (this.name == null || string.IsNullOrEmpty(this.name.Value))
-                {
-                    return "<no name>";
-                }
-
-                return this.name.Value;
-            }
-
-            set
-            {
-                /*if (this.fileName != value)
-                {
-                    this.RenameFile(value);
-                }*/
-            }
-        }
-
+        
         public IFolderViewModel Parent
         {
             get
@@ -75,15 +53,27 @@ namespace Carbed.ViewModels
                 }
             }
         }
-
-        public bool IsExpanded { get; set; }
-
+        
         public ICommand CommandSelectFile
         {
             get
             {
                 return this.commandSelectFile ?? (this.commandSelectFile = new RelayCommand(this.OnSelectFile));
             }
+        }
+
+        public new void Save(IContentManager target)
+        {
+            base.Save(target);
+
+            this.NotifyPropertyChanged();
+        }
+
+        public new void Delete(IContentManager target)
+        {
+            base.Delete(target);
+            
+            this.NotifyPropertyChanged();
         }
 
         // -------------------------------------------------------------------
@@ -102,7 +92,7 @@ namespace Carbed.ViewModels
             }
 
             this.OnClose(null);
-            this.parent.DeleteContent(this);
+            this.parent.RemoveContent(this);
         }
 
         protected override object CreateMemento()

@@ -86,7 +86,8 @@ namespace Carbed.ViewModels
 
         private void OnReload(object obj)
         {
-            throw new System.NotImplementedException();
+            // Todo:
+            this.NotifyPropertyChanged("Folders");
         }
 
         private bool CanReload(object obj)

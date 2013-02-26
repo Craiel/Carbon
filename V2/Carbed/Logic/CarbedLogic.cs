@@ -227,10 +227,49 @@ namespace Carbed.Logic
 
         public void Delete(IFolderViewModel folder)
         {
+            if (this.projectContent == null)
+            {
+                throw new InvalidOperationException();
+            }
+
             folder.Delete(this.projectContent);
+            if (this.folders.Contains(folder))
+            {
+                this.folders.Remove(folder);
+            }
         }
 
         public IFolderViewModel Clone(IFolderViewModel source)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public IResourceViewModel AddResource()
+        {
+            return this.viewModelFactory.GetResourceViewModel(new ResourceEntry());
+        }
+
+        public void Save(IResourceViewModel resource)
+        {
+            if (this.projectContent == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            resource.Save(this.projectContent);
+        }
+
+        public void Delete(IResourceViewModel resource)
+        {
+            if (this.projectContent == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            resource.Delete(this.projectContent);
+        }
+
+        public IResourceViewModel Clone(IResourceViewModel source)
         {
             throw new NotImplementedException();
         }

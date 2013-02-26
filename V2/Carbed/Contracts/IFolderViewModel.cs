@@ -22,12 +22,13 @@ namespace Carbed.Contracts
         ICommand CommandOpenNewDialog { get; }
         ICommand CommandExpandAll { get; }
         ICommand CommandCollapseAll { get; }
+        ICommand CommandCopyPath { get; }
 
         void AddContent(IResourceViewModel content);
-        void DeleteContent(IResourceViewModel content);
+        void RemoveContent(IResourceViewModel content);
         void SetExpand(bool expanded);
 
-        void DeleteFolder(IFolderViewModel folder);
+        void RemoveFolder(IFolderViewModel folder);
 
         void Save(IContentManager target);
         void Delete(IContentManager target);
