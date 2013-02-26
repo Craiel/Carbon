@@ -37,7 +37,8 @@ namespace Carbed.Contracts
         void Delete(IResourceViewModel resource);
         IResourceViewModel Clone(IResourceViewModel source);
 
-        IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue);
+        IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue, MetaDataTarget target);
         IList<IFolderViewModel> GetResourceTreeChildren(int parent);
+        IList<IResourceViewModel> GetResourceTreeContent(int node);
     }
 }

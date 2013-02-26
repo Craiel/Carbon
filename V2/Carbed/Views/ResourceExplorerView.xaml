@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="Carbed.Views.ResourceExplorerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:carbed="clr-namespace:Carbed"
-             xmlns:mvvm="clr-namespace:Carbed.Logic.MVVM">
+             xmlns:mvvm="clr-namespace:Carbed.Logic.MVVM" xmlns:logic="clr-namespace:Carbed.Logic">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -19,15 +19,36 @@
                     <MenuItem Header="Folder" Icon="{StaticResource IconNewFolder}" IsEnabled="{Binding Converter={StaticResource NullToBooleanConverter}}" Command="{Binding Path=CommandAddFolder}"/>
                 </MenuItem>
                 <MenuItem Header="Delete" Command="{Binding Path=CommandDeleteFolder}" Icon="{StaticResource IconDelete}"/>
+                <Separator/>
+                <MenuItem Header="Reload Content" Command="{Binding Path=CommandReloadContent}" Icon="{StaticResource IconReload}"/>
             </ContextMenu>
             
-            <DataTemplate x:Key="FolderTemplate">
-                <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource FolderContextMenu}">
-                    <Image Width="20" Height="20" Margin="2" Source="{Binding Source={x:Static carbed:StaticResources.FolderIconUri}, Converter={StaticResource UriToImageConverter}, ConverterParameter=32}"/>
+            <DataTemplate x:Key="ResourceEntryTemplate">
+                <StackPanel Orientation="Horizontal">
+                    <Image Width="20" Height="20" Margin="2" Source="{Binding Path=Type, Converter={StaticResource ResourceTypeToIconConverter}}"/>
                     <TextBlock Text="{Binding Path=Name}" Margin="2"/>
                 </StackPanel>
             </DataTemplate>
             
+            <DataTemplate x:Key="FolderTemplate">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource FolderContextMenu}">
+                        <Image Width="20" Height="20" Margin="2" Source="{Binding Source={x:Static carbed:StaticResources.FolderIconUri}, Converter={StaticResource UriToImageConverter}, ConverterParameter=32}"/>
+                        <TextBlock Text="{Binding Path=Name}" Margin="2"/>
+                        <TextBlock Visibility="{Binding Path=ContentCount, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{} ({0})">
+                                    <Binding Path="ContentCount"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate>
+
+            <logic:ResourceExplorerTemplateSelector x:Key="ExplorerTemplateSelector" 
+                                                    FolderTemplate="{StaticResource FolderTemplate}" 
+                                                    ResourceTemplate="{StaticResource ResourceEntryTemplate}"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -47,11 +68,12 @@
         </Grid>
 
         <!--ItemTemplateSelector="{StaticResource ExplorerTemplateSelector}" -->
-        <TreeView ItemsSource="{Binding Path=Folders}" ItemTemplate="{StaticResource FolderTemplate}">
+        <TreeView ItemsSource="{Binding Path=Folders}" ItemTemplateSelector="{StaticResource ExplorerTemplateSelector}">
         <TreeView.Resources>
             <Style TargetType="{x:Type TreeViewItem}">
                 <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="ItemsSource" Value="{Binding Path=Folders}"/>
+                <Setter Property="ItemsSource" Value="{Binding Path=Content}"/>
+                <Setter Property="ItemTemplateSelector" Value="{StaticResource ExplorerTemplateSelector}"/>
                 <Setter Property="IsSelected" Value="{Binding Path=IsSelected}"/>
                 <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded}"/>
                 <Style.Triggers>

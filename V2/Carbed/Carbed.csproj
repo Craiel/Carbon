@@ -120,7 +120,6 @@
     <Compile Include="Contracts\IOperationProgress.cs" />
     <Compile Include="Contracts\IProjectViewModel.cs" />
     <Compile Include="Contracts\IResourceViewModel.cs" />
-    <Compile Include="Contracts\ITextureViewModel.cs" />
     <Compile Include="Contracts\IUndoRedoGroup.cs" />
     <Compile Include="Contracts\IUndoRedoManager.cs" />
     <Compile Include="Contracts\IViewModelFactory.cs" />
@@ -145,6 +144,7 @@
     <Compile Include="Logic\OperationProgress.cs" />
     <Compile Include="Logic\MVVM\RelayCommand.cs" />
     <Compile Include="Logic\MVVM\TreeViewExtension.cs" />
+    <Compile Include="Logic\ResourceExplorerTemplateSelector.cs" />
     <Compile Include="Logic\UndoRedoManager.cs" />
     <Compile Include="Ninject\ViewModelFactory.cs" />
     <Compile Include="StaticResources.cs" />
@@ -162,13 +162,12 @@
     <Compile Include="ViewModels\FontViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModel.cs" />
-    <Compile Include="ViewModels\TextureViewModel.cs" />
     <Compile Include="ViewModels\ToolViewModel.cs" />
     <Compile Include="Views\MaterialExplorerView.xaml.cs">
       <DependentUpon>MaterialExplorerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ModelView.xaml.cs">
-      <DependentUpon>ModelView.xaml</DependentUpon>
+    <Compile Include="Views\ResourceView.xaml.cs">
+      <DependentUpon>ResourceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NewDocumentView.xaml.cs">
       <DependentUpon>NewDocumentView.xaml</DependentUpon>
@@ -179,8 +178,8 @@
     <Compile Include="Views\Properties\FolderProperties.xaml.cs">
       <DependentUpon>FolderProperties.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Properties\MeshProperties.xaml.cs">
-      <DependentUpon>MeshProperties.xaml</DependentUpon>
+    <Compile Include="Views\Properties\ResourceProperties.xaml.cs">
+      <DependentUpon>ResourceProperties.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Properties\ProjectProperties.xaml.cs">
       <DependentUpon>ProjectProperties.xaml</DependentUpon>
@@ -260,6 +259,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Resources\EnumProviders.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Icons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -268,7 +271,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ModelView.xaml">
+    <Page Include="Views\ResourceView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -284,7 +287,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Properties\MeshProperties.xaml">
+    <Page Include="Views\Properties\ResourceProperties.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

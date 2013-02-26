@@ -4,6 +4,14 @@
     {
         Unknown = 0,
         Name = 10,
+        SourcePath = 11,
+        LastChangeDate = 12,
+        ContentCount = 13,
+    }
+
+    public enum MetaDataTarget
+    {
+        Unknown = 0,
     }
 
     [ContentEntry("MetaData")]
@@ -16,7 +24,10 @@
         public int? Id { get; set; }
 
         [ContentEntryElement]
-        public ContentLink ContentId { get; set; }
+        public MetaDataTarget TargetType { get; set; }
+
+        [ContentEntryElement]
+        public int? TargetId { get; set; }
 
         [ContentEntryElement]
         public MetaDataKey Key { get; set; }

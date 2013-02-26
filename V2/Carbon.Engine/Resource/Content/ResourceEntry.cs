@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Carbon.Engine.Resource.Content
+﻿namespace Carbon.Engine.Resource.Content
 {
     public enum ResourceType
     {
@@ -37,6 +35,35 @@ namespace Carbon.Engine.Resource.Content
             get
             {
                 return this.Id == null;
+            }
+        }
+
+        public override Contracts.Resource.ICarbonContent Clone(bool fullCopy = false)
+        {
+            var clone = new ResourceEntry();
+            clone.LoadFrom(this);
+            if (fullCopy)
+            {
+                clone.Id = this.Id;
+                clone.Hash = this.Hash;
+                clone.Md5 = this.Md5;
+                if (this.TreeNode != null)
+                {
+                    clone.TreeNode.Id = this.TreeNode.Id;
+                }
+            }
+
+            return clone;
+        }
+
+        public override void LoadFrom(Contracts.Resource.ICarbonContent source)
+        {
+            var other = source as ResourceEntry;
+            this.Type = other.Type;
+            if (other.TreeNode != null)
+            {
+                this.TreeNode = new ContentLink();
+                this.TreeNode.LoadFrom(other.TreeNode);
             }
         }
     }

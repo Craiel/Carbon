@@ -217,22 +217,22 @@ namespace Carbed.Logic
 
         public void Save(IFolderViewModel folder)
         {
-            if (this.projectContent == null)
+            if (this.projectContent == null || this.projectResources == null)
             {
                 throw new InvalidOperationException();
             }
 
-            folder.Save(this.projectContent);
+            folder.Save(this.projectContent, this.projectResources);
         }
 
         public void Delete(IFolderViewModel folder)
         {
-            if (this.projectContent == null)
+            if (this.projectContent == null || this.projectResources == null)
             {
                 throw new InvalidOperationException();
             }
 
-            folder.Delete(this.projectContent);
+            folder.Delete(this.projectContent, this.projectResources);
             if (this.folders.Contains(folder))
             {
                 this.folders.Remove(folder);
@@ -251,22 +251,22 @@ namespace Carbed.Logic
 
         public void Save(IResourceViewModel resource)
         {
-            if (this.projectContent == null)
+            if (this.projectContent == null || this.projectResources == null)
             {
                 throw new InvalidOperationException();
             }
 
-            resource.Save(this.projectContent);
+            resource.Save(this.projectContent, this.projectResources);
         }
 
         public void Delete(IResourceViewModel resource)
         {
-            if (this.projectContent == null)
+            if (this.projectContent == null || this.projectResources == null)
             {
                 throw new InvalidOperationException();
             }
 
-            resource.Delete(this.projectContent);
+            resource.Delete(this.projectContent, this.projectResources);
         }
 
         public IResourceViewModel Clone(IResourceViewModel source)
@@ -274,7 +274,7 @@ namespace Carbed.Logic
             throw new NotImplementedException();
         }
 
-        public IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue)
+        public IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue, MetaDataTarget target)
         {
             if (primaryKeyValue == null)
             {
@@ -284,14 +284,23 @@ namespace Carbed.Logic
             // Todo: Add caching for this
             return
                 this.projectContent.TypedLoad(
-                    new ContentQuery<MetaDataEntry>().IsEqual("Id", primaryKeyValue)).ToList<MetaDataEntry>();
+                    new ContentQuery<MetaDataEntry>().IsEqual("TargetId", primaryKeyValue).IsEqual("TargetType", target)).ToList<MetaDataEntry>();
         }
 
         public IList<IFolderViewModel> GetResourceTreeChildren(int parent)
         {
             // Todo: Cache if this gets to slow
             IList<ResourceTree> treeData = this.projectContent.TypedLoad(new ContentQuery<ResourceTree>().IsEqual("Parent", parent)).ToList<ResourceTree>();
-            return treeData.Select(resourceTree => this.viewModelFactory.GetFolderViewModel(resourceTree)).ToList();
+            return treeData.Select(x => this.viewModelFactory.GetFolderViewModel(x)).ToList();
+        }
+
+        public IList<IResourceViewModel> GetResourceTreeContent(int node)
+        {
+            // Todo: Cache if this gets to slow
+            IList<ResourceEntry> resourceData =
+                this.projectContent.TypedLoad(new ContentQuery<ResourceEntry>().IsEqual("TreeNode", node))
+                    .ToList<ResourceEntry>();
+            return resourceData.Select(x => this.viewModelFactory.GetResourceViewModel(x)).ToList();
         }
 
         // -------------------------------------------------------------------

@@ -1,8 +1,8 @@
 ﻿namespace Carbed.Views
 {
-    public partial class ModelView
+    public partial class ResourceView
     {
-        public ModelView()
+        public ResourceView()
         {
             InitializeComponent();
         }

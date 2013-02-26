@@ -3,6 +3,7 @@
     public enum ContentLinkType
     {
         Unknown = 0,
+        ResourceTreeNode = 1,
     }
 
     [ContentEntry("ContentLink")]

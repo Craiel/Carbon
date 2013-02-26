@@ -544,6 +544,11 @@ namespace Carbon.Engine.Resource
                 return string.Concat("TEXT", arguments);
             }
 
+            if (internalType == typeof(byte[]))
+            {
+                return string.Concat("BLOB", arguments);
+            }
+
             throw new NotImplementedException("Type for value is not implemented: " + internalType);
         }
     }

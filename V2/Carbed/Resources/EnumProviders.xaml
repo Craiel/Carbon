@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:System="clr-namespace:System;assembly=mscorlib"
+                    xmlns:StatDataLogic="clr-namespace:Carbon.Engine.Resource.Content;assembly=Carbon.Engine">
+    
+    <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type System:Enum}" x:Key="ResourceTypes">
+        <ObjectDataProvider.MethodParameters>
+            <x:Type TypeName="StatDataLogic:ResourceType" />
+        </ObjectDataProvider.MethodParameters>
+    </ObjectDataProvider>
+</ResourceDictionary>

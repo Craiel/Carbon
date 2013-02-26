@@ -20,12 +20,14 @@ namespace Carbed.ViewModels
     {
         private readonly ICarbedLogic logic;
         private readonly IViewModelFactory viewModelFactory;
-        private readonly ObservableCollection<IFolderViewModel> folders;
         private readonly ObservableCollection<ICarbedDocument> content;
         private readonly IMainViewModel mainViewModel;
         private readonly ResourceTree data;
 
         private bool isExpanded;
+        private bool isContentLoaded;
+
+        private MetaDataEntry contentCount;
 
         private IFolderViewModel parent;
 
@@ -46,7 +48,6 @@ namespace Carbed.ViewModels
             this.mainViewModel = factory.Get<IMainViewModel>();
             this.data = data;
 
-            this.folders = new ObservableCollection<IFolderViewModel>();
             this.content = new ObservableCollection<ICarbedDocument>();
         }
 
@@ -61,11 +62,41 @@ namespace Carbed.ViewModels
             }
         }
 
+        public bool IsContentLoaded
+        {
+            get
+            {
+                return this.isContentLoaded;
+            }
+
+            private set
+            {
+                if (this.isContentLoaded != value)
+                {
+                    this.isContentLoaded = value;
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
         public int? Id
         {
             get
             {
                 return this.data.Id;
+            }
+        }
+
+        public int? ContentCount
+        {
+            get
+            {
+                if (this.contentCount == null)
+                {
+                    return null;
+                }
+
+                return this.contentCount.ValueInt;
             }
         }
         
@@ -91,14 +122,6 @@ namespace Carbed.ViewModels
                 }
 
                 return name ?? string.Empty;
-            }
-        }
-
-        public ReadOnlyObservableCollection<IFolderViewModel> Folders
-        {
-            get
-            {
-                return new ReadOnlyObservableCollection<IFolderViewModel>(this.folders);
             }
         }
 
@@ -202,7 +225,15 @@ namespace Carbed.ViewModels
                 throw new InvalidOperationException("Content was already added");
             }
 
+            if (this.contentCount == null)
+            {
+                this.contentCount = new MetaDataEntry { Key = MetaDataKey.ContentCount, ValueInt = 0 };
+            }
+
+            newContent.Parent = this;
+            this.contentCount.ValueInt++;
             this.content.Add(newContent);
+            this.NotifyPropertyChanged("ContentCount");
         }
 
         public void RemoveContent(IResourceViewModel oldContent)
@@ -212,7 +243,14 @@ namespace Carbed.ViewModels
                 throw new InvalidOperationException("Folder does not contain content to be removed");
             }
 
+            if (this.contentCount == null)
+            {
+                throw new InvalidOperationException("Removing content while Content Count was null, this should not be happening");
+            }
+
+            this.contentCount.ValueInt--;
             this.content.Remove(oldContent);
+            this.NotifyPropertyChanged("ContentCount");
         }
 
         public void SetExpand(bool expanded)
@@ -231,7 +269,7 @@ namespace Carbed.ViewModels
 
         public void RemoveFolder(IFolderViewModel folder)
         {
-            this.folders.Remove(folder);
+            this.content.Remove(folder);
         }
 
         public override void Load()
@@ -243,16 +281,23 @@ namespace Carbed.ViewModels
                 return;
             }
 
-            this.folders.Clear();
+            this.content.Clear();
             IList<IFolderViewModel> children = this.logic.GetResourceTreeChildren((int)this.data.Id);
             foreach (IFolderViewModel child in children)
             {
                 child.Load();
-                this.folders.Add(child);
+                this.content.Add(child);
+            }
+
+            IList<IResourceViewModel> contentList = this.logic.GetResourceTreeContent((int)this.data.Id);
+            foreach (IResourceViewModel entry in contentList)
+            {
+                entry.Load();
+                this.content.Add(entry);
             }
         }
 
-        public new void Save(IContentManager target)
+        public void Save(IContentManager target, IResourceManager resourceTarget)
         {
             // Update our parent id information before saving
             if (this.parent != null && this.data.Parent != this.parent.Id)
@@ -261,25 +306,48 @@ namespace Carbed.ViewModels
             }
 
             this.data.Hash = HashUtils.BuildResourceHash(this.FullPath);
-            base.Save(target);
+            this.Save(target);
+
+            if (this.contentCount != null)
+            {
+                target.Save(this.contentCount);
+            }
 
             // Save all our children as well
-            foreach (IFolderViewModel folder in this.Folders)
+            foreach (ICarbedDocument entry in this.content)
             {
-                folder.Save(target);
+                if (entry as IFolderViewModel != null)
+                {
+                    ((IFolderViewModel)entry).Save(target, resourceTarget);
+                    continue;
+                }
+
+                if (entry as IResourceViewModel != null)
+                {
+                    ((IResourceViewModel)entry).Save(target, resourceTarget);
+                }
             }
 
             this.NotifyPropertyChanged();
         }
 
-        public new void Delete(IContentManager target)
+        public void Delete(IContentManager target, IResourceManager resourceTarget)
         {
-            base.Delete(target);
+            this.Delete(target);
 
-            IList<IFolderViewModel> deleteQueue = new List<IFolderViewModel>(this.folders);
-            foreach (IFolderViewModel folder in deleteQueue)
+            IList<ICarbedDocument> deleteQueue = new List<ICarbedDocument>(this.content);
+            foreach (ICarbedDocument entry in deleteQueue)
             {
-                folder.Delete(target);
+                if (entry as IFolderViewModel != null)
+                {
+                    ((IFolderViewModel)entry).Delete(target, resourceTarget);
+                    continue;
+                }
+
+                if (entry as IResourceViewModel != null)
+                {
+                    ((IResourceViewModel)entry).Delete(target, resourceTarget);
+                }
             }
 
             if (this.parent != null)
@@ -320,6 +388,20 @@ namespace Carbed.ViewModels
         {
             this.logic.Delete(this);
         }
+
+        protected override void LoadMetadata(IList<MetaDataEntry> metaData)
+        {
+            base.LoadMetadata(metaData);
+
+            for (int i = 0; i < metaData.Count; i++)
+            {
+                if (metaData[i].Key == MetaDataKey.ContentCount)
+                {
+                    this.contentCount = metaData[i];
+                    break;
+                }
+            }
+        }
         
         // -------------------------------------------------------------------
         // Private
@@ -328,7 +410,7 @@ namespace Carbed.ViewModels
         {
             var vm = this.viewModelFactory.GetFolderViewModel(new ResourceTree());
             vm.Parent = this;
-            this.folders.Add(vm);
+            this.content.Add(vm);
         }
 
         private void OnExpandAll(object obj)

@@ -10,6 +10,7 @@ namespace Carbed.Contracts
         bool IsExpanded { get; set; }
 
         int? Id { get; }
+        int? ContentCount { get; }
 
         string FullPath { get; }
 
@@ -30,7 +31,7 @@ namespace Carbed.Contracts
 
         void RemoveFolder(IFolderViewModel folder);
 
-        void Save(IContentManager target);
-        void Delete(IContentManager target);
+        void Save(IContentManager target, IResourceManager resourceTarget);
+        void Delete(IContentManager target, IResourceManager resourceTarget);
     }
 }

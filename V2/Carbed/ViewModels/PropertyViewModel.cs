@@ -87,7 +87,7 @@ namespace Carbed.ViewModels
 
                 if (this.activeContext is IResourceViewModel)
                 {
-                    this.PropertyControl = new MeshProperties { DataContext = this.activeContext };
+                    this.PropertyControl = new ResourceProperties { DataContext = this.activeContext };
                 }
 
                 if (this.activeContext is IMaterialViewModel)

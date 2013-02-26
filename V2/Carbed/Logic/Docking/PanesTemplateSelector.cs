@@ -7,7 +7,7 @@ namespace Carbed.Logic.Docking
 {
     class PanesTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate ModelTemplate { get; set; }
+        public DataTemplate ResourceTemplate { get; set; }
         public DataTemplate FontTemplate { get; set; }
         public DataTemplate ResourceExplorerTemplate { get; set; }
         public DataTemplate MaterialExplorerTemplate { get; set; }
@@ -20,7 +20,7 @@ namespace Carbed.Logic.Docking
             if (item is IMaterialExplorerViewModel) return MaterialExplorerTemplate;
             if (item is IPropertyViewModel) return PropertiesTemplate;
 
-            if (item is IResourceViewModel) return ModelTemplate;
+            if (item is IResourceViewModel) return ResourceTemplate;
             
             // Can add more templates here if needed
             return base.SelectTemplate(item, container);

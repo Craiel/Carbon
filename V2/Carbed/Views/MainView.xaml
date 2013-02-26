@@ -84,11 +84,11 @@
             </avalonDock:DockingManager.Theme>
             <avalonDock:DockingManager.LayoutItemTemplateSelector>
                 <local:PanesTemplateSelector>
-                    <local:PanesTemplateSelector.ModelTemplate>
+                    <local:PanesTemplateSelector.ResourceTemplate>
                         <DataTemplate>
-                            <views:ModelView/>
+                            <views:ResourceView/>
                         </DataTemplate>
-                    </local:PanesTemplateSelector.ModelTemplate>
+                    </local:PanesTemplateSelector.ResourceTemplate>
                     <local:PanesTemplateSelector.FontTemplate>
                         <DataTemplate>
                             <views:FontView/>

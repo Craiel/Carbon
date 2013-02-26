@@ -95,7 +95,7 @@ namespace Carbon.Engine.Resource
                 throw new InvalidDataException("Expected unique result but got " + this.results.Count);
             }
 
-            return this.ProcessResults(targetType);
+            return this.ProcessResults(targetType)[0];
         }
 
         private void EvaluateCommand()

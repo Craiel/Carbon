@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Drawing;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
+
+using Carbon.Engine.Resource.Content;
+
+using Brush = System.Windows.Media.Brush;
 
 namespace Carbed.Logic.MVVM
 {
@@ -46,6 +51,36 @@ namespace Carbed.Logic.MVVM
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return (value != null) ^ this.invert;
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Binding.DoNothing;
+        }
+    }
+
+    [ValueConversion(typeof(object), typeof(Visibility))]
+    public class NullToVisibilityConverter : IValueConverter
+    {
+        private bool invert;
+
+        public bool Invert
+        {
+            get
+            {
+                return this.invert;
+            }
+
+            set
+            {
+                this.invert = value;
+            }
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return ((value != null) ^ this.invert) ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(
@@ -107,6 +142,36 @@ namespace Carbed.Logic.MVVM
 
             var colors = (Brush[])parameter;
             return (bool)value ? colors[1] : colors[0];
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [ValueConversion(typeof(ResourceType), typeof(Image))]
+    public class ResourceTypeToIconConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value.GetType() != typeof(ResourceType))
+            {
+                throw new ArgumentException();
+            }
+
+            switch ((ResourceType)value)
+            {
+                case ResourceType.Texture:
+                    {
+                        return StaticResources.ResourceTextureIconUri;
+                    }
+
+                default:
+                    {
+                        return StaticResources.PlaceholderIconUri;
+                    }
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

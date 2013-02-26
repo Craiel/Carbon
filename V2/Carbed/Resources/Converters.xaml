@@ -8,6 +8,7 @@
     <docking:ActiveDocumentConverter x:Key="ActiveDocumentConverter"/>
     
     <mvvm:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
+    <mvvm:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
 
     <mvvm:ReferenceToTypeConverter x:Key="ReferenceToTypeConverter"/>
     
@@ -15,5 +16,7 @@
     <mvvm:UriToImageConverter x:Key="UriToImageConverter"/>
 
     <mvvm:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
+
+    <mvvm:ResourceTypeToIconConverter x:Key="ResourceTypeToIconConverter"/>
 
 </ResourceDictionary>
