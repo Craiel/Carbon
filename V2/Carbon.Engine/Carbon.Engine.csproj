@@ -179,7 +179,7 @@
     <Compile Include="Resource\Content\MetaDataEntry.cs" />
     <Compile Include="Resource\Content\ResourceTree.cs" />
     <Compile Include="Resource\Content\StageEntry.cs" />
-    <Compile Include="Resource\Content\PlayfieldRegionEntry.cs" />
+    <Compile Include="Resource\Content\StageRegionEntry.cs" />
     <Compile Include="Resource\Content\ResourceEntry.cs" />
     <Compile Include="Resource\Content\ScriptEntry.cs" />
     <Compile Include="Resource\Resources\MeshResource.cs" />

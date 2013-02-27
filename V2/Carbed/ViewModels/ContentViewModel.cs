@@ -19,8 +19,8 @@ namespace Carbed.ViewModels
         private readonly ICarbonContent data;
 
         private readonly ILog log;
-        
-        private MetaDataEntry name;
+
+        private readonly IDictionary<MetaDataKey, MetaDataEntry> metaData;
 
         private bool isLoaded;
 
@@ -33,6 +33,8 @@ namespace Carbed.ViewModels
             this.logic = factory.Get<ICarbedLogic>();
             this.log = factory.Get<ICarbedLog>().AquireContextLog("ContentViewModel");
             this.data = data;
+
+            this.metaData = new Dictionary<MetaDataKey, MetaDataEntry>();
         }
 
         // -------------------------------------------------------------------
@@ -42,7 +44,8 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return this.name != null && !string.IsNullOrEmpty(this.name.Value);
+                string name = this.GetMetaValue(MetaDataKey.Name);
+                return !string.IsNullOrEmpty(name);
             }
         }
 
@@ -58,38 +61,22 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.name == null)
+                string name = this.GetMetaValue(MetaDataKey.Name);
+                if (string.IsNullOrEmpty(name))
                 {
                     return "<no name>";
                 }
 
-                return this.name.Value;
+                return name;
             }
 
             set
             {
-                if (this.name == null && value == null)
-                {
-                    return;
-                }
-
-                if (value == null)
-                {
-                    // Todo: be sure to delete name entry...
-                    this.name = null;
-                    return;
-                }
-                
-                if (this.name == null || this.name.Value != value)
+                if (this.GetMetaValue(MetaDataKey.Name) != value)
                 {
                     this.CreateUndoState();
 
-                    if (name == null)
-                    {
-                        name = new MetaDataEntry { Key = MetaDataKey.Name };
-                    }
-
-                    this.name.Value = value;
+                    this.SetMetaValue(MetaDataKey.Name, value);
                     this.NotifyPropertyChanged();
                     this.NotifyPropertyChanged("IsChanged");
                 }
@@ -110,18 +97,13 @@ namespace Carbed.ViewModels
             ContentReflectionProperty primaryKeyInfo = ContentReflection.GetPrimaryKeyPropertyInfo(this.data.GetType());
 
             // Load the metadata for this object
-            IList<MetaDataEntry> metaData = this.logic.GetEntryMetaData(primaryKeyInfo.Info.GetValue(this.data));
-            for (int i = 0; i < metaData.Count; i++)
+            this.metaData.Clear();
+            IList<MetaDataEntry> metaDataList = this.logic.GetEntryMetaData(primaryKeyInfo.Info.GetValue(this.data), this.data.MetaDataTarget);
+            for (int i = 0; i < metaDataList.Count; i++)
             {
-                if (metaData[i].Key == MetaDataKey.Name)
-                {
-                    this.name = metaData[i];
-                    break;
-                }
+                this.metaData.Add(metaDataList[i].Key, metaDataList[i]);
             }
-
-            this.LoadMetadata(metaData);
-
+            
             this.isLoaded = true;
         }
 
@@ -171,7 +153,7 @@ namespace Carbed.ViewModels
 
         protected void Save(IContentManager target)
         {
-            if (this.name == null)
+            if (!this.IsNamed)
             {
                 throw new InvalidOperationException("Can not save without setting a name first");
             }
@@ -181,9 +163,14 @@ namespace Carbed.ViewModels
                 target.Save(this.data);
             }
 
-            if (this.name.IsChanged || this.name.IsNew)
+            var dataKey = (int?)ContentReflection.GetPrimaryKeyPropertyInfo(this.data.GetType()).Info.GetValue(this.data);
+            foreach (KeyValuePair<MetaDataKey, MetaDataEntry> metaDataEntry in this.metaData)
             {
-                target.Save(this.name);
+                if (metaDataEntry.Value != null && (metaDataEntry.Value.IsNew || metaDataEntry.Value.IsChanged))
+                {
+                    metaDataEntry.Value.TargetId = dataKey;
+                    target.Save(metaDataEntry.Value);
+                }
             }
         }
 
@@ -194,14 +181,57 @@ namespace Carbed.ViewModels
                 target.Delete(this.data);
             }
 
-            if (this.name != null && !this.name.IsNew)
+            foreach (KeyValuePair<MetaDataKey, MetaDataEntry> metaDataEntry in this.metaData)
             {
-                target.Delete(this.name);
+                if (metaDataEntry.Value == null || metaDataEntry.Value.IsNew)
+                {
+                    continue;
+                }
+
+                target.Delete(metaDataEntry.Value);
             }
+
+            this.metaData.Clear();
         }
 
-        protected virtual void LoadMetadata(IList<MetaDataEntry> metaData)
+        protected string GetMetaValue(MetaDataKey key)
         {
+            if (this.metaData.ContainsKey(key) && this.metaData[key] != null)
+            {
+                return this.metaData[key].Value;
+            }
+
+            return null;
+        }
+
+        protected int? GetMetaValueInt(MetaDataKey key)
+        {
+            if (this.metaData.ContainsKey(key) && this.metaData[key] != null)
+            {
+                return this.metaData[key].ValueInt;
+            }
+
+            return null;
+        }
+
+        protected void SetMetaValue(MetaDataKey key, string value)
+        {
+            if (!this.metaData.ContainsKey(key))
+            {
+                this.metaData[key] = new MetaDataEntry { Key = key, Target = this.data.MetaDataTarget };
+            }
+
+            this.metaData[key].Value = value;
+        }
+
+        protected void SetMetaValue(MetaDataKey key, int value)
+        {
+            if (!this.metaData.ContainsKey(key))
+            {
+                this.metaData[key] = new MetaDataEntry { Key = key, Target = this.data.MetaDataTarget };
+            }
+
+            this.metaData[key].ValueInt = value;
         }
     }
 }

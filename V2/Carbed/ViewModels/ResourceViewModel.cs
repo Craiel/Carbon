@@ -24,9 +24,6 @@ namespace Carbed.ViewModels
 
         private IFolderViewModel parent;
 
-        private MetaDataEntry lastDateChanged;
-        private MetaDataEntry sourcePath;
-
         private string oldHash;
         
         // -------------------------------------------------------------------
@@ -71,12 +68,13 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.sourcePath == null || string.IsNullOrEmpty(this.sourcePath.Value))
+                string path = this.GetMetaValue(MetaDataKey.SourcePath);
+                if (string.IsNullOrEmpty(path))
                 {
                     return false;
                 }
 
-                return System.IO.File.Exists(this.sourcePath.Value);
+                return System.IO.File.Exists(path);
             }
         }
 
@@ -84,25 +82,21 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.sourcePath == null || string.IsNullOrEmpty(this.sourcePath.Value))
+                string path = this.GetMetaValue(MetaDataKey.SourcePath);
+                if (string.IsNullOrEmpty(path))
                 {
                     return "<none selected>";
                 }
 
-                return this.sourcePath.Value;
+                return path;
             }
 
             private set
             {
-                if (this.sourcePath == null)
-                {
-                    this.sourcePath = new MetaDataEntry { Key = MetaDataKey.SourcePath };
-                }
-
-                if (this.sourcePath.Value != value)
+                if (this.GetMetaValue(MetaDataKey.SourcePath) != value)
                 {
                     this.CreateUndoState();
-                    this.sourcePath.Value = value;
+                    this.SetMetaValue(MetaDataKey.SourcePath, value);
                     this.NotifyPropertyChanged();
                 }
             }
@@ -112,31 +106,22 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.lastDateChanged == null || string.IsNullOrEmpty(this.lastDateChanged.Value))
+                string date = this.GetMetaValue(MetaDataKey.LastChangeDate);
+                if (string.IsNullOrEmpty(date))
                 {
                     return null;
                 }
 
-                return Convert.ToDateTime(this.lastDateChanged.Value);
+                return Convert.ToDateTime(date);
             }
 
             private set
             {
-                if (this.lastDateChanged == null && value == null)
-                {
-                    return;
-                }
-
-                if (this.lastDateChanged == null)
-                {
-                    this.lastDateChanged = new MetaDataEntry();
-                }
-
                 string stringValue = value.ToString();
-                if (this.lastDateChanged.Value != stringValue)
+                if (this.GetMetaValue(MetaDataKey.LastChangeDate) != stringValue)
                 {
                     this.CreateUndoState();
-                    this.lastDateChanged.Value = stringValue;
+                    this.SetMetaValue(MetaDataKey.LastChangeDate, stringValue);
                     this.NotifyPropertyChanged();
                 }
             }
@@ -192,17 +177,7 @@ namespace Carbed.ViewModels
             // Todo: Duplicate check for resource names
             this.data.Hash = HashUtils.BuildResourceHash(System.IO.Path.Combine(this.parent.FullPath, this.Name));
             this.Save(target);
-
-            if (this.lastDateChanged != null)
-            {
-                target.Save(this.lastDateChanged);
-            }
-
-            if (this.sourcePath != null)
-            {
-                target.Save(this.sourcePath);
-            }
-
+            
             // Todo: Save the actual Resource now
             if (this.oldHash != null)
             {
@@ -217,16 +192,6 @@ namespace Carbed.ViewModels
         public void Delete(IContentManager target, IResourceManager resourceTarget)
         {
             this.Delete(target);
-
-            if (this.lastDateChanged != null)
-            {
-                target.Delete(this.lastDateChanged);
-            }
-
-            if (this.sourcePath != null)
-            {
-                target.Delete(this.sourcePath);
-            }
             
             this.NotifyPropertyChanged();
         }
@@ -266,26 +231,6 @@ namespace Carbed.ViewModels
             this.CreateUndoState();
             this.data.LoadFrom(source);
             this.NotifyPropertyChanged(string.Empty);
-        }
-
-        protected override void LoadMetadata(System.Collections.Generic.IList<MetaDataEntry> metaData)
-        {
-            base.LoadMetadata(metaData);
-
-            for (int i = 0; i < metaData.Count; i++)
-            {
-                if (metaData[i].Key == MetaDataKey.LastChangeDate)
-                {
-                    this.lastDateChanged = metaData[i];
-                    break;
-                }
-
-                if (metaData[i].Key == MetaDataKey.SourcePath)
-                {
-                    this.sourcePath = metaData[i];
-                    break;
-                }
-            }
         }
 
         // -------------------------------------------------------------------

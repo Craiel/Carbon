@@ -9,9 +9,16 @@
         ContentCount = 13,
     }
 
-    public enum MetaDataTarget
+    public enum MetaDataTargetEnum
     {
         Unknown = 0,
+        Stage = 1,
+        StageRegion = 2,
+        ResourceTree = 3,
+        Material = 4,
+        Font = 5,
+        Script = 6,
+        Resource = 7,
     }
 
     [ContentEntry("MetaData")]
@@ -24,7 +31,7 @@
         public int? Id { get; set; }
 
         [ContentEntryElement]
-        public MetaDataTarget TargetType { get; set; }
+        public MetaDataTargetEnum Target { get; set; }
 
         [ContentEntryElement]
         public int? TargetId { get; set; }
@@ -43,6 +50,14 @@
             get
             {
                 return this.Id == null;
+            }
+        }
+
+        public override MetaDataTargetEnum MetaDataTarget
+        {
+            get
+            {
+                return MetaDataTargetEnum.Unknown;
             }
         }
     }

@@ -19,5 +19,13 @@
                 return this.Id == null;
             }
         }
+
+        public override MetaDataTargetEnum MetaDataTarget
+        {
+            get
+            {
+                return MetaDataTargetEnum.Font;
+            }
+        }
     }
 }

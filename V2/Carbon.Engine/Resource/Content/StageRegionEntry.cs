@@ -1,7 +1,7 @@
 ﻿namespace Carbon.Engine.Resource.Content
 {
-    [ContentEntry("PlayfieldRegion")]
-    public class PlayfieldRegionEntry : ContentEntry
+    [ContentEntry("StageRegion")]
+    public class StageRegionEntry : ContentEntry
     {
         // -------------------------------------------------------------------
         // Public
@@ -31,6 +31,14 @@
             get
             {
                 return this.Id == null;
+            }
+        }
+
+        public override MetaDataTargetEnum MetaDataTarget
+        {
+            get
+            {
+                return MetaDataTargetEnum.StageRegion;
             }
         }
     }

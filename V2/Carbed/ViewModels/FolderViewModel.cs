@@ -26,9 +26,7 @@ namespace Carbed.ViewModels
 
         private bool isExpanded;
         private bool isContentLoaded;
-
-        private MetaDataEntry contentCount;
-
+        
         private IFolderViewModel parent;
 
         private ICommand commandAddFolder;
@@ -91,12 +89,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.contentCount == null)
-                {
-                    return null;
-                }
-
-                return this.contentCount.ValueInt;
+                return this.GetMetaValueInt(MetaDataKey.ContentCount);
             }
         }
         
@@ -224,14 +217,9 @@ namespace Carbed.ViewModels
             {
                 throw new InvalidOperationException("Content was already added");
             }
-
-            if (this.contentCount == null)
-            {
-                this.contentCount = new MetaDataEntry { Key = MetaDataKey.ContentCount, ValueInt = 0 };
-            }
-
+            
             newContent.Parent = this;
-            this.contentCount.ValueInt++;
+            this.SetMetaValue(MetaDataKey.ContentCount, (this.GetMetaValueInt(MetaDataKey.ContentCount) ?? 0) + 1);
             this.content.Add(newContent);
             this.NotifyPropertyChanged("ContentCount");
         }
@@ -242,13 +230,8 @@ namespace Carbed.ViewModels
             {
                 throw new InvalidOperationException("Folder does not contain content to be removed");
             }
-
-            if (this.contentCount == null)
-            {
-                throw new InvalidOperationException("Removing content while Content Count was null, this should not be happening");
-            }
-
-            this.contentCount.ValueInt--;
+            
+            this.SetMetaValue(MetaDataKey.ContentCount, (this.GetMetaValueInt(MetaDataKey.ContentCount) ?? 0) - 1);
             this.content.Remove(oldContent);
             this.NotifyPropertyChanged("ContentCount");
         }
@@ -307,12 +290,7 @@ namespace Carbed.ViewModels
 
             this.data.Hash = HashUtils.BuildResourceHash(this.FullPath);
             this.Save(target);
-
-            if (this.contentCount != null)
-            {
-                target.Save(this.contentCount);
-            }
-
+            
             // Save all our children as well
             foreach (ICarbedDocument entry in this.content)
             {
@@ -387,20 +365,6 @@ namespace Carbed.ViewModels
         protected override void OnDelete(object arg)
         {
             this.logic.Delete(this);
-        }
-
-        protected override void LoadMetadata(IList<MetaDataEntry> metaData)
-        {
-            base.LoadMetadata(metaData);
-
-            for (int i = 0; i < metaData.Count; i++)
-            {
-                if (metaData[i].Key == MetaDataKey.ContentCount)
-                {
-                    this.contentCount = metaData[i];
-                    break;
-                }
-            }
         }
         
         // -------------------------------------------------------------------

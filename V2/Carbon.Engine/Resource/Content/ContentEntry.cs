@@ -29,6 +29,8 @@ namespace Carbon.Engine.Resource.Content
             }
         }
 
+        public abstract MetaDataTargetEnum MetaDataTarget { get; }
+        
         public bool IsValid { get; private set; }
 
         public virtual ICarbonContent Clone(bool fullCopy = false)

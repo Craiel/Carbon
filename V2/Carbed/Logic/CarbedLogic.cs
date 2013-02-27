@@ -274,7 +274,7 @@ namespace Carbed.Logic
             throw new NotImplementedException();
         }
 
-        public IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue, MetaDataTarget target)
+        public IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue, MetaDataTargetEnum target)
         {
             if (primaryKeyValue == null)
             {
@@ -284,7 +284,7 @@ namespace Carbed.Logic
             // Todo: Add caching for this
             return
                 this.projectContent.TypedLoad(
-                    new ContentQuery<MetaDataEntry>().IsEqual("TargetId", primaryKeyValue).IsEqual("TargetType", target)).ToList<MetaDataEntry>();
+                    new ContentQuery<MetaDataEntry>().IsEqual("TargetId", primaryKeyValue).IsEqual("Target", target)).ToList<MetaDataEntry>();
         }
 
         public IList<IFolderViewModel> GetResourceTreeChildren(int parent)

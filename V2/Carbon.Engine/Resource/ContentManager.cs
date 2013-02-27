@@ -364,6 +364,12 @@ namespace Carbon.Engine.Resource
 
         private string TranslateCriterionValue(object value)
         {
+            Type type = value.GetType();
+            if (type.IsEnum)
+            {
+                return ((int)value).ToString();
+            }
+
             return value.ToString();
         }
 

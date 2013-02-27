@@ -23,6 +23,14 @@
             }
         }
 
+        public override MetaDataTargetEnum MetaDataTarget
+        {
+            get
+            {
+                return MetaDataTargetEnum.ResourceTree;
+            }
+        }
+
         public override Contracts.Resource.ICarbonContent Clone(bool fullCopy = false)
         {
             var clone = new ResourceTree();
