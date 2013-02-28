@@ -525,7 +525,7 @@ namespace Carbed.ViewModels
             this.documentTemplates.Add(StaticResources.TextureTemplate);
 
             StaticResources.MeshTemplate.CommandCreate = this.CommandNewResource;
-            StaticResources.MeshTemplate.CreateParameter = ResourceType.Mesh;
+            StaticResources.MeshTemplate.CreateParameter = ResourceType.Model;
             StaticResources.MeshTemplate.Categories.Add(resourceMain);
             this.documentTemplates.Add(StaticResources.MeshTemplate);
         }

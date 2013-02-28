@@ -7,6 +7,7 @@
         SourcePath = 11,
         LastChangeDate = 12,
         ContentCount = 13,
+        SourceElement = 14,
     }
 
     public enum MetaDataTargetEnum
@@ -19,6 +20,7 @@
         Font = 5,
         Script = 6,
         Resource = 7,
+        Project = 8,
     }
 
     [ContentEntry("MetaData")]
@@ -44,6 +46,9 @@
 
         [ContentEntryElement]
         public int? ValueInt { get; set; }
+
+        [ContentEntryElement]
+        public long? ValueLong { get; set; }
 
         public override bool IsNew
         {

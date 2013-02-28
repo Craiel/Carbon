@@ -70,13 +70,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Processors\ModelProcessor.cs" />
+    <Compile Include="Contracts\IResourceProcessor.cs" />
+    <Compile Include="Logic\ResourceProcessor.cs" />
     <Compile Include="Processors\FontProcessor.cs" />
-    <Compile Include="Contracts\IContentProcessor.cs" />
-    <Compile Include="Logic\SourceReference.cs" />
     <Compile Include="Ninject\NinjectModuleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resource\Collada\ColladaCarbonConverter.cs" />
+    <Compile Include="Resource\Collada\ColladaProcessor.cs" />
+    <Compile Include="Resource\Collada\ColladaInfo.cs" />
     <Compile Include="Resource\Collada\ColladaModel.cs" />
     <Compile Include="Resource\Collada\Data\ColladaColor.cs" />
     <Compile Include="Resource\Collada\Data\ColladaDataConversion.cs" />

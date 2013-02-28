@@ -2,20 +2,20 @@
 
 using Carbed.Contracts;
 
-using Carbon.Editor.Resource;
 using Carbon.Engine.Contracts;
+using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
-    public class ProjectViewModel : DocumentViewModel, IProjectViewModel
+    public class ProjectViewModel : ContentViewModel, IProjectViewModel
     {
-        private readonly SourceProject data;
+        private readonly ProjectEntry data;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ProjectViewModel(IEngineFactory factory, SourceProject data)
-            : base(factory)
+        public ProjectViewModel(IEngineFactory factory, ProjectEntry data)
+            : base(factory, data)
         {
             this.Template = StaticResources.ProjectTemplate;
             this.data = data;
@@ -24,29 +24,6 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override string Name
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(this.data.Name))
-                {
-                    return "<no name>";
-                }
-
-                return this.data.Name;
-            }
-            set
-            {
-                if (this.data.Name != value)
-                {
-                    this.CreateUndoState();
-                    this.data.Name = value;
-                    this.NotifyPropertyChanged();
-                    this.NotifyPropertyChanged("IsChanged");
-                }
-            }
-        }
-        
         public override Uri IconUri
         {
             get
@@ -65,7 +42,7 @@ namespace Carbed.ViewModels
 
         protected override void RestoreMemento(object memento)
         {
-            SourceProject source = memento as SourceProject;
+            ProjectEntry source = memento as ProjectEntry;
             if (source == null)
             {
                 throw new ArgumentException();

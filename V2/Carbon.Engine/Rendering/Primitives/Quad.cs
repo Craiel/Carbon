@@ -10,7 +10,7 @@ namespace Carbon.Engine.Rendering.Primitives
         private static int creationCount;
         private static int screenCreationCount;
 
-        public static MeshResource Create(Vector3 origin, Vector3 normal, Vector3 up, float width, float height)
+        public static ModelResource Create(Vector3 origin, Vector3 normal, Vector3 up, float width, float height)
         {
             var builder = new MeshBuilder("Quad " + ++creationCount) { IsIndexed = true };
             
@@ -32,7 +32,7 @@ namespace Carbon.Engine.Rendering.Primitives
             return builder.ToMesh();
         }
 
-        public static MeshResource CreateScreen(Vector2 position, Vector2 size)
+        public static ModelResource CreateScreen(Vector2 position, Vector2 size)
         {
             var builder = new MeshBuilder("Screen Quad " + ++screenCreationCount) { IsIndexed = true };
 

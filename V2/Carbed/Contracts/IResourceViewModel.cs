@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 using Carbon.Engine.Contracts.Resource;
@@ -10,8 +11,17 @@ namespace Carbed.Contracts
     {
         ResourceType Type { get; set; }
 
+        long? SourceSize { get; }
+        long? TargetSize { get; }
+
         bool IsValidSource { get; }
+        bool IsHavingSourceElements { get; }
+
         string SourcePath { get; }
+
+        ReadOnlyCollection<string> SourceElements { get; }
+        string SelectedSourceElement { get; set; }
+
         DateTime? LastChangeDate { get; }
 
         IFolderViewModel Parent { get; set; }
@@ -20,5 +30,8 @@ namespace Carbed.Contracts
 
         void Save(IContentManager target, IResourceManager resourceTarget);
         void Delete(IContentManager target, IResourceManager resourceTarget);
+
+        void SelectFile(string path);
+        void CheckSource();
     }
 }

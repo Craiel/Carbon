@@ -15,16 +15,23 @@
                 <MenuItem Header="Collapse All" Command="{Binding Path=CommandCollapseAll}"/>
                 <Separator/>
                 <MenuItem Header="Add">
-                    <MenuItem Header="New Resource..." Icon="{StaticResource IconNewResource}" IsEnabled="{Binding Converter={StaticResource NullToBooleanConverter}}" Command="{Binding Path=CommandOpenNewDialog}" CommandParameter="{Binding}"/>
+                    <MenuItem Header="New Resource ..." Icon="{StaticResource IconNewResource}" IsEnabled="{Binding Converter={StaticResource NullToBooleanConverter}}" Command="{Binding Path=CommandOpenNewDialog}" CommandParameter="{Binding}"/>
+                    <MenuItem Header="Existing Resource .." Icon="{StaticResource IconNewResource}" IsEnabled="{Binding Converter={StaticResource NullToBooleanConverter}}" Command="{Binding Path=CommandAddExistingResources}"/>
                     <MenuItem Header="Folder" Icon="{StaticResource IconNewFolder}" IsEnabled="{Binding Converter={StaticResource NullToBooleanConverter}}" Command="{Binding Path=CommandAddFolder}"/>
                 </MenuItem>
-                <MenuItem Header="Delete" Command="{Binding Path=CommandDeleteFolder}" Icon="{StaticResource IconDelete}"/>
+                <MenuItem Header="Delete" Command="{Binding Path=CommandDelete}" Icon="{StaticResource IconDelete}"/>
                 <Separator/>
                 <MenuItem Header="Reload Content" Command="{Binding Path=CommandReloadContent}" Icon="{StaticResource IconReload}"/>
             </ContextMenu>
-            
+
+            <ContextMenu x:Key="ResourceContextMenu">
+                <MenuItem Header="Delete" Command="{Binding Path=CommandDelete}" Icon="{StaticResource IconDelete}"/>
+                <Separator/>
+                <MenuItem Header="Reload" Command="{Binding Path=CommandReloadContent}" Icon="{StaticResource IconReload}"/>
+            </ContextMenu>
+
             <DataTemplate x:Key="ResourceEntryTemplate">
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource ResourceContextMenu}">
                     <Image Width="20" Height="20" Margin="2" Source="{Binding Path=Type, Converter={StaticResource ResourceTypeToIconConverter}}"/>
                     <TextBlock Text="{Binding Path=Name}" Margin="2"/>
                 </StackPanel>

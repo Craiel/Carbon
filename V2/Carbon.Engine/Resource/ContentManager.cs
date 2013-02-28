@@ -290,7 +290,7 @@ namespace Carbon.Engine.Resource
                     criterion.PropertyInfo.Name);
             }
 
-            string segmentString = string.Format("{0} = '{1}'", criterion.PropertyInfo.Name, this.TranslateCriterionValue(criterion.Values[0]));
+            string segmentString = string.Format("{0} = {1}", criterion.PropertyInfo.Name, this.TranslateValue(criterion.Values[0]));
             if (criterion.Negate)
             {
                 segmentString = string.Concat("NOT ", segmentString);
@@ -314,7 +314,7 @@ namespace Carbon.Engine.Resource
             IList<string> containValues = new List<string>();
             for (int i = 0; i < criterion.Values.Length; i++)
             {
-                containValues.Add(string.Format("'{0}'", this.TranslateCriterionValue(criterion.Values[i])));
+                containValues.Add(this.TranslateValue(criterion.Values[i]));
             }
 
             string segmentString = string.Format("{0} in ({1})", criterion.PropertyInfo.Name, string.Join(", ", containValues));
@@ -333,14 +333,14 @@ namespace Carbon.Engine.Resource
             foreach (ContentReflectionProperty property in properties)
             {
                 object value = property.Info.GetValue(entry);
-                segments.Add(this.TranslateInsertValue(value));
+                segments.Add(this.TranslateValue(value));
                 property.Info.SetValue(entry, value);
             }
 
             return segments;
         }
 
-        private string TranslateInsertValue(object value)
+        private string TranslateValue(object value)
         {
             if (value == null)
             {
@@ -353,24 +353,18 @@ namespace Carbon.Engine.Resource
                 this.Save((ContentLink)value);
                 return ((ContentLink)value).Id.ToString();
             }
-            
+
+            if (type == typeof(DateTime))
+            {
+                return ((DateTime)value).Ticks.ToString();
+            }
+
             if (type.IsEnum)
             {
                 return ((int)value).ToString();
             }
 
             return string.Format("'{0}'", value);
-        }
-
-        private string TranslateCriterionValue(object value)
-        {
-            Type type = value.GetType();
-            if (type.IsEnum)
-            {
-                return ((int)value).ToString();
-            }
-
-            return value.ToString();
         }
 
         private string BuildOrder(IEnumerable<ContentOrder> orders)
@@ -534,7 +528,8 @@ namespace Carbon.Engine.Resource
                 || internalType == typeof(long)
                 || internalType == typeof(ulong)
                 || internalType == typeof(bool)
-                || internalType == typeof(ContentLink))
+                || internalType == typeof(ContentLink)
+                || internalType == typeof(DateTime))
             {
                 return string.Concat("INTEGER", arguments);
             }
@@ -542,12 +537,6 @@ namespace Carbon.Engine.Resource
             if (internalType == typeof(float))
             {
                 return string.Concat("FLOAT", arguments);
-            }
-
-            // SQLite does not have DateTime, instead we store as text and use conversion functions
-            if (internalType == typeof(DateTime))
-            {
-                return string.Concat("TEXT", arguments);
             }
 
             if (internalType == typeof(byte[]))

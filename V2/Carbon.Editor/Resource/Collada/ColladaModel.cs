@@ -36,5 +36,10 @@ namespace Carbon.Editor.Resource.Collada
                 return Serializer.Deserialize(dataStream) as ColladaModel;
             }
         }
+
+        public static ColladaModel Load(Stream source)
+        {
+            return Serializer.Deserialize(source) as ColladaModel;
+        }
     }
 }

@@ -4,7 +4,7 @@
     {
         Unknown = 0,
         Raw = 10,
-        Mesh = 11,
+        Model = 11,
         Texture = 12,
         Font = 13,
     }
@@ -25,7 +25,7 @@
         public string Hash { get; set; }
 
         [ContentEntryElement]
-        public ContentLink TreeNode { get; set; }
+        public int? TreeNode { get; set; }
 
         [ContentEntryElement]
         public byte[] Md5 { get; set; }
@@ -55,10 +55,7 @@
                 clone.Id = this.Id;
                 clone.Hash = this.Hash;
                 clone.Md5 = this.Md5;
-                if (this.TreeNode != null)
-                {
-                    clone.TreeNode.Id = this.TreeNode.Id;
-                }
+                clone.TreeNode = this.TreeNode;
             }
 
             return clone;
@@ -68,11 +65,6 @@
         {
             var other = source as ResourceEntry;
             this.Type = other.Type;
-            if (other.TreeNode != null)
-            {
-                this.TreeNode = new ContentLink();
-                this.TreeNode.LoadFrom(other.TreeNode);
-            }
         }
     }
 }

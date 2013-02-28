@@ -10,6 +10,8 @@
     <mvvm:NullToBooleanConverter x:Key="NullToBooleanConverter"/>
     <mvvm:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
 
+    <mvvm:EnumEqualsToVisibilityConverter x:Key="EnumEqualsToVisibilityConverter"/>
+
     <mvvm:ReferenceToTypeConverter x:Key="ReferenceToTypeConverter"/>
     
     <mvvm:UriToBitmapFrameConverter x:Key="UriToBitmapFrameConverter"/>

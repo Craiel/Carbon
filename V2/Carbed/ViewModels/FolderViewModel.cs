@@ -14,6 +14,8 @@ using Carbon.Engine.Resource.Content;
 
 using Core.Utils;
 
+using Microsoft.Win32;
+
 namespace Carbed.ViewModels
 {
     public class FolderViewModel : ContentViewModel, IFolderViewModel
@@ -29,8 +31,8 @@ namespace Carbed.ViewModels
         
         private IFolderViewModel parent;
 
+        private ICommand commandAddExistingResources;
         private ICommand commandAddFolder;
-        private ICommand commandDeleteFolder;
         private ICommand commandExpandAll;
         private ICommand commandCollapseAll;
         private ICommand commandCopyPath;
@@ -160,20 +162,20 @@ namespace Carbed.ViewModels
             }
         }
 
+        public ICommand CommandAddExistingResources
+        {
+            get
+            {
+                return this.commandAddExistingResources ??
+                       (this.commandAddExistingResources = new RelayCommand(this.OnAddExistingResources));
+            }
+        }
+
         public ICommand CommandAddFolder
         {
             get
             {
                 return this.commandAddFolder ?? (this.commandAddFolder = new RelayCommand(this.OnAddFolder));
-            }
-        }
-
-        public ICommand CommandDeleteFolder
-        {
-            get
-            {
-                return this.commandDeleteFolder ??
-                       (this.commandDeleteFolder = new RelayCommand(this.OnDeleteFolder, this.CanDeleteFolder));
             }
         }
 
@@ -272,11 +274,27 @@ namespace Carbed.ViewModels
                 this.content.Add(child);
             }
 
+            int resourceCount = 0;
             IList<IResourceViewModel> contentList = this.logic.GetResourceTreeContent((int)this.data.Id);
             foreach (IResourceViewModel entry in contentList)
             {
+                resourceCount++;
+                entry.Parent = this;
                 entry.Load();
                 this.content.Add(entry);
+            }
+
+            // Check our content meta information and update if it is mismatching
+            if (this.GetMetaValueInt(MetaDataKey.ContentCount) != resourceCount)
+            {
+                if (resourceCount == 0)
+                {
+                    this.SetMetaValue(MetaDataKey.ContentCount, (int?)null);
+                }
+                else
+                {
+                    this.SetMetaValue(MetaDataKey.ContentCount, resourceCount);
+                }                
             }
         }
 
@@ -364,12 +382,37 @@ namespace Carbed.ViewModels
 
         protected override void OnDelete(object arg)
         {
+            if (MessageBox.Show(
+                "Delete Folder and all contents of " + this.Name,
+                "Confirmation",
+                MessageBoxButton.OKCancel,
+                MessageBoxImage.Question,
+                MessageBoxResult.Cancel) == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+
             this.logic.Delete(this);
         }
         
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
+        private void OnAddExistingResources(object obj)
+        {
+            var dialog = new OpenFileDialog { CheckFileExists = true, CheckPathExists = true, Multiselect = true };
+            if (dialog.ShowDialog() == true)
+            {
+                foreach (string fileName in dialog.FileNames)
+                {
+                    IResourceViewModel vm = this.logic.AddResource();
+                    vm.Parent = this;
+                    vm.SelectFile(fileName);
+                    this.content.Add(vm);
+                }
+            }
+        }
+
         private void OnAddFolder(object obj)
         {
             var vm = this.viewModelFactory.GetFolderViewModel(new ResourceTree());
@@ -395,16 +438,6 @@ namespace Carbed.ViewModels
         private bool CanCollapseAll(object obj)
         {
             return this.content.Count > 0;
-        }
-
-        private void OnDeleteFolder(object obj)
-        {
-            this.logic.Delete(this);
-        }
-
-        private bool CanDeleteFolder(object obj)
-        {
-            return true;
         }
 
         private void OnCopyPath(object obj)

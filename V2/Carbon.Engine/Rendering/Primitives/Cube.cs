@@ -8,7 +8,7 @@ namespace Carbon.Engine.Rendering.Primitives
     {
         private static int creationCount;
 
-        public static MeshResource Create(Vector3 origin, float size)
+        public static ModelResource Create(Vector3 origin, float size)
         {
             var builder = new MeshBuilder("Cube " + ++creationCount) { IsIndexed = true };
 

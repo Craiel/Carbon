@@ -213,6 +213,16 @@ namespace Carbed.ViewModels
 
             return null;
         }
+        
+        protected long? GetMetaValueLong(MetaDataKey key)
+        {
+            if (this.metaData.ContainsKey(key) && this.metaData[key] != null)
+            {
+                return this.metaData[key].ValueLong;
+            }
+
+            return null;
+        }
 
         protected void SetMetaValue(MetaDataKey key, string value)
         {
@@ -224,7 +234,7 @@ namespace Carbed.ViewModels
             this.metaData[key].Value = value;
         }
 
-        protected void SetMetaValue(MetaDataKey key, int value)
+        protected void SetMetaValue(MetaDataKey key, int? value)
         {
             if (!this.metaData.ContainsKey(key))
             {
@@ -232,6 +242,16 @@ namespace Carbed.ViewModels
             }
 
             this.metaData[key].ValueInt = value;
+        }
+
+        protected void SetMetaValue(MetaDataKey key, long? value)
+        {
+            if (!this.metaData.ContainsKey(key))
+            {
+                this.metaData[key] = new MetaDataEntry { Key = key, Target = this.data.MetaDataTarget };
+            }
+
+            this.metaData[key].ValueLong = value;
         }
     }
 }

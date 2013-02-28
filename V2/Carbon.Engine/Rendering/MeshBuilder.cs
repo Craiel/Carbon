@@ -134,7 +134,7 @@ namespace Carbon.Engine.Rendering
             }
         }
 
-        public MeshResource ToMesh()
+        public ModelResource ToMesh()
         {
             uint[] indexData;
 
@@ -151,7 +151,7 @@ namespace Carbon.Engine.Rendering
                     indexData[i] = this.elementIndices[i];
                 }
 
-                return new MeshResource(this.elements, indexData) { Name = this.name };
+                return new ModelResource(this.elements, indexData) { Name = this.name };
             }
 
             if (this.pendingElements.Count > 0)
@@ -165,7 +165,7 @@ namespace Carbon.Engine.Rendering
                 indexData[i] = i;
             }
 
-            return new MeshResource(this.elements, indexData) { Name = this.name };
+            return new ModelResource(this.elements, indexData) { Name = this.name };
         }
     }
 }

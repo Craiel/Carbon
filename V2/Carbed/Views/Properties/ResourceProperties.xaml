@@ -1,6 +1,7 @@
 ﻿<UserControl x:Class="Carbed.Views.Properties.ResourceProperties"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:content="clr-namespace:Carbon.Engine.Resource.Content;assembly=Carbon.Engine">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -18,10 +19,12 @@
         <Expander Header="Source" IsExpanded="True">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -35,8 +38,31 @@
                     <Button Command="{Binding Path=CommandSelectFile}" Content="..." DockPanel.Dock="Right" Width="20" Height="20"/>
                     <TextBox Text="{Binding Path=SourcePath, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center"/>
                 </DockPanel>
+                
+                <TextBlock Text="Source Element" Margin="4" VerticalAlignment="Center" Grid.Row="2" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverter}, ConverterParameter={x:Static content:ResourceType.Model}}"/>
+                <ComboBox Grid.Row="2" Grid.Column="1" Margin="2" ItemsSource="{Binding Path=SourceElements}" SelectedItem="{Binding Path=SelectedSourceElement}" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverter}, ConverterParameter={x:Static content:ResourceType.Model}}"/>
 
-                <TextBlock Text="{Binding Path=LastChangeDate}" Grid.Row="2" Grid.ColumnSpan="2" Margin="4, 2, 2, 2"/>
+                <TextBlock Text="Last Changed:" Grid.Row="3" Margin="4"/>
+                <TextBlock Text="{Binding Path=LastChangeDate}" Grid.Row="3" Grid.Column="1" Margin="4"/>
+
+                <TextBlock Text="Size:" Grid.Row="4" Margin="4"/>
+                <TextBlock Text="{Binding Path=SourceSize, StringFormat='{}{0:N0} bytes'}" Grid.Row="4" Grid.Column="1" Margin="4"/>
+            </Grid>
+        </Expander>
+
+        <Expander Header="Target" IsExpanded="True">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock Text="Size:" Margin="4"/>
+                <TextBlock Text="{Binding Path=TargetSize, StringFormat='{}{0:N0} bytes'}" Grid.Column="1" Margin="4, 2, 2, 2"/>
             </Grid>
         </Expander>
     </StackPanel>

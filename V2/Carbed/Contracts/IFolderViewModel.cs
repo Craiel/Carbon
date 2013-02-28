@@ -18,8 +18,8 @@ namespace Carbed.Contracts
 
         ReadOnlyObservableCollection<ICarbedDocument> Content { get; }
 
+        ICommand CommandAddExistingResources { get; }
         ICommand CommandAddFolder { get; }
-        ICommand CommandDeleteFolder { get; }
         ICommand CommandOpenNewDialog { get; }
         ICommand CommandExpandAll { get; }
         ICommand CommandCollapseAll { get; }

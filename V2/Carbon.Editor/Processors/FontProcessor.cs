@@ -12,7 +12,7 @@ using Carbon.Engine.Resource;
 
 namespace Carbon.Editor.Processors
 {
-    using Carbon.Editor.Contracts;
+    /*using Carbon.Editor.Contracts;
     using Carbon.Editor.Logic;
 
     public class FontProcessor : IContentProcessor
@@ -53,9 +53,9 @@ namespace Carbon.Editor.Processors
 
         public void Process(Stream target, CarbonBuilderEntry entry)
         {
-            /*SourceTextureFont source = (SourceTextureFont)entry.Content;
+            SourceTextureFont source = (SourceTextureFont)entry.Content;
 
-            this.font = new Font(source.Font.Reference, source.FontSize, FontStyle.Regular);*/
+            this.font = new Font(source.Font.Reference, source.FontSize, FontStyle.Regular);
             
             // Todo: Evaluate reference
 
@@ -65,7 +65,7 @@ namespace Carbon.Editor.Processors
             using (Bitmap image = this.Draw())
             {
                 // Todo: Move this into pre-processing and use it as a referenced resource
-                /*switch (format)
+                switch (format)
                 {
                     case ProcessingTargetFormat.Preview:
                         {
@@ -96,7 +96,7 @@ namespace Carbon.Editor.Processors
                         {
                             throw new NotImplementedException();
                         }
-                }*/
+                }
             }
         }
         
@@ -158,5 +158,5 @@ namespace Carbon.Editor.Processors
             graphics.Flush();
             return image;
         }
-    }
+    }*/
 }

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Input;
 
 using Carbed.Contracts;
 using Carbed.Logic.MVVM;
+
+using Microsoft.Win32;
 
 namespace Carbed.ViewModels
 {

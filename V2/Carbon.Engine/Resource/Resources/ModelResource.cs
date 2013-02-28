@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.IO;
 
+using Carbon.Engine.Contracts.Resource;
+
 using Core.Utils;
 
 using SlimDX;
@@ -89,21 +91,49 @@ namespace Carbon.Engine.Resource.Resources
         }
     }
 
-    public class MeshResource
+    public class MaterialElement
+    {
+        public MaterialElement()
+        {
+        }
+
+        public MaterialElement(Stream source)
+            : this()
+        {
+            using (var reader = new BinaryReader(source))
+            {
+                this.Name = reader.ReadString();
+            }
+        }
+
+        public string Name { get; set; }
+
+        public void Save(Stream target)
+        {
+            using (var writer = new BinaryWriter(target))
+            {
+                writer.Write(this.Name);
+            }
+        }
+    }
+
+    public class ModelResource : ICarbonResource
     {
         private const int Version = 1;
 
-        private readonly List<MeshResource> subParts;
+        private readonly List<ModelResource> subParts;
         private readonly List<MeshElement> elements;
+        private readonly List<MaterialElement> materials;
 
         private uint[] indices;
 
         private bool tangentsCalculated;
 
-        public MeshResource(IEnumerable<MeshElement> elements, uint[] indices)
+        public ModelResource(IEnumerable<MeshElement> elements, uint[] indices)
         {
             this.elements = new List<MeshElement>(elements);
-            this.subParts = new List<MeshResource>();
+            this.subParts = new List<ModelResource>();
+            this.materials = new List<MaterialElement>();
             this.indices = indices;
 
             this.ElementCount = this.elements.Count;
@@ -111,13 +141,14 @@ namespace Carbon.Engine.Resource.Resources
             this.IndexSize = this.IndexCount * 4;
         }
 
-        public MeshResource(IEnumerable<MeshResource> parts)
+        public ModelResource(IEnumerable<ModelResource> parts)
         {
             this.elements = new List<MeshElement>();
             this.indices = new uint[0];
-            this.subParts = new List<MeshResource>(parts);
+            this.subParts = new List<ModelResource>(parts);
+            this.materials = new List<MaterialElement>();
 
-            foreach (MeshResource part in this.subParts)
+            foreach (ModelResource part in this.subParts)
             {
                 this.ElementCount += part.ElementCount;
                 this.IndexCount += part.IndexCount;
@@ -125,10 +156,11 @@ namespace Carbon.Engine.Resource.Resources
             }
         }
 
-        public MeshResource(Stream source)
+        public ModelResource(Stream source)
         {
-            this.subParts = new List<MeshResource>();
+            this.subParts = new List<ModelResource>();
             this.elements = new List<MeshElement>();
+            this.materials = new List<MaterialElement>();
 
             this.Load(source);
         }
@@ -138,13 +170,17 @@ namespace Carbon.Engine.Resource.Resources
         // -------------------------------------------------------------------
         public string Name { get; set; }
 
+        public Vector3 Offset { get; set; }
+        public Vector3 Scale { get; set; }
+        public Quaternion Rotation { get; set; }
+
         public int ElementCount { get; private set; }
         public int IndexCount { get; private set; }
         public int IndexSize { get; private set; }
 
         public BoundingBox BoundingBox { get; private set; }
 
-        public ReadOnlyCollection<MeshResource> SubParts
+        public ReadOnlyCollection<ModelResource> SubParts
         {
             get
             {
@@ -157,6 +193,14 @@ namespace Carbon.Engine.Resource.Resources
             get
             {
                 return this.elements.AsReadOnly();
+            }
+        }
+
+        public ReadOnlyCollection<MaterialElement> Materials
+        {
+            get
+            {
+                return this.materials.AsReadOnly();
             }
         }
 
@@ -188,9 +232,23 @@ namespace Carbon.Engine.Resource.Resources
                 {
                     writer.Write(Version);
                     writer.Write(this.Name);
+
                     writer.Write(this.IndexCount);
                     writer.Write(this.ElementCount);
                     writer.Write(this.tangentsCalculated);
+
+                    writer.Write(this.Offset.X);
+                    writer.Write(this.Offset.Y);
+                    writer.Write(this.Offset.Z);
+
+                    writer.Write(this.Scale.X);
+                    writer.Write(this.Scale.Y);
+                    writer.Write(this.Scale.Z);
+
+                    writer.Write(this.Rotation.X);
+                    writer.Write(this.Rotation.Y);
+                    writer.Write(this.Rotation.Z);
+                    writer.Write(this.Rotation.W);
                     
                     writer.Write(this.BoundingBox.Minimum.X);
                     writer.Write(this.BoundingBox.Minimum.Y);
@@ -212,6 +270,12 @@ namespace Carbon.Engine.Resource.Resources
                         writer.Write(this.indices[i]);
                     }
 
+                    writer.Write(this.materials.Count);
+                    for (int i = 0; i < this.materials.Count; i++)
+                    {
+                        this.materials[i].Save(dataStream);
+                    }
+
                     writer.Write(this.subParts.Count);
                     for (int i = 0; i < this.subParts.Count; i++)
                     {
@@ -225,6 +289,20 @@ namespace Carbon.Engine.Resource.Resources
             }
 
             return size;
+        }
+
+        public void AddPart(ModelResource part)
+        {
+            this.subParts.Add(part);
+
+            this.ElementCount += part.ElementCount;
+            this.IndexCount += part.IndexCount;
+            this.IndexSize += part.IndexSize;
+        }
+
+        public void AddMaterial(MaterialElement material)
+        {
+            this.materials.Add(material);
         }
 
         // -------------------------------------------------------------------
@@ -245,6 +323,23 @@ namespace Carbon.Engine.Resource.Resources
                 this.IndexSize = this.IndexCount * 4;
                 this.ElementCount = reader.ReadInt32();
                 this.tangentsCalculated = reader.ReadBoolean();
+
+                this.Offset = new Vector3
+                {
+                    X = reader.ReadSingle(),
+                    Y = reader.ReadSingle(),
+                    Z = reader.ReadSingle()
+                };
+
+                this.Scale = new Vector3
+                {
+                    X = reader.ReadSingle(),
+                    Y = reader.ReadSingle(),
+                    Z = reader.ReadSingle()
+                };
+
+                this.Rotation = new Quaternion(
+                    reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
 
                 Vector3 boundingMin = new Vector3
                     {
@@ -278,7 +373,13 @@ namespace Carbon.Engine.Resource.Resources
                 entries = reader.ReadInt32();
                 for (int i = 0; i < entries; i++)
                 {
-                    this.subParts.Add(new MeshResource(source));
+                    this.materials.Add(new MaterialElement(source));
+                }
+
+                entries = reader.ReadInt32();
+                for (int i = 0; i < entries; i++)
+                {
+                    this.subParts.Add(new ModelResource(source));
                 }
             }
         }

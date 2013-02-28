@@ -9,14 +9,14 @@ namespace Carbon.Engine.Rendering
 {
     public class Mesh
     {
-        private readonly MeshResource resource;
+        private readonly ModelResource resource;
 
         private readonly IDictionary<Type, DataContainer> uploadCache;
         private readonly StaticDataContainer<uint> indexUploadCache;
 
         private bool cacheInvalid;
         
-        public Mesh(MeshResource resource)
+        public Mesh(ModelResource resource)
         {
             this.resource = resource;
 
@@ -147,7 +147,7 @@ namespace Carbon.Engine.Rendering
             return container;
         }
 
-        private void RefreshUploadCache(Type type, MeshResource part)
+        private void RefreshUploadCache(Type type, ModelResource part)
         {
             DataContainer container = this.SelectCacheContainer(type);
 
@@ -159,7 +159,7 @@ namespace Carbon.Engine.Rendering
             this.cacheInvalid = false;
         }
 
-        private void AddUploadCache(DataContainer target, Type type, MeshResource part, bool generateTangents)
+        private void AddUploadCache(DataContainer target, Type type, ModelResource part, bool generateTangents)
         {
             if (generateTangents)
             {
@@ -202,7 +202,7 @@ namespace Carbon.Engine.Rendering
             }
         }
 
-        private void RefreshIndexUploadCache(MeshResource part, ref uint offset)
+        private void RefreshIndexUploadCache(ModelResource part, ref uint offset)
         {
             for (int i = 0; i < part.Indices.Length; i++)
             {

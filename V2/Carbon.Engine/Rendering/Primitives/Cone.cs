@@ -14,7 +14,7 @@ namespace Carbon.Engine.Rendering.Primitives
     {
         private static uint creationCount;
 
-        public static MeshResource Create(int segments, float height = 2.0f, float radius = 1.0f)
+        public static ModelResource Create(int segments, float height = 2.0f, float radius = 1.0f)
         {
             float deltaAngle = 2.0f * (float)(Math.PI / segments);
             float segmentLength = 1.0f / segments;

@@ -40,6 +40,11 @@ namespace Core.Utils
                 return Convert.ToUInt32(source);
             }
 
+            if (targetType == typeof(long))
+            {
+                return Convert.ToInt64(source);
+            }
+
             if (targetType == typeof(bool))
             {
                 return Convert.ToBoolean(source);

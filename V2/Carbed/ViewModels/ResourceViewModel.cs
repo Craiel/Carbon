@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 
 using Carbed.Contracts;
 using Carbed.Logic.MVVM;
 
+using Carbon.Editor.Contracts;
+using Carbon.Editor.Resource.Collada;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource.Content;
@@ -18,13 +23,23 @@ namespace Carbed.ViewModels
 {
     public class ResourceViewModel : ContentViewModel, IResourceViewModel
     {
+        private readonly ICarbedLogic logic;
+        private readonly IResourceProcessor resourceProcessor;
         private readonly ResourceEntry data;
+        private readonly List<string> sourceElements;
 
         private ICommand commandSelectFile;
 
         private IFolderViewModel parent;
 
+        private long? sourceSize;
+        private long? targetSize;
+
         private string oldHash;
+
+        private bool needReexport;
+
+        private ColladaInfo colladaSourceInfo;
         
         // -------------------------------------------------------------------
         // Constructor
@@ -32,7 +47,12 @@ namespace Carbed.ViewModels
         public ResourceViewModel(IEngineFactory factory, ResourceEntry data)
             : base(factory, data)
         {
+            this.logic = factory.Get<ICarbedLogic>();
+            this.resourceProcessor = factory.Get<IResourceProcessor>();
             this.data = data;
+            this.sourceElements = new List<string>();
+
+            this.needReexport = data.IsNew;
         }
 
         // -------------------------------------------------------------------
@@ -60,6 +80,45 @@ namespace Carbed.ViewModels
                     this.CreateUndoState();
                     this.data.Type = value;
                     this.NotifyPropertyChanged();
+
+                    if (value == ResourceType.Model)
+                    {
+                        this.UpdateSourceElements();
+                    }
+                }
+            }
+        }
+
+        public long? SourceSize
+        {
+            get
+            {
+                return this.sourceSize;
+            }
+
+            set
+            {
+                if (this.sourceSize != value)
+                {
+                    this.sourceSize = value;
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public long? TargetSize
+        {
+            get
+            {
+                return this.targetSize;
+            }
+
+            private set
+            {
+                if (this.targetSize != value)
+                {
+                    this.targetSize = value;
+                    this.NotifyPropertyChanged();
                 }
             }
         }
@@ -74,7 +133,15 @@ namespace Carbed.ViewModels
                     return false;
                 }
 
-                return System.IO.File.Exists(path);
+                return File.Exists(path);
+            }
+        }
+
+        public bool IsHavingSourceElements
+        {
+            get
+            {
+                return this.sourceElements.Count > 0;
             }
         }
 
@@ -102,26 +169,52 @@ namespace Carbed.ViewModels
             }
         }
 
+        public ReadOnlyCollection<string> SourceElements
+        {
+            get
+            {
+                return this.sourceElements.AsReadOnly();
+            }
+        }
+
+        public string SelectedSourceElement
+        {
+            get
+            {
+                return this.GetMetaValue(MetaDataKey.SourceElement);
+            }
+
+            set
+            {
+                if (this.GetMetaValue(MetaDataKey.SourceElement) != value)
+                {
+                    this.CreateUndoState();
+                    this.SetMetaValue(MetaDataKey.SourceElement, value);
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
         public DateTime? LastChangeDate
         {
             get
             {
-                string date = this.GetMetaValue(MetaDataKey.LastChangeDate);
-                if (string.IsNullOrEmpty(date))
+                long? ticks = this.GetMetaValueLong(MetaDataKey.LastChangeDate);
+                if (ticks == null)
                 {
                     return null;
                 }
 
-                return Convert.ToDateTime(date);
+                return new DateTime((long)ticks);
             }
 
             private set
             {
-                string stringValue = value.ToString();
-                if (this.GetMetaValue(MetaDataKey.LastChangeDate) != stringValue)
+                long? ticks = value == null ? null : (long?)value.Value.Ticks;
+                if (this.GetMetaValueLong(MetaDataKey.LastChangeDate) != ticks)
                 {
                     this.CreateUndoState();
-                    this.SetMetaValue(MetaDataKey.LastChangeDate, stringValue);
+                    this.SetMetaValue(MetaDataKey.LastChangeDate, ticks);
                     this.NotifyPropertyChanged();
                 }
             }
@@ -136,9 +229,14 @@ namespace Carbed.ViewModels
 
             set
             {
-                if (this.parent != value)
+                // See if we are getting assigned to a different parent node
+                if (this.parent != value && this.data.TreeNode != value.Id)
                 {
                     this.MoveFile(value);
+                }
+                else
+                {
+                    this.parent = value;
                 }
             }
         }
@@ -164,27 +262,50 @@ namespace Carbed.ViewModels
                 throw new DataException("Resource needs to be named before saving");
             }
 
-            if (this.data.TreeNode == null)
+            string source = this.SourcePath;
+            if (string.IsNullOrEmpty(source) || !File.Exists(source))
             {
-                this.data.TreeNode = new ContentLink { Type = ContentLinkType.ResourceTreeNode };
+                throw new DataException("File does not exist for resource " + this.Name);
             }
-
-            if (this.data.TreeNode.ContentId != this.parent.Id)
-            {
-                this.data.TreeNode.ContentId = (int)this.parent.Id;
-            }
-
+            
             // Todo: Duplicate check for resource names
-            this.data.Hash = HashUtils.BuildResourceHash(System.IO.Path.Combine(this.parent.FullPath, this.Name));
+            this.data.TreeNode = this.parent.Id;
+            this.data.Hash = HashUtils.BuildResourceHash(Path.Combine(this.parent.FullPath, this.Name));
             this.Save(target);
             
-            // Todo: Save the actual Resource now
             if (this.oldHash != null)
             {
                 // Todo: resourceTarget.Delete(this.oldHash);
                 this.oldHash = null;
             }
-            // Todo: Process Resource and store
+
+            if (this.needReexport)
+            {
+                switch (this.data.Type)
+                {
+                    case ResourceType.Texture:
+                    case ResourceType.Raw:
+                        {
+                            ICarbonResource resource = this.resourceProcessor.ProcessRaw(source);
+                            resourceTarget.StoreOrReplace(this.data.Hash, resource);
+                            break;
+                        }
+
+                    case ResourceType.Model:
+                        {
+                            ICarbonResource resource = this.resourceProcessor.ProcessModel(this.colladaSourceInfo, this.SelectedSourceElement);
+                            resourceTarget.StoreOrReplace(this.data.Hash, resource);
+                            break;
+                        }
+
+                    default:
+                        {
+                            throw new NotImplementedException("Export is not implemented for " + this.data.Type);
+                        }
+                }
+
+                this.needReexport = false;
+            }
 
             this.NotifyPropertyChanged();
         }
@@ -192,8 +313,92 @@ namespace Carbed.ViewModels
         public void Delete(IContentManager target, IResourceManager resourceTarget)
         {
             this.Delete(target);
-            
+
+            if (this.parent != null)
+            {
+                this.parent.RemoveContent(this);
+            }
+
             this.NotifyPropertyChanged();
+        }
+
+        public void SelectFile(string path)
+        {
+            if(string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                throw new DataException("Invalid file specified for select");
+            }
+
+            this.SourcePath = path;
+            this.Name = Path.GetFileName(path);
+            this.SetTypeByExtension(Path.GetExtension(path));
+            this.CheckSource();
+        }
+
+        public void CheckSource()
+        {
+            string path = this.SourcePath;
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                this.sourceSize = null;
+                return;
+            }
+
+            DateTime changeTime = File.GetLastWriteTime(path);
+            if (this.LastChangeDate != changeTime)
+            {
+                this.needReexport = true;
+                this.LastChangeDate = changeTime;
+                this.UpdateSourceElements();
+            }
+
+            var info = new FileInfo(path);
+            this.SourceSize = info.Length;
+        }
+
+        public override void Load()
+        {
+            base.Load();
+
+            this.CheckSource();
+        }
+
+        private void UpdateSourceElements()
+        {
+            string path = this.SourcePath;
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                return;
+            }
+
+            string selection = this.SelectedSourceElement;
+            this.sourceElements.Clear();
+            switch (this.Type)
+            {
+                case ResourceType.Model:
+                    {
+                        try
+                        {
+                            this.colladaSourceInfo = new ColladaInfo(path);
+                            foreach (ColladaMeshInfo meshInfo in this.colladaSourceInfo.MeshInfos)
+                            {
+                                this.sourceElements.Add(meshInfo.Name);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            this.Log.Error("Could not get collada info of source file for mesh, please check the format");
+                        }
+                        break;
+                    }
+            }
+
+            if (string.IsNullOrEmpty(selection) || this.sourceElements.Contains(selection))
+            {
+                return;
+            }
+
+            this.SelectedSourceElement = null;
         }
 
         // -------------------------------------------------------------------
@@ -212,7 +417,7 @@ namespace Carbed.ViewModels
             }
 
             this.OnClose(null);
-            this.parent.RemoveContent(this);
+            this.logic.Delete(this);
         }
 
         protected override object CreateMemento()
@@ -252,6 +457,7 @@ namespace Carbed.ViewModels
 
             this.oldHash = this.data.Hash;
             this.data.Hash = null;
+            this.needReexport = true;
         }
 
         private void OnSelectFile(object obj)
@@ -259,7 +465,37 @@ namespace Carbed.ViewModels
             var dialog = new OpenFileDialog { CheckFileExists = true, CheckPathExists = true };
             if (dialog.ShowDialog() == true)
             {
-                this.SourcePath = dialog.FileName;
+                this.SelectFile(dialog.FileName);
+            }
+        }
+
+        private void SetTypeByExtension(string extension)
+        {
+            if (string.IsNullOrEmpty(extension))
+            {
+                this.Type = ResourceType.Unknown;
+                return;
+            }
+
+            switch (extension.ToLower())
+            {
+                case ".dds":
+                    {
+                        this.Type = ResourceType.Texture;
+                        break;
+                    }
+
+                case ".dae":
+                    {
+                        this.Type = ResourceType.Model;
+                        break;
+                    }
+
+                default:
+                    {
+                        this.Type = ResourceType.Unknown;
+                        break;
+                    }
             }
         }
     }

@@ -177,12 +177,13 @@
     <Compile Include="Resource\Content\FontEntry.cs" />
     <Compile Include="Resource\Content\MaterialEntry.cs" />
     <Compile Include="Resource\Content\MetaDataEntry.cs" />
+    <Compile Include="Resource\Content\ProjectEntry.cs" />
     <Compile Include="Resource\Content\ResourceTree.cs" />
     <Compile Include="Resource\Content\StageEntry.cs" />
     <Compile Include="Resource\Content\StageRegionEntry.cs" />
     <Compile Include="Resource\Content\ResourceEntry.cs" />
     <Compile Include="Resource\Content\ScriptEntry.cs" />
-    <Compile Include="Resource\Resources\MeshResource.cs" />
+    <Compile Include="Resource\Resources\ModelResource.cs" />
     <Compile Include="Resource\Resources\FontResource.cs" />
     <Compile Include="Resource\FolderContent.cs" />
     <Compile Include="Resource\Resources\RawResource.cs" />

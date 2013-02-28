@@ -179,4 +179,28 @@ namespace Carbed.Logic.MVVM
             throw new NotImplementedException();
         }
     }
+
+    [ValueConversion(typeof(Enum), typeof(Visibility))]
+    public class EnumEqualsToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null || !value.GetType().IsEnum || parameter == null || !Enum.IsDefined(value.GetType(), parameter))
+            {
+                throw new ArgumentException();
+            }
+
+            if ((int)value == (int)parameter)
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

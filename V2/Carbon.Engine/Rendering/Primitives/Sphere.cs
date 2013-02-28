@@ -70,7 +70,7 @@ namespace Carbon.Engine.Rendering.Primitives
             return i;
         }
 
-        public static MeshResource Create(int recursionLevel)
+        public static ModelResource Create(int recursionLevel)
         {
             pointList.Clear();
             middlePointIndexCache.Clear();
