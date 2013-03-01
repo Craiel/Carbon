@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 
-using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Logic;
 
 using Core.Utils;
 
@@ -10,114 +10,110 @@ using SlimDX;
 
 namespace Carbon.Engine.Resource.Resources
 {
-    public class MeshElement
+    public class MeshElement : ResourceBase
     {
-        public MeshElement()
-        {
-        }
-
-        public MeshElement(Stream source)
-            : this()
-        {
-            using (var reader = new BinaryReader(source))
-            {
-                bool hasNormal = reader.ReadBoolean();
-                bool hasTexture = reader.ReadBoolean();
-                bool hasTangent = reader.ReadBoolean();
-
-                this.Position = new Vector3 { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() };
-
-                if (hasNormal)
-                {
-                    this.Normal = new Vector3 { X = reader.ReadSingle(), Y = reader.ReadSingle(), Z = reader.ReadSingle() };
-                }
-
-                if (hasTexture)
-                {
-                    this.Texture = new Vector2 { X = reader.ReadSingle(), Y = reader.ReadSingle() };
-                }
-
-                if (hasTangent)
-                {
-                    this.Tangent = new Vector4
-                        {
-                            X = reader.ReadSingle(),
-                            Y = reader.ReadSingle(),
-                            Z = reader.ReadSingle(),
-                            W = reader.ReadSingle()
-                        };
-                }
-            }
-        }
-
         public Vector3 Position { get; set; }
         public Vector3? Normal { get; set; }
         public Vector2? Texture { get; set; }
         public Vector4? Tangent { get; set; }
 
-        public void Save(Stream target)
+        protected override void DoLoad(CarbonBinaryFormatter source)
         {
-            using (var writer = new BinaryWriter(target))
+            bool hasNormal = source.ReadBoolean();
+            bool hasTexture = source.ReadBoolean();
+            bool hasTangent = source.ReadBoolean();
+
+            this.Position = new Vector3 { X = source.ReadSingle(), Y = source.ReadSingle(), Z = source.ReadSingle() };
+
+            if (hasNormal)
             {
-                writer.Write(this.Normal != null);
-                writer.Write(this.Texture != null);
-                writer.Write(this.Tangent != null);
+                this.Normal = new Vector3 { X = source.ReadSingle(), Y = source.ReadSingle(), Z = source.ReadSingle() };
+            }
 
-                writer.Write(Position.X);
-                writer.Write(Position.Y);
-                writer.Write(Position.Z);
+            if (hasTexture)
+            {
+                this.Texture = new Vector2 { X = source.ReadSingle(), Y = source.ReadSingle() };
+            }
 
-                if (Normal != null)
-                {
-                    writer.Write(Normal.Value.X);
-                    writer.Write(Normal.Value.Y);
-                    writer.Write(Normal.Value.Z);
-                }
+            if (hasTangent)
+            {
+                this.Tangent = new Vector4
+                    {
+                        X = source.ReadSingle(),
+                        Y = source.ReadSingle(),
+                        Z = source.ReadSingle(),
+                        W = source.ReadSingle()
+                    };
+            }
+        }
 
-                if (Texture != null)
-                {
-                    writer.Write(Texture.Value.X);
-                    writer.Write(Texture.Value.Y);
-                }
+        protected override void DoSave(CarbonBinaryFormatter target)
+        {
+            target.Write(this.Normal != null);
+            target.Write(this.Texture != null);
+            target.Write(this.Tangent != null);
 
-                if (Tangent != null)
-                {
-                    writer.Write(Tangent.Value.X);
-                    writer.Write(Tangent.Value.Y);
-                    writer.Write(Tangent.Value.Z);
-                    writer.Write(Tangent.Value.W);
-                }
+            target.Write(Position.X);
+            target.Write(Position.Y);
+            target.Write(Position.Z);
+
+            if (Normal != null)
+            {
+                target.Write(Normal.Value.X);
+                target.Write(Normal.Value.Y);
+                target.Write(Normal.Value.Z);
+            }
+
+            if (Texture != null)
+            {
+                target.Write(Texture.Value.X);
+                target.Write(Texture.Value.Y);
+            }
+
+            if (Tangent != null)
+            {
+                target.Write(Tangent.Value.X);
+                target.Write(Tangent.Value.Y);
+                target.Write(Tangent.Value.Z);
+                target.Write(Tangent.Value.W);
             }
         }
     }
 
-    public class MaterialElement
+    public class MaterialElement : ResourceBase
     {
-        public MaterialElement()
-        {
-        }
-
-        public MaterialElement(Stream source)
-            : this()
-        {
-            using (var reader = new BinaryReader(source))
-            {
-                this.Name = reader.ReadString();
-            }
-        }
-
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
         public string Name { get; set; }
+        public string DiffuseTexture { get; set; }
+        public string NormalTexture { get; set; }
+        public string AlphaTexture { get; set; }
+        public string SpecularTexture { get; set; }
 
-        public void Save(Stream target)
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected override void DoLoad(CarbonBinaryFormatter source)
         {
-            using (var writer = new BinaryWriter(target))
-            {
-                writer.Write(this.Name);
-            }
+            this.Name = source.ReadString();
+            this.DiffuseTexture = source.ReadString();
+            this.NormalTexture = source.ReadString();
+            this.AlphaTexture = source.ReadString();
+            this.SpecularTexture = source.ReadString();
+        }
+
+        protected override void DoSave(CarbonBinaryFormatter target)
+        {
+            target.Write(this.Name);
+            target.Write(this.DiffuseTexture);
+            target.Write(this.NormalTexture);
+            target.Write(this.AlphaTexture);
+            target.Write(this.SpecularTexture);
         }
     }
 
-    public class ModelResource : ICarbonResource
+    public class ModelResource : ResourceBase
     {
         private const int Version = 1;
 
@@ -156,13 +152,11 @@ namespace Carbon.Engine.Resource.Resources
             }
         }
 
-        public ModelResource(Stream source)
+        public ModelResource()
         {
             this.subParts = new List<ModelResource>();
             this.elements = new List<MeshElement>();
             this.materials = new List<MaterialElement>();
-
-            this.Load(source);
         }
 
         // -------------------------------------------------------------------
@@ -222,74 +216,6 @@ namespace Carbon.Engine.Resource.Resources
             this.DoCalculateTangents();
             this.tangentsCalculated = true;
         }
-        
-        public long Save(Stream target)
-        {
-            long size;
-            using (var dataStream = new MemoryStream())
-            {
-                using (var writer = new BinaryWriter(dataStream))
-                {
-                    writer.Write(Version);
-                    writer.Write(this.Name);
-
-                    writer.Write(this.IndexCount);
-                    writer.Write(this.ElementCount);
-                    writer.Write(this.tangentsCalculated);
-
-                    writer.Write(this.Offset.X);
-                    writer.Write(this.Offset.Y);
-                    writer.Write(this.Offset.Z);
-
-                    writer.Write(this.Scale.X);
-                    writer.Write(this.Scale.Y);
-                    writer.Write(this.Scale.Z);
-
-                    writer.Write(this.Rotation.X);
-                    writer.Write(this.Rotation.Y);
-                    writer.Write(this.Rotation.Z);
-                    writer.Write(this.Rotation.W);
-                    
-                    writer.Write(this.BoundingBox.Minimum.X);
-                    writer.Write(this.BoundingBox.Minimum.Y);
-                    writer.Write(this.BoundingBox.Minimum.Z);
-
-                    writer.Write(this.BoundingBox.Maximum.X);
-                    writer.Write(this.BoundingBox.Maximum.Y);
-                    writer.Write(this.BoundingBox.Maximum.Z);
-
-                    writer.Write(this.elements.Count);
-                    for (int i = 0; i < this.elements.Count; i++)
-                    {
-                        this.elements[i].Save(dataStream);
-                    }
-
-                    writer.Write(this.indices.Length);
-                    for (int i = 0; i < this.indices.Length; i++)
-                    {
-                        writer.Write(this.indices[i]);
-                    }
-
-                    writer.Write(this.materials.Count);
-                    for (int i = 0; i < this.materials.Count; i++)
-                    {
-                        this.materials[i].Save(dataStream);
-                    }
-
-                    writer.Write(this.subParts.Count);
-                    for (int i = 0; i < this.subParts.Count; i++)
-                    {
-                        this.subParts[i].Save(dataStream);
-                    }
-                    
-                    size = dataStream.Position;
-                    dataStream.Position = 0;
-                    dataStream.WriteTo(target);
-                }
-            }
-
-            return size;
-        }
 
         public void AddPart(ModelResource part)
         {
@@ -306,84 +232,150 @@ namespace Carbon.Engine.Resource.Resources
         }
 
         // -------------------------------------------------------------------
-        // Private
+        // Protected
         // -------------------------------------------------------------------
-        private void Load(Stream source)
+        protected override void DoSave(CarbonBinaryFormatter target)
         {
-            using (var reader = new BinaryReader(source))
+            target.Write(Version);
+            target.Write(this.Name);
+
+            target.Write(this.IndexCount);
+            target.Write(this.ElementCount);
+            target.Write(this.tangentsCalculated);
+
+            target.Write(this.Offset.X);
+            target.Write(this.Offset.Y);
+            target.Write(this.Offset.Z);
+
+            target.Write(this.Scale.X);
+            target.Write(this.Scale.Y);
+            target.Write(this.Scale.Z);
+
+            target.Write(this.Rotation.X);
+            target.Write(this.Rotation.Y);
+            target.Write(this.Rotation.Z);
+            target.Write(this.Rotation.W);
+
+            target.Write(this.BoundingBox.Minimum.X);
+            target.Write(this.BoundingBox.Minimum.Y);
+            target.Write(this.BoundingBox.Minimum.Z);
+
+            target.Write(this.BoundingBox.Maximum.X);
+            target.Write(this.BoundingBox.Maximum.Y);
+            target.Write(this.BoundingBox.Maximum.Z);
+
+            target.Write(this.elements.Count);
+            for (int i = 0; i < this.elements.Count; i++)
             {
-                int version = reader.ReadInt32();
-                if (version != Version)
-                {
-                    throw new InvalidDataException("Mesh version is not supported: " + version);
-                }
+                this.elements[i].Save(target);
+            }
 
-                this.Name = reader.ReadString();
-                this.IndexCount = reader.ReadInt32();
-                this.IndexSize = this.IndexCount * 4;
-                this.ElementCount = reader.ReadInt32();
-                this.tangentsCalculated = reader.ReadBoolean();
+            target.Write(this.indices.Length);
+            for (int i = 0; i < this.indices.Length; i++)
+            {
+                target.Write(this.indices[i]);
+            }
 
-                this.Offset = new Vector3
-                {
-                    X = reader.ReadSingle(),
-                    Y = reader.ReadSingle(),
-                    Z = reader.ReadSingle()
-                };
+            target.Write(this.materials.Count);
+            for (int i = 0; i < this.materials.Count; i++)
+            {
+                this.materials[i].Save(target);
+            }
 
-                this.Scale = new Vector3
-                {
-                    X = reader.ReadSingle(),
-                    Y = reader.ReadSingle(),
-                    Z = reader.ReadSingle()
-                };
-
-                this.Rotation = new Quaternion(
-                    reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-
-                Vector3 boundingMin = new Vector3
-                    {
-                        X = reader.ReadSingle(),
-                        Y = reader.ReadSingle(),
-                        Z = reader.ReadSingle()
-                    };
-
-                Vector3 boundingMax = new Vector3
-                    {
-                        X = reader.ReadSingle(),
-                        Y = reader.ReadSingle(),
-                        Z = reader.ReadSingle()
-                    };
-
-                this.BoundingBox = new BoundingBox(boundingMin, boundingMax);
-
-                int entries = reader.ReadInt32();
-                for (int i = 0; i < entries; i++)
-                {
-                    this.elements.Add(new MeshElement(source));
-                }
-
-                entries = reader.ReadInt32();
-                this.indices = new uint[entries];
-                for (int i = 0; i < entries; i++)
-                {
-                    this.indices[i] = reader.ReadUInt32();
-                }
-
-                entries = reader.ReadInt32();
-                for (int i = 0; i < entries; i++)
-                {
-                    this.materials.Add(new MaterialElement(source));
-                }
-
-                entries = reader.ReadInt32();
-                for (int i = 0; i < entries; i++)
-                {
-                    this.subParts.Add(new ModelResource(source));
-                }
+            target.Write(this.subParts.Count);
+            for (int i = 0; i < this.subParts.Count; i++)
+            {
+                this.subParts[i].Save(target);
             }
         }
 
+        protected override void DoLoad(CarbonBinaryFormatter source)
+        {
+            this.indices = null;
+            this.elements.Clear();
+            this.subParts.Clear();
+            this.materials.Clear();
+            
+            int version = source.ReadInt();
+            if (version != Version)
+            {
+                throw new InvalidDataException("Mesh version is not supported: " + version);
+            }
+
+            this.Name = source.ReadString();
+            this.IndexCount = source.ReadInt();
+            this.IndexSize = this.IndexCount * 4;
+            this.ElementCount = source.ReadInt();
+            this.tangentsCalculated = source.ReadBoolean();
+
+            this.Offset = new Vector3
+            {
+                X = source.ReadSingle(),
+                Y = source.ReadSingle(),
+                Z = source.ReadSingle()
+            };
+
+            this.Scale = new Vector3
+            {
+                X = source.ReadSingle(),
+                Y = source.ReadSingle(),
+                Z = source.ReadSingle()
+            };
+
+            this.Rotation = new Quaternion(
+                source.ReadSingle(), source.ReadSingle(), source.ReadSingle(), source.ReadSingle());
+
+            Vector3 boundingMin = new Vector3
+                {
+                    X = source.ReadSingle(),
+                    Y = source.ReadSingle(),
+                    Z = source.ReadSingle()
+                };
+
+            Vector3 boundingMax = new Vector3
+                {
+                    X = source.ReadSingle(),
+                    Y = source.ReadSingle(),
+                    Z = source.ReadSingle()
+                };
+
+            this.BoundingBox = new BoundingBox(boundingMin, boundingMax);
+
+            int entries = source.ReadInt();
+            for (int i = 0; i < entries; i++)
+            {
+                var element = new MeshElement();
+                element.Load(source);
+                this.elements.Add(element);
+            }
+
+            entries = source.ReadInt();
+            this.indices = new uint[entries];
+            for (int i = 0; i < entries; i++)
+            {
+                this.indices[i] = source.ReadUInt();
+            }
+
+            entries = source.ReadInt();
+            for (int i = 0; i < entries; i++)
+            {
+                var element = new MaterialElement();
+                element.Load(source);
+                this.materials.Add(element);
+            }
+
+            entries = source.ReadInt();
+            for (int i = 0; i < entries; i++)
+            {
+                var element = new ModelResource();
+                element.Load(source);
+                this.subParts.Add(element);
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
         private void DoCalculateTangents()
         {
             var tan1 = new Vector3[this.elements.Count];

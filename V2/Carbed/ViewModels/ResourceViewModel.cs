@@ -38,6 +38,7 @@ namespace Carbed.ViewModels
         private string oldHash;
 
         private bool needReexport;
+        private bool forceExport;
 
         private ColladaInfo colladaSourceInfo;
         
@@ -142,6 +143,23 @@ namespace Carbed.ViewModels
             get
             {
                 return this.sourceElements.Count > 0;
+            }
+        }
+
+        public bool ForceExport
+        {
+            get
+            {
+                return this.forceExport;
+            }
+
+            set
+            {
+                if (this.forceExport != value)
+                {
+                    this.forceExport = true;
+                    this.NotifyPropertyChanged();
+                }
             }
         }
 
@@ -279,7 +297,7 @@ namespace Carbed.ViewModels
                 this.oldHash = null;
             }
 
-            if (this.needReexport)
+            if (this.needReexport || this.forceExport)
             {
                 switch (this.data.Type)
                 {
@@ -293,6 +311,11 @@ namespace Carbed.ViewModels
 
                     case ResourceType.Model:
                         {
+                            if (this.colladaSourceInfo == null)
+                            {
+                                this.UpdateSourceElements();
+                            }
+
                             ICarbonResource resource = this.resourceProcessor.ProcessModel(this.colladaSourceInfo, this.SelectedSourceElement);
                             resourceTarget.StoreOrReplace(this.data.Hash, resource);
                             break;
@@ -305,6 +328,7 @@ namespace Carbed.ViewModels
                 }
 
                 this.needReexport = false;
+                this.forceExport = false;
             }
 
             this.NotifyPropertyChanged();
@@ -361,6 +385,11 @@ namespace Carbed.ViewModels
             base.Load();
 
             this.CheckSource();
+
+            if (this.Type == ResourceType.Model)
+            {
+                this.UpdateSourceElements();
+            }
         }
 
         private void UpdateSourceElements()

@@ -28,6 +28,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
                 <TextBlock Text="Type" Margin="4" VerticalAlignment="Center"/>
@@ -42,11 +43,14 @@
                 <TextBlock Text="Source Element" Margin="4" VerticalAlignment="Center" Grid.Row="2" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverter}, ConverterParameter={x:Static content:ResourceType.Model}}"/>
                 <ComboBox Grid.Row="2" Grid.Column="1" Margin="2" ItemsSource="{Binding Path=SourceElements}" SelectedItem="{Binding Path=SelectedSourceElement}" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverter}, ConverterParameter={x:Static content:ResourceType.Model}}"/>
 
-                <TextBlock Text="Last Changed:" Grid.Row="3" Margin="4"/>
-                <TextBlock Text="{Binding Path=LastChangeDate}" Grid.Row="3" Grid.Column="1" Margin="4"/>
+                <TextBlock Text="Force Export" Grid.Row="3" Margin="4"/>
+                <CheckBox IsChecked="{Binding Path=ForceExport}" Grid.Row="3" Grid.Column="1" Margin="4"/>
+                
+                <TextBlock Text="Last Changed:" Grid.Row="4" Margin="4"/>
+                <TextBlock Text="{Binding Path=LastChangeDate}" Grid.Row="4" Grid.Column="1" Margin="4"/>
 
-                <TextBlock Text="Size:" Grid.Row="4" Margin="4"/>
-                <TextBlock Text="{Binding Path=SourceSize, StringFormat='{}{0:N0} bytes'}" Grid.Row="4" Grid.Column="1" Margin="4"/>
+                <TextBlock Text="Size:" Grid.Row="5" Margin="4"/>
+                <TextBlock Text="{Binding Path=SourceSize, StringFormat='{}{0:N0} bytes'}" Grid.Row="5" Grid.Column="1" Margin="4"/>
             </Grid>
         </Expander>
 

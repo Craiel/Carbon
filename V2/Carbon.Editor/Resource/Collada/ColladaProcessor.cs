@@ -39,17 +39,19 @@ namespace Carbon.Editor.Resource.Collada
         private static Vector3[] normalData;
         private static Vector2[] textureData;
 
+        private static ColladaInfo currentInfo;
+
         public static ModelResource Process(ColladaInfo info, string element)
         {
             ClearCache();
 
+            currentInfo = info;
             targetElement = element;
 
             using (var stream = new FileStream(info.Source, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 var model = ColladaModel.Load(stream);
 
-                BuildMaterialLibrary(model.MaterialLibrary);
                 BuildGeometryLibrary(model.GeometryLibrary);
                 return BuildModel(model.SceneLibrary);
             }
@@ -57,6 +59,7 @@ namespace Carbon.Editor.Resource.Collada
 
         private static void ClearCache()
         {
+            currentInfo = null;
             currentInputs = null;
             currentSources = null;
             polygonData = null;
@@ -266,11 +269,6 @@ namespace Carbon.Editor.Resource.Collada
             IList<ModelResource> parts = new List<ModelResource>();
             foreach (ColladaSceneNode sceneNode in library.VisualScene.Nodes)
             {
-                if (!string.IsNullOrEmpty(targetElement) && !SceneNodeContainsElement(sceneNode, targetElement))
-                {
-                    continue;
-                }
-
                 ModelResource part = BuildModel(sceneNode);
                 if (part != null)
                 {
@@ -293,6 +291,11 @@ namespace Carbon.Editor.Resource.Collada
 
         private static bool SceneNodeContainsElement(ColladaSceneNode node, string elementName)
         {
+            if (node.InstanceGeometry == null)
+            {
+                return false;
+            }
+
             string targetNode = ColladaInfo.GetUrlValue(node.InstanceGeometry.Url);
             if (targetNode.Equals(elementName, StringComparison.OrdinalIgnoreCase))
             {
@@ -307,38 +310,68 @@ namespace Carbon.Editor.Resource.Collada
             return false;
         }
 
-        private static ModelResource BuildModel(ColladaSceneNode sceneNode)
+        private static ModelResource BuildModel(ColladaSceneNode sceneNode, bool isChildOfTarget = false)
         {
-            if (sceneNode.InstanceGeometry == null)
+            bool isTarget = string.IsNullOrEmpty(targetElement);
+            if (!isChildOfTarget && !string.IsNullOrEmpty(targetElement))
             {
-                return null;
-            }
-
-            string targetNode = ColladaInfo.GetUrlValue(sceneNode.InstanceGeometry.Url);
-            if (!meshLibrary.ContainsKey(targetNode))
-            {
-                return null;
-            }
-
-            meshLibrary[targetNode].Offset = sceneNode.Translation.ToVector3()[0];
-            meshLibrary[targetNode].Scale = sceneNode.Scale.ToVector3()[0];
-            meshLibrary[targetNode].Rotation = GetNodeRotation(sceneNode);
-
-            if (sceneNode.Children != null && sceneNode.Children.Length > 0)
-            {
-                foreach (ColladaSceneNode child in sceneNode.Children)
+                isTarget = targetElement.Equals(sceneNode.Id, StringComparison.OrdinalIgnoreCase);
+                if (!isTarget && !SceneNodeContainsElement(sceneNode, targetElement))
                 {
-                    ModelResource subPart = BuildModel(child);
-                    if (subPart == null)
-                    {
-                        continue;
-                    }
-
-                    meshLibrary[targetNode].AddPart(subPart);
+                    return null;
                 }
             }
 
-            return meshLibrary[targetNode];
+            if (isTarget || isChildOfTarget)
+            {
+                if (sceneNode.InstanceGeometry == null)
+                {
+                    return null;
+                }
+
+                string targetNode = ColladaInfo.GetUrlValue(sceneNode.InstanceGeometry.Url);
+                if (!meshLibrary.ContainsKey(targetNode))
+                {
+                    return null;
+                }
+
+                meshLibrary[targetNode].Offset = sceneNode.Translation.ToVector3()[0];
+                meshLibrary[targetNode].Scale = sceneNode.Scale.ToVector3()[0];
+                meshLibrary[targetNode].Rotation = GetNodeRotation(sceneNode);
+
+
+                if (sceneNode.Children != null && sceneNode.Children.Length > 0)
+                {
+                    foreach (ColladaSceneNode child in sceneNode.Children)
+                    {
+                        ModelResource subPart = BuildModel(child, isChildOfTarget:true);
+                        if (subPart == null)
+                        {
+                            continue;
+                        }
+
+                        meshLibrary[targetNode].AddPart(subPart);
+                    }
+                }
+
+                return meshLibrary[targetNode];
+            }
+
+            if (sceneNode.Children == null)
+            {
+                return null;
+            }
+
+            foreach (ColladaSceneNode child in sceneNode.Children)
+            {
+                ModelResource element = BuildModel(child);
+                if (element != null)
+                {
+                    return element;
+                }
+            }
+
+            return null;
         }
 
         private static Quaternion GetNodeRotation(ColladaSceneNode node)

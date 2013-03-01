@@ -166,6 +166,7 @@
     <Compile Include="Rendering\Shaders\DefaultShader.cs" />
     <Compile Include="Rendering\Structs.cs" />
     <Compile Include="Rendering\DataContainer.cs" />
+    <Compile Include="Logic\CarbonBinaryFormatter.cs" />
     <Compile Include="Resource\CompiledShader.cs" />
     <Compile Include="Resource\ContentEntryAttributes.cs" />
     <Compile Include="Resource\ContentManager.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Resource\ResourceManager.cs" />
     <Compile Include="Logic\CarbonShaderDescription.cs" />
     <Compile Include="Logic\ShaderManager.cs" />
+    <Compile Include="Resource\Resources\ResourceBase.cs" />
     <Compile Include="Scene\Entity.cs" />
     <Compile Include="Scene\LightNode.cs" />
     <Compile Include="Scene\ModelNode.cs" />

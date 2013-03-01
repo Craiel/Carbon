@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 
 using Carbon.Editor.Resource.Collada.Effect;
 using Carbon.Editor.Resource.Collada.Geometry;
+using Carbon.Engine.Resource.Resources;
 
 namespace Carbon.Editor.Resource.Collada
 {
@@ -14,20 +16,10 @@ namespace Carbon.Editor.Resource.Collada
         public int Parts;
     }
 
-    public struct ColladaMaterialInfo
-    {
-        public string Name;
-
-        public string DiffuseTexture;
-        public string NormalTexture;
-        public string AlphaTexture;
-        public string SpecularTexture;
-    }
-
     public class ColladaInfo
     {
-        private readonly List<ColladaMeshInfo> meshLibrary;
-        private readonly List<ColladaMaterialInfo> materialLibrary;
+        private readonly List<ColladaMeshInfo> meshInfos;
+        private readonly Dictionary<string, MaterialElement> materialInfo;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -39,8 +31,8 @@ namespace Carbon.Editor.Resource.Collada
                 throw new ArgumentException("Invalid file specified");
             }
 
-            this.meshLibrary = new List<ColladaMeshInfo>();
-            this.materialLibrary = new List<ColladaMaterialInfo>();
+            this.meshInfos = new List<ColladaMeshInfo>();
+            this.materialInfo = new Dictionary<string, MaterialElement>();
 
             this.Source = file;
 
@@ -61,15 +53,15 @@ namespace Carbon.Editor.Resource.Collada
         {
             get
             {
-                return this.meshLibrary.AsReadOnly();
+                return this.meshInfos.AsReadOnly();
             }
         }
 
-        public IReadOnlyCollection<ColladaMaterialInfo> MaterialInfos
+        public IReadOnlyDictionary<string, MaterialElement> MaterialInfos
         {
             get
             {
-                return this.materialLibrary.AsReadOnly();
+                return new ReadOnlyDictionary<string, MaterialElement>(this.materialInfo);
             }
         }
 
@@ -88,7 +80,7 @@ namespace Carbon.Editor.Resource.Collada
         // -------------------------------------------------------------------
         private void BuildMeshLibrary(ColladaGeometryLibrary library)
         {
-            meshLibrary.Clear();
+            meshInfos.Clear();
 
             foreach (ColladaGeometry colladaGeometry in library.Geometries)
             {
@@ -104,13 +96,13 @@ namespace Carbon.Editor.Resource.Collada
                         Parts = colladaGeometry.Mesh.PolyLists.Length,
                     };
 
-                this.meshLibrary.Add(info);
+                this.meshInfos.Add(info);
             }
         }
 
         private void BuildMaterialLibrary(ColladaMaterialLibrary materials, ColladaEffectLibrary effectLibrary)
         {
-            materialLibrary.Clear();
+            materialInfo.Clear();
 
             IDictionary<string, string> materialEffectLookup = new Dictionary<string, string>();
             foreach (ColladaMaterial material in materials.Materials)
@@ -165,14 +157,14 @@ namespace Carbon.Editor.Resource.Collada
                 // Todo:
                 if (diffuseTexture != null)
                 {
-                    var material = new ColladaMaterialInfo
+                    var material = new MaterialElement
                     {
                         Name = materialEffectLookup[effect.Id],
                         DiffuseTexture = diffuseTexture,
                         NormalTexture = normalTexture,
                         AlphaTexture = alphaTexture
                     };
-                    materialLibrary.Add(material);
+                    materialInfo.Add(material.Name, material);
                 }
             }
         }

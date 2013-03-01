@@ -17,6 +17,8 @@ namespace Carbed.Contracts
         bool IsValidSource { get; }
         bool IsHavingSourceElements { get; }
 
+        bool ForceExport { get; set; }
+
         string SourcePath { get; }
 
         ReadOnlyCollection<string> SourceElements { get; }
