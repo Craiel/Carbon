@@ -366,6 +366,9 @@
   <ItemGroup>
     <Resource Include="Resources\icon_placeholder.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_clear.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(SolutionDir)..\CarbonExt\sqllite 1.0.84.0\x64\Deploy.bat" $(TargetDir)</PostBuildEvent>

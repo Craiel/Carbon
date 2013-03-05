@@ -13,6 +13,7 @@ using Carbon.Editor.Contracts;
 using Carbon.Editor.Resource.Collada;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Resource;
 using Carbon.Engine.Resource.Content;
 
 using Core.Utils;
@@ -286,11 +287,6 @@ namespace Carbed.ViewModels
                 throw new DataException("File does not exist for resource " + this.Name);
             }
             
-            // Todo: Duplicate check for resource names
-            this.data.TreeNode = this.parent.Id;
-            this.data.Hash = HashUtils.BuildResourceHash(Path.Combine(this.parent.FullPath, this.Name));
-            this.Save(target);
-            
             if (this.oldHash != null)
             {
                 // Todo: resourceTarget.Delete(this.oldHash);
@@ -305,7 +301,17 @@ namespace Carbed.ViewModels
                     case ResourceType.Raw:
                         {
                             ICarbonResource resource = this.resourceProcessor.ProcessRaw(source);
-                            resourceTarget.StoreOrReplace(this.data.Hash, resource);
+                            if (resource != null)
+                            {
+                                resourceTarget.StoreOrReplace(this.data.Hash, resource);
+                                this.needReexport = false;
+                                this.forceExport = false;
+                            }
+                            else
+                            {
+                                this.Log.Error("Failed to export raw resource {0}", null, this.SourcePath);
+                            }
+                            
                             break;
                         }
 
@@ -317,7 +323,17 @@ namespace Carbed.ViewModels
                             }
 
                             ICarbonResource resource = this.resourceProcessor.ProcessModel(this.colladaSourceInfo, this.SelectedSourceElement);
-                            resourceTarget.StoreOrReplace(this.data.Hash, resource);
+                            if (resource != null)
+                            {
+                                resourceTarget.StoreOrReplace(this.data.Hash, resource);
+                                this.needReexport = false;
+                                this.forceExport = false;
+                            }
+                            else
+                            {
+                                this.Log.Error("Failed to export Model resource {0}, with target {1}", null, this.SourcePath, this.SelectedSourceElement);
+                            }
+                            
                             break;
                         }
 
@@ -326,10 +342,19 @@ namespace Carbed.ViewModels
                             throw new NotImplementedException("Export is not implemented for " + this.data.Type);
                         }
                 }
-
-                this.needReexport = false;
-                this.forceExport = false;
             }
+
+            // Get the info of the saved resource to store some meta data about it
+            ResourceInfo info = resourceTarget.GetInfo(this.data.Hash);
+            if (info != null)
+            {
+                this.SetMetaValue(MetaDataKey.TargetMd5, HashUtils.Md5ToString(info.Md5));
+            }
+
+            // Todo: Duplicate check for resource names
+            this.data.TreeNode = this.parent.Id;
+            this.data.Hash = HashUtils.BuildResourceHash(Path.Combine(this.parent.FullPath, this.Name));
+            this.Save(target);
 
             this.NotifyPropertyChanged();
         }
@@ -365,6 +390,7 @@ namespace Carbed.ViewModels
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
                 this.sourceSize = null;
+                this.needReexport = true;
                 return;
             }
 
@@ -374,6 +400,11 @@ namespace Carbed.ViewModels
                 this.needReexport = true;
                 this.LastChangeDate = changeTime;
                 this.UpdateSourceElements();
+            }
+
+            if (string.IsNullOrEmpty(this.GetMetaValue(MetaDataKey.TargetMd5)))
+            {
+                this.needReexport = true;
             }
 
             var info = new FileInfo(path);

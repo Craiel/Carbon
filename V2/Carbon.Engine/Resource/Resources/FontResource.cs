@@ -1,55 +1,35 @@
 ﻿using System.IO;
 
-using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Logic;
 
 namespace Carbon.Engine.Resource.Resources
 {
-    public class FontResource : ICarbonResource
+    public class FontResource : ResourceBase
     {
         internal const int Version = 2;
-
-        public FontResource()
-        {
-        }
-
-        public FontResource(Stream source)
-        {
-            using (var reader = new BinaryReader(source))
-            {
-                if (reader.ReadInt32() != Version)
-                {
-                    throw new InvalidDataException();
-                }
-
-                this.CharactersPerRow = reader.ReadInt32();
-                this.RowCount = reader.ReadInt32();
-                this.Texture = reader.ReadInt32();
-            }
-        }
 
         public int CharactersPerRow { get; set; }
         public int RowCount { get; set; }
         public int Texture { get; set; }
 
-        public long Save(Stream target)
+        protected override void DoLoad(CarbonBinaryFormatter source)
         {
-            long size;
-            using (var dataStream = new MemoryStream())
+            if (source.ReadInt() != Version)
             {
-                using (var writer = new BinaryWriter(dataStream))
-                {
-                    writer.Write(Version);
-                    writer.Write(this.CharactersPerRow);
-                    writer.Write(this.RowCount);
-                    writer.Write(this.Texture);
-
-                    size = dataStream.Position;
-                    dataStream.Position = 0;
-                    dataStream.WriteTo(target);
-                }
+                throw new InvalidDataException();
             }
 
-            return size;
+            this.CharactersPerRow = source.ReadInt();
+            this.RowCount = source.ReadInt();
+            this.Texture = source.ReadInt();
+        }
+
+        protected override void DoSave(CarbonBinaryFormatter target)
+        {
+            target.Write(Version);
+            target.Write(this.CharactersPerRow);
+            target.Write(this.RowCount);
+            target.Write(this.Texture);
         }
     }
 }

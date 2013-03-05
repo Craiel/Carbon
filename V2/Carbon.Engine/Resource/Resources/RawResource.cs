@@ -1,23 +1,27 @@
-﻿using System.IO;
-
-using Carbon.Engine.Contracts.Resource;
+﻿using Carbon.Engine.Logic;
 
 namespace Carbon.Engine.Resource.Resources
 {
-    public class RawResource : ICarbonResource
+    public class RawResource : ResourceBase
     {
-        public RawResource(Stream source)
+        private byte[] data;
+        
+        public byte[] Data
         {
-            this.Data = new byte[source.Length];
-            source.Read(this.Data, 0, this.Data.Length);
+            get
+            {
+                return this.data;
+            }
         }
 
-        public byte[] Data { get; set; }
-
-        public long Save(Stream target)
+        protected override void DoLoad(CarbonBinaryFormatter source)
         {
-            target.Write(this.Data, 0, this.Data.Length);
-            return this.Data.Length;
+            source.Read(out this.data);
+        }
+
+        protected override void DoSave(CarbonBinaryFormatter target)
+        {
+            target.Write(this.Data);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
@@ -12,21 +11,40 @@ namespace Carbon.Engine.Resource
         public abstract Stream Load(string hash);
         public abstract bool Store(string hash, ICarbonResource data);
         public abstract bool Replace(string hash, ICarbonResource data);
+
+        public abstract ResourceInfo GetInfo(string hash);
+    }
+
+    public class ResourceInfo
+    {
+        public ResourceInfo(string hash, long size, byte[] md5)
+        {
+            this.Hash = hash;
+            this.Size = size;
+            this.Md5 = md5;
+        }
+
+        public string Hash { get; private set; }
+        public long Size { get; private set; }
+        public byte[] Md5 { get; private set; }
     }
 
     public class ResourceManager : IResourceManager
     {
         private readonly IList<ResourceContent> content;
 
-        private readonly Hashtable cache;
+        private readonly IDictionary<string, ICarbonResource> cache;
+        private readonly IDictionary<string, ResourceInfo> infoCache;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
         public ResourceManager(string root)
         {
-            this.cache = new Hashtable();
             this.content = new List<ResourceContent> { new FolderContent(root, true) };
+
+            this.cache = new Dictionary<string, ICarbonResource>();
+            this.infoCache = new Dictionary<string, ResourceInfo>();
         }
 
         public void Dispose()
@@ -89,11 +107,7 @@ namespace Carbon.Engine.Resource
                 ResourceContent resourceContent = this.content[i];
                 if (resourceContent.Replace(hash, resource))
                 {
-                    if (!this.cache.ContainsKey(hash))
-                    {
-                        this.cache.Add(hash, resource);
-                    }
-
+                    this.UpdateCache(hash, resource);
                     return;
                 }
             }
@@ -108,11 +122,7 @@ namespace Carbon.Engine.Resource
                 ResourceContent resourceContent = this.content[i];
                 if (resourceContent.Replace(hash, resource))
                 {
-                    if (!this.cache.ContainsKey(hash))
-                    {
-                        this.cache.Add(hash, resource);
-                    }
-
+                    this.UpdateCache(hash, resource);
                     return;
                 }
             }
@@ -130,6 +140,27 @@ namespace Carbon.Engine.Resource
             throw new InvalidDataException("Resource could not be stored");
         }
 
+        public ResourceInfo GetInfo(string hash)
+        {
+            if (this.infoCache.ContainsKey(hash))
+            {
+                return this.infoCache[hash];
+            }
+
+            for (int i = 0; i < this.content.Count; i++)
+            {
+                ResourceContent resourceContent = this.content[i];
+                ResourceInfo info = resourceContent.GetInfo(hash);
+                if (info != null)
+                {
+                    this.infoCache.Add(hash, info);
+                    return info;
+                }
+            }
+
+            return null;
+        }
+
         public void Clear()
         {
             // Todo: Unload all resources and clear caches
@@ -144,6 +175,31 @@ namespace Carbon.Engine.Resource
             }
 
             this.content.Add(newContent);
+        }
+
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private void UpdateCache(string hash, ICarbonResource resource)
+        {
+            if (!this.cache.ContainsKey(hash))
+            {
+                this.cache.Add(hash, resource);
+            }
+            else
+            {
+                if (this.cache[hash] == resource)
+                {
+                    return;
+                }
+
+                this.cache[hash].Dispose();
+                this.cache[hash] = resource;
+                if (this.infoCache.ContainsKey(hash))
+                {
+                    this.infoCache.Remove(hash);
+                }
+            }
         }
     }
 }

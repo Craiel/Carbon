@@ -6,6 +6,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Icons.xaml"/>
                 <ResourceDictionary Source="/Resources/Converters.xaml"/>
                 <ResourceDictionary Source="/Resources/EnumProviders.xaml"/>
                 <ResourceDictionary Source="/Resources/PropertyControls.xaml"/>
@@ -41,7 +42,10 @@
                 </DockPanel>
                 
                 <TextBlock Text="Source Element" Margin="4" VerticalAlignment="Center" Grid.Row="2" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverter}, ConverterParameter={x:Static content:ResourceType.Model}}"/>
-                <ComboBox Grid.Row="2" Grid.Column="1" Margin="2" ItemsSource="{Binding Path=SourceElements}" SelectedItem="{Binding Path=SelectedSourceElement}" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverter}, ConverterParameter={x:Static content:ResourceType.Model}}"/>
+                <StackPanel Grid.Row="2" Grid.Column="1" Margin="2" Orientation="Horizontal">
+                    <ComboBox x:Name="elementComboBox" ItemsSource="{Binding Path=SourceElements}" SelectedItem="{Binding Path=SelectedSourceElement}" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverter}, ConverterParameter={x:Static content:ResourceType.Model}}"/>
+                    <Button Click="OnClick" Content="{StaticResource IconClear}" IsEnabled="{Binding Path=SelectedItem, ElementName=elementComboBox, Converter={StaticResource NullToBooleanConverter}}" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                </StackPanel>
 
                 <TextBlock Text="Force Export" Grid.Row="3" Margin="4"/>
                 <CheckBox IsChecked="{Binding Path=ForceExport}" Grid.Row="3" Grid.Column="1" Margin="4"/>

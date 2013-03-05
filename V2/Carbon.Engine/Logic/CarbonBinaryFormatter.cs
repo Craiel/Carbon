@@ -33,6 +33,11 @@ namespace Carbon.Engine.Logic
 
         public void Flush()
         {
+            if (this.bufferStream.Length <= 0)
+            {
+                return;
+            }
+
             this.bufferStream.Position = 0;
             this.bufferStream.WriteTo(this.target);
             this.bufferStream.SetLength(0);
@@ -48,6 +53,12 @@ namespace Carbon.Engine.Logic
         {
             this.SafeRead(1);
             return BitConverter.ToBoolean(this.buffer, 0);
+        }
+
+        public byte ReadByte()
+        {
+            this.SafeRead(1);
+            return this.buffer[0];
         }
 
         public float ReadSingle()
@@ -84,6 +95,18 @@ namespace Carbon.Engine.Logic
 
             this.SafeRead(length);
             return this.stringEncoding.GetString(this.buffer, 0, length);
+        }
+
+        public long Read(out byte[] targetBuffer)
+        {
+            targetBuffer = new byte[this.target.Length];
+            return this.target.Read(targetBuffer, 0, targetBuffer.Length);
+        }
+
+        public long Read(out byte[] targetBuffer, int length)
+        {
+            targetBuffer = new byte[length];
+            return this.target.Read(targetBuffer, 0, length);
         }
 
         public void Write(bool value)
@@ -133,6 +156,11 @@ namespace Carbon.Engine.Logic
             byte[] data = stringEncoding.GetBytes(value);
             Buffer.BlockCopy(data, 0, this.buffer, 0, data.Length);
             this.SafeWrite(data.Length);
+        }
+
+        public void Write(byte[] value)
+        {
+            this.target.Write(value, 0, value.Length);
         }
 
         // -------------------------------------------------------------------

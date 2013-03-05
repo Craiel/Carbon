@@ -29,7 +29,8 @@ namespace Carbon.Editor.Logic
 
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                var resource = new RawResource(stream);
+                var resource = new RawResource();
+                resource.Load(stream);
                 return resource;
             }
         }

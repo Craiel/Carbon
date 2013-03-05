@@ -12,6 +12,8 @@ namespace Carbon.Engine.Contracts.Resource
         void Replace(string hash, ICarbonResource resource);
         void StoreOrReplace(string hash, ICarbonResource resource);
 
+        ResourceInfo GetInfo(string hash);
+
         void Clear();
         void AddContent(ResourceContent content);
     }

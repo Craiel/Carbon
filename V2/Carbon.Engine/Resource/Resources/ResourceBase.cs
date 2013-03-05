@@ -7,6 +7,10 @@ namespace Carbon.Engine.Resource.Resources
 {
     public abstract class ResourceBase : ICarbonResource
     {
+        public virtual void Dispose()
+        {
+        }
+
         public long Save(Stream target)
         {
             long size;

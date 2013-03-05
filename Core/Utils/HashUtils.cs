@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace Core.Utils
     public static class HashUtils
     {
         private static readonly SHA1 HashProvider = SHA1.Create();
+        private static readonly MD5 Md5Provider = MD5.Create();
 
         public static string BuildResourceHash(string path)
         {
@@ -41,6 +43,17 @@ namespace Core.Utils
             }
 
             return FNV.Combine(hashCodes);
+        }
+
+        public static byte[] GetMd5(Stream source)
+        {
+            source.Position = 0;
+            return Md5Provider.ComputeHash(source);
+        }
+
+        public static string Md5ToString(byte[] data)
+        {
+            return Convert.ToBase64String(data);
         }
 
         public static string GetSHA1FileName(string data)

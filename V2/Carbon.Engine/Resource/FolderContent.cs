@@ -1,6 +1,9 @@
 ﻿using System.IO;
+using System.IO.Compression;
 
 using Carbon.Engine.Contracts.Resource;
+
+using Core.Utils;
 
 namespace Carbon.Engine.Resource
 {
@@ -31,9 +34,8 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         public override Stream Load(string hash)
         {
-            string fileName = Path.Combine(this.folder, hash.Replace('/', '.'));
-
-            if (!File.Exists(fileName))
+            string fileName = this.GetFileName(hash);
+            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
             {
                 return null;
             }
@@ -42,15 +44,18 @@ namespace Carbon.Engine.Resource
             MemoryStream dataStream = new MemoryStream();
             using (FileStream stream = File.OpenRead(fileName))
             {
-                stream.CopyTo(dataStream);
-                System.Diagnostics.Trace.TraceInformation(" -> {0} bytes read", dataStream.Length);
-                return dataStream;
+                using (GZipStream compression = new GZipStream(stream, CompressionMode.Decompress, false))
+                {
+                    compression.CopyTo(dataStream);
+                    System.Diagnostics.Trace.TraceInformation(" -> {0} bytes read and uncompressed to {1}", stream.Length, dataStream.Length);
+                    return dataStream;
+                }
             }
         }
 
         public override bool Store(string hash, ICarbonResource data)
         {
-            string fileName = Path.Combine(this.folder, hash.Replace('/', '.'));
+            string fileName = this.GetFileName(hash);
 
             if (File.Exists(fileName))
             {
@@ -60,20 +65,21 @@ namespace Carbon.Engine.Resource
             long size;
             using (FileStream stream = File.OpenWrite(fileName))
             {
-                size = data.Save(stream);
-                stream.Flush(true);
+                using (GZipStream compression = new GZipStream(stream, CompressionLevel.Optimal, true))
+                {
+                    size = data.Save(compression);
+                    compression.Flush();
+                }
+
+                System.Diagnostics.Trace.TraceInformation("Stored {0} bytes as {1} ({2})", size, fileName, stream.Length);
+                return true;
             }
-
-            System.Diagnostics.Trace.TraceInformation("Stored {0} bytes as {1}", size, fileName);
-
-            return true;
         }
 
         public override bool Replace(string hash, ICarbonResource data)
         {
-            string fileName = Path.Combine(this.folder, hash.Replace('/', '.'));
-
-            if (!File.Exists(fileName))
+            string fileName = this.GetFileName(hash);
+            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
             {
                 return false;
             }
@@ -82,13 +88,34 @@ namespace Carbon.Engine.Resource
             File.Delete(fileName);
             using (FileStream stream = File.OpenWrite(fileName))
             {
-                size = data.Save(stream);
-                stream.Flush(true);
+                using (GZipStream compression = new GZipStream(stream, CompressionLevel.Optimal, true))
+                {
+                    size = data.Save(compression);
+                    compression.Flush();
+                }
+
+                System.Diagnostics.Trace.TraceInformation("Stored {0} bytes as {1} ({2})", size, fileName, stream.Length);
+                return true;
+            }
+        }
+
+        public override ResourceInfo GetInfo(string hash)
+        {
+            string fileName = this.GetFileName(hash);
+            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
+            {
+                return null;
             }
 
-            System.Diagnostics.Trace.TraceInformation("Stored {0} bytes as {1}", size, fileName);
+            using (FileStream stream = File.OpenRead(fileName))
+            {
+                return new ResourceInfo(hash, stream.Length, HashUtils.GetMd5(stream));
+            }
+        }
 
-            return true;
+        private string GetFileName(string hash)
+        {
+            return Path.Combine(this.folder, hash.Replace('/', '.'));
         }
     }
 }
