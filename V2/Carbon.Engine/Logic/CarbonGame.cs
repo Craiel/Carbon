@@ -3,6 +3,7 @@ using System.Threading;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
+using Carbon.Engine.Contracts.Resource;
 
 using Core.Utils;
 using Core.Utils.Contracts;
@@ -50,7 +51,8 @@ namespace Carbon.Engine.Logic
         private readonly ITimer gameTimer;
         private readonly ICarbonGraphics graphics;
         private readonly ILog log;
-        
+
+        private readonly IResourceManager coreResourceManager;
         private readonly IKeyStateManager keyStateManager;
         private readonly ICursor cursor;
         private readonly IFrameManager mainFrameManager;
@@ -80,7 +82,8 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         protected CarbonGame(IEngineFactory factory)
         {
-            this.graphics = factory.Get<ICarbonGraphics>();            
+            this.coreResourceManager = factory.GetResourceManager("Data");
+            this.graphics = factory.GetGraphics(this.coreResourceManager);
             this.debugController = factory.Get<IDebugController>();
             this.keyStateManager = factory.Get<IKeyStateManager>();
             this.cursor = factory.Get<ICursor>();
@@ -123,6 +126,14 @@ namespace Carbon.Engine.Logic
             get
             {
                 return this.window;
+            }
+        }
+
+        protected IResourceManager CoreResourceManager
+        {
+            get
+            {
+                return this.coreResourceManager;
             }
         }
 

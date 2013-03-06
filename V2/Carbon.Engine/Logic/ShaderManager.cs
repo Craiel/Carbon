@@ -1,22 +1,17 @@
-﻿using System.Linq;
-using System.Security.Cryptography;
-
-using Carbon.Engine.Contracts.Resource;
+﻿using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource;
-
 using Core.Utils;
-
 using SlimDX;
 using SlimDX.D3DCompiler;
 using SlimDX.Direct3D11;
 using System.Collections;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Carbon.Engine.Logic
 {
-    using Carbon.Engine.Resource.Content;
-
     internal class ShaderIncludeHandler : Include
     {
         public void Open(IncludeType type, string fileName, Stream parentStream, out Stream stream)
@@ -34,8 +29,8 @@ namespace Carbon.Engine.Logic
     public class ShaderManager
     {
         // Todo: Yeah right, hard coded path's...
-        internal const string ShaderLocation = @"Data\shaders";
-        internal const string ShaderCacheKeyPrefix = @"ShaderCache";
+        internal const string ShaderLocation = @"Data\Shaders";
+        internal const string ShaderCacheKeyPrefix = @"_ShaderCache";
 
         private readonly IResourceManager resourceManager;
         private readonly Hashtable vertexShaderCache;

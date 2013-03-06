@@ -12,6 +12,10 @@ namespace Carbon.Engine.Resource
         private byte[] sourceMd5;
         private byte[] shaderData;
 
+        public CompiledShader()
+        {
+        }
+
         public CompiledShader(byte[] md5, ShaderBytecode shaderBytecode)
         {
             this.sourceMd5 = md5;

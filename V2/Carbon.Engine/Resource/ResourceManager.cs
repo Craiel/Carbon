@@ -68,7 +68,8 @@ namespace Carbon.Engine.Resource
                     if (dataStream != null)
                     {
                         dataStream.Position = 0;
-                        T resource = (T)Activator.CreateInstance(typeof(T), new[] { dataStream });
+                        T resource = (T)Activator.CreateInstance(typeof(T));
+                        resource.Load(dataStream);
                         this.cache.Add(hash, resource);
                         return resource;
                     }

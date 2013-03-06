@@ -2,6 +2,7 @@
 
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
+using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Rendering;
 
 using SlimDX.DXGI;
@@ -10,8 +11,6 @@ using Core.Utils.Contracts;
 
 namespace Carbon.Engine.Logic
 {
-    using Carbon.Engine.Contracts.Resource;
-
     public class CarbonGraphics : ICarbonGraphics
     {
         private readonly ILog log;
@@ -43,8 +42,8 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         public CarbonGraphics(IEngineFactory factory, IResourceManager resourceManager)
         {
-            this.resourceManager = resourceManager;
             this.log = factory.Get<IEngineLog>().AquireContextLog("CarbonGraphics");
+            this.resourceManager = resourceManager;
             this.factory = factory;
 
             this.desiredDepthStencilState = DeviceStateManager.DefaultDepthStencilState;
@@ -268,7 +267,7 @@ namespace Carbon.Engine.Logic
             this.deviceStateManager = new DeviceStateManager(this.context.Device);
 
             this.shaderManager = new ShaderManager(this.resourceManager, this.context.Device);
-            this.textureManager = new TextureManager(this.factory, this.resourceManager, this.context.Device);
+            this.textureManager = new TextureManager(this.resourceManager, this.context.Device);
         }
 
         private void DisposeBuffers()

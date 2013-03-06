@@ -1,4 +1,5 @@
 ﻿using Carbon.Engine.Contracts;
+using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Resource;
 
 using Ninject;
@@ -32,6 +33,11 @@ namespace Carbon.Engine.Ninject
         public T Get<T>()
         {
             return this.kernel.Get<T>();
+        }
+
+        public ICarbonGraphics GetGraphics(IResourceManager resourceManager)
+        {
+            return this.kernel.Get<ICarbonGraphics>(new ConstructorArgument("resourceManager", resourceManager));
         }
 
         public IResourceManager GetResourceManager(string root)

@@ -28,7 +28,6 @@ namespace Carbon.V2Test.Scenes
     public class TestSceneSponza : Scene, ITestSceneSponza
     {
         private readonly ILog log;
-        private readonly IResourceManager resourceManager;
         private readonly IFrameManager frameManager;
         private readonly ICarbonGraphics graphics;
 
@@ -72,8 +71,6 @@ namespace Carbon.V2Test.Scenes
             this.controller = factory.Get<IFirstPersonController>();
             this.camera = factory.Get<IProjectionCamera>();
             this.overlayCamera = factory.Get<IOrthographicCamera>();
-
-            this.resourceManager = factory.Get<IResourceManager>();
 
             this.root = new Node();
         }

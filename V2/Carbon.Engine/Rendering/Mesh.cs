@@ -206,7 +206,7 @@ namespace Carbon.Engine.Rendering
         {
             for (int i = 0; i < part.Indices.Length; i++)
             {
-                this.indexUploadCache.Add(resource.Indices[i] + offset);
+                this.indexUploadCache.Add(part.Indices[i] + offset);
             }
 
             for (int p = 0; p < part.SubParts.Count; p++)

@@ -214,6 +214,11 @@ namespace Carbon.Engine.Resource.Resources
             }
 
             this.DoCalculateTangents();
+            foreach (ModelResource part in SubParts)
+            {
+                part.DoCalculateTangents();
+            }
+
             this.tangentsCalculated = true;
         }
 
@@ -378,6 +383,11 @@ namespace Carbon.Engine.Resource.Resources
         // -------------------------------------------------------------------
         private void DoCalculateTangents()
         {
+            if (this.indices == null || this.indices.Length <= 0)
+            {
+                return;
+            }
+
             var tan1 = new Vector3[this.elements.Count];
             var tan2 = new Vector3[this.elements.Count];
             int triangleCount = this.IndexCount;

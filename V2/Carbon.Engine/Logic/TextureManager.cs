@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Carbon.Engine.Contracts;
-using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource.Resources;
-
-using Core.Utils.Contracts;
 
 using SlimDX.Direct3D11;
 
@@ -64,7 +60,6 @@ namespace Carbon.Engine.Logic
     {
         private const int StaticRegisterLimit = 4999;
 
-        private readonly ILog log;
         private readonly IResourceManager resourceManager;
         private readonly Device device;
 
@@ -76,11 +71,10 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public TextureManager(IEngineFactory factory, IResourceManager resourceManager, Device device)
+        public TextureManager(IResourceManager resourceManager, Device device)
         {
             this.resourceManager = resourceManager;
             this.device = device;
-            this.log = factory.Get<IEngineLog>().AquireContextLog("TextureManager");
 
             this.textureCache = new Dictionary<TextureReference, ShaderResourceView>();
             this.textureRegister = new Dictionary<int, TextureReference>();
@@ -275,7 +269,7 @@ namespace Carbon.Engine.Logic
 
             if (reference != this.Fallback && this.Fallback != null)
             {
-                this.log.Warning("Loading fallback for {0}", reference);
+                System.Diagnostics.Trace.TraceWarning("Loading fallback for {0}", reference);
                 return this.LoadData(this.Fallback);
             }
 

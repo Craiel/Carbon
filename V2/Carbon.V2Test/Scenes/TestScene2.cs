@@ -8,6 +8,7 @@ using Carbon.Engine.Rendering.Primitives;
 using Carbon.Engine.Rendering.RenderTarget;
 using Carbon.Engine.Resource;
 using Carbon.Engine.Resource.Content;
+using Carbon.Engine.Resource.Resources;
 using Carbon.Engine.Scene;
 using Carbon.V2Test.Contracts;
 using Core.Utils;
@@ -126,19 +127,11 @@ namespace Carbon.V2Test.Scenes
             testLight = new Light { Color = new Vector4(1), Type = LightType.Spot, Range = 10.0f, SpecularPower = 10.0f, Direction = Vector3.UnitY, SpotAngles = new Vector2(5, 10) };
             this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(35f, 0.5f, 20f, 1) });
 
-            /*ResourceLink link = this.resourceManager.GetLink(@"..\SourceData\Textures\checkerboard.dds");
-            ICarbonContent materialResource = new MaterialEntry { DiffuseTexture = link };
-            this.contentManager.Save(materialResource);
-            var test =
-                this.contentManager.TypedLoad(
-                    new ContentQuery<MaterialEntry>().Contains("Id", new[] { (object)0, 1, 2, 3 }))
-                    .ToList<MaterialEntry>();
-
-            this.checkerboardMaterial = new Material(graphics, (MaterialEntry)materialResource);
+            /*this.checkerboardMaterial = new Material(graphics, (MaterialEntry)materialResource);
             link = this.resourceManager.GetLink(@"Textures\stone.dds");
             this.stoneMaterial = new Material(
                 graphics,
-                new MaterialEntry { DiffuseTexture = link });
+                new MaterialEntry { DiffuseTexture = link });*/
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
             this.normalDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1002));
 
@@ -146,7 +139,7 @@ namespace Carbon.V2Test.Scenes
             this.gBufferDiffuseAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(12));
             this.gBufferSpecularAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(13));
             this.gBufferDepthTexture = new Material(this.graphics.TextureManager.GetRegisterReference(14));
-            this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));*/
+            this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));
 
             /*PositionNormalVertex[] meshData;
             uint[] indices;
@@ -228,9 +221,15 @@ namespace Carbon.V2Test.Scenes
             Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
             this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
 
+            var testResource = this.resourceManager.Load<ModelResource>(HashUtils.BuildResourceHash(@"Models\room.dae"));
+            this.root.AddChild(new ModelNode { Mesh = new Mesh(testResource), Position = new Vector4(10, 5, 10, 1), Material = this.checkerboardMaterial });
+
+            testResource = this.resourceManager.Load<ModelResource>(HashUtils.BuildResourceHash(@"Models\House6.dae"));
+            this.root.AddChild(new ModelNode { Mesh = new Mesh(testResource), Position = new Vector4(0, 2, 0, 1), Material = this.checkerboardMaterial });
+
             //this.contentManager.Save(materialResource);
-            var testCriteria = new ContentQuery<MaterialEntry>().IsEqual("Id", 0);
-            this.contentManager.TypedLoad(testCriteria).UniqueResult<MaterialEntry>();
+            //var testCriteria = new ContentQuery<MaterialEntry>().IsEqual("Id", 0);
+            //this.contentManager.TypedLoad(testCriteria).UniqueResult<MaterialEntry>();
 
             /*RawResource resource;
             resource = this.resourceManager.Load<RawResource>(@"Models\room.dae");

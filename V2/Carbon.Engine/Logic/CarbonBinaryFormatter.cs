@@ -178,7 +178,7 @@ namespace Carbon.Engine.Logic
                 buffer = new byte[count * 2];
             }
 
-            int bytesRead = this.bufferStream.Read(buffer, 0, count);
+            int bytesRead = this.target.Read(buffer, 0, count);
             if (bytesRead != count)
             {
                 throw new IOException(string.Format("Expected to read {0} bytes but got {1}", count, bytesRead));

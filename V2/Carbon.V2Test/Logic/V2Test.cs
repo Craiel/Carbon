@@ -2,9 +2,7 @@
 using System.Drawing;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Rendering;
-using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Logic;
-using Carbon.Engine.Resource;
 using Carbon.V2Test.Contracts;
 using Carbon.V2Test.Scenes;
 using Core.Utils.Contracts;
@@ -29,8 +27,6 @@ namespace Carbon.V2Test.Logic
             this.testSceneSponza = factory.Get<ITestSceneSponza>();
 
             this.log = factory.Get<IApplicationLog>().AquireContextLog("Carbon.V2Test");
-
-            factory.Get<IResourceManager>().AddContent(new FolderContent(@"Data\"));
         }
 
         // -------------------------------------------------------------------

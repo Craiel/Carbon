@@ -322,7 +322,8 @@ namespace Carbon.Editor.Resource.Collada
             bool isTarget = string.IsNullOrEmpty(targetElement);
             if (!isChildOfTarget && !string.IsNullOrEmpty(targetElement))
             {
-                isTarget = targetElement.Equals(sceneNode.Id, StringComparison.OrdinalIgnoreCase);
+                isTarget = targetElement.Equals(sceneNode.Id, StringComparison.OrdinalIgnoreCase)
+                           || (sceneNode.InstanceGeometry != null && ColladaInfo.GetUrlValue(sceneNode.InstanceGeometry.Url).Equals(targetElement, StringComparison.OrdinalIgnoreCase));
                 if (!isTarget && !SceneNodeContainsElement(sceneNode, targetElement))
                 {
                     return null;

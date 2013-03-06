@@ -17,7 +17,7 @@ namespace Carbed
         [STAThread]
         public static void Main()
         {
-            log4net.Config.XmlConfigurator.Configure();
+            //log4net.Config.XmlConfigurator.Configure();
 
             IKernel kernel = new StandardKernel(NinjectModuleManager.GetModules());
             kernel.Get<ICarbed>().Run();

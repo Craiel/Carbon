@@ -1,4 +1,5 @@
-﻿using Carbon.Engine.Contracts.Resource;
+﻿using Carbon.Engine.Contracts.Logic;
+using Carbon.Engine.Contracts.Resource;
 
 using Ninject;
 
@@ -10,6 +11,7 @@ namespace Carbon.Engine.Contracts
 
         T Get<T>();
 
+        ICarbonGraphics GetGraphics(IResourceManager resourceManager);
         IResourceManager GetResourceManager(string path);
         IContentManager GetContentManager(IResourceManager resourceManager, string root);
     }
