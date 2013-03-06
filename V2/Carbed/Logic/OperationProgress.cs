@@ -21,6 +21,7 @@ namespace Carbed.Logic
             {
                 return this.minimum;
             }
+
             set
             {
                 if (this.minimum != value)
@@ -37,6 +38,7 @@ namespace Carbed.Logic
             {
                 return this.maximum;
             }
+
             set
             {
                 if (this.maximum != value)
@@ -53,6 +55,7 @@ namespace Carbed.Logic
             {
                 return this.value;
             }
+
             set
             {
                 if (this.value != value)
@@ -69,6 +72,7 @@ namespace Carbed.Logic
             {
                 return this.inProgress;
             }
+
             set
             {
                 if (this.inProgress != value)

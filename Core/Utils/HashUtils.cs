@@ -13,8 +13,11 @@ namespace Core.Utils
 
         public static string BuildResourceHash(string path)
         {
-            byte[] hashData = HashProvider.ComputeHash(Encoding.UTF8.GetBytes(path));
-            return Convert.ToBase64String(hashData);
+            lock (HashProvider)
+            {
+                byte[] hashData = HashProvider.ComputeHash(Encoding.UTF8.GetBytes(path));
+                return Convert.ToBase64String(hashData);
+            }
         }
 
         public static int CombineObjectHashes(object[] data)
@@ -48,7 +51,10 @@ namespace Core.Utils
         public static byte[] GetMd5(Stream source)
         {
             source.Position = 0;
-            return Md5Provider.ComputeHash(source);
+            lock (Md5Provider)
+            {
+                return Md5Provider.ComputeHash(source);
+            }
         }
 
         public static string Md5ToString(byte[] data)

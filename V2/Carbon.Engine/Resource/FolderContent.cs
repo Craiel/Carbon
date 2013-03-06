@@ -99,6 +99,18 @@ namespace Carbon.Engine.Resource
             }
         }
 
+        public override bool Delete(string hash)
+        {
+            string fileName = this.GetFileName(hash);
+            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
+            {
+                return false;
+            }
+
+            File.Delete(fileName);
+            return true;
+        }
+
         public override ResourceInfo GetInfo(string hash)
         {
             string fileName = this.GetFileName(hash);

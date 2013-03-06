@@ -209,6 +209,7 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.SourceElement, value);
+                    this.needReexport = true;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -293,6 +294,9 @@ namespace Carbed.ViewModels
                 this.oldHash = null;
             }
 
+            this.data.TreeNode = this.parent.Id;
+            this.data.Hash = HashUtils.BuildResourceHash(Path.Combine(this.parent.FullPath, this.Name));
+
             if (this.needReexport || this.forceExport)
             {
                 switch (this.data.Type)
@@ -351,9 +355,7 @@ namespace Carbed.ViewModels
                 this.SetMetaValue(MetaDataKey.TargetMd5, HashUtils.Md5ToString(info.Md5));
             }
 
-            // Todo: Duplicate check for resource names
-            this.data.TreeNode = this.parent.Id;
-            this.data.Hash = HashUtils.BuildResourceHash(Path.Combine(this.parent.FullPath, this.Name));
+            // Now save the content and all the meta data as last action
             this.Save(target);
 
             this.NotifyPropertyChanged();
@@ -361,6 +363,11 @@ namespace Carbed.ViewModels
 
         public void Delete(IContentManager target, IResourceManager resourceTarget)
         {
+            if (!string.IsNullOrEmpty(this.data.Hash) && !string.IsNullOrEmpty(this.GetMetaValue(MetaDataKey.TargetMd5)))
+            {
+                resourceTarget.Delete(this.data.Hash);
+            }
+            
             this.Delete(target);
 
             if (this.parent != null)

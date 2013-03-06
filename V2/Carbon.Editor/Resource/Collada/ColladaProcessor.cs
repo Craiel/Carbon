@@ -157,7 +157,8 @@ namespace Carbon.Editor.Resource.Collada
                 textureData = source.FloatArray.ToVector2();
             }
 
-            TraceConversionInfo(geometry);
+            // Enable only if needed, causes massive slowness for larger meshes
+            // TraceConversionInfo(geometry);
         }
 
         private static void TraceConversionInfo(ColladaGeometry geometry)
@@ -304,7 +305,13 @@ namespace Carbon.Editor.Resource.Collada
 
             if (node.Children != null && node.Children.Length > 0)
             {
-                return node.Children.Any(child => SceneNodeContainsElement(child, elementName));
+                foreach (ColladaSceneNode child in node.Children)
+                {
+                    if (child.Name.Equals(targetElement) || SceneNodeContainsElement(child, targetElement))
+                    {
+                        return true;
+                    }
+                }
             }
 
             return false;

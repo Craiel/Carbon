@@ -11,6 +11,7 @@ namespace Carbon.Engine.Resource
         public abstract Stream Load(string hash);
         public abstract bool Store(string hash, ICarbonResource data);
         public abstract bool Replace(string hash, ICarbonResource data);
+        public abstract bool Delete(string hash);
 
         public abstract ResourceInfo GetInfo(string hash);
     }
@@ -140,6 +141,30 @@ namespace Carbon.Engine.Resource
             throw new InvalidDataException("Resource could not be stored");
         }
 
+        public void Delete(string hash)
+        {
+            for (int i = 0; i < this.content.Count; i++)
+            {
+                ResourceContent resourceContent = this.content[i];
+                if (resourceContent.Delete(hash))
+                {
+                    if (this.cache.ContainsKey(hash))
+                    {
+                        this.cache.Remove(hash);
+                    }
+
+                    if (this.infoCache.ContainsKey(hash))
+                    {
+                        this.infoCache.Remove(hash);
+                    }
+
+                    return;
+                }
+            }
+
+            throw new InvalidDataException("Resource could not be deleted, no existing resource was found");
+        }
+
         public ResourceInfo GetInfo(string hash)
         {
             if (this.infoCache.ContainsKey(hash))
@@ -153,7 +178,10 @@ namespace Carbon.Engine.Resource
                 ResourceInfo info = resourceContent.GetInfo(hash);
                 if (info != null)
                 {
-                    this.infoCache.Add(hash, info);
+                    lock (this.infoCache)
+                    {
+                        this.infoCache.Add(hash, info);
+                    }
                     return info;
                 }
             }

@@ -13,6 +13,8 @@ using Core.Utils.Contracts;
 
 namespace Carbed.ViewModels
 {
+    using System.Linq;
+
     public abstract class ContentViewModel : DocumentViewModel
     {
         private readonly ICarbedLogic logic;
@@ -21,6 +23,7 @@ namespace Carbed.ViewModels
         private readonly ILog log;
 
         private readonly IDictionary<MetaDataKey, MetaDataEntry> metaData;
+        private readonly IList<MetaDataEntry> metaDataToDelete; 
 
         private bool isLoaded;
 
@@ -35,6 +38,7 @@ namespace Carbed.ViewModels
             this.data = data;
 
             this.metaData = new Dictionary<MetaDataKey, MetaDataEntry>();
+            this.metaDataToDelete = new List<MetaDataEntry>();
         }
 
         // -------------------------------------------------------------------
@@ -101,6 +105,13 @@ namespace Carbed.ViewModels
             IList<MetaDataEntry> metaDataList = this.logic.GetEntryMetaData(primaryKeyInfo.Info.GetValue(this.data), this.data.MetaDataTarget);
             for (int i = 0; i < metaDataList.Count; i++)
             {
+                if (this.metaData.ContainsKey(metaDataList[i].Key))
+                {
+                    this.log.Warning("Duplicate metadata entry detected, will be removed on next save: {0}", metaDataList[i].Key);
+                    this.metaDataToDelete.Add(metaDataList[i]);
+                    continue;
+                }
+
                 this.metaData.Add(metaDataList[i].Key, metaDataList[i]);
             }
             
@@ -163,6 +174,13 @@ namespace Carbed.ViewModels
                 target.Save(this.data);
             }
 
+            foreach (MetaDataEntry entry in this.metaDataToDelete)
+            {
+                target.Delete(entry);
+            }
+
+            this.metaDataToDelete.Clear();
+
             var dataKey = (int?)ContentReflection.GetPrimaryKeyPropertyInfo(this.data.GetType()).Info.GetValue(this.data);
             foreach (KeyValuePair<MetaDataKey, MetaDataEntry> metaDataEntry in this.metaData)
             {
@@ -181,16 +199,28 @@ namespace Carbed.ViewModels
                 target.Delete(this.data);
             }
 
+            IList<MetaDataEntry> deleteQueue = this.metaDataToDelete.ToList();
             foreach (KeyValuePair<MetaDataKey, MetaDataEntry> metaDataEntry in this.metaData)
             {
-                if (metaDataEntry.Value == null || metaDataEntry.Value.IsNew)
+                if (metaDataEntry.Value == null)
                 {
                     continue;
                 }
 
-                target.Delete(metaDataEntry.Value);
+                deleteQueue.Add(metaDataEntry.Value);
             }
 
+            foreach (MetaDataEntry entry in deleteQueue)
+            {
+                if (entry.IsNew)
+                {
+                    continue;
+                }
+
+                target.Delete(entry);
+            }
+
+            this.metaDataToDelete.Clear();
             this.metaData.Clear();
         }
 

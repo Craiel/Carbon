@@ -4,10 +4,13 @@ using System.Windows.Input;
 using Carbed.Contracts;
 using Carbed.Logic.MVVM;
 
-using Microsoft.Win32;
-
 namespace Carbed.ViewModels
 {
+    using System;
+    using System.Threading.Tasks;
+
+    using global::Carbed.Views;
+
     public class ResourceExplorerViewModel : ToolViewModel, IResourceExplorerViewModel
     {
         private readonly ICarbedLogic logic;
@@ -63,9 +66,19 @@ namespace Carbed.ViewModels
 
         private void OnSave(object obj)
         {
-            foreach (IFolderViewModel folder in Folders)
+            TaskProgress.Message = "Saving Resources...";
+            new TaskProgress(new[] { new Task(() => this.DoSave(obj)) }, 1);
+        }
+
+        private void DoSave(object obj)
+        {
+            TaskProgress.CurrentProgress = 0;
+            TaskProgress.CurrentMaxProgress = this.Folders.Count;
+            foreach (IFolderViewModel folder in this.Folders)
             {
+                TaskProgress.CurrentMessage = folder.FullPath;
                 folder.CommandSave.Execute(obj);
+                TaskProgress.CurrentProgress++;
             }
         }
 

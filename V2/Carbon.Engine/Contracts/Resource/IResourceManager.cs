@@ -11,6 +11,7 @@ namespace Carbon.Engine.Contracts.Resource
         void Store(string hash, ICarbonResource resource);
         void Replace(string hash, ICarbonResource resource);
         void StoreOrReplace(string hash, ICarbonResource resource);
+        void Delete(string hash);
 
         ResourceInfo GetInfo(string hash);
 

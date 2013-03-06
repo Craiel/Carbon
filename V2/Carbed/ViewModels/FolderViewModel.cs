@@ -18,6 +18,8 @@ using Microsoft.Win32;
 
 namespace Carbed.ViewModels
 {
+    using global::Carbed.Views;
+
     public class FolderViewModel : ContentViewModel, IFolderViewModel
     {
         private readonly ICarbedLogic logic;
@@ -92,6 +94,15 @@ namespace Carbed.ViewModels
             get
             {
                 return this.GetMetaValueInt(MetaDataKey.ContentCount);
+            }
+
+            private set
+            {
+                if (this.GetMetaValueInt(MetaDataKey.ContentCount) != value)
+                {
+                    this.SetMetaValue(MetaDataKey.ContentCount, value);
+                    this.NotifyPropertyChanged();
+                }
             }
         }
         
@@ -221,7 +232,7 @@ namespace Carbed.ViewModels
             }
             
             newContent.Parent = this;
-            this.SetMetaValue(MetaDataKey.ContentCount, (this.GetMetaValueInt(MetaDataKey.ContentCount) ?? 0) + 1);
+            this.ContentCount++;
             this.content.Add(newContent);
             this.NotifyPropertyChanged("ContentCount");
         }
@@ -232,8 +243,8 @@ namespace Carbed.ViewModels
             {
                 throw new InvalidOperationException("Folder does not contain content to be removed");
             }
-            
-            this.SetMetaValue(MetaDataKey.ContentCount, (this.GetMetaValueInt(MetaDataKey.ContentCount) ?? 0) - 1);
+
+            this.ContentCount--;
             this.content.Remove(oldContent);
             this.NotifyPropertyChanged("ContentCount");
         }
@@ -285,15 +296,15 @@ namespace Carbed.ViewModels
             }
 
             // Check our content meta information and update if it is mismatching
-            if (this.GetMetaValueInt(MetaDataKey.ContentCount) != resourceCount)
+            if (this.ContentCount != resourceCount)
             {
                 if (resourceCount == 0)
                 {
-                    this.SetMetaValue(MetaDataKey.ContentCount, (int?)null);
+                    this.ContentCount = null;
                 }
                 else
                 {
-                    this.SetMetaValue(MetaDataKey.ContentCount, resourceCount);
+                    this.ContentCount = resourceCount;
                 }                
             }
         }
@@ -310,16 +321,20 @@ namespace Carbed.ViewModels
             this.Save(target);
             
             // Save all our children as well
+            TaskProgress.CurrentMaxProgress += this.content.Count;
             foreach (ICarbedDocument entry in this.content)
             {
+                TaskProgress.CurrentProgress++;
                 if (entry as IFolderViewModel != null)
                 {
+                    TaskProgress.CurrentMessage = ((IFolderViewModel)entry).FullPath;
                     ((IFolderViewModel)entry).Save(target, resourceTarget);
                     continue;
                 }
 
                 if (entry as IResourceViewModel != null)
                 {
+                    TaskProgress.CurrentMessage = string.Format("{0} Resource: {1}", ((IResourceViewModel)entry).Type, entry.Name);
                     ((IResourceViewModel)entry).Save(target, resourceTarget);
                 }
             }
@@ -410,6 +425,8 @@ namespace Carbed.ViewModels
                     vm.SelectFile(fileName);
                     this.content.Add(vm);
                 }
+
+                this.ContentCount += dialog.FileNames.Length;
             }
         }
 

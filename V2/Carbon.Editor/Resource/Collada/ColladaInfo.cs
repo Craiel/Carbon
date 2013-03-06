@@ -102,7 +102,12 @@ namespace Carbon.Editor.Resource.Collada
 
         private void BuildMaterialLibrary(ColladaMaterialLibrary materials, ColladaEffectLibrary effectLibrary)
         {
-            materialInfo.Clear();
+            this.materialInfo.Clear();
+            if (materials == null || materials.Materials == null || materials.Materials.Length <= 0
+                || effectLibrary == null || effectLibrary.Effects == null || effectLibrary.Effects.Length <= 0)
+            {
+                return;
+            }
 
             IDictionary<string, string> materialEffectLookup = new Dictionary<string, string>();
             foreach (ColladaMaterial material in materials.Materials)

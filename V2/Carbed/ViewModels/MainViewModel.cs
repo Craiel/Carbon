@@ -22,6 +22,8 @@ using Microsoft.Win32;
 namespace Carbed.ViewModels
 {
     using System.IO;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public class MainViewModel : CarbedBase, IMainViewModel
     {
@@ -43,12 +45,14 @@ namespace Carbed.ViewModels
         
         private string currentProjectFile;
 
+        private bool isClosing;
+
         private IProjectViewModel projectViewModel;
 
         private ICarbedDocument activeDocument;
 
         private IFolderViewModel currentCreationContext;
-
+        
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -613,6 +617,8 @@ namespace Carbed.ViewModels
 
         private void OnMainWindowClosing(EventWindowClosing obj)
         {
+            this.isClosing = true;
+
             this.SaveProjectLayout();
         }
     }
