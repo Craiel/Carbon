@@ -12,6 +12,7 @@ namespace Carbed.Contracts
         int? Id { get; }
         int? ContentCount { get; }
 
+        string Hash { get; }
         string FullPath { get; }
 
         IFolderViewModel Parent { get; set; }

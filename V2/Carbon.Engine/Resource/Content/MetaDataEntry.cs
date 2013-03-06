@@ -9,6 +9,7 @@
         ContentCount = 13,
         SourceElement = 14,
         TargetMd5 = 15,
+        TextureFolder = 16,
     }
 
     public enum MetaDataTargetEnum

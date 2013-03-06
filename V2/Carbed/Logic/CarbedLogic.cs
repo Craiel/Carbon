@@ -303,6 +303,20 @@ namespace Carbed.Logic
             return resourceData.Select(x => this.viewModelFactory.GetResourceViewModel(x)).ToList();
         }
 
+        public IFolderViewModel LocateFolder(string hash)
+        {
+            foreach (IFolderViewModel folder in folders)
+            {
+                var result = this.LocateFolder(folder, hash);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
@@ -335,6 +349,35 @@ namespace Carbed.Logic
             TaskProgress.CurrentMaxProgress = max;
             TaskProgress.CurrentProgress = current;
             TaskProgress.CurrentMessage = message;
+        }
+
+        private IFolderViewModel LocateFolder(IFolderViewModel current, string hash)
+        {
+            if (current.Hash.Equals(hash))
+            {
+                return current;
+            }
+
+            if (current.Content == null || current.Content.Count <= 0)
+            {
+                return null;
+            }
+
+            foreach (ICarbedDocument document in current.Content)
+            {
+                if (document as IFolderViewModel == null)
+                {
+                    continue;
+                }
+
+                var result = this.LocateFolder(document as IFolderViewModel, hash);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
     }
 }

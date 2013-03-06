@@ -19,7 +19,6 @@ namespace Carbon.Editor.Resource.Collada
     public static class ColladaProcessor
     {
         private readonly static IDictionary<string, ModelResource> meshLibrary = new Dictionary<string, ModelResource>();
-        private readonly static IDictionary<string, MaterialElement>  materialLibrary = new Dictionary<string, MaterialElement>();
 
         private static string targetElement;
 
@@ -38,14 +37,11 @@ namespace Carbon.Editor.Resource.Collada
         private static Vector3[] positionData;
         private static Vector3[] normalData;
         private static Vector2[] textureData;
-
-        private static ColladaInfo currentInfo;
-
+        
         public static ModelResource Process(ColladaInfo info, string element)
         {
             ClearCache();
 
-            currentInfo = info;
             targetElement = element;
 
             using (var stream = new FileStream(info.Source, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -59,7 +55,6 @@ namespace Carbon.Editor.Resource.Collada
 
         private static void ClearCache()
         {
-            currentInfo = null;
             currentInputs = null;
             currentSources = null;
             polygonData = null;

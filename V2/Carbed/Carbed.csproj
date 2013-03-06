@@ -194,6 +194,9 @@
     <Compile Include="Views\PropertyView.xaml.cs">
       <DependentUpon>PropertyView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SelectFolderDialog.xaml.cs">
+      <DependentUpon>SelectFolderDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\TaskProgress.xaml.cs">
       <DependentUpon>TaskProgress.xaml</DependentUpon>
     </Compile>
@@ -311,6 +314,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SelectFolderDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TaskProgress.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -372,6 +379,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\icon_clear.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\icon_copy.png" />
+    <Resource Include="Resources\icon_paste.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

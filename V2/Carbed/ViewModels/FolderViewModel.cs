@@ -105,6 +105,14 @@ namespace Carbed.ViewModels
                 }
             }
         }
+
+        public string Hash
+        {
+            get
+            {
+                return this.data.Hash;
+            }
+        }
         
         public string FullPath
         {
@@ -282,6 +290,7 @@ namespace Carbed.ViewModels
             foreach (IFolderViewModel child in children)
             {
                 child.Load();
+                child.Parent = this;
                 this.content.Add(child);
             }
 

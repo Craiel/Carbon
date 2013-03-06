@@ -18,6 +18,8 @@ namespace Carbed
         public static readonly Uri ToolIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_tool.png", UriKind.Absolute);
         public static readonly Uri UndoIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_undo.png", UriKind.Absolute);
         public static readonly Uri RedoIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_redo.png", UriKind.Absolute);
+        public static readonly Uri CopyIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_copy.png", UriKind.Absolute);
+        public static readonly Uri PasteIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_paste.png", UriKind.Absolute);
         public static readonly Uri ProjectIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_project.png", UriKind.Absolute);
         public static readonly Uri FolderIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_folder.png", UriKind.Absolute);
         public static readonly Uri ReloadIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);

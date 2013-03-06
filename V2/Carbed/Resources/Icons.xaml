@@ -17,6 +17,8 @@
     <Image Width="24" x:Key="IconTool" Source="{Binding Source={x:Static carbed:StaticResources.ToolIconUri}}"/>
     <Image Width="24" x:Key="IconUndo" Source="{Binding Source={x:Static carbed:StaticResources.UndoIconUri}}"/>
     <Image Width="24" x:Key="IconRedo" Source="{Binding Source={x:Static carbed:StaticResources.RedoIconUri}}"/>
+    <Image Width="24" x:Key="IconCopy" Source="{Binding Source={x:Static carbed:StaticResources.CopyIconUri}}"/>
+    <Image Width="24" x:Key="IconPaste" Source="{Binding Source={x:Static carbed:StaticResources.PasteIconUri}}"/>
     <Image Width="24" x:Key="IconProject" Source="{Binding Source={x:Static carbed:StaticResources.ProjectIconUri}}"/>
     <Image Width="24" x:Key="IconFolder" Source="{Binding Source={x:Static carbed:StaticResources.FolderIconUri}}"/>
     <Image Width="24" x:Key="IconReload" Source="{Binding Source={x:Static carbed:StaticResources.ReloadIconUri}}"/>

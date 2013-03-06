@@ -8,6 +8,7 @@ using System.Windows.Input;
 
 using Carbed.Contracts;
 using Carbed.Logic.MVVM;
+using Carbed.Views;
 
 using Carbon.Editor.Contracts;
 using Carbon.Editor.Resource.Collada;
@@ -30,8 +31,10 @@ namespace Carbed.ViewModels
         private readonly List<string> sourceElements;
 
         private ICommand commandSelectFile;
+        private ICommand commandSelectTextureFolder;
 
         private IFolderViewModel parent;
+        private IFolderViewModel textureFolder;
 
         private long? sourceSize;
         private long? targetSize;
@@ -40,6 +43,7 @@ namespace Carbed.ViewModels
 
         private bool needReexport;
         private bool forceExport;
+        private bool autoUpdateTextures;
 
         private ColladaInfo colladaSourceInfo;
         
@@ -65,6 +69,14 @@ namespace Carbed.ViewModels
             get
             {
                 return this.data.IsChanged;
+            }
+        }
+
+        public int? Id
+        {
+            get
+            {
+                return this.data.Id;
             }
         }
 
@@ -158,7 +170,24 @@ namespace Carbed.ViewModels
             {
                 if (this.forceExport != value)
                 {
-                    this.forceExport = true;
+                    this.forceExport = value;
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public bool AutoUpdateTextures
+        {
+            get
+            {
+                return this.autoUpdateTextures;
+            }
+
+            set
+            {
+                if (this.autoUpdateTextures != value)
+                {
+                    this.autoUpdateTextures = value;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -260,12 +289,37 @@ namespace Carbed.ViewModels
                 }
             }
         }
+
+        public IFolderViewModel TextureFolder
+        {
+            get
+            {
+                return this.textureFolder;
+            }
+
+            set
+            {
+                if (this.textureFolder != value)
+                {
+                    this.textureFolder = value;
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
         
         public ICommand CommandSelectFile
         {
             get
             {
                 return this.commandSelectFile ?? (this.commandSelectFile = new RelayCommand(this.OnSelectFile));
+            }
+        }
+
+        public ICommand CommandSelectTextureFolder
+        {
+            get
+            {
+                return this.commandSelectTextureFolder ?? (this.commandSelectTextureFolder = new RelayCommand(this.OnSelectTextureFolder));
             }
         }
 
@@ -292,6 +346,11 @@ namespace Carbed.ViewModels
             {
                 // Todo: resourceTarget.Delete(this.oldHash);
                 this.oldHash = null;
+            }
+
+            if (this.textureFolder != null)
+            {
+                this.SetMetaValue(MetaDataKey.TextureFolder, this.textureFolder.Hash);
             }
 
             this.data.TreeNode = this.parent.Id;
@@ -428,6 +487,8 @@ namespace Carbed.ViewModels
             {
                 this.UpdateSourceElements();
             }
+
+            this.textureFolder = this.logic.LocateFolder(this.GetMetaValue(MetaDataKey.TextureFolder));
         }
 
         private void UpdateSourceElements()
@@ -533,6 +594,15 @@ namespace Carbed.ViewModels
             if (dialog.ShowDialog() == true)
             {
                 this.SelectFile(dialog.FileName);
+            }
+        }
+
+        private void OnSelectTextureFolder(object obj)
+        {
+            var dialog = new SelectFolderDialog(this.logic);
+            if (dialog.ShowDialog() == true)
+            {
+                this.TextureFolder = dialog.SelectedFolder;
             }
         }
 

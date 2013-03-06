@@ -21,6 +21,7 @@
                 </MenuItem>
                 <MenuItem Header="Delete" Command="{Binding Path=CommandDelete}" Icon="{StaticResource IconDelete}"/>
                 <Separator/>
+                <MenuItem Header="Copy Path" Command="{Binding Path=CommandCopyPath}" Icon="{StaticResource IconCopy}"/>
                 <MenuItem Header="Reload Content" Command="{Binding Path=CommandReloadContent}" Icon="{StaticResource IconReload}"/>
             </ContextMenu>
 

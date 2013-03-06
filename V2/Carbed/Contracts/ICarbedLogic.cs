@@ -40,5 +40,7 @@ namespace Carbed.Contracts
         IList<MetaDataEntry> GetEntryMetaData(object primaryKeyValue, MetaDataTargetEnum target);
         IList<IFolderViewModel> GetResourceTreeChildren(int parent);
         IList<IResourceViewModel> GetResourceTreeContent(int node);
+
+        IFolderViewModel LocateFolder(string hash);
     }
 }
