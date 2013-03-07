@@ -6,6 +6,9 @@ namespace Carbon.Editor.Resource.Collada.Effect
     [Serializable]
     public class ProfileCommon
     {
+        [XmlElement("newparam")]
+        public EffectParameter[] Parameter { get; set; }
+
         [XmlElement("technique")]
         public EffectTechnique Technique { get; set; }
 

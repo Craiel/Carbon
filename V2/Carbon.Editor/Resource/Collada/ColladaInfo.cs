@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 
 using Carbon.Editor.Resource.Collada.Effect;
+using Carbon.Editor.Resource.Collada.General;
 using Carbon.Editor.Resource.Collada.Geometry;
 using Carbon.Engine.Resource.Resources;
 
@@ -20,6 +21,7 @@ namespace Carbon.Editor.Resource.Collada
     {
         private readonly List<ColladaMeshInfo> meshInfos;
         private readonly Dictionary<string, MaterialElement> materialInfo;
+        private readonly Dictionary<string, string> imageInfo;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -33,12 +35,14 @@ namespace Carbon.Editor.Resource.Collada
 
             this.meshInfos = new List<ColladaMeshInfo>();
             this.materialInfo = new Dictionary<string, MaterialElement>();
+            this.imageInfo = new Dictionary<string, string>();
 
             this.Source = file;
 
             using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 var model = ColladaModel.Load(stream);
+                this.BuildImageLibrary(model.ImageLibrary);
                 this.BuildMaterialLibrary(model.MaterialLibrary, model.EffectLibrary);
                 this.BuildMeshLibrary(model.GeometryLibrary);
             }
@@ -98,6 +102,11 @@ namespace Carbon.Editor.Resource.Collada
 
                 this.meshInfos.Add(info);
             }
+        }
+
+        private void BuildImageLibrary(ColladaImageLibrary images)
+        {
+            
         }
 
         private void BuildMaterialLibrary(ColladaMaterialLibrary materials, ColladaEffectLibrary effectLibrary)

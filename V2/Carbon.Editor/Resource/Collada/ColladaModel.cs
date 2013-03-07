@@ -17,6 +17,9 @@ namespace Carbon.Editor.Resource.Collada
         [XmlAttribute("version")]
         public string Version { get; set; }
 
+        [XmlElement(ElementName = "library_images")]
+        public ColladaImageLibrary ImageLibrary { get; set; }
+
         [XmlElement(ElementName = "library_effects")]
         public ColladaEffectLibrary EffectLibrary { get; set; }
 
