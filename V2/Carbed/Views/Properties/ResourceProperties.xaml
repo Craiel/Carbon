@@ -62,6 +62,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="Source Element" Margin="4" VerticalAlignment="Center"  />
@@ -70,14 +72,32 @@
                     <Button Click="OnClick" Content="{StaticResource IconClear}" IsEnabled="{Binding Path=SelectedItem, ElementName=elementComboBox, Converter={StaticResource NullToBooleanConverter}}" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 </StackPanel>
 
-                <TextBlock Text="Textures:" Margin="4" VerticalAlignment="Center" Grid.Row="1" />
-                <StackPanel Grid.Column="1" Margin="2" Orientation="Horizontal" Grid.Row="1">
+                <TextBlock Text="Texture source:" Margin="4" VerticalAlignment="Center" Grid.Row="1" />
+                <DockPanel Grid.Column="1" Margin="2" Orientation="Horizontal" Grid.Row="1">
+                    <Button Command="{Binding Path=CommandSelectTextureSourceFolder}" Content="..." DockPanel.Dock="Right" Width="20" Height="20"/>
+                    <TextBox Text="{Binding Path=TextureSourceFolder, Mode=OneWay}" MinWidth="60" IsReadOnly="True"/>
+                </DockPanel>
+                
+                <TextBlock Text="Texture target:" Margin="4" VerticalAlignment="Center" Grid.Row="2" />
+                <DockPanel Grid.Column="1" Margin="2" Orientation="Horizontal" Grid.Row="2">
+                    <Button Command="{Binding Path=CommandSelectTextureFolder}" Content="..." DockPanel.Dock="Right" Width="20" Height="20"/>
                     <TextBox Text="{Binding Path=TextureFolder.FullPath, Mode=OneWay}" MinWidth="60" IsReadOnly="True"/>
-                    <Button Command="{Binding Path=CommandSelectTextureFolder}" Content="..." Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                </StackPanel>
+                </DockPanel>
 
-                <TextBlock Text="AutoUpdate Textures" Grid.Row="2" Margin="4"/>
-                <CheckBox IsChecked="{Binding Path=AutoUpdateTextures}" Grid.Row="2" Grid.Column="1" Margin="4"/>
+                <TextBlock Text="AutoUpdate Textures" Grid.Row="3" Margin="4"/>
+                <CheckBox IsChecked="{Binding Path=AutoUpdateTextures}" Grid.Row="3" Grid.Column="1" Margin="4"/>
+                
+                <TextBlock Text="Texture Info: " Grid.Row="4" Margin="4"/>
+                <TextBlock Grid.Row="4" Grid.Column="1" Margin="4">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{} {0} N, {1} D, {2} U, {3} M">
+                            <Binding Path="TextureSynchronizer.NewTextures"/>
+                            <Binding Path="TextureSynchronizer.Deleted"/>
+                            <Binding Path="TextureSynchronizer.Synchronized"/>
+                            <Binding Path="TextureSynchronizer.Missing"/>
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
             </Grid>
         </Expander>
 

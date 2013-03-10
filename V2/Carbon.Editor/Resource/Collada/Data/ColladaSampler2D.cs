@@ -7,6 +7,6 @@ namespace Carbon.Editor.Resource.Collada.Data
     public class ColladaSampler2D
     {
         [XmlElement(ElementName = "source")]
-        public ColladaSource Source { get; set; }
+        public ColladaStringSource Source { get; set; }
     }
 }

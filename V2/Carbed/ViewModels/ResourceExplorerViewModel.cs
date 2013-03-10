@@ -24,6 +24,7 @@ namespace Carbed.ViewModels
             this.logic.ProjectChanged += this.OnProjectChanged;
 
             this.CommandSave = new RelayCommand(this.OnSave, this.CanSave);
+            this.CommandRefresh = new RelayCommand(this.OnRefresh);
             this.CommandAddFolder = new RelayCommand(this.OnAddFolder, this.CanAddFolder);
             this.CommandReload = new RelayCommand(this.OnReload, this.CanReload);
         }
@@ -53,6 +54,7 @@ namespace Carbed.ViewModels
         }
 
         public ICommand CommandSave { get; private set; }
+        public ICommand CommandRefresh { get; private set; }
         public ICommand CommandAddFolder { get; private set; }
         public ICommand CommandReload { get; private set; }
 
@@ -77,7 +79,26 @@ namespace Carbed.ViewModels
             foreach (IFolderViewModel folder in this.Folders)
             {
                 TaskProgress.CurrentMessage = folder.FullPath;
+                folder.CommandRefresh.Execute(obj);
                 folder.CommandSave.Execute(obj);
+                TaskProgress.CurrentProgress++;
+            }
+        }
+
+        private void OnRefresh(object obj)
+        {
+            TaskProgress.Message = "Refreshing Resource Status...";
+            new TaskProgress(new[] { new Task(() => this.DoRefresh(obj)) }, 1);
+        }
+
+        private void DoRefresh(object obj)
+        {
+            TaskProgress.CurrentProgress = 0;
+            TaskProgress.CurrentMaxProgress = this.Folders.Count;
+            foreach (IFolderViewModel folder in this.Folders)
+            {
+                TaskProgress.CurrentMessage = folder.FullPath;
+                folder.CommandRefresh.Execute(obj);
                 TaskProgress.CurrentProgress++;
             }
         }

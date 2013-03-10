@@ -90,6 +90,7 @@
     <Compile Include="Resource\Collada\Data\ColladaSampler2D.cs" />
     <Compile Include="Resource\Collada\Data\ColladaScale.cs" />
     <Compile Include="Resource\Collada\Data\ColladaSource.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaStringSource.cs" />
     <Compile Include="Resource\Collada\Data\ColladaSurface.cs" />
     <Compile Include="Resource\Collada\Data\ColladaTexture.cs" />
     <Compile Include="Resource\Collada\Data\ColladaTranslate.cs" />

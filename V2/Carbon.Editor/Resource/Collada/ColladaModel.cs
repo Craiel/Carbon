@@ -3,6 +3,7 @@ using System.IO;
 using System.Xml.Serialization;
 
 using Carbon.Editor.Resource.Collada.Effect;
+using Carbon.Editor.Resource.Collada.General;
 using Carbon.Editor.Resource.Collada.Geometry;
 using Carbon.Editor.Resource.Collada.Scene;
 

@@ -8,6 +8,7 @@ namespace Carbed.Contracts
         IReadOnlyCollection<IFolderViewModel> Folders { get; }
 
         ICommand CommandSave { get; }
+        ICommand CommandRefresh { get; }
         ICommand CommandAddFolder { get; }
         ICommand CommandReload { get; }
     }

@@ -69,6 +69,14 @@ namespace Carbon.Editor.Resource.Collada
             }
         }
 
+        public IReadOnlyDictionary<string, string> ImageInfos
+        {
+            get
+            {
+                return new ReadOnlyDictionary<string, string>(this.imageInfo);
+            }
+        }
+
         public static string GetUrlValue(string url)
         {
             if (!url.StartsWith("#"))
@@ -84,7 +92,7 @@ namespace Carbon.Editor.Resource.Collada
         // -------------------------------------------------------------------
         private void BuildMeshLibrary(ColladaGeometryLibrary library)
         {
-            meshInfos.Clear();
+            this.meshInfos.Clear();
 
             foreach (ColladaGeometry colladaGeometry in library.Geometries)
             {
@@ -106,7 +114,49 @@ namespace Carbon.Editor.Resource.Collada
 
         private void BuildImageLibrary(ColladaImageLibrary images)
         {
-            
+            this.imageInfo.Clear();
+            if (images == null || images.Images == null || images.Images.Length <= 0)
+            {
+                return;
+            }
+
+            foreach (ColladaImage image in images.Images)
+            {
+                this.imageInfo.Add(image.Id, image.InitFrom.Source);
+            }
+        }
+
+        private string ResolveEffectTexture(ColladaEffect effect, string initFromValue)
+        {
+            foreach (EffectParameter parameter in effect.ProfileCommon.Parameter)
+            {
+                if (parameter.Sid.Equals(initFromValue, StringComparison.OrdinalIgnoreCase))
+                {
+                    string key;
+                    if (parameter.Sampler2D != null)
+                    {
+                        return this.ResolveEffectTexture(effect, parameter.Sampler2D.Source.Content);
+                    }
+
+                    if (parameter.Surface != null)
+                    {
+                        key = parameter.Surface.InitFrom.Source;
+                    }
+                    else
+                    {
+                        return initFromValue;
+                    }
+
+                    if (this.imageInfo.ContainsKey(key))
+                    {
+                        return this.imageInfo[key];
+                    }
+
+                    break;
+                }
+            }
+
+            return initFromValue;
         }
 
         private void BuildMaterialLibrary(ColladaMaterialLibrary materials, ColladaEffectLibrary effectLibrary)
@@ -135,33 +185,33 @@ namespace Carbon.Editor.Resource.Collada
                 {
                     if (localTechnique.Phong.Diffuse.Texture != null)
                     {
-                        diffuseTexture = localTechnique.Phong.Diffuse.Texture.Texture;
+                        diffuseTexture = this.ResolveEffectTexture(effect, localTechnique.Phong.Diffuse.Texture.Texture);
                     }
 
                     if (localTechnique.Phong.Transparent != null)
                     {
-                        alphaTexture = localTechnique.Phong.Transparent.Texture.Texture;
+                        alphaTexture = this.ResolveEffectTexture(effect, localTechnique.Phong.Transparent.Texture.Texture);
                     }
                 }
                 else if (localTechnique.Lambert != null)
                 {
                     if (localTechnique.Lambert.Diffuse.Texture != null)
                     {
-                        diffuseTexture = localTechnique.Lambert.Diffuse.Texture.Texture;
+                        diffuseTexture = this.ResolveEffectTexture(effect, localTechnique.Lambert.Diffuse.Texture.Texture);
                     }
                 }
                 else if (localTechnique.Blinn != null)
                 {
                     if (localTechnique.Blinn.Diffuse.Texture != null)
                     {
-                        diffuseTexture = localTechnique.Blinn.Diffuse.Texture.Texture;
+                        diffuseTexture = this.ResolveEffectTexture(effect, localTechnique.Blinn.Diffuse.Texture.Texture);
                     }
                 }
 
                 if (localTechnique.Extra != null && localTechnique.Extra.Technique != null &&
                         localTechnique.Extra.Technique.Profile == "FCOLLADA")
                 {
-                    normalTexture = localTechnique.Extra.Technique.Bump.Texture.Texture;
+                    normalTexture = this.ResolveEffectTexture(effect, localTechnique.Extra.Technique.Bump.Texture.Texture);
                     if (normalTexture == diffuseTexture)
                     {
                         normalTexture = null;

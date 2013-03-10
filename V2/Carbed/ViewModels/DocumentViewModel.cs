@@ -19,6 +19,7 @@ namespace Carbed.ViewModels
         private ICommand commandSave;
         private ICommand commandClose;
         private ICommand commandDelete;
+        private ICommand commandRefresh;
         
         private bool isSelected;
 
@@ -119,6 +120,14 @@ namespace Carbed.ViewModels
             }
         }
 
+        public ICommand CommandRefresh
+        {
+            get
+            {
+                return this.commandRefresh ?? (this.commandRefresh = new RelayCommand(this.OnRefresh));
+            }
+        }
+
         public virtual void Load()
         {
         }
@@ -158,6 +167,10 @@ namespace Carbed.ViewModels
         }
 
         protected virtual void OnDelete(object arg)
+        {
+        }
+
+        protected virtual void OnRefresh(object arg)
         {
         }
 

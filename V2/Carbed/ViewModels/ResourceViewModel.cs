@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Windows;
@@ -35,6 +36,7 @@ namespace Carbed.ViewModels
 
         private IFolderViewModel parent;
         private IFolderViewModel textureFolder;
+        private ITextureSynchronizer textureSynchronizer;
 
         private long? sourceSize;
         private long? targetSize;
@@ -57,6 +59,8 @@ namespace Carbed.ViewModels
             this.resourceProcessor = factory.Get<IResourceProcessor>();
             this.data = data;
             this.sourceElements = new List<string>();
+            this.textureSynchronizer = factory.Get<ITextureSynchronizer>();
+            this.textureSynchronizer.PropertyChanged += this.OnTextureSynchronizerChanged;
 
             this.needReexport = data.IsNew;
         }
@@ -239,6 +243,23 @@ namespace Carbed.ViewModels
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.SourceElement, value);
                     this.needReexport = true;
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public ITextureSynchronizer TextureSynchronizer
+        {
+            get
+            {
+                return this.textureSynchronizer;
+            }
+
+            private set
+            {
+                if (this.textureSynchronizer != value)
+                {
+                    this.textureSynchronizer = value;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -486,9 +507,11 @@ namespace Carbed.ViewModels
             if (this.Type == ResourceType.Model)
             {
                 this.UpdateSourceElements();
-            }
 
-            this.textureFolder = this.logic.LocateFolder(this.GetMetaValue(MetaDataKey.TextureFolder));
+                this.textureFolder = this.logic.LocateFolder(this.GetMetaValue(MetaDataKey.TextureFolder));
+                this.textureSynchronizer.SetTarget(this.textureFolder);
+                this.textureSynchronizer.Refresh();
+            }
         }
 
         private void UpdateSourceElements()
@@ -508,6 +531,7 @@ namespace Carbed.ViewModels
                         try
                         {
                             this.colladaSourceInfo = new ColladaInfo(path);
+                            this.textureSynchronizer.SetSource(this.colladaSourceInfo);
                             foreach (ColladaMeshInfo meshInfo in this.colladaSourceInfo.MeshInfos)
                             {
                                 this.sourceElements.Add(meshInfo.Name);
@@ -546,6 +570,15 @@ namespace Carbed.ViewModels
 
             this.OnClose(null);
             this.logic.Delete(this);
+        }
+
+        protected override void OnRefresh(object arg)
+        {
+            this.textureSynchronizer.Refresh();
+            if (this.AutoUpdateTextures)
+            {
+                this.textureSynchronizer.Synchronize();
+            }
         }
 
         protected override object CreateMemento()
@@ -603,6 +636,7 @@ namespace Carbed.ViewModels
             if (dialog.ShowDialog() == true)
             {
                 this.TextureFolder = dialog.SelectedFolder;
+                this.textureSynchronizer.SetTarget(this.TextureFolder);
             }
         }
 
@@ -634,6 +668,11 @@ namespace Carbed.ViewModels
                         break;
                     }
             }
+        }
+
+        private void OnTextureSynchronizerChanged(object sender, PropertyChangedEventArgs e)
+        {
+            this.NotifyPropertyChanged("TextureSynchronizer");
         }
     }
 }

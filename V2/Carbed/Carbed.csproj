@@ -124,6 +124,7 @@
     <Compile Include="Contracts\IOperationProgress.cs" />
     <Compile Include="Contracts\IProjectViewModel.cs" />
     <Compile Include="Contracts\IResourceViewModel.cs" />
+    <Compile Include="Contracts\ITextureSynchronizer.cs" />
     <Compile Include="Contracts\IUndoRedoGroup.cs" />
     <Compile Include="Contracts\IUndoRedoManager.cs" />
     <Compile Include="Contracts\IViewModelFactory.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="Logic\MVVM\RelayCommand.cs" />
     <Compile Include="Logic\MVVM\TreeViewExtension.cs" />
     <Compile Include="Logic\ResourceExplorerTemplateSelector.cs" />
+    <Compile Include="Logic\TextureSynchronizer.cs" />
     <Compile Include="Logic\UndoRedoManager.cs" />
     <Compile Include="Ninject\ViewModelFactory.cs" />
     <Compile Include="StaticResources.cs" />

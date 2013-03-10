@@ -35,6 +35,8 @@ namespace Carbed.Ninject
 
                 this.Bind<IMainViewModel>().To<MainViewModel>().InSingletonScope();
 
+                this.Bind<ITextureSynchronizer>().To<TextureSynchronizer>();
+
                 // Document views
                 this.Bind<IProjectViewModel>().To<ProjectViewModel>();
                 this.Bind<IFolderViewModel>().To<FolderViewModel>();

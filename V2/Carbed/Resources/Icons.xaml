@@ -13,6 +13,7 @@
     <Image Width="24" x:Key="IconClear" Source="{Binding Source={x:Static carbed:StaticResources.ClearIconUri}}"/>
     <Image Width="24" x:Key="IconSave" Source="{Binding Source={x:Static carbed:StaticResources.SaveIconUri}}"/>
     <Image Width="24" x:Key="IconDelete" Source="{Binding Source={x:Static carbed:StaticResources.DeleteIconUri}}"/>
+    <Image Width="24" x:Key="IconRefresh" Source="{Binding Source={x:Static carbed:StaticResources.RefreshIconUri}}"/>
     <Image Width="24" x:Key="IconExit" Source="{Binding Source={x:Static carbed:StaticResources.ExitIconUri}}"/>
     <Image Width="24" x:Key="IconTool" Source="{Binding Source={x:Static carbed:StaticResources.ToolIconUri}}"/>
     <Image Width="24" x:Key="IconUndo" Source="{Binding Source={x:Static carbed:StaticResources.UndoIconUri}}"/>

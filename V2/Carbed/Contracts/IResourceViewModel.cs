@@ -27,6 +27,8 @@ namespace Carbed.Contracts
         ReadOnlyCollection<string> SourceElements { get; }
         string SelectedSourceElement { get; set; }
 
+        ITextureSynchronizer TextureSynchronizer { get; }
+
         DateTime? LastChangeDate { get; }
 
         IFolderViewModel Parent { get; set; }

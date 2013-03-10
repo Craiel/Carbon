@@ -418,6 +418,14 @@ namespace Carbed.ViewModels
 
             this.logic.Delete(this);
         }
+
+        protected override void OnRefresh(object arg)
+        {
+            foreach (ICarbedDocument document in this.content)
+            {
+                document.CommandRefresh.Execute(arg);
+            }
+        }
         
         // -------------------------------------------------------------------
         // Private
