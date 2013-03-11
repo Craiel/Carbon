@@ -31,6 +31,7 @@ namespace Carbed.Ninject
                 this.Bind<IUndoRedoManager>().To<UndoRedoManager>().InSingletonScope();
                 this.Bind<ICarbedLogic>().To<CarbedLogic>().InSingletonScope();
                 this.Bind<ICarbedLog>().To<CarbedLog>().InSingletonScope();
+                this.Bind<ICarbedSettings>().To<CarbedSettings>().InSingletonScope();
                 this.Bind<IViewModelFactory>().To<ViewModelFactory>().InSingletonScope();
 
                 this.Bind<IMainViewModel>().To<MainViewModel>().InSingletonScope();

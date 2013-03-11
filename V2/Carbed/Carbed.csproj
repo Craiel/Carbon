@@ -136,6 +136,7 @@
     <Compile Include="Logic\CarbedBase.cs" />
     <Compile Include="Logic\CarbedLogic.cs" />
     <Compile Include="Logic\CarbedLog.cs" />
+    <Compile Include="Logic\CarbedSettings.cs" />
     <Compile Include="Logic\MVVM\CommandReference.cs" />
     <Compile Include="Logic\MVVM\Converters.cs" />
     <Compile Include="Logic\Docking\ActiveDocumentConverter.cs" />

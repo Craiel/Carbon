@@ -22,6 +22,7 @@ namespace Carbed.Logic
         private readonly IEngineFactory engineFactory;
         private readonly ILog log;
         private readonly IViewModelFactory viewModelFactory;
+        private readonly ICarbedSettings settings;
 
         private readonly List<IMaterialViewModel> materials;
         private readonly List<IFolderViewModel> folders;
@@ -40,6 +41,7 @@ namespace Carbed.Logic
             this.engineFactory = factory;
             this.log = factory.Get<ICarbedLog>().AquireContextLog("Logic");
             this.viewModelFactory = factory.Get<IViewModelFactory>();
+            this.settings = factory.Get<ICarbedSettings>();
 
             this.materials = new List<IMaterialViewModel>();
             this.folders = new List<IFolderViewModel>();

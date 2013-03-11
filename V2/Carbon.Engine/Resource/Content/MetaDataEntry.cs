@@ -10,6 +10,8 @@
         SourceElement = 14,
         TargetMd5 = 15,
         TextureFolder = 16,
+        ResourceFlags = 17,
+        TextureTargetFormat = 18,
     }
 
     public enum MetaDataTargetEnum

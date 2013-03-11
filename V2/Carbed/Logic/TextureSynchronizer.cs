@@ -16,6 +16,8 @@ namespace Carbed.Logic
         private readonly IList<string> synchronizedFiles;
         private readonly IList<string> missingFiles;
 
+        private readonly ICarbedLogic logic;
+
         private int synchronized;
 
         private IFolderViewModel target;
@@ -24,8 +26,10 @@ namespace Carbed.Logic
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public TextureSynchronizer()
+        public TextureSynchronizer(ICarbedLogic logic)
         {
+            this.logic = logic;
+
             this.queuedForAdd = new List<string>();
             this.queuedForDelete = new List<IResourceViewModel>();
             this.synchronizedFiles = new List<string>();
@@ -147,7 +151,12 @@ namespace Carbed.Logic
 
             IList<IResourceViewModel> targetResources = this.target.Content.Where(carbedDocument => carbedDocument as IResourceViewModel != null).Cast<IResourceViewModel>().ToList();
             IList<IResourceViewModel> targetResourcesFound = new List<IResourceViewModel>();
-            IList<string> resources = this.source.ImageInfos.Values.Select(path => System.IO.Path.Combine(sourcePath, path)).ToList();
+            IList<string> resources = new List<string>();
+            foreach (string file in this.source.ImageInfos.Values)
+            {
+                resources.Add(System.IO.Path.Combine(sourcePath, Uri.UnescapeDataString(file)));
+            }
+
             foreach (string resource in resources)
             {
                 bool found = false;
@@ -188,7 +197,23 @@ namespace Carbed.Logic
 
         public void Synchronize()
         {
-            throw new System.NotImplementedException();
+            foreach (string file in this.queuedForAdd)
+            {
+                IResourceViewModel viewModel = this.logic.AddResource();
+                viewModel.SelectFile(file);
+                this.target.AddContent(viewModel);
+                this.synchronizedFiles.Add(file);
+            }
+            this.queuedForAdd.Clear();
+
+            foreach (IResourceViewModel viewModel in this.queuedForDelete)
+            {
+                this.logic.Delete(viewModel);
+            }
+
+            this.queuedForDelete.Clear();
+
+            this.NotifyPropertyChanged();
         }
     }
 }

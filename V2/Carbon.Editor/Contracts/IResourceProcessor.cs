@@ -1,12 +1,15 @@
-﻿using Carbon.Editor.Resource.Collada;
+﻿using Carbon.Editor.Processors;
+using Carbon.Editor.Resource.Collada;
 using Carbon.Engine.Resource.Resources;
 
 namespace Carbon.Editor.Contracts
 {
     public interface IResourceProcessor
     {
-        RawResource ProcessRaw(string path);
+        string TextureToolsPath { get; set; }
 
+        RawResource ProcessRaw(string path);
+        RawResource ProcessTexture(string path, TextureTargetFormat format = TextureTargetFormat.DDSDxt1, bool isNormalMap = false, bool hasAlpha = false);
         ModelResource ProcessModel(ColladaInfo info, string element);
     }
 }

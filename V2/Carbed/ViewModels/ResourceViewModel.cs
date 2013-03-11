@@ -12,6 +12,7 @@ using Carbed.Logic.MVVM;
 using Carbed.Views;
 
 using Carbon.Editor.Contracts;
+using Carbon.Editor.Processors;
 using Carbon.Editor.Resource.Collada;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Resource;
@@ -24,6 +25,15 @@ using Microsoft.Win32;
 
 namespace Carbed.ViewModels
 {
+    internal enum ResourceToolFlags
+    {
+        AlwaysForceExport = 0,
+        AutoUpdateTextures = 1,
+
+        CompressTexture = 2,
+        IsNormalMap = 3,
+    }
+
     public class ResourceViewModel : ContentViewModel, IResourceViewModel
     {
         private readonly ICarbedLogic logic;
@@ -44,9 +54,7 @@ namespace Carbed.ViewModels
         private string oldHash;
 
         private bool needReexport;
-        private bool forceExport;
-        private bool autoUpdateTextures;
-
+        
         private ColladaInfo colladaSourceInfo;
         
         // -------------------------------------------------------------------
@@ -81,6 +89,14 @@ namespace Carbed.ViewModels
             get
             {
                 return this.data.Id;
+            }
+        }
+
+        public string Hash
+        {
+            get
+            {
+                return this.data.Hash;
             }
         }
 
@@ -167,14 +183,15 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return this.forceExport;
+                return this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.AlwaysForceExport) ?? false;
             }
 
             set
             {
-                if (this.forceExport != value)
+                if (this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.AlwaysForceExport) != value)
                 {
-                    this.forceExport = value;
+                    this.CreateUndoState();
+                    this.SetMetaBitValue(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.AlwaysForceExport, value);
                     this.NotifyPropertyChanged();
                 }
             }
@@ -184,14 +201,74 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return this.autoUpdateTextures;
+                return this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.AutoUpdateTextures) ?? false;
             }
 
             set
             {
-                if (this.autoUpdateTextures != value)
+                if (this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.AutoUpdateTextures) != value)
                 {
-                    this.autoUpdateTextures = value;
+                    this.CreateUndoState();
+                    this.SetMetaBitValue(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.AutoUpdateTextures, value);
+                    this.needReexport = true;
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public bool CompressTexture
+        {
+            get
+            {
+                return this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.CompressTexture) ?? false;
+            }
+
+            set
+            {
+                if (this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.CompressTexture) != value)
+                {
+                    this.CreateUndoState();
+                    this.SetMetaBitValue(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.CompressTexture, value);
+                    this.needReexport = true;
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public bool IsNormalMap
+        {
+            get
+            {
+                return this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.IsNormalMap) ?? false;
+            }
+
+            set
+            {
+                if (this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.IsNormalMap) != value)
+                {
+                    this.CreateUndoState();
+                    this.SetMetaBitValue(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.IsNormalMap, value);
+                    this.needReexport = true;
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public TextureTargetFormat TextureTargetFormat
+        {
+            get
+            {
+                long value = this.GetMetaValueInt(MetaDataKey.TextureTargetFormat) ?? 0;
+                return (TextureTargetFormat)value;
+            }
+
+            set
+            {
+                if (this.GetMetaValueInt(MetaDataKey.TextureTargetFormat) != (int)value)
+                {
+                    this.CreateUndoState();
+                    this.SetMetaValue(MetaDataKey.TextureTargetFormat, (int)value);
+                    this.needReexport = true;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -377,11 +454,36 @@ namespace Carbed.ViewModels
             this.data.TreeNode = this.parent.Id;
             this.data.Hash = HashUtils.BuildResourceHash(Path.Combine(this.parent.FullPath, this.Name));
 
-            if (this.needReexport || this.forceExport)
+            bool force = this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.AlwaysForceExport) ?? false;
+            if (this.needReexport || force)
             {
                 switch (this.data.Type)
                 {
                     case ResourceType.Texture:
+                        {
+                            ICarbonResource resource;
+                            if (!this.CompressTexture)
+                            {
+                                resource = this.resourceProcessor.ProcessRaw(source);
+                            }
+                            else
+                            {
+                                resource = this.resourceProcessor.ProcessTexture(source, this.TextureTargetFormat, this.IsNormalMap);
+                            }
+                            
+                            if (resource != null)
+                            {
+                                resourceTarget.StoreOrReplace(this.data.Hash, resource);
+                                this.needReexport = false;
+                            }
+                            else
+                            {
+                                this.Log.Error("Failed to export raw resource {0}", null, this.SourcePath);
+                            }
+
+                            break;
+                        }
+
                     case ResourceType.Raw:
                         {
                             ICarbonResource resource = this.resourceProcessor.ProcessRaw(source);
@@ -389,13 +491,12 @@ namespace Carbed.ViewModels
                             {
                                 resourceTarget.StoreOrReplace(this.data.Hash, resource);
                                 this.needReexport = false;
-                                this.forceExport = false;
                             }
                             else
                             {
                                 this.Log.Error("Failed to export raw resource {0}", null, this.SourcePath);
                             }
-                            
+
                             break;
                         }
 
@@ -411,13 +512,12 @@ namespace Carbed.ViewModels
                             {
                                 resourceTarget.StoreOrReplace(this.data.Hash, resource);
                                 this.needReexport = false;
-                                this.forceExport = false;
                             }
                             else
                             {
                                 this.Log.Error("Failed to export Model resource {0}, with target {1}", null, this.SourcePath, this.SelectedSourceElement);
                             }
-                            
+
                             break;
                         }
 
@@ -570,6 +670,14 @@ namespace Carbed.ViewModels
 
             this.OnClose(null);
             this.logic.Delete(this);
+
+            if (this.Type == ResourceType.Model)
+            {
+                if (this.AutoUpdateTextures && this.TextureFolder != null)
+                {
+                    this.logic.Delete(this.TextureFolder);
+                }
+            }
         }
 
         protected override void OnRefresh(object arg)
@@ -653,6 +761,17 @@ namespace Carbed.ViewModels
                 case ".dds":
                     {
                         this.Type = ResourceType.Texture;
+                        this.CompressTexture = false;
+                        break;
+                    }
+
+                case ".png":
+                case ".tif":
+                case ".jpg":
+                    {
+                        this.Type = ResourceType.Texture;
+                        this.CompressTexture = true;
+                        this.TextureTargetFormat = TextureTargetFormat.DDSDxt1;
                         break;
                     }
 

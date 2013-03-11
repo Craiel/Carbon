@@ -2,6 +2,7 @@
 using System.IO;
 
 using Carbon.Editor.Contracts;
+using Carbon.Editor.Processors;
 using Carbon.Editor.Resource.Collada;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Resource.Resources;
@@ -20,6 +21,19 @@ namespace Carbon.Editor.Logic
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public string TextureToolsPath
+        {
+            get
+            {
+                return TextureProcessor.TextureToolsPath;
+            }
+
+            set
+            {
+                TextureProcessor.TextureToolsPath = value;
+            }
+        }
+
         public RawResource ProcessRaw(string path)
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
@@ -33,6 +47,11 @@ namespace Carbon.Editor.Logic
                 resource.Load(stream);
                 return resource;
             }
+        }
+
+        public RawResource ProcessTexture(string path, TextureTargetFormat format = TextureTargetFormat.DDSDxt1, bool isNormalMap = false, bool hasAlpha = false)
+        {
+            return TextureProcessor.Process(path, format, isNormalMap, hasAlpha);
         }
 
         public ModelResource ProcessModel(ColladaInfo info, string element)

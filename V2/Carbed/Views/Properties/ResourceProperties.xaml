@@ -115,6 +115,30 @@
             </Grid>
         </Expander>
 
+        <Expander Header="Texture options" IsExpanded="True" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverter}, ConverterParameter={x:Static content:ResourceType.Texture}}" Margin="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Is Normal Map" Margin="4"/>
+                <CheckBox IsChecked="{Binding Path=IsNormalMap}" Grid.Column="1" Margin="4"/>
+                
+                <TextBlock Text="Compress Texture" Grid.Row="1" Margin="4"/>
+                <CheckBox IsChecked="{Binding Path=CompressTexture}" x:Name="compressTextureCheckbox" Grid.Row="1" Grid.Column="1" Margin="4"/>
+
+
+                <TextBlock Text="Compression Format" Grid.Row="2" Margin="4"/>
+                <ComboBox ItemsSource="{Binding Source={StaticResource TextureTargetFormat}}" SelectedItem="{Binding Path=TextureTargetFormat}" IsEnabled="{Binding ElementName=compressTextureCheckbox, Path=IsChecked}" Grid.Row="2" Grid.Column="1" Margin="4"/>
+            </Grid>
+        </Expander>
+
         <Expander Header="Target Information" IsExpanded="True" Margin="2">
             <Grid>
                 <Grid.ColumnDefinitions>

@@ -421,7 +421,8 @@ namespace Carbed.ViewModels
 
         protected override void OnRefresh(object arg)
         {
-            foreach (ICarbedDocument document in this.content)
+            IList<ICarbedDocument> refreshList = new List<ICarbedDocument>(this.content);
+            foreach (ICarbedDocument document in refreshList)
             {
                 document.CommandRefresh.Execute(arg);
             }

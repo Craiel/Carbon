@@ -254,6 +254,17 @@ namespace Carbed.ViewModels
             return null;
         }
 
+        protected bool? GetMetaValueBit(MetaDataKey key, int bitNumber)
+        {
+            if (this.metaData.ContainsKey(key) && this.metaData[key] != null)
+            {
+                long bitValue = 1 << bitNumber;
+                return (this.metaData[key].ValueLong & bitValue) != 0;
+            }
+
+            return null;
+        }
+
         protected void SetMetaValue(MetaDataKey key, string value)
         {
             if (!this.metaData.ContainsKey(key))
@@ -282,6 +293,29 @@ namespace Carbed.ViewModels
             }
 
             this.metaData[key].ValueLong = value;
+        }
+
+        protected void SetMetaBitValue(MetaDataKey key, int bitNumber, bool value)
+        {
+            if (!this.metaData.ContainsKey(key))
+            {
+                this.metaData[key] = new MetaDataEntry { Key = key, Target = this.data.MetaDataTarget, ValueLong = 0 };
+            }
+
+            if (this.metaData[key].ValueLong == null)
+            {
+                this.metaData[key].ValueLong = 0;
+            }
+
+            long bitValue = 1 << bitNumber;
+            if (value)
+            {
+                this.metaData[key].ValueLong |= bitValue;
+            }
+            else
+            {
+                this.metaData[key].ValueLong ^= bitValue;
+            }
         }
     }
 }
