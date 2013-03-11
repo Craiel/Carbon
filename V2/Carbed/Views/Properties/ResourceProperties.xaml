@@ -60,10 +60,6 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="Source Element" Margin="4" VerticalAlignment="Center"  />
@@ -71,33 +67,51 @@
                     <ComboBox x:Name="elementComboBox" MinWidth="60" ItemsSource="{Binding Path=SourceElements}" SelectedItem="{Binding Path=SelectedSourceElement}"/>
                     <Button Click="OnClick" Content="{StaticResource IconClear}" IsEnabled="{Binding Path=SelectedItem, ElementName=elementComboBox, Converter={StaticResource NullToBooleanConverter}}" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                 </StackPanel>
+            </Grid>
+        </Expander>
 
-                <TextBlock Text="Texture source:" Margin="4" VerticalAlignment="Center" Grid.Row="1" />
-                <DockPanel Grid.Column="1" Margin="2" Orientation="Horizontal" Grid.Row="1">
+        <Expander Header="Texture Conversion options" IsExpanded="True" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverter}, ConverterParameter={x:Static content:ResourceType.Model}}" Margin="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Source Folder:" Margin="4" VerticalAlignment="Center" />
+                <DockPanel Grid.Column="1" Margin="2">
                     <Button Command="{Binding Path=CommandSelectTextureSourceFolder}" Content="..." DockPanel.Dock="Right" Width="20" Height="20"/>
                     <TextBox Text="{Binding Path=TextureSourceFolder, Mode=OneWay}" MinWidth="60" IsReadOnly="True"/>
                 </DockPanel>
-                
-                <TextBlock Text="Texture target:" Margin="4" VerticalAlignment="Center" Grid.Row="2" />
-                <DockPanel Grid.Column="1" Margin="2" Orientation="Horizontal" Grid.Row="2">
+
+                <TextBlock Text="Target Folder:" Margin="4" VerticalAlignment="Center" Grid.Row="1" />
+                <DockPanel Grid.Column="1" Margin="2" Grid.Row="1">
                     <Button Command="{Binding Path=CommandSelectTextureFolder}" Content="..." DockPanel.Dock="Right" Width="20" Height="20"/>
                     <TextBox Text="{Binding Path=TextureFolder.FullPath, Mode=OneWay}" MinWidth="60" IsReadOnly="True"/>
                 </DockPanel>
 
-                <TextBlock Text="AutoUpdate Textures" Grid.Row="3" Margin="4"/>
-                <CheckBox IsChecked="{Binding Path=AutoUpdateTextures}" Grid.Row="3" Grid.Column="1" Margin="4"/>
-                
-                <TextBlock Text="Texture Info: " Grid.Row="4" Margin="4"/>
-                <TextBlock Grid.Row="4" Grid.Column="1" Margin="4">
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="{} {0} N, {1} D, {2} U, {3} M">
-                            <Binding Path="TextureSynchronizer.NewTextures"/>
-                            <Binding Path="TextureSynchronizer.Deleted"/>
-                            <Binding Path="TextureSynchronizer.Synchronized"/>
-                            <Binding Path="TextureSynchronizer.Missing"/>
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
+                <TextBlock Text="AutoUpdate" Grid.Row="2" Margin="4"/>
+                <CheckBox IsChecked="{Binding Path=AutoUpdateTextures}" Grid.Row="2" Grid.Column="1" Margin="4"/>
+
+                <TextBlock Text="Synchronized: " Grid.Row="3" Margin="4"/>
+                <TextBlock Text="{Binding Path=TextureSynchronizer.Synchronized}" Grid.Row="3" Grid.Column="1" Margin="4" ToolTip="{Binding Path=TextureSynchronizer.SynchronizedTextList}" Foreground="Green"/>
+
+                <TextBlock Text="New: " Grid.Row="4" Margin="4"/>
+                <TextBlock Text="{Binding Path=TextureSynchronizer.NewTextures}" Grid.Row="4" Grid.Column="1" Margin="4" ToolTip="{Binding Path=TextureSynchronizer.NewTextList}"/>
+
+                <TextBlock Text="Deleted: " Grid.Row="5" Margin="4"/>
+                <TextBlock Text="{Binding Path=TextureSynchronizer.Deleted}" Grid.Row="5" Grid.Column="1" Margin="4" ToolTip="{Binding Path=TextureSynchronizer.DeletedTextList}"/>
+
+                <TextBlock Text="Missing: " Grid.Row="6" Margin="4"/>
+                <TextBlock Text="{Binding Path=TextureSynchronizer.Missing}" Grid.Row="6" Grid.Column="1" Margin="4" ToolTip="{Binding Path=TextureSynchronizer.MissingTextList}" Foreground="Red"/>
             </Grid>
         </Expander>
 
@@ -115,10 +129,10 @@
 
                 <TextBlock Text="Id:" Margin="4" />
                 <TextBlock Text="{Binding Path=Id}" Grid.Column="1" Margin="4, 2, 2, 2"/>
-                
+
                 <TextBlock Text="Hash:" Margin="4" Grid.Row="1"/>
                 <TextBlock Text="{Binding Path=Hash}" Grid.Row="1" Grid.Column="1" Margin="4, 2, 2, 2"/>
-                
+
                 <TextBlock Text="Size:" Margin="4" Grid.Row="2"/>
                 <TextBlock Text="{Binding Path=TargetSize, StringFormat='{}{0:N0} bytes'}" Grid.Row="2" Grid.Column="1" Margin="4, 2, 2, 2"/>
             </Grid>

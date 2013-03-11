@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using Carbed.Contracts;
 
@@ -12,6 +13,7 @@ namespace Carbed.Logic
     {
         private readonly IList<string> queuedForAdd;
         private readonly IList<IResourceViewModel> queuedForDelete;
+        private readonly IList<string> synchronizedFiles;
         private readonly IList<string> missingFiles;
 
         private int synchronized;
@@ -26,6 +28,7 @@ namespace Carbed.Logic
         {
             this.queuedForAdd = new List<string>();
             this.queuedForDelete = new List<IResourceViewModel>();
+            this.synchronizedFiles = new List<string>();
             this.missingFiles = new List<string>();
         }
 
@@ -70,6 +73,39 @@ namespace Carbed.Logic
             get
             {
                 return this.missingFiles.Count;
+            }
+        }
+
+        public string SynchronizedTextList
+        {
+            get
+            {
+                return string.Join(Environment.NewLine, this.synchronizedFiles);
+            }
+        }
+
+        public string NewTextList
+        {
+            get
+            {
+                return string.Join(Environment.NewLine, this.queuedForAdd);
+            }
+        }
+
+        public string DeletedTextList
+        {
+            get
+            {
+                IList<string> deleteList = this.queuedForDelete.Select(viewModel => viewModel.SourcePath).ToList();
+                return string.Join(Environment.NewLine, deleteList);
+            }
+        }
+
+        public string MissingTextList
+        {
+            get
+            {
+                return string.Join(Environment.NewLine, this.missingFiles);
             }
         }
 
@@ -120,6 +156,7 @@ namespace Carbed.Logic
                     if (resourceViewModel.SourcePath.Equals(resource, StringComparison.OrdinalIgnoreCase))
                     {
                         found = true;
+                        this.synchronizedFiles.Add(resource);
                         targetResourcesFound.Add(resourceViewModel);
                         break;
                     }
