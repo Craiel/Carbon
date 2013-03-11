@@ -338,10 +338,17 @@ namespace Carbon.Editor.Resource.Collada
                     return null;
                 }
 
-                meshLibrary[targetNode].Offset = sceneNode.Translation.ToVector3()[0];
-                meshLibrary[targetNode].Scale = sceneNode.Scale.ToVector3()[0];
-                meshLibrary[targetNode].Rotation = GetNodeRotation(sceneNode);
+                if (sceneNode.Translation != null)
+                {
+                    meshLibrary[targetNode].Offset = sceneNode.Translation.ToVector3()[0];
+                }
 
+                meshLibrary[targetNode].Scale = sceneNode.Scale != null ? sceneNode.Scale.ToVector3()[0] : new Vector3(1);
+
+                if (sceneNode.Rotations != null)
+                {
+                    meshLibrary[targetNode].Rotation = GetNodeRotation(sceneNode);
+                }
 
                 if (sceneNode.Children != null && sceneNode.Children.Length > 0)
                 {

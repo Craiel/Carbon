@@ -105,6 +105,7 @@
     <Compile Include="Contracts\Carbed.cs" />
     <Compile Include="Contracts\ICarbedBase.cs" />
     <Compile Include="Contracts\ICarbedDocument.cs" />
+    <Compile Include="Contracts\ICarbedSettings.cs" />
     <Compile Include="Contracts\IContentExplorerViewModel.cs" />
     <Compile Include="Contracts\IDocumentMemento.cs" />
     <Compile Include="Contracts\IDocumentTemplate.cs" />
@@ -388,7 +389,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)..\CarbonExt\sqllite 1.0.84.0\x64\Deploy.bat" $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)..\CarbonExt\sqllite 1.0.84.0\x64\Deploy.bat" $(TargetDir) &amp;&amp; "$(SolutionDir)..\CarbonExt\nvidia-texture-tools 2.0.8-1\bin\Deploy.bat" $(TargetDir)\TexTools\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
