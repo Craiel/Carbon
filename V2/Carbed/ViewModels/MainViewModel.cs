@@ -42,12 +42,13 @@ namespace Carbed.ViewModels
 
         private readonly List<IDocumentTemplate> documentTemplates;
         private readonly List<IDocumentTemplateCategory> documentTemplateCategories;
-        
+
         private string currentProjectFile;
 
         private bool isClosing;
 
         private IProjectViewModel projectViewModel;
+        private ICarbedSettingsViewModel settingsViewModel;
 
         private ICarbedDocument activeDocument;
 
@@ -94,6 +95,7 @@ namespace Carbed.ViewModels
             this.CommandOpenProperties = new RelayCommand(this.OnShowProperties);
             this.CommandOpenNewDialog = new RelayCommand(this.OnNewDialog);
             this.CommandReload = new RelayCommand(this.OnReload, this.CanReload);
+            this.CommandOpenSettings = new RelayCommand(this.OnShowSettings);
             
             this.eventRelay.Subscribe<EventWindowClosing>(this.OnMainWindowClosing);
             
@@ -235,6 +237,7 @@ namespace Carbed.ViewModels
         public ICommand CommandOpenMaterialExplorer { get; private set; }
         public ICommand CommandOpenProperties { get; private set; }
         public ICommand CommandOpenNewDialog { get; private set; }
+        public ICommand CommandOpenSettings { get; private set; }
 
         public void OpenDocument(ICarbedDocument document)
         {
@@ -488,8 +491,29 @@ namespace Carbed.ViewModels
             if (vm == null)
             {
                 vm = this.factory.Get<IPropertyViewModel>();
-                this.ToolWindows.Add(vm);
             }
+
+            if (this.ToolWindows.Contains(vm))
+            {
+                return;
+            }
+
+            this.ToolWindows.Add(vm);
+        }
+
+        private void OnShowSettings(object obj)
+        {
+            if (this.settingsViewModel == null)
+            {
+                this.settingsViewModel = this.factory.Get<ICarbedSettingsViewModel>();
+            }
+
+            if (this.Documents.Contains(this.settingsViewModel))
+            {
+                return;
+            }
+
+            this.Documents.Add(this.settingsViewModel);
         }
 
         private void LoadDocumentTemplates()

@@ -22,6 +22,8 @@ namespace Carbon.Editor.Resource.Collada
         private readonly List<ColladaMeshInfo> meshInfos;
         private readonly Dictionary<string, MaterialElement> materialInfo;
         private readonly Dictionary<string, string> imageInfo;
+        private readonly List<string> normalImages;
+        private readonly Dictionary<string, string> colorToNormalImages;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -36,6 +38,8 @@ namespace Carbon.Editor.Resource.Collada
             this.meshInfos = new List<ColladaMeshInfo>();
             this.materialInfo = new Dictionary<string, MaterialElement>();
             this.imageInfo = new Dictionary<string, string>();
+            this.normalImages = new List<string>();
+            this.colorToNormalImages = new Dictionary<string, string>();
 
             this.Source = file;
 
@@ -74,6 +78,22 @@ namespace Carbon.Editor.Resource.Collada
             get
             {
                 return new ReadOnlyDictionary<string, string>(this.imageInfo);
+            }
+        }
+
+        public IReadOnlyCollection<string> NormalImages
+        {
+            get
+            {
+                return this.normalImages.AsReadOnly();
+            }
+        }
+
+        public IReadOnlyDictionary<string, string> ColorToNormalImages
+        {
+            get
+            {
+                return new ReadOnlyDictionary<string, string>(this.colorToNormalImages);
             }
         }
 
@@ -212,9 +232,18 @@ namespace Carbon.Editor.Resource.Collada
                         localTechnique.Extra.Technique.Profile == "FCOLLADA")
                 {
                     normalTexture = this.ResolveEffectTexture(effect, localTechnique.Extra.Technique.Bump.Texture.Texture);
-                    if (normalTexture == diffuseTexture)
+                    if (normalTexture != null)
                     {
-                        normalTexture = null;
+                        if (normalTexture == diffuseTexture)
+                        {
+                            string normalName = string.Concat(Path.GetFileNameWithoutExtension(normalTexture), "_N", Path.GetExtension(normalTexture));
+                            this.colorToNormalImages.Add(normalName, normalTexture);
+                            normalTexture = normalName;
+                        }
+                        else
+                        {
+                            this.normalImages.Add(normalTexture);
+                        }
                     }
                 }
 

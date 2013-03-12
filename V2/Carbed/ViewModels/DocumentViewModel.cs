@@ -38,6 +38,7 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public abstract string Title { get; }
         public abstract string Name { get; set; }
 
         public virtual bool IsNamed

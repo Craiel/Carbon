@@ -39,6 +39,7 @@ namespace Carbed.Ninject
                 this.Bind<ITextureSynchronizer>().To<TextureSynchronizer>();
 
                 // Document views
+                this.Bind<ICarbedSettingsViewModel>().To<CarbedSettingsViewModel>();
                 this.Bind<IProjectViewModel>().To<ProjectViewModel>();
                 this.Bind<IFolderViewModel>().To<FolderViewModel>();
                 this.Bind<IFontViewModel>().To<FontViewModel>();

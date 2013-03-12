@@ -5,6 +5,7 @@ namespace Carbed.Contracts
 {
     public interface ICarbedDocument : ICarbedBase
     {
+        string Title { get; }
         string Name { get; set; }
 
         bool IsNamed { get; }

@@ -106,6 +106,7 @@
     <Compile Include="Contracts\ICarbedBase.cs" />
     <Compile Include="Contracts\ICarbedDocument.cs" />
     <Compile Include="Contracts\ICarbedSettings.cs" />
+    <Compile Include="Contracts\ICarbedSettingsViewModel.cs" />
     <Compile Include="Contracts\IContentExplorerViewModel.cs" />
     <Compile Include="Contracts\IDocumentMemento.cs" />
     <Compile Include="Contracts\IDocumentTemplate.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Logic\Docking\PanesTemplateSelector.cs" />
     <Compile Include="Logic\DocumentTemplate.cs" />
     <Compile Include="Logic\Docking\DocumentTemplateCategory.cs" />
+    <Compile Include="Logic\MVVM\DynamicBasedOn.cs" />
     <Compile Include="Logic\MVVM\FreezableBinding.cs" />
     <Compile Include="Logic\MVVM\ListBoxSelectionSynchronization.cs" />
     <Compile Include="Logic\MVVM\OneWayBinding.cs" />
@@ -156,6 +158,7 @@
     <Compile Include="Logic\UndoRedoManager.cs" />
     <Compile Include="Ninject\ViewModelFactory.cs" />
     <Compile Include="StaticResources.cs" />
+    <Compile Include="ViewModels\CarbedSettingsViewModel.cs" />
     <Compile Include="ViewModels\ContentExplorerViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
     <Compile Include="ViewModels\MaterialViewModel.cs" />
@@ -171,6 +174,9 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModel.cs" />
     <Compile Include="ViewModels\ToolViewModel.cs" />
+    <Compile Include="Views\CarbedSettingsView.xaml.cs">
+      <DependentUpon>CarbedSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MaterialExplorerView.xaml.cs">
       <DependentUpon>MaterialExplorerView.xaml</DependentUpon>
     </Compile>
@@ -275,6 +281,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CarbedSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

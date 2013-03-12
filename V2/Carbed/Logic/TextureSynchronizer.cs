@@ -1,41 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using Carbed.Contracts;
 
 using Carbon.Editor.Resource.Collada;
+using Carbon.Engine.Contracts;
 
 namespace Carbed.Logic
 {
     using System.Windows;
 
+    internal struct SynchronizationEntry
+    {
+        public string Name;
+        public string File;
+
+        public bool IsNormal;
+        public bool ToNormal;
+    }
+
     public class TextureSynchronizer : CarbedBase, ITextureSynchronizer
     {
-        private readonly IList<string> queuedForAdd;
+        private readonly IList<SynchronizationEntry> queuedForAdd;
         private readonly IList<IResourceViewModel> queuedForDelete;
-        private readonly IList<string> synchronizedFiles;
-        private readonly IList<string> missingFiles;
+        private readonly IList<SynchronizationEntry> synchronizedFiles;
+        private readonly IList<SynchronizationEntry> missingFiles;
 
         private readonly ICarbedLogic logic;
-
-        private int synchronized;
-
+        
         private IFolderViewModel target;
         private ColladaInfo source;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public TextureSynchronizer(ICarbedLogic logic)
+        public TextureSynchronizer(IEngineFactory factory)
         {
-            this.logic = logic;
+            this.logic = factory.Get<ICarbedLogic>();
 
-            this.queuedForAdd = new List<string>();
+            this.queuedForAdd = new List<SynchronizationEntry>();
             this.queuedForDelete = new List<IResourceViewModel>();
-            this.synchronizedFiles = new List<string>();
-            this.missingFiles = new List<string>();
+            this.synchronizedFiles = new List<SynchronizationEntry>();
+            this.missingFiles = new List<SynchronizationEntry>();
         }
 
         // -------------------------------------------------------------------
@@ -45,16 +52,7 @@ namespace Carbed.Logic
         {
             get
             {
-                return this.synchronized;
-            }
-
-            private set
-            {
-                if (this.synchronized != value)
-                {
-                    this.synchronized = value;
-                    this.NotifyPropertyChanged();
-                }
+                return this.synchronizedFiles.Count;
             }
         }
 
@@ -86,7 +84,8 @@ namespace Carbed.Logic
         {
             get
             {
-                return string.Join(Environment.NewLine, this.synchronizedFiles);
+                IList<string> list = this.synchronizedFiles.Select(x => x.File).ToList();
+                return string.Join(Environment.NewLine, list);
             }
         }
 
@@ -94,7 +93,8 @@ namespace Carbed.Logic
         {
             get
             {
-                return string.Join(Environment.NewLine, this.queuedForAdd);
+                IList<string> list = this.queuedForAdd.Select(x => string.Format("{0} -> {1}", x.File, x.Name ?? System.IO.Path.GetFileName(x.File))).ToList();
+                return string.Join(Environment.NewLine, list);
             }
         }
 
@@ -102,8 +102,8 @@ namespace Carbed.Logic
         {
             get
             {
-                IList<string> deleteList = this.queuedForDelete.Select(viewModel => viewModel.SourcePath).ToList();
-                return string.Join(Environment.NewLine, deleteList);
+                IList<string> list = this.queuedForDelete.Select(x => x.SourcePath).ToList();
+                return string.Join(Environment.NewLine, list);
             }
         }
 
@@ -111,7 +111,8 @@ namespace Carbed.Logic
         {
             get
             {
-                return string.Join(Environment.NewLine, this.missingFiles);
+                IList<string> list = this.missingFiles.Select(x => x.File).ToList();
+                return string.Join(Environment.NewLine, list);
             }
         }
 
@@ -138,7 +139,7 @@ namespace Carbed.Logic
             this.queuedForAdd.Clear();
             this.queuedForDelete.Clear();
             this.missingFiles.Clear();
-            this.Synchronized = 0;
+            this.synchronizedFiles.Clear();
 
             if (this.target == null || this.source == null)
             {
@@ -153,19 +154,52 @@ namespace Carbed.Logic
 
             IList<IResourceViewModel> targetResources = this.target.Content.Where(carbedDocument => carbedDocument as IResourceViewModel != null).Cast<IResourceViewModel>().ToList();
             IList<IResourceViewModel> targetResourcesFound = new List<IResourceViewModel>();
-            IList<string> resources = new List<string>();
+            IList<SynchronizationEntry> resources = new List<SynchronizationEntry>();
             foreach (string file in this.source.ImageInfos.Values)
             {
-                resources.Add(System.IO.Path.Combine(sourcePath, Uri.UnescapeDataString(file)));
+                var entry = new SynchronizationEntry()
+                    {
+                        File = System.IO.Path.Combine(sourcePath, Uri.UnescapeDataString(file)),
+                        IsNormal = this.source.NormalImages.Contains(file),
+                    };
+
+                resources.Add(entry);
             }
 
-            foreach (string resource in resources)
+            foreach (string normalName in this.source.ColorToNormalImages.Keys)
+            {
+                var entry = new SynchronizationEntry
+                {
+                    File = System.IO.Path.Combine(sourcePath, Uri.UnescapeDataString(this.source.ColorToNormalImages[normalName])),
+                    Name = Uri.UnescapeDataString(normalName),
+                    ToNormal = true
+                };
+
+                resources.Add(entry);
+            }
+
+            foreach (SynchronizationEntry resource in resources)
             {
                 bool found = false;
                 foreach (IResourceViewModel resourceViewModel in targetResources)
                 {
-                    if (resourceViewModel.SourcePath.Equals(resource, StringComparison.OrdinalIgnoreCase))
+                    if (resourceViewModel.SourcePath.Equals(resource.File, StringComparison.OrdinalIgnoreCase))
                     {
+                        if (resource.Name == null)
+                        {
+                            if (!resourceViewModel.Name.Equals(System.IO.Path.GetFileName(resource.File), StringComparison.OrdinalIgnoreCase))
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            if (!resourceViewModel.Name.Equals(resource.Name, StringComparison.OrdinalIgnoreCase))
+                            {
+                                continue;
+                            }
+                        }
+                        
                         found = true;
                         this.synchronizedFiles.Add(resource);
                         targetResourcesFound.Add(resourceViewModel);
@@ -175,7 +209,7 @@ namespace Carbed.Logic
 
                 if (!found)
                 {
-                    if (System.IO.File.Exists(resource))
+                    if (System.IO.File.Exists(resource.File))
                     {
                         this.queuedForAdd.Add(resource);
                     }
@@ -199,18 +233,26 @@ namespace Carbed.Logic
 
         public void Synchronize()
         {
-            foreach (string file in this.queuedForAdd)
+            foreach (SynchronizationEntry entry in this.queuedForAdd)
             {
                 IResourceViewModel viewModel = this.logic.AddResource();
-                viewModel.SelectFile(file);
+                viewModel.SelectFile(entry.File);
+                viewModel.IsNormalMap = entry.IsNormal;
+                viewModel.ConvertToNormalMap = entry.ToNormal;
+                if (entry.Name != null)
+                {
+                    viewModel.Name = entry.Name;
+                }
+
                 Application.Current.Dispatcher.Invoke(() => this.target.AddContent(viewModel));
-                this.synchronizedFiles.Add(file);
+                this.synchronizedFiles.Add(entry);
             }
             this.queuedForAdd.Clear();
 
             foreach (IResourceViewModel viewModel in this.queuedForDelete)
             {
-                this.logic.Delete(viewModel);
+                IResourceViewModel model = viewModel;
+                Application.Current.Dispatcher.Invoke(() => this.logic.Delete(model));
             }
 
             this.queuedForDelete.Clear();

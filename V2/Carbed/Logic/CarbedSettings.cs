@@ -15,6 +15,12 @@ namespace Carbed.Logic
     {
         [XmlElement]
         public string TextureToolsFolder { get; set; }
+
+        [XmlElement]
+        public string ModelTextureParentFolder { get; set; }
+
+        [XmlElement]
+        public bool ModelTextureAutoCreateFolder { get; set; }
     }
 
     public class CarbedSettings : CarbedBase, ICarbedSettings
@@ -33,7 +39,6 @@ namespace Carbed.Logic
         static CarbedSettings()
         {
             serializer = new XmlSerializer(typeof(CarbedSettingsData));
-            SettingsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Carbed");
         }
 
         public CarbedSettings(IEngineFactory factory)
@@ -41,14 +46,11 @@ namespace Carbed.Logic
             this.resourceProcessor = factory.Get<IResourceProcessor>();
 
             this.Reset();
-            this.Load();
         }
         
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static string SettingsFolder;
-
         public string TextureToolsFolder
         {
             get
@@ -67,25 +69,55 @@ namespace Carbed.Logic
             }
         }
 
-        public void Save()
+        public string ModelTextureParentFolder
         {
-            string file = Path.Combine(SettingsFolder, SettingsFileName);
-            if (!File.Exists(file))
+            get
             {
-                return;
+                return this.data.ModelTextureParentFolder;
             }
 
+            set
+            {
+                if (this.data.ModelTextureParentFolder != value)
+                {
+                    this.data.ModelTextureParentFolder = value;
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public bool ModelTextureAutoCreateFolder
+        {
+            get
+            {
+                return this.data.ModelTextureAutoCreateFolder;
+            }
+
+            set
+            {
+                if (this.data.ModelTextureAutoCreateFolder != value)
+                {
+                    this.data.ModelTextureAutoCreateFolder = value;
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public void Save(string projectFolder)
+        {
+            string file = Path.Combine(projectFolder ?? string.Empty, SettingsFileName);
             using (XmlWriter writer = new XmlTextWriter(file, null))
             {
                 serializer.Serialize(writer, this.data);
             }
         }
 
-        public void Load()
+        public void Load(string projectFolder)
         {
-            string file = Path.Combine(SettingsFolder, SettingsFileName);
+            string file = Path.Combine(projectFolder ?? string.Empty, SettingsFileName);
             if (!File.Exists(file))
             {
+                this.Reset();
                 return;
             }
 
@@ -109,6 +141,8 @@ namespace Carbed.Logic
         {
             this.data = new CarbedSettingsData();
             this.TextureToolsFolder = "TexTools";
+            this.ModelTextureParentFolder = null;
+            this.ModelTextureAutoCreateFolder = false;
         }
     }
 }

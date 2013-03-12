@@ -232,7 +232,13 @@ namespace Carbon.V2Test.Scenes
             Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
             this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
 
-            this.root.AddChild(this.LoadModel(HashUtils.BuildResourceHash(@"Models\House6.dae")));
+            var node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House6.dae"));
+            node.Position = new Vector4(3.0f, 1.0f, 4.0f, 1.0f);
+            this.root.AddChild(node);
+
+            node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House6_2.dae"));
+            node.Position = new Vector4(-3.0f, 1.0f, 4.0f, 1.0f);
+            this.root.AddChild(node);
 
             //testResource = this.resourceManager.Load<ModelResource>(HashUtils.BuildResourceHash(@"Models\rock_4.dae"));
             //this.root.AddChild(new ModelNode { Mesh = new Mesh(testResource), Position = new Vector4(0, 2, 0, 1), Material = this.checkerboardMaterial });

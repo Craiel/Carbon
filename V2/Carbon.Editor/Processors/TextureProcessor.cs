@@ -17,6 +17,17 @@ namespace Carbon.Editor.Processors
         DDSDxt5
     }
 
+    public struct TextureProcessingOptions
+    {
+        public TextureTargetFormat Format;
+
+        public bool IsNormalMap;
+
+        public bool ConvertToNormalMap;
+
+        public bool HasAlpha;
+    }
+
     public static class TextureProcessor
     {
         private const string CompressionTool = "nvcompress.exe";
@@ -25,9 +36,9 @@ namespace Carbon.Editor.Processors
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static RawResource Process(string path, TextureTargetFormat format, bool isNormalMap, bool hasAlpha)
+        public static RawResource Process(string path, TextureProcessingOptions options)
         {
-            if (format == TextureTargetFormat.Undefined)
+            if (options.Format == TextureTargetFormat.Undefined)
             {
                 throw new ArgumentException("Target format was not defined properly");
             }
@@ -45,7 +56,7 @@ namespace Carbon.Editor.Processors
 
             string tempDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             string tempFile = Path.Combine(tempDir, Path.GetRandomFileName());
-            string parameter = BuildCompressionParameter(format, isNormalMap, hasAlpha);
+            string parameter = BuildCompressionParameter(options);
 
             Directory.CreateDirectory(tempDir);
             try
@@ -81,16 +92,24 @@ namespace Carbon.Editor.Processors
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private static string BuildCompressionParameter(TextureTargetFormat format, bool isNormalMap, bool hasAlpha)
+        private static string BuildCompressionParameter(TextureProcessingOptions options)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(isNormalMap ? "-normal " : "-color ");
-            if (hasAlpha)
+            if (options.ConvertToNormalMap)
+            {
+                builder.Append("-tonormal");
+            }
+            else
+            {
+                builder.Append(options.IsNormalMap ? "-normal " : "-color ");
+            }
+
+            if (options.HasAlpha)
             {
                 builder.Append("-alpha ");
             }
 
-            switch (format)
+            switch (options.Format)
             {
                 case TextureTargetFormat.DDSRgb:
                     {
@@ -100,7 +119,7 @@ namespace Carbon.Editor.Processors
 
                 case TextureTargetFormat.DDSDxt1:
                     {
-                        builder.Append(isNormalMap ? "-bc1n " : "-bc1 ");
+                        builder.Append(options.IsNormalMap ? "-bc1n " : "-bc1 ");
                         break;
                     }
 
@@ -112,12 +131,12 @@ namespace Carbon.Editor.Processors
 
                 case TextureTargetFormat.DDSDxt5:
                     {
-                        builder.Append(isNormalMap ? "-bc3n " : "-bc3 ");
+                        builder.Append(options.IsNormalMap ? "-bc3n " : "-bc3 ");
                         break;
                     }
                 default:
                     {
-                        throw new NotImplementedException("Compression format has no setting: " + format);
+                        throw new NotImplementedException("Compression format has no setting: " + options.Format);
                     }
             }
 

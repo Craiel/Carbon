@@ -32,11 +32,13 @@ namespace Carbed.ViewModels
 
         CompressTexture = 2,
         IsNormalMap = 3,
+        ConvertToNormalMap = 4,
     }
 
     public class ResourceViewModel : ContentViewModel, IResourceViewModel
     {
         private readonly ICarbedLogic logic;
+        private readonly ICarbedSettings settings;
         private readonly IResourceProcessor resourceProcessor;
         private readonly ResourceEntry data;
         private readonly List<string> sourceElements;
@@ -64,6 +66,7 @@ namespace Carbed.ViewModels
             : base(factory, data)
         {
             this.logic = factory.Get<ICarbedLogic>();
+            this.settings = factory.Get<ICarbedSettings>();
             this.resourceProcessor = factory.Get<IResourceProcessor>();
             this.data = data;
             this.sourceElements = new List<string>();
@@ -76,6 +79,14 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public override string Title
+        {
+            get
+            {
+                return this.Name;
+            }
+        }
+
         public override bool IsChanged
         {
             get
@@ -113,6 +124,7 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.data.Type = value;
+                    this.UpdateTypeStatus();
                     this.NotifyPropertyChanged();
 
                     if (value == ResourceType.Model)
@@ -154,6 +166,14 @@ namespace Carbed.ViewModels
                     this.targetSize = value;
                     this.NotifyPropertyChanged();
                 }
+            }
+        }
+
+        public bool CanChangeType
+        {
+            get
+            {
+                return this.data.IsNew;
             }
         }
 
@@ -248,6 +268,25 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.SetMetaBitValue(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.IsNormalMap, value);
+                    this.needReexport = true;
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public bool ConvertToNormalMap
+        {
+            get
+            {
+                return this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.ConvertToNormalMap) ?? false;
+            }
+
+            set
+            {
+                if (this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.ConvertToNormalMap) != value)
+                {
+                    this.CreateUndoState();
+                    this.SetMetaBitValue(MetaDataKey.ResourceFlags, (int)ResourceToolFlags.ConvertToNormalMap, value);
                     this.needReexport = true;
                     this.NotifyPropertyChanged();
                 }
@@ -400,6 +439,7 @@ namespace Carbed.ViewModels
                 if (this.textureFolder != value)
                 {
                     this.textureFolder = value;
+                    this.textureSynchronizer.SetTarget(value);
                     this.NotifyPropertyChanged();
                 }
             }
@@ -468,7 +508,13 @@ namespace Carbed.ViewModels
                             }
                             else
                             {
-                                resource = this.resourceProcessor.ProcessTexture(source, this.TextureTargetFormat, this.IsNormalMap);
+                                var options = new TextureProcessingOptions
+                                    {
+                                        Format = this.TextureTargetFormat,
+                                        ConvertToNormalMap = this.ConvertToNormalMap,
+                                        IsNormalMap = this.IsNormalMap
+                                    };
+                                resource = this.resourceProcessor.ProcessTexture(source, options);
                             }
                             
                             if (resource != null)
@@ -567,8 +613,16 @@ namespace Carbed.ViewModels
             }
 
             this.SourcePath = path;
-            this.Name = Path.GetFileName(path);
-            this.SetTypeByExtension(Path.GetExtension(path));
+            if (!this.IsNamed)
+            {
+                this.Name = Path.GetFileName(path);
+            }
+
+            if (this.CanChangeType)
+            {
+                this.SetTypeByExtension(Path.GetExtension(path));
+            }
+
             this.CheckSource();
         }
 
@@ -745,7 +799,6 @@ namespace Carbed.ViewModels
             if (dialog.ShowDialog() == true)
             {
                 this.TextureFolder = dialog.SelectedFolder;
-                this.textureSynchronizer.SetTarget(this.TextureFolder);
             }
         }
 
@@ -786,6 +839,31 @@ namespace Carbed.ViewModels
                 default:
                     {
                         this.Type = ResourceType.Unknown;
+                        break;
+                    }
+            }
+        }
+
+        private void UpdateTypeStatus()
+        {
+            switch (this.data.Type)
+            {
+                case ResourceType.Model:
+                    {
+                        if (this.settings.ModelTextureAutoCreateFolder && this.settings.ModelTextureParentFolder != null && this.TextureFolder == null)
+                        {
+                            var textureParent = this.logic.LocateFolder(this.settings.ModelTextureParentFolder);
+                            if (textureParent == null)
+                            {
+                                break;
+                            }
+
+                            var folder = textureParent.AddFolder();
+                            folder.Name = string.Concat(this.Name, "_textures");
+                            this.AutoUpdateTextures = true;
+                            this.TextureFolder = folder;
+                        }
+
                         break;
                     }
             }

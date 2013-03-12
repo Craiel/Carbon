@@ -19,6 +19,8 @@ namespace Carbed.Contracts
         long? SourceSize { get; }
         long? TargetSize { get; }
 
+        bool CanChangeType { get; }
+
         bool IsValidSource { get; }
         bool IsHavingSourceElements { get; }
 
@@ -32,6 +34,7 @@ namespace Carbed.Contracts
 
         // Texture Options
         bool IsNormalMap { get; set; }
+        bool ConvertToNormalMap { get; set; }
         bool CompressTexture { get; set; }
         TextureTargetFormat TextureTargetFormat { get; set; }
 

@@ -18,7 +18,8 @@
     <mvvm:UriToImageConverter x:Key="UriToImageConverter"/>
 
     <mvvm:BooleanToColorConverter x:Key="BooleanToColorConverter"/>
-
+    <mvvm:BooleanToInvertedConverter x:Key="BooleanToInvertedConverter"/>
+    
     <mvvm:ResourceTypeToIconConverter x:Key="ResourceTypeToIconConverter"/>
 
 </ResourceDictionary>

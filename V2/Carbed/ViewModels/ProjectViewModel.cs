@@ -24,6 +24,14 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public override string Title
+        {
+            get
+            {
+                return this.Name;
+            }
+        }
+
         public override Uri IconUri
         {
             get

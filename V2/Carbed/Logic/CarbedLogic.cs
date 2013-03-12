@@ -132,6 +132,7 @@ namespace Carbed.Logic
              */
 
             this.CloseProject();
+            this.settings.Save(Path.GetDirectoryName(file));
 
             // Move the database file over to our new location
             if (File.Exists(projectPath))
@@ -335,6 +336,8 @@ namespace Carbed.Logic
 
             string contentPath = Path.Combine(rootPath, "Main.db");
             this.projectContent = this.engineFactory.GetContentManager(this.projectResources, contentPath);
+
+            this.settings.Load(rootPath);
         }
 
         private void NotifyProjectChanged()

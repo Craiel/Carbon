@@ -49,9 +49,9 @@ namespace Carbon.Editor.Logic
             }
         }
 
-        public RawResource ProcessTexture(string path, TextureTargetFormat format = TextureTargetFormat.DDSDxt1, bool isNormalMap = false, bool hasAlpha = false)
+        public RawResource ProcessTexture(string path, TextureProcessingOptions options)
         {
-            return TextureProcessor.Process(path, format, isNormalMap, hasAlpha);
+            return TextureProcessor.Process(path, options);
         }
 
         public ModelResource ProcessModel(ColladaInfo info, string element, string texturePath)

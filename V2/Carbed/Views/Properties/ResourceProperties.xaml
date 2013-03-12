@@ -33,7 +33,7 @@
                 </Grid.RowDefinitions>
                 
                 <TextBlock Text="Type" Margin="4" VerticalAlignment="Center"/>
-                <ComboBox Grid.Column="1" Margin="2" ItemsSource="{Binding Source={StaticResource ResourceTypes}}" SelectedItem="{Binding Path=Type}"/>
+                <ComboBox Grid.Column="1" Margin="2" ItemsSource="{Binding Source={StaticResource ResourceTypes}}" IsEnabled="{Binding Path=CanChangeType}" SelectedItem="{Binding Path=Type}"/>
 
                 <TextBlock Text="Source" Margin="4" VerticalAlignment="Center" Grid.Row="1"/>
                 <DockPanel Grid.Column="1" Margin="2" Grid.Row="1">
@@ -125,17 +125,20 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Text="Is Normal Map" Margin="4"/>
-                <CheckBox IsChecked="{Binding Path=IsNormalMap}" Grid.Column="1" Margin="4"/>
-                
-                <TextBlock Text="Compress Texture" Grid.Row="1" Margin="4"/>
-                <CheckBox IsChecked="{Binding Path=CompressTexture}" x:Name="compressTextureCheckbox" Grid.Row="1" Grid.Column="1" Margin="4"/>
+                <CheckBox IsChecked="{Binding Path=IsNormalMap}" IsEnabled="{Binding Path=IsChecked, ElementName=convertToNormalMapCheckBox, Converter={StaticResource BooleanToInvertedConverter}}" x:Name="isNormalMapCheckBox" Grid.Column="1" Margin="4"/>
 
+                <TextBlock Text="Convert to Normal Map" Grid.Row="1" Margin="4"/>
+                <CheckBox IsChecked="{Binding Path=ConvertToNormalMap}" x:Name="convertToNormalMapCheckBox" Grid.Row="1" IsEnabled="{Binding Path=IsChecked, ElementName=isNormalMapCheckBox, Converter={StaticResource BooleanToInvertedConverter}}" Grid.Column="1" Margin="4"/>
 
-                <TextBlock Text="Compression Format" Grid.Row="2" Margin="4"/>
-                <ComboBox ItemsSource="{Binding Source={StaticResource TextureTargetFormat}}" SelectedItem="{Binding Path=TextureTargetFormat}" IsEnabled="{Binding ElementName=compressTextureCheckbox, Path=IsChecked}" Grid.Row="2" Grid.Column="1" Margin="4"/>
+                <TextBlock Text="Compress Texture" Grid.Row="2" Margin="4"/>
+                <CheckBox IsChecked="{Binding Path=CompressTexture}" x:Name="compressTextureCheckbox" Grid.Row="2" Grid.Column="1" Margin="4"/>
+
+                <TextBlock Text="Compression Format" Grid.Row="3" Margin="4"/>
+                <ComboBox ItemsSource="{Binding Source={StaticResource TextureTargetFormat}}" SelectedItem="{Binding Path=TextureTargetFormat}" IsEnabled="{Binding ElementName=compressTextureCheckbox, Path=IsChecked}" Grid.Row="3" Grid.Column="1" Margin="4"/>
             </Grid>
         </Expander>
 

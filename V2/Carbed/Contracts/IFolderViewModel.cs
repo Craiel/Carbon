@@ -30,6 +30,7 @@ namespace Carbed.Contracts
         void RemoveContent(IResourceViewModel content);
         void SetExpand(bool expanded);
 
+        IFolderViewModel AddFolder();
         void RemoveFolder(IFolderViewModel folder);
 
         void Save(IContentManager target, IResourceManager resourceTarget);

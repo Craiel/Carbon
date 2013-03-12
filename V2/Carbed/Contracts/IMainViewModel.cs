@@ -51,6 +51,7 @@ namespace Carbed.Contracts
         ICommand CommandOpenMaterialExplorer { get; }
         ICommand CommandOpenProperties { get; }
         ICommand CommandOpenNewDialog { get; }
+        ICommand CommandOpenSettings { get; }
 
         void OpenDocument(ICarbedDocument document);
         void CloseDocument(ICarbedDocument document);

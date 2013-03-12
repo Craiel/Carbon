@@ -33,6 +33,13 @@
 
             <DataTemplate x:Key="ResourceEntryTemplate">
                 <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource ResourceContextMenu}">
+                    <StackPanel.Resources>
+                        <mvvm:CommandReference x:Key="CommandDeleteReference" Command="{Binding Path=CommandDelete}" />
+                    </StackPanel.Resources>
+                    <StackPanel.InputBindings>
+                        <KeyBinding Key="Delete" Command="{StaticResource CommandDeleteReference}" />
+                    </StackPanel.InputBindings>
+                    
                     <Image Width="20" Height="20" Margin="2" Source="{Binding Path=Type, Converter={StaticResource ResourceTypeToIconConverter}}"/>
                     <TextBlock Text="{Binding Path=Name}" Margin="2"/>
                 </StackPanel>
@@ -40,6 +47,16 @@
             
             <DataTemplate x:Key="FolderTemplate">
                 <StackPanel Orientation="Vertical">
+                    <StackPanel.Resources>
+                        <mvvm:CommandReference x:Key="CommandOpenReference" Command="{Binding Path=CommandOpen}" />
+                        <mvvm:CommandReference x:Key="CommandDeleteReference" Command="{Binding Path=CommandDelete}" />
+                    </StackPanel.Resources>
+                    <StackPanel.InputBindings>
+                        <MouseBinding Command="{StaticResource CommandOpenReference}" MouseAction="LeftDoubleClick" />
+                        <KeyBinding Key="ENTER" Command="{StaticResource CommandOpenReference}" />
+                        <KeyBinding Key="Delete" Command="{StaticResource CommandDeleteReference}" />
+                    </StackPanel.InputBindings>
+                    
                     <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource FolderContextMenu}">
                         <Image Width="20" Height="20" Margin="2" Source="{Binding Source={x:Static carbed:StaticResources.FolderIconUri}, Converter={StaticResource UriToImageConverter}, ConverterParameter=32}"/>
                         <TextBlock Text="{Binding Path=Name}" Margin="2"/>

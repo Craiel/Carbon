@@ -1,11 +1,16 @@
-﻿namespace Carbed.Contracts
+﻿using System.ComponentModel;
+
+namespace Carbed.Contracts
 {
-    public interface ICarbedSettings
+    public interface ICarbedSettings : INotifyPropertyChanged
     {
         string TextureToolsFolder { get; set; }
+        string ModelTextureParentFolder { get; set; }
 
-        void Save();
-        void Load();
+        bool ModelTextureAutoCreateFolder { get; set; }
+
+        void Save(string projectFolder);
+        void Load(string projectFolder);
         void Reset();
     }
 }

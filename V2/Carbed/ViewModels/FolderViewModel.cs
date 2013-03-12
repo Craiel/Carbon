@@ -56,6 +56,14 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public override string Title
+        {
+            get
+            {
+                return this.Name;
+            }
+        }
+
         public override bool IsChanged
         {
             get
@@ -271,6 +279,14 @@ namespace Carbed.ViewModels
             }
         }
 
+        public IFolderViewModel AddFolder()
+        {
+            var vm = this.viewModelFactory.GetFolderViewModel(new ResourceTree());
+            vm.Parent = this;
+            this.content.Add(vm);
+            return vm;
+        }
+
         public void RemoveFolder(IFolderViewModel folder)
         {
             this.content.Remove(folder);
@@ -450,9 +466,7 @@ namespace Carbed.ViewModels
 
         private void OnAddFolder(object obj)
         {
-            var vm = this.viewModelFactory.GetFolderViewModel(new ResourceTree());
-            vm.Parent = this;
-            this.content.Add(vm);
+            this.AddFolder();
         }
 
         private void OnExpandAll(object obj)

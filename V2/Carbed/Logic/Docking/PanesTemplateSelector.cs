@@ -12,6 +12,7 @@ namespace Carbed.Logic.Docking
         public DataTemplate ResourceExplorerTemplate { get; set; }
         public DataTemplate MaterialExplorerTemplate { get; set; }
         public DataTemplate PropertiesTemplate { get; set; }
+        public DataTemplate CarbedSettingsTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
@@ -19,7 +20,7 @@ namespace Carbed.Logic.Docking
             if (item is IResourceExplorerViewModel) return ResourceExplorerTemplate;
             if (item is IMaterialExplorerViewModel) return MaterialExplorerTemplate;
             if (item is IPropertyViewModel) return PropertiesTemplate;
-
+            if (item is ICarbedSettingsViewModel) return CarbedSettingsTemplate;
             if (item is IResourceViewModel) return ResourceTemplate;
             
             // Can add more templates here if needed
