@@ -54,14 +54,14 @@ namespace Carbon.Editor.Logic
             return TextureProcessor.Process(path, format, isNormalMap, hasAlpha);
         }
 
-        public ModelResource ProcessModel(ColladaInfo info, string element)
+        public ModelResource ProcessModel(ColladaInfo info, string element, string texturePath)
         {
             if (info == null || string.IsNullOrEmpty(info.Source) || !File.Exists(info.Source))
             {
                 throw new ArgumentException();
             }
 
-            return ColladaProcessor.Process(info, element);
+            return ColladaProcessor.Process(info, element, texturePath);
         }
     }
 }

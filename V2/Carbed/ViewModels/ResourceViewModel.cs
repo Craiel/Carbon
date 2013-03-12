@@ -507,7 +507,8 @@ namespace Carbed.ViewModels
                                 this.UpdateSourceElements();
                             }
 
-                            ICarbonResource resource = this.resourceProcessor.ProcessModel(this.colladaSourceInfo, this.SelectedSourceElement);
+                            string texturePath = this.textureFolder == null ? null : this.textureFolder.FullPath;
+                            ICarbonResource resource = this.resourceProcessor.ProcessModel(this.colladaSourceInfo, this.SelectedSourceElement, texturePath);
                             if (resource != null)
                             {
                                 resourceTarget.StoreOrReplace(this.data.Hash, resource);
@@ -768,6 +769,7 @@ namespace Carbed.ViewModels
                 case ".png":
                 case ".tif":
                 case ".jpg":
+                case ".tga":
                     {
                         this.Type = ResourceType.Texture;
                         this.CompressTexture = true;

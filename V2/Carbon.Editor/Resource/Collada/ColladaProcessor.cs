@@ -21,6 +21,7 @@ namespace Carbon.Editor.Resource.Collada
         private readonly static IDictionary<string, ModelResource> meshLibrary = new Dictionary<string, ModelResource>();
 
         private static string targetElement;
+        private static string texturePath;
 
         private static ColladaInput[] currentInputs;
         private static ColladaSource[] currentSources;
@@ -38,17 +39,18 @@ namespace Carbon.Editor.Resource.Collada
         private static Vector3[] normalData;
         private static Vector2[] textureData;
         
-        public static ModelResource Process(ColladaInfo info, string element)
+        public static ModelResource Process(ColladaInfo info, string element, string texPath)
         {
             ClearCache();
 
             targetElement = element;
+            texturePath = texPath;
 
             using (var stream = new FileStream(info.Source, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 var model = ColladaModel.Load(stream);
 
-                BuildGeometryLibrary(model.GeometryLibrary);
+                BuildGeometryLibrary(info, model.GeometryLibrary);
                 return BuildModel(model.SceneLibrary);
             }
         }
@@ -71,7 +73,7 @@ namespace Carbon.Editor.Resource.Collada
             textureData = null;
         }
 
-        private static void BuildGeometryLibrary(ColladaGeometryLibrary library)
+        private static void BuildGeometryLibrary(ColladaInfo info, ColladaGeometryLibrary library)
         {
             meshLibrary.Clear();
 
@@ -99,7 +101,31 @@ namespace Carbon.Editor.Resource.Collada
 
                     ParseGeometry(i, colladaGeometry);
                     ModelResource part = TranslateGeometry(i, colladaGeometry.Name);
-                    part.AddMaterial(new MaterialElement { Name = polyList.Material });
+                    if (info.MaterialInfos.ContainsKey(polyList.Material))
+                    {
+                        MaterialElement material = info.MaterialInfos[polyList.Material].Clone();
+                        if (material.DiffuseTexture != null && texturePath != null)
+                        {
+                            material.DiffuseTexture = HashUtils.BuildResourceHash(Path.Combine(texturePath, Uri.UnescapeDataString(material.DiffuseTexture)));
+                        }
+
+                        if (material.NormalTexture != null && texturePath != null)
+                        {
+                            material.NormalTexture = HashUtils.BuildResourceHash(Path.Combine(texturePath, Uri.UnescapeDataString(material.NormalTexture)));
+                        }
+
+                        if (material.SpecularTexture != null && texturePath != null)
+                        {
+                            material.SpecularTexture = HashUtils.BuildResourceHash(Path.Combine(texturePath, Uri.UnescapeDataString(material.SpecularTexture)));   
+                        }
+
+                        if (material.AlphaTexture != null && texturePath != null)
+                        {
+                            material.AlphaTexture = HashUtils.BuildResourceHash(Path.Combine(texturePath, Uri.UnescapeDataString(material.AlphaTexture)));    
+                        }
+                        
+                        part.AddMaterial(material);
+                    }
                     parts.Add(part);
                 }
 

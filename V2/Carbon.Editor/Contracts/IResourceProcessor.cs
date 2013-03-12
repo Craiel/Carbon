@@ -10,6 +10,6 @@ namespace Carbon.Editor.Contracts
 
         RawResource ProcessRaw(string path);
         RawResource ProcessTexture(string path, TextureTargetFormat format = TextureTargetFormat.DDSDxt1, bool isNormalMap = false, bool hasAlpha = false);
-        ModelResource ProcessModel(ColladaInfo info, string element);
+        ModelResource ProcessModel(ColladaInfo info, string element, string texturePath);
     }
 }

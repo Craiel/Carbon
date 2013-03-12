@@ -91,6 +91,18 @@ namespace Carbon.Engine.Resource.Resources
         public string AlphaTexture { get; set; }
         public string SpecularTexture { get; set; }
 
+        public MaterialElement Clone()
+        {
+            return new MaterialElement
+                       {
+                           Name = this.Name,
+                           DiffuseTexture = this.DiffuseTexture,
+                           NormalTexture = this.NormalTexture,
+                           AlphaTexture = this.AlphaTexture,
+                           SpecularTexture = this.SpecularTexture
+                       };
+        }
+
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------

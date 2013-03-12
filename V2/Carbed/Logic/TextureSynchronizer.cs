@@ -9,6 +9,8 @@ using Carbon.Editor.Resource.Collada;
 
 namespace Carbed.Logic
 {
+    using System.Windows;
+
     public class TextureSynchronizer : CarbedBase, ITextureSynchronizer
     {
         private readonly IList<string> queuedForAdd;
@@ -201,7 +203,7 @@ namespace Carbed.Logic
             {
                 IResourceViewModel viewModel = this.logic.AddResource();
                 viewModel.SelectFile(file);
-                this.target.AddContent(viewModel);
+                Application.Current.Dispatcher.Invoke(() => this.target.AddContent(viewModel));
                 this.synchronizedFiles.Add(file);
             }
             this.queuedForAdd.Clear();
