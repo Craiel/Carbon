@@ -96,7 +96,6 @@ namespace Carbon.Editor.Resource.Collada
                 IList<ModelResource> parts = new List<ModelResource>();
                 for (int i = 0; i < colladaGeometry.Mesh.PolyLists.Length; i++)
                 {
-                    string id = string.Format("{0}_{1}", colladaGeometry.Id, i);
                     ColladaPolyList polyList = colladaGeometry.Mesh.PolyLists[i];
 
                     ParseGeometry(i, colladaGeometry);
@@ -126,6 +125,7 @@ namespace Carbon.Editor.Resource.Collada
                         
                         part.AddMaterial(material);
                     }
+
                     parts.Add(part);
                 }
 

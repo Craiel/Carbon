@@ -5,6 +5,8 @@ using Carbon.Engine.Contracts.Rendering;
 using Carbon.Engine.Logic;
 using Carbon.V2Test.Contracts;
 using Carbon.V2Test.Scenes;
+
+using Core.Utils;
 using Core.Utils.Contracts;
 using SlimDX;
 
@@ -48,7 +50,7 @@ namespace Carbon.V2Test.Logic
             this.Window.Size = new Size(1024, 768);
 
             // Register some default data into the engine
-            var content = new EngineContent { FallbackTexture = @"Textures\checkerboard.dds" };
+            var content = new EngineContent { FallbackTexture = HashUtils.BuildResourceHash(@"Textures\default.dds") };
             this.SetEngineContent(content);
 
             this.log.Info("Initializing V2Test");

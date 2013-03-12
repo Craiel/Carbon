@@ -147,6 +147,8 @@ namespace Carbon.Engine.Resource.Resources
             this.ElementCount = this.elements.Count;
             this.IndexCount = this.indices.Length;
             this.IndexSize = this.IndexCount * 4;
+
+            this.Scale = new Vector3(1);
         }
 
         public ModelResource(IEnumerable<ModelResource> parts)
@@ -156,12 +158,7 @@ namespace Carbon.Engine.Resource.Resources
             this.subParts = new List<ModelResource>(parts);
             this.materials = new List<MaterialElement>();
 
-            foreach (ModelResource part in this.subParts)
-            {
-                this.ElementCount += part.ElementCount;
-                this.IndexCount += part.IndexCount;
-                this.IndexSize += part.IndexSize;
-            }
+            this.Scale = new Vector3(1);
         }
 
         public ModelResource()
@@ -169,6 +166,8 @@ namespace Carbon.Engine.Resource.Resources
             this.subParts = new List<ModelResource>();
             this.elements = new List<MeshElement>();
             this.materials = new List<MaterialElement>();
+
+            this.Scale = new Vector3(1);
         }
 
         // -------------------------------------------------------------------
@@ -237,10 +236,6 @@ namespace Carbon.Engine.Resource.Resources
         public void AddPart(ModelResource part)
         {
             this.subParts.Add(part);
-
-            this.ElementCount += part.ElementCount;
-            this.IndexCount += part.IndexCount;
-            this.IndexSize += part.IndexSize;
         }
 
         public void AddMaterial(MaterialElement material)

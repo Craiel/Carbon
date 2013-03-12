@@ -198,6 +198,7 @@ namespace Carbon.Engine.Logic
 
         protected void SetEngineContent(EngineContent content)
         {
+            this.graphics.TextureManager.Fallback = this.graphics.TextureManager.Register(content.FallbackTexture);
         }
 
         // -------------------------------------------------------------------

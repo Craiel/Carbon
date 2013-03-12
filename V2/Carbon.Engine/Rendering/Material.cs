@@ -3,6 +3,7 @@
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Logic;
 using Carbon.Engine.Resource.Content;
+using Carbon.Engine.Resource.Resources;
 
 using SlimDX;
 
@@ -21,8 +22,14 @@ namespace Carbon.Engine.Rendering
 
             this.Color = new Vector4(content.ColorR, content.ColorG, content.ColorB, content.ColorA);
 
-            // Todo: ContentLink change requires more to get the registration working
-            /*if (content.DiffuseTexture != null)
+            throw new NotImplementedException();
+        }
+
+        public Material(ICarbonGraphics graphics, MaterialElement content)
+        {
+            this.graphics = graphics;
+
+            if (content.DiffuseTexture != null)
             {
                 this.DiffuseTexture = graphics.TextureManager.Register(content.DiffuseTexture);
             }
@@ -40,7 +47,7 @@ namespace Carbon.Engine.Rendering
             if (content.AlphaTexture != null)
             {
                 this.AlphaTexture = graphics.TextureManager.Register(content.AlphaTexture);
-            }*/
+            }
         }
 
         public Material(TextureReference diffuseReference)
@@ -60,6 +67,12 @@ namespace Carbon.Engine.Rendering
 
         public void Dispose()
         {
+            // No graphics means we where initialized directly and do not manage
+            if (this.graphics == null)
+            {
+                return;
+            }
+
             this.graphics.TextureManager.Unregister(this.DiffuseTexture.Register);
 
             if (this.NormalTexture != null)

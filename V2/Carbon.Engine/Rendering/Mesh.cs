@@ -24,7 +24,7 @@ namespace Carbon.Engine.Rendering
             this.indexUploadCache = new StaticDataContainer<uint>();
 
             uint offset = 0;
-            this.RefreshIndexUploadCache(resource, ref offset);
+            this.RefreshIndexUploadCache(ref offset);
         }
 
         // -------------------------------------------------------------------
@@ -101,7 +101,7 @@ namespace Carbon.Engine.Rendering
             
             if (!this.uploadCache.ContainsKey(typeof(T)) || this.cacheInvalid)
             {
-                this.RefreshUploadCache(typeof(T), this.resource);
+                this.RefreshUploadCache(typeof(T));
             }
 
             this.uploadCache[typeof(T)].WriteData(target);
@@ -147,35 +147,28 @@ namespace Carbon.Engine.Rendering
             return container;
         }
 
-        private void RefreshUploadCache(Type type, ModelResource part)
+        private void RefreshUploadCache(Type type)
         {
             DataContainer container = this.SelectCacheContainer(type);
 
             container.Clear();
 
             bool generateTangents = type == typeof(PositionNormalTangentVertex);
-            this.AddUploadCache(container, type, part, generateTangents);
-
-            this.cacheInvalid = false;
-        }
-
-        private void AddUploadCache(DataContainer target, Type type, ModelResource part, bool generateTangents)
-        {
             if (generateTangents)
             {
-                part.CalculateTangents();
+                this.resource.CalculateTangents();
             }
 
-            for (int i = 0; i < part.Elements.Count; i++)
+            for (int i = 0; i < this.resource.Elements.Count; i++)
             {
-                MeshElement element = part.Elements[i];
+                MeshElement element = this.resource.Elements[i];
                 if (type == typeof(PositionVertex))
                 {
-                    target.Add(new PositionVertex { Position = element.Position });
+                    container.Add(new PositionVertex { Position = element.Position });
                 }
                 else if (type == typeof(PositionNormalVertex))
                 {
-                    target.Add(
+                    container.Add(
                         new PositionNormalVertex
                         {
                             Position = element.Position,
@@ -185,7 +178,7 @@ namespace Carbon.Engine.Rendering
                 }
                 else if (type == typeof(PositionNormalTangentVertex))
                 {
-                    target.Add(
+                    container.Add(
                         new PositionNormalTangentVertex
                         {
                             Position = element.Position,
@@ -196,23 +189,14 @@ namespace Carbon.Engine.Rendering
                 }
             }
 
-            for (int p = 0; p < part.SubParts.Count; p++)
-            {
-                this.AddUploadCache(target, type, part.SubParts[p], generateTangents);
-            }
+            this.cacheInvalid = false;
         }
 
-        private void RefreshIndexUploadCache(ModelResource part, ref uint offset)
+        private void RefreshIndexUploadCache(ref uint offset)
         {
-            for (int i = 0; i < part.Indices.Length; i++)
+            for (int i = 0; i < this.resource.Indices.Length; i++)
             {
-                this.indexUploadCache.Add(part.Indices[i] + offset);
-            }
-
-            for (int p = 0; p < part.SubParts.Count; p++)
-            {
-                offset += (uint)part.ElementCount;
-                this.RefreshIndexUploadCache(part.SubParts[p], ref offset);
+                this.indexUploadCache.Add(this.resource.Indices[i] + offset);
             }
         }
     }

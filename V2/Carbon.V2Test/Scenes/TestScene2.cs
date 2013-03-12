@@ -82,6 +82,17 @@ namespace Carbon.V2Test.Scenes
             
             this.root = new Node();
         }
+
+        private ModelNode LoadModel(string hash)
+        {
+            var resource = this.resourceManager.Load<ModelResource>(hash);
+            if (resource == null)
+            {
+                return null;
+            }
+
+            return this.CreateNode(this.graphics, resource);
+        }
         
         public override void Initialize(ICarbonGraphics graphics)
         {
@@ -221,11 +232,10 @@ namespace Carbon.V2Test.Scenes
             Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
             this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
 
-            var testResource = this.resourceManager.Load<ModelResource>(HashUtils.BuildResourceHash(@"Models\House6.dae"));
-            this.root.AddChild(new ModelNode { Mesh = new Mesh(testResource), Position = new Vector4(10, 5, 10, 1), Material = this.checkerboardMaterial });
+            this.root.AddChild(this.LoadModel(HashUtils.BuildResourceHash(@"Models\House6.dae")));
 
-            testResource = this.resourceManager.Load<ModelResource>(HashUtils.BuildResourceHash(@"Models\rock_4.dae"));
-            this.root.AddChild(new ModelNode { Mesh = new Mesh(testResource), Position = new Vector4(0, 2, 0, 1), Material = this.checkerboardMaterial });
+            //testResource = this.resourceManager.Load<ModelResource>(HashUtils.BuildResourceHash(@"Models\rock_4.dae"));
+            //this.root.AddChild(new ModelNode { Mesh = new Mesh(testResource), Position = new Vector4(0, 2, 0, 1), Material = this.checkerboardMaterial });
 
             //this.contentManager.Save(materialResource);
             //var testCriteria = new ContentQuery<MaterialEntry>().IsEqual("Id", 0);
