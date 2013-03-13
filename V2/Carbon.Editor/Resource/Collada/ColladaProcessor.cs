@@ -100,7 +100,7 @@ namespace Carbon.Editor.Resource.Collada
 
                     ParseGeometry(i, colladaGeometry);
                     ModelResource part = TranslateGeometry(i, colladaGeometry.Name);
-                    if (info.MaterialInfos.ContainsKey(polyList.Material))
+                    if (polyList.Material != null && info.MaterialInfos.ContainsKey(polyList.Material))
                     {
                         MaterialElement material = info.MaterialInfos[polyList.Material].Clone();
                         if (material.DiffuseTexture != null && texturePath != null)

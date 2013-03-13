@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Windows.Media;
 
 using Carbon.Editor.Processors;
 using Carbon.Engine.Contracts.Resource;
@@ -31,6 +32,8 @@ namespace Carbed.Contracts
         DateTime? LastChangeDate { get; }
 
         IFolderViewModel Parent { get; set; }
+
+        ImageSource PreviewImage { get; }
 
         // Texture Options
         bool IsNormalMap { get; set; }

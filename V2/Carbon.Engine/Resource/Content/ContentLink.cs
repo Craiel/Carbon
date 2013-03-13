@@ -25,6 +25,21 @@
         [ContentEntryElement]
         public bool Mutable { get; set; }
 
+        public override void LoadFrom(Contracts.Resource.ICarbonContent source)
+        {
+            var other = source as ContentLink;
+            this.ContentId = other.ContentId;
+            this.Type = other.Type;
+            this.Mutable = other.Mutable;
+        }
+
+        public override Contracts.Resource.ICarbonContent Clone(bool fullCopy = false)
+        {
+            var clone = new ContentLink();
+            clone.LoadFrom(this);
+            return clone;
+        }
+
         public override bool IsNew
         {
             get

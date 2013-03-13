@@ -28,6 +28,7 @@ namespace Carbed
         public static readonly Uri NewResourceIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_newDocument.png", UriKind.Absolute);
         public static readonly Uri NewContentIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);
 
+        public static readonly Uri NoPreviewImageUri = new Uri("pack://application:,,,/Carbed;component/Resources/no_preview.png", UriKind.Absolute);
         public static readonly Uri PlaceholderIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);
 
         public static readonly Uri ResourceTextureIconUri = new Uri("pack://application:,,,/Carbed;component/Resources/icon_placeholder.png", UriKind.Absolute);

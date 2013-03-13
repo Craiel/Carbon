@@ -93,6 +93,18 @@ namespace Carbon.V2Test.Scenes
 
             return this.CreateNode(this.graphics, resource);
         }
+
+        private void ApplyMaterialRecurse(IModelNode node, Material material)
+        {
+            node.Material = material;
+            foreach (IEntity child in node.Children)
+            {
+                if (child as IModelNode != null)
+                {
+                    this.ApplyMaterialRecurse(child as IModelNode, material);
+                }
+            }
+        }
         
         public override void Initialize(ICarbonGraphics graphics)
         {
@@ -139,7 +151,7 @@ namespace Carbon.V2Test.Scenes
             this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(35f, 0.5f, 20f, 1) });
 
             var testMaterialData =
-                this.contentManager.TypedLoad(new ContentQuery<MaterialEntry>().IsEqual("Id", 3))
+                this.contentManager.TypedLoad(new ContentQuery<MaterialEntry>().IsEqual("Id", 1))
                     .UniqueResult<MaterialEntry>();
             var testMaterial = new Material(this.graphics, this.contentManager, testMaterialData);
 
@@ -163,11 +175,11 @@ namespace Carbon.V2Test.Scenes
             cube.SetData(Cube.Data, Cube.Indices);
             this.root.AddChild(new ModelNode { Mesh = cube, Position = new Vector3(5, 10, 2)});*/
 
-            Mesh sphere = new Mesh(Sphere.Create(3)) { AllowInstancing = false };
+            /*Mesh sphere = new Mesh(Sphere.Create(3)) { AllowInstancing = false };
             this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(0), Material = testMaterial });
             this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(0, 10, 0, 1), Material = testMaterial });
             this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(6, 10, 6, 1), Material = testMaterial });
-            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(-6, 4, -6, 1), Material = testMaterial });
+            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(-6, 4, -6, 1), Material = testMaterial });*/
 
             /*Mesh quad2 = Quad.Create(new Vector3(0), -Vector3.UnitZ, Vector3.UnitY, 100, 100);
             this.root.AddChild(new ModelNode { Mesh = quad2, Position = new Vector4(0, 0, 2, 1), Material = this.checkerboardMaterial });
@@ -178,7 +190,7 @@ namespace Carbon.V2Test.Scenes
             //this.root.AddChild(new ModelNode { Mesh = quad2, Position = new Vector4(0, 0, 2, 1), Material = this.checkerboardMaterial });
 
             // Instance test
-            Mesh instanceMesh = new Mesh(Cube.Create(new Vector3(0), 2)) { AllowInstancing = true };
+            /*Mesh instanceMesh = new Mesh(Cube.Create(new Vector3(0), 2)) { AllowInstancing = true };
             Vector3 offset = new Vector3(-50, 5, 50);
             for (int x = 0; x < 10; x++)
             {
@@ -196,7 +208,7 @@ namespace Carbon.V2Test.Scenes
                                 });
                     }
                 }
-            }
+            }*/
 
             /*this.testFont = new FontBuilder();
             Mesh mesh = this.testFont.Build("test font 123\nsecond line\nthird line\n  < - > 1234567890\nabc-def-ghi-jkl-mno-pqr-stu-vwx-yz\nThe Big Brown Fox jumped over the hedge!?", new Vector2(0.1f, 0.2f));
@@ -207,7 +219,7 @@ namespace Carbon.V2Test.Scenes
             fontNode.Scale = new Vector3(2.0f);
             this.root.AddChild(fontNode);*/
 
-            Mesh cone = new Mesh(Cone.Create(20)) { AllowInstancing = true };
+            /*Mesh cone = new Mesh(Cone.Create(20)) { AllowInstancing = true };
             this.root.AddChild(new ModelNode { Mesh = cone, Position = new Vector4(10, 2, 14, 1), Material = this.stoneMaterial });
             this.root.AddChild(new ModelNode { Mesh = cone, Position = new Vector4(14, 2, 10, 1), Material = this.checkerboardMaterial });
             this.root.AddChild(new ModelNode { Mesh = cone, Position = new Vector4(-16, 2, 8, 1) });
@@ -226,7 +238,7 @@ namespace Carbon.V2Test.Scenes
 
                 parent.AddChild(child);
                 parent = child;
-            }
+            }*/
 
             //this.testMesh = Quad.CreateScreen(new Vector2(0), new Vector2(1));
             //this.testMesh = Cube.Create(new Vector3(0, 0, 10), 10);
@@ -237,13 +249,15 @@ namespace Carbon.V2Test.Scenes
             Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
             this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
 
-            var node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House.dae"));
-            node.Position = new Vector4(3.0f, 1.0f, 4.0f, 1.0f);
+            var node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\room.dae"));
+            this.ApplyMaterialRecurse(node, testMaterial);
+            node.Position = new Vector4(3.0f, 5.0f, 4.0f, 1.0f);
+            node.Rotation = Quaternion.RotationAxis(Vector3.UnitX, MathExtension.DegreesToRadians(-90));
             this.root.AddChild(node);
 
-            node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House2.dae"));
+            /*node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House6.dae"));
             node.Position = new Vector4(-3.0f, 1.0f, 4.0f, 1.0f);
-            this.root.AddChild(node);
+            this.root.AddChild(node);*/
 
             //testResource = this.resourceManager.Load<ModelResource>(HashUtils.BuildResourceHash(@"Models\rock_4.dae"));
             //this.root.AddChild(new ModelNode { Mesh = new Mesh(testResource), Position = new Vector4(0, 2, 0, 1), Material = this.checkerboardMaterial });

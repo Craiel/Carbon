@@ -40,12 +40,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.logic.IsProjectLoaded)
-                {
-                    //return string.Format("Project '{0}'", this.logic.Project.Name);
-                }
-
-                return "Content Explorer";
+                return "Content Explorer: " + typeof(T);
             }
         }
         

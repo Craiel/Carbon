@@ -1,4 +1,6 @@
-﻿namespace Carbed.Views
+﻿using System.Threading.Tasks;
+
+namespace Carbed.Views
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -55,10 +57,12 @@
         private void OnRefresh(object obj)
         {
             this.filteredList.Clear();
+
             IList<IResourceViewModel> resources = this.logic.LocateResources(this.FilterText);
             foreach (IResourceViewModel resource in resources)
             {
-                this.filteredList.Add(resource);
+                IResourceViewModel resource1 = resource;
+                Application.Current.Dispatcher.Invoke(() => this.filteredList.Add(resource1));
             }
         }
 

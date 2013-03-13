@@ -6,6 +6,8 @@ using System.Data;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 using Carbed.Contracts;
 using Carbed.Logic.MVVM;
@@ -58,6 +60,8 @@ namespace Carbed.ViewModels
         private bool needReexport;
         
         private ColladaInfo colladaSourceInfo;
+
+        private ImageSource previewImage;
         
         // -------------------------------------------------------------------
         // Constructor
@@ -444,7 +448,26 @@ namespace Carbed.ViewModels
                 }
             }
         }
-        
+
+        public ImageSource PreviewImage
+        {
+            get
+            {
+                if (this.previewImage != null)
+                {
+                    return this.previewImage;
+                }
+
+                return new BitmapImage(StaticResources.NoPreviewImageUri);
+            }
+
+            private set
+            {
+                this.previewImage = value;
+                this.NotifyPropertyChanged();
+            }
+        }
+
         public ICommand CommandSelectFile
         {
             get
@@ -634,6 +657,11 @@ namespace Carbed.ViewModels
                 this.sourceSize = null;
                 this.needReexport = true;
                 return;
+            }
+
+            if (this.previewImage == null)
+            {
+                this.UpdatePreviewImage();
             }
 
             DateTime changeTime = File.GetLastWriteTime(path);
@@ -872,6 +900,20 @@ namespace Carbed.ViewModels
         private void OnTextureSynchronizerChanged(object sender, PropertyChangedEventArgs e)
         {
             this.NotifyPropertyChanged("TextureSynchronizer");
+        }
+
+        private void UpdatePreviewImage()
+        {
+            switch (Path.GetExtension(this.SourcePath))
+            {
+                case ".png":
+                case ".tif":
+                case ".jpg":
+                    {
+                        this.PreviewImage = WPFUtilities.FileToImage(this.SourcePath);
+                        break;
+                    }
+            }
         }
     }
 }

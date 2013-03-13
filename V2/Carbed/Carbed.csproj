@@ -150,6 +150,7 @@
     <Compile Include="Logic\MVVM\FreezableBinding.cs" />
     <Compile Include="Logic\MVVM\ListBoxSelectionSynchronization.cs" />
     <Compile Include="Logic\MVVM\OneWayBinding.cs" />
+    <Compile Include="Logic\MVVM\WPFUtilities.cs" />
     <Compile Include="Logic\OperationProgress.cs" />
     <Compile Include="Logic\MVVM\RelayCommand.cs" />
     <Compile Include="Logic\MVVM\TreeViewExtension.cs" />
@@ -404,6 +405,9 @@
   <ItemGroup>
     <Resource Include="Resources\icon_copy.png" />
     <Resource Include="Resources\icon_paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\no_preview.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

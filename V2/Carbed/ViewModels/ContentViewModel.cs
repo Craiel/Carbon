@@ -57,7 +57,7 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return this.data.IsChanged;
+                return this.data.IsChanged || this.metaData.Values.Any(x => x.IsChanged);
             }
         }
 

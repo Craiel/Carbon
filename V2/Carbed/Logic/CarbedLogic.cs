@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
 
 using Carbed.Contracts;
@@ -167,23 +169,23 @@ namespace Carbed.Logic
         {
             this.Unload();
 
-            ContentQueryResult<MaterialEntry> materialData = this.projectContent.TypedLoad(new ContentQuery<MaterialEntry>());
-            var materialEntries = materialData.ToList<MaterialEntry>();
-            foreach (MaterialEntry entry in materialEntries)
-            {
-                IMaterialViewModel vm = this.viewModelFactory.GetMaterialViewModel(entry);
-                // Todo: Move this into a seperate task into the loading vm
-                vm.Load();
-                this.materials.Add(vm);
-            }
-
+            // Resources need to be first, content has dependencies
             ContentQueryResult<ResourceTree> treeData = this.projectContent.TypedLoad(new ContentQuery<ResourceTree>().IsEqual("Parent", null));
             var treeEntries = treeData.ToList<ResourceTree>();
             foreach (ResourceTree entry in treeEntries)
             {
                 IFolderViewModel vm = this.viewModelFactory.GetFolderViewModel(entry);
                 vm.Load();
-                this.folders.Add(vm);
+                Application.Current.Dispatcher.Invoke(() => this.folders.Add(vm));
+            }
+
+            ContentQueryResult<MaterialEntry> materialData = this.projectContent.TypedLoad(new ContentQuery<MaterialEntry>());
+            var materialEntries = materialData.ToList<MaterialEntry>();
+            foreach (MaterialEntry entry in materialEntries)
+            {
+                IMaterialViewModel vm = this.viewModelFactory.GetMaterialViewModel(entry);
+                vm.Load();
+                Application.Current.Dispatcher.Invoke(() => this.materials.Add(vm));
             }
         }
 

@@ -17,20 +17,37 @@
         </DockPanel>
         
         <ListView Grid.Row="1" ItemsSource="{Binding Path=FilteredList}" SelectedItem="{Binding Path=SelectedResource}" Margin="4">
+            <ListView.Style>
+                <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource {x:Type ListBox}}">
+                    <Setter Property="BorderBrush" Value="Black"/>
+                    <Setter Property="BorderThickness" Value="0.5"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Border Name="bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="{TemplateBinding Margin}">
+                                    <ScrollViewer Margin="{TemplateBinding Padding}">
+                                        <WrapPanel ItemWidth="150" IsItemsHost="True" MinWidth="100" Width="{Binding ActualWidth,RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.Style>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <Image Source="{Binding Path=PreviewImage}" Width="40" Height="40" Margin="4"/>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4">
+                    <DockPanel Width="160" Height="160">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="{Binding Path=Parent.FullPath}" Margin="4" DockPanel.Dock="Bottom">
                             <TextBlock.Text>
-                                <MultiBinding StringFormat="{} [{0}] {1}\\{2}">
+                                <MultiBinding StringFormat="{} [{0}] {1}">
                                     <Binding Path="Id"/>
-                                    <Binding Path="Parent.FullPath"/>
                                     <Binding Path="Name"/>
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
-                    </StackPanel>
+
+                        <Image Source="{Binding Path=PreviewImage}" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </DockPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

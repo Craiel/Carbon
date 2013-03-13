@@ -7,6 +7,8 @@ namespace Carbon.Engine.Scene
 {
     public interface INode : IEntity
     {
+        IReadOnlyCollection<IEntity> Children { get; }
+
         void AddChild(IEntity entity);
         void RemoveChild(IEntity entity);
     }
@@ -16,7 +18,7 @@ namespace Carbon.Engine.Scene
     /// </summary>
     public class Node : Entity, INode
     {
-        private readonly IList<IEntity> children;
+        private readonly List<IEntity> children;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -29,6 +31,14 @@ namespace Carbon.Engine.Scene
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public IReadOnlyCollection<IEntity> Children
+        {
+            get
+            {
+                return this.children.AsReadOnly();
+            }
+        }
+
         public override void Update(Core.Utils.Contracts.ITimer gameTime)
         {
             base.Update(gameTime);
