@@ -553,6 +553,7 @@ namespace Carbed.ViewModels
                             break;
                         }
 
+                    case ResourceType.Script:
                     case ResourceType.Raw:
                         {
                             ICarbonResource resource = this.resourceProcessor.ProcessRaw(source);
@@ -858,6 +859,12 @@ namespace Carbed.ViewModels
                         break;
                     }
 
+                case ".lua":
+                    {
+                        this.Type = ResourceType.Script;
+                        break;
+                    }
+
                 case ".dae":
                     {
                         this.Type = ResourceType.Model;
@@ -892,6 +899,12 @@ namespace Carbed.ViewModels
                             this.TextureFolder = folder;
                         }
 
+                        break;
+                    }
+
+                case ResourceType.Script:
+                    {
+                        this.ForceExport = true;
                         break;
                     }
             }

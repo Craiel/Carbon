@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -526,6 +525,7 @@ namespace Carbed.Logic
             {
                 this.AddFolder().Name = "Textures";
                 this.AddFolder().Name = "Models";
+                this.AddFolder().Name = "Scripts";
             }
         }
     }

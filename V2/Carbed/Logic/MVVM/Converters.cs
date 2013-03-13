@@ -33,24 +33,11 @@ namespace Carbed.Logic.MVVM
     [ValueConversion(typeof(object), typeof(bool))]
     public class NullToBooleanConverter : IValueConverter
     {
-        private bool invert;
-
-        public bool Invert
-        {
-            get
-            {
-                return this.invert;
-            }
-
-            set
-            {
-                this.invert = value;
-            }
-        }
+        public bool Invert { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value != null) ^ this.invert;
+            return (value != null) ^ this.Invert;
         }
 
         public object ConvertBack(
@@ -183,6 +170,8 @@ namespace Carbed.Logic.MVVM
     [ValueConversion(typeof(Enum), typeof(Visibility))]
     public class EnumEqualsToVisibilityConverter : IValueConverter
     {
+        public bool Invert { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null || !value.GetType().IsEnum || parameter == null || !Enum.IsDefined(value.GetType(), parameter))
@@ -190,7 +179,7 @@ namespace Carbed.Logic.MVVM
                 throw new ArgumentException();
             }
 
-            if ((int)value == (int)parameter)
+            if (((int)value == (int)parameter) ^ this.Invert)
             {
                 return Visibility.Visible;
             }

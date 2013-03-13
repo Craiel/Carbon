@@ -3,6 +3,7 @@ using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Logic;
+using Carbon.Engine.Logic.Scripting;
 using Carbon.Engine.Rendering;
 using Carbon.Engine.Rendering.Primitives;
 using Carbon.Engine.Rendering.RenderTarget;
@@ -29,7 +30,8 @@ namespace Carbon.V2Test.Scenes
         private readonly IFrameManager frameManager;
         private readonly IRenderer renderer;
         private readonly ICarbonGraphics graphics;
-
+        private readonly IScriptingEngine scriptingEngine;
+        
         private Material stoneMaterial;
         private Material checkerboardMaterial;
         private Material deferredLightTexture;
@@ -72,6 +74,8 @@ namespace Carbon.V2Test.Scenes
             this.frameManager = factory.Get<IFrameManager>();
             this.renderer = factory.Get<IRenderer>();
             this.graphics = factory.Get<ICarbonGraphics>();
+            this.scriptingEngine = factory.Get<IScriptingEngine>();
+            this.scriptingEngine.Register(new ScriptingCoreProvider(factory.Get<IApplicationLog>()));
 
             this.controller = factory.Get<IFirstPersonController>();
             this.camera = factory.Get<IProjectionCamera>();
@@ -154,6 +158,10 @@ namespace Carbon.V2Test.Scenes
                 this.contentManager.TypedLoad(new ContentQuery<MaterialEntry>().IsEqual("Id", 1))
                     .UniqueResult<MaterialEntry>();
             var testMaterial = new Material(this.graphics, this.contentManager, testMaterialData);
+
+            var testScriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
+            var testScript = new CarbonScript(testScriptData);
+            this.scriptingEngine.Execute(testScript);
 
             /*this.checkerboardMaterial = new Material(graphics, (MaterialEntry)materialResource);
             link = this.resourceManager.GetLink(@"Textures\stone.dds");
@@ -249,7 +257,7 @@ namespace Carbon.V2Test.Scenes
             Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
             this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
 
-            var node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\room.dae"));
+            var node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House6.dae"));
             this.ApplyMaterialRecurse(node, testMaterial);
             node.Position = new Vector4(3.0f, 5.0f, 4.0f, 1.0f);
             node.Rotation = Quaternion.RotationAxis(Vector3.UnitX, MathExtension.DegreesToRadians(-90));

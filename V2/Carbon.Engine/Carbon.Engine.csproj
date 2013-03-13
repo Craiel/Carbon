@@ -64,6 +64,10 @@
     <Reference Include="Google.ProtocolBuffers">
       <HintPath>..\..\..\CarbonExt\protobuf-csharp-port 2.3.0.277\Release\Google.ProtocolBuffers.dll</HintPath>
     </Reference>
+    <Reference Include="LuaInterface, Version=2.0.4.27238, Culture=neutral, PublicKeyToken=1e1fb15b02227b8a, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\CarbonExt\LuaInterface 2.0.4\x64\LuaInterface.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject">
       <HintPath>..\..\..\CarbonExt\Ninject 2.2.1.0\Ninject.dll</HintPath>
     </Reference>
@@ -85,6 +89,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\Logic\IScriptingEngine.cs" />
+    <Compile Include="Contracts\Logic\IScriptingProvider.cs" />
     <Compile Include="Contracts\Network\INetworkClient.cs" />
     <Compile Include="Contracts\IEngineFactory.cs" />
     <Compile Include="Contracts\Logic\ICarbonGraphics.cs" />
@@ -116,6 +122,15 @@
     <Compile Include="Logic\EngineLog.cs" />
     <Compile Include="Logic\FirstPersonController.cs" />
     <Compile Include="Logic\KeyStateManager.cs" />
+    <Compile Include="Logic\Scripting\CarbonScript.cs" />
+    <Compile Include="Logic\Scripting\ScriptingCoreProvider.cs" />
+    <Compile Include="Logic\Scripting\ScriptingNodeProvider.cs" />
+    <Compile Include="Logic\Scripting\ScriptingResourceProvider.cs" />
+    <Compile Include="Logic\Scripting\ScriptingEngine.cs" />
+    <Compile Include="Logic\Scripting\ScriptingMethodInfo.cs" />
+    <Compile Include="Logic\Scripting\ScriptingPropertyInfo.cs" />
+    <Compile Include="Logic\Scripting\ScriptingProviderAttributes.cs" />
+    <Compile Include="Logic\Scripting\ScriptingProviderReflection.cs" />
     <Compile Include="Logic\TextureManager.cs" />
     <Compile Include="Network\CSharpOptions.cs" />
     <Compile Include="Network\DescriptorProtoFile.cs" />

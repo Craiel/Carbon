@@ -57,6 +57,7 @@ namespace Carbon.Engine.Logic
         private readonly ICursor cursor;
         private readonly IFrameManager mainFrameManager;
         private readonly IRenderer mainRenderer;
+        private readonly IScriptingEngine scriptingEngine;
         private readonly IDebugController debugController;
 
         private CarbonWindow window;
@@ -89,6 +90,7 @@ namespace Carbon.Engine.Logic
             this.cursor = factory.Get<ICursor>();
             this.mainFrameManager = factory.Get<IFrameManager>();
             this.mainRenderer = factory.Get<IRenderer>();
+            this.scriptingEngine = factory.Get<IScriptingEngine>();
             this.log = factory.Get<IEngineLog>().AquireContextLog("CarbonGame");
 
             this.gameTimer = new Core.Utils.Timer();
@@ -142,6 +144,14 @@ namespace Carbon.Engine.Logic
             get
             {
                 return this.graphics;
+            }
+        }
+
+        protected IScriptingEngine ScriptingEngine
+        {
+            get
+            {
+                return this.scriptingEngine;
             }
         }
 
@@ -199,6 +209,11 @@ namespace Carbon.Engine.Logic
         protected void SetEngineContent(EngineContent content)
         {
             this.graphics.TextureManager.Fallback = this.graphics.TextureManager.Register(content.FallbackTexture);
+        }
+
+        protected void SetupDefaultProviders(IScriptingEngine engine)
+        {
+            // Todo: Register the default providers
         }
 
         // -------------------------------------------------------------------
@@ -284,6 +299,9 @@ namespace Carbon.Engine.Logic
             this.window.ResizeEnd += (sender, args) => { this.isResizing = false; this.OnWindowResize(sender, args); };
             this.window.FormClosing += this.OnClosing;
             this.window.FormClosed += this.OnClose;
+
+            // Setup the scripting
+            this.SetupDefaultProviders(this.scriptingEngine);
         }
 
         private void OnClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)

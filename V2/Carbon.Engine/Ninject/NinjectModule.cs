@@ -3,6 +3,7 @@ using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Logic;
+using Carbon.Engine.Logic.Scripting;
 using Carbon.Engine.Rendering;
 using Carbon.Engine.Rendering.Camera;
 using Carbon.Engine.Rendering.Shaders;
@@ -25,6 +26,7 @@ namespace Carbon.Engine.Ninject
             this.Bind<ICursor>().To<Cursor>().InSingletonScope();
             this.Bind<IFirstPersonController>().To<FirstPersonController>();
             this.Bind<IDebugController>().To<DebugController>();
+            this.Bind<IScriptingEngine>().To<ScriptingEngine>();
 
             // Rendering
             this.Bind<IProjectionCamera>().To<ProjectionCamera>();

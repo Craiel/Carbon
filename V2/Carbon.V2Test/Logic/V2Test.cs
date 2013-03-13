@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using Carbon.Engine.Contracts;
+using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
 using Carbon.Engine.Logic;
+using Carbon.Engine.Logic.Scripting;
 using Carbon.V2Test.Contracts;
 using Carbon.V2Test.Scenes;
 
@@ -32,7 +34,7 @@ namespace Carbon.V2Test.Logic
         }
 
         // -------------------------------------------------------------------
-        // Public
+        // Protected
         // -------------------------------------------------------------------
         protected override string InternalGameName
         {

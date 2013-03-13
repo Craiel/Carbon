@@ -7,6 +7,7 @@
         Model = 11,
         Texture = 12,
         Font = 13,
+        Script = 14,
     }
 
     [ContentEntry("Resource")]

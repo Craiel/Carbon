@@ -11,6 +11,7 @@
     <mvvm:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
 
     <mvvm:EnumEqualsToVisibilityConverter x:Key="EnumEqualsToVisibilityConverter"/>
+    <mvvm:EnumEqualsToVisibilityConverter x:Key="EnumEqualsToVisibilityConverterInverted" Invert="True"/>
 
     <mvvm:ReferenceToTypeConverter x:Key="ReferenceToTypeConverter"/>
     

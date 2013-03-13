@@ -40,9 +40,9 @@
                     <Button Command="{Binding Path=CommandSelectFile}" Content="..." DockPanel.Dock="Right" Width="20" Height="20"/>
                     <TextBox Text="{Binding Path=SourcePath, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center"/>
                 </DockPanel>
-                
-                <TextBlock Text="Force Export" Grid.Row="2" Margin="4"/>
-                <CheckBox IsChecked="{Binding Path=ForceExport}" Grid.Row="2" Grid.Column="1" Margin="4"/>
+
+                <TextBlock Text="Force Export" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverterInverted}, ConverterParameter={x:Static content:ResourceType.Script}}" Grid.Row="2" Margin="4"/>
+                <CheckBox IsChecked="{Binding Path=ForceExport}" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverterInverted}, ConverterParameter={x:Static content:ResourceType.Script}}" Grid.Row="2" Grid.Column="1" Margin="4"/>
                 
                 <TextBlock Text="Last Changed:" Grid.Row="3" Margin="4"/>
                 <TextBlock Text="{Binding Path=LastChangeDate}" Grid.Row="3" Grid.Column="1" Margin="4"/>
