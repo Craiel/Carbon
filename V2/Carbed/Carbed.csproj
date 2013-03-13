@@ -180,6 +180,9 @@
     <Compile Include="Views\MaterialExplorerView.xaml.cs">
       <DependentUpon>MaterialExplorerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ResourceBrowser.xaml.cs">
+      <DependentUpon>ResourceBrowser.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ResourceView.xaml.cs">
       <DependentUpon>ResourceView.xaml</DependentUpon>
     </Compile>
@@ -289,6 +292,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MaterialExplorerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResourceBrowser.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

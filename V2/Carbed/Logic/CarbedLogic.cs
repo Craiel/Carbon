@@ -17,6 +17,8 @@ using Core.Utils.Contracts;
 
 namespace Carbed.Logic
 {
+    using System.Collections.ObjectModel;
+
     public class CarbedLogic : CarbedBase, ICarbedLogic
     {
         private readonly IEngineFactory engineFactory;
@@ -24,8 +26,8 @@ namespace Carbed.Logic
         private readonly IViewModelFactory viewModelFactory;
         private readonly ICarbedSettings settings;
 
-        private readonly List<IMaterialViewModel> materials;
-        private readonly List<IFolderViewModel> folders;
+        private readonly ObservableCollection<IMaterialViewModel> materials;
+        private readonly ObservableCollection<IFolderViewModel> folders;
 
         private string projectPath;
         private IContentManager projectContent;
@@ -43,8 +45,8 @@ namespace Carbed.Logic
             this.viewModelFactory = factory.Get<IViewModelFactory>();
             this.settings = factory.Get<ICarbedSettings>();
 
-            this.materials = new List<IMaterialViewModel>();
-            this.folders = new List<IFolderViewModel>();
+            this.materials = new ObservableCollection<IMaterialViewModel>();
+            this.folders = new ObservableCollection<IFolderViewModel>();
         }
 
         // -------------------------------------------------------------------
@@ -60,19 +62,19 @@ namespace Carbed.Logic
             }
         }
 
-        public IReadOnlyCollection<IMaterialViewModel> Materials
+        public ReadOnlyObservableCollection<IMaterialViewModel> Materials
         {
             get
             {
-                return this.materials.AsReadOnly();
+                return new ReadOnlyObservableCollection<IMaterialViewModel>(this.materials);
             }
         }
 
-        public IReadOnlyCollection<IFolderViewModel> Folders
+        public ReadOnlyObservableCollection<IFolderViewModel> Folders
         {
             get
             {
-                return this.folders.AsReadOnly();
+                return new ReadOnlyObservableCollection<IFolderViewModel>(this.folders);
             }
         }
 
@@ -118,6 +120,7 @@ namespace Carbed.Logic
 
             this.InitializeProject(Path.GetDirectoryName(path));
             this.Reload();
+            this.CheckProjectDefaults();
             this.NotifyProjectChanged();
         }
 
@@ -320,6 +323,45 @@ namespace Carbed.Logic
             return null;
         }
 
+        public IResourceViewModel LocateResource(int id)
+        {
+            foreach (IFolderViewModel folder in this.folders)
+            {
+                var result = this.LocateResource(folder, id);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        public IResourceViewModel LocateResource(string hash)
+        {
+            foreach (IFolderViewModel folder in this.folders)
+            {
+                var result = this.LocateResource(folder, hash);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        public IList<IResourceViewModel> LocateResources(string filter)
+        {
+            IList<IResourceViewModel> results = new List<IResourceViewModel>();
+            foreach (IFolderViewModel folder in this.folders)
+            {
+                this.LocateResources(results, folder, filter);
+            }
+
+            return results;
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
@@ -383,6 +425,106 @@ namespace Carbed.Logic
             }
 
             return null;
+        }
+
+        private IResourceViewModel LocateResource(IFolderViewModel current, string hash)
+        {
+            if (current.Content == null || current.Content.Count <= 0)
+            {
+                return null;
+            }
+
+            foreach (ICarbedDocument document in current.Content)
+            {
+                if (document as IResourceViewModel != null)
+                {
+                    if (((IResourceViewModel)document).Hash.Equals(hash, StringComparison.Ordinal))
+                    {
+                        return document as IResourceViewModel;
+                    }
+
+                    continue;
+                }
+
+                if (document as IFolderViewModel != null)
+                {
+                    var result = this.LocateResource(document as IFolderViewModel, hash);
+                    if (result != null)
+                    {
+                        return result;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private IResourceViewModel LocateResource(IFolderViewModel current, int id)
+        {
+            if (current.Content == null || current.Content.Count <= 0)
+            {
+                return null;
+            }
+
+            foreach (ICarbedDocument document in current.Content)
+            {
+                if (document as IResourceViewModel != null)
+                {
+                    if (((IResourceViewModel)document).Id == id)
+                    {
+                        return document as IResourceViewModel;
+                    }
+
+                    continue;
+                }
+
+                if (document as IFolderViewModel != null)
+                {
+                    var result = this.LocateResource(document as IFolderViewModel, id);
+                    if (result != null)
+                    {
+                        return result;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private void LocateResources(IList<IResourceViewModel> target, IFolderViewModel current, string filter)
+        {
+            if (current.Content == null || current.Content.Count <= 0)
+            {
+                return;
+            }
+
+            foreach (ICarbedDocument document in current.Content)
+            {
+                if (document as IResourceViewModel != null)
+                {
+                    if (string.IsNullOrEmpty(filter) || document.Name.ToLower().Contains(filter))
+                    {
+                        target.Add(document as IResourceViewModel);
+                    }
+
+                    continue;
+                }
+
+                if (document as IFolderViewModel != null)
+                {
+                    this.LocateResources(target, document as IFolderViewModel, filter);
+                }
+            }
+        }
+
+        // This will check and add / set some default data for the project
+        private void CheckProjectDefaults()
+        {
+            if (this.folders.Count <= 0)
+            {
+                this.AddFolder().Name = "Textures";
+                this.AddFolder().Name = "Models";
+            }
         }
     }
 }

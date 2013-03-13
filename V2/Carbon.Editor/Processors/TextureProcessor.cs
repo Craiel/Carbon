@@ -95,12 +95,15 @@ namespace Carbon.Editor.Processors
         private static string BuildCompressionParameter(TextureProcessingOptions options)
         {
             StringBuilder builder = new StringBuilder();
+            bool isNormal;
             if (options.ConvertToNormalMap)
             {
                 builder.Append("-tonormal");
+                isNormal = true;
             }
             else
             {
+                isNormal = options.IsNormalMap;
                 builder.Append(options.IsNormalMap ? "-normal " : "-color ");
             }
 
@@ -119,7 +122,7 @@ namespace Carbon.Editor.Processors
 
                 case TextureTargetFormat.DDSDxt1:
                     {
-                        builder.Append(options.IsNormalMap ? "-bc1n " : "-bc1 ");
+                        builder.Append(isNormal ? "-bc1n " : "-bc1 ");
                         break;
                     }
 
@@ -131,7 +134,7 @@ namespace Carbon.Editor.Processors
 
                 case TextureTargetFormat.DDSDxt5:
                     {
-                        builder.Append(options.IsNormalMap ? "-bc3n " : "-bc3 ");
+                        builder.Append(isNormal ? "-bc3n " : "-bc3 ");
                         break;
                     }
                 default:

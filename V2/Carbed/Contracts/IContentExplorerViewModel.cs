@@ -3,9 +3,10 @@ using System.Windows.Input;
 
 namespace Carbed.Contracts
 {
-    public interface IContentExplorerViewModel : ICarbedTool
+    public interface IContentExplorerViewModel<T> : ICarbedTool
+        where T : ICarbedDocument
     {
-        ReadOnlyCollection<ICarbedDocument> Documents { get; }
+        ReadOnlyObservableCollection<T> Documents { get; }
 
         ICommand CommandReload { get; }
         ICommand CommandOpenNewDialog { get; }

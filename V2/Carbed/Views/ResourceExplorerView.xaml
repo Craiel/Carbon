@@ -34,9 +34,12 @@
             <DataTemplate x:Key="ResourceEntryTemplate">
                 <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource ResourceContextMenu}">
                     <StackPanel.Resources>
+                        <mvvm:CommandReference x:Key="CommandOpenReference" Command="{Binding Path=CommandOpen}" />
                         <mvvm:CommandReference x:Key="CommandDeleteReference" Command="{Binding Path=CommandDelete}" />
                     </StackPanel.Resources>
                     <StackPanel.InputBindings>
+                        <MouseBinding Command="{StaticResource CommandOpenReference}" MouseAction="LeftDoubleClick" />
+                        <KeyBinding Key="ENTER" Command="{StaticResource CommandOpenReference}" />
                         <KeyBinding Key="Delete" Command="{StaticResource CommandDeleteReference}" />
                     </StackPanel.InputBindings>
                     
@@ -48,12 +51,9 @@
             <DataTemplate x:Key="FolderTemplate">
                 <StackPanel Orientation="Vertical">
                     <StackPanel.Resources>
-                        <mvvm:CommandReference x:Key="CommandOpenReference" Command="{Binding Path=CommandOpen}" />
                         <mvvm:CommandReference x:Key="CommandDeleteReference" Command="{Binding Path=CommandDelete}" />
                     </StackPanel.Resources>
                     <StackPanel.InputBindings>
-                        <MouseBinding Command="{StaticResource CommandOpenReference}" MouseAction="LeftDoubleClick" />
-                        <KeyBinding Key="ENTER" Command="{StaticResource CommandOpenReference}" />
                         <KeyBinding Key="Delete" Command="{StaticResource CommandDeleteReference}" />
                     </StackPanel.InputBindings>
                     

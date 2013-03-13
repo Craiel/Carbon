@@ -138,6 +138,11 @@ namespace Carbon.V2Test.Scenes
             testLight = new Light { Color = new Vector4(1), Type = LightType.Spot, Range = 10.0f, SpecularPower = 10.0f, Direction = Vector3.UnitY, SpotAngles = new Vector2(5, 10) };
             this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(35f, 0.5f, 20f, 1) });
 
+            var testMaterialData =
+                this.contentManager.TypedLoad(new ContentQuery<MaterialEntry>().IsEqual("Id", 3))
+                    .UniqueResult<MaterialEntry>();
+            var testMaterial = new Material(this.graphics, this.contentManager, testMaterialData);
+
             /*this.checkerboardMaterial = new Material(graphics, (MaterialEntry)materialResource);
             link = this.resourceManager.GetLink(@"Textures\stone.dds");
             this.stoneMaterial = new Material(
@@ -159,10 +164,10 @@ namespace Carbon.V2Test.Scenes
             this.root.AddChild(new ModelNode { Mesh = cube, Position = new Vector3(5, 10, 2)});*/
 
             Mesh sphere = new Mesh(Sphere.Create(3)) { AllowInstancing = false };
-            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(0), Material = this.checkerboardMaterial });
-            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(0, 10, 0, 1), Material = this.stoneMaterial });
-            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(6, 10, 6, 1), Material = this.stoneMaterial });
-            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(-6, 4, -6, 1), Material = this.checkerboardMaterial });
+            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(0), Material = testMaterial });
+            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(0, 10, 0, 1), Material = testMaterial });
+            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(6, 10, 6, 1), Material = testMaterial });
+            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(-6, 4, -6, 1), Material = testMaterial });
 
             /*Mesh quad2 = Quad.Create(new Vector3(0), -Vector3.UnitZ, Vector3.UnitY, 100, 100);
             this.root.AddChild(new ModelNode { Mesh = quad2, Position = new Vector4(0, 0, 2, 1), Material = this.checkerboardMaterial });
@@ -232,11 +237,11 @@ namespace Carbon.V2Test.Scenes
             Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
             this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
 
-            var node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House6.dae"));
+            var node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House.dae"));
             node.Position = new Vector4(3.0f, 1.0f, 4.0f, 1.0f);
             this.root.AddChild(node);
 
-            node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House6_2.dae"));
+            node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House2.dae"));
             node.Position = new Vector4(-3.0f, 1.0f, 4.0f, 1.0f);
             this.root.AddChild(node);
 

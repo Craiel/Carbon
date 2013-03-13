@@ -4,6 +4,7 @@
     {
         Unknown = 0,
         ResourceTreeNode = 1,
+        Resource = 2,
     }
 
     [ContentEntry("ContentLink")]
@@ -16,7 +17,7 @@
         public int? Id { get; set; }
 
         [ContentEntryElement]
-        public int ContentId { get; set; }
+        public int? ContentId { get; set; }
 
         [ContentEntryElement]
         public ContentLinkType Type { get; set; }

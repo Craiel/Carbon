@@ -9,6 +9,8 @@ using SlimDX;
 
 namespace Carbon.Engine.Rendering
 {
+    using Carbon.Engine.Contracts.Resource;
+
     public class Material : IDisposable
     {
         private readonly ICarbonGraphics graphics;
@@ -16,13 +18,35 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public Material(ICarbonGraphics graphics, MaterialEntry content)
+        public Material(ICarbonGraphics graphics, IContentManager contentManager, MaterialEntry content)
         {
             this.graphics = graphics;
 
             this.Color = new Vector4(content.ColorR, content.ColorG, content.ColorB, content.ColorA);
 
-            throw new NotImplementedException();
+            if (content.DiffuseTexture != null)
+            {
+                var resource = contentManager.Load<ResourceEntry>(content.DiffuseTexture);
+                this.DiffuseTexture = graphics.TextureManager.Register(resource.Hash);
+            }
+
+            if (content.NormalTexture != null)
+            {
+                var resource = contentManager.Load<ResourceEntry>(content.NormalTexture);
+                this.NormalTexture = graphics.TextureManager.Register(resource.Hash);
+            }
+
+            if (content.AlphaTexture != null)
+            {
+                var resource = contentManager.Load<ResourceEntry>(content.AlphaTexture);
+                this.AlphaTexture = graphics.TextureManager.Register(resource.Hash);
+            }
+
+            if (content.SpecularTexture != null)
+            {
+                var resource = contentManager.Load<ResourceEntry>(content.SpecularTexture);
+                this.SpecularTexture = graphics.TextureManager.Register(resource.Hash);
+            }
         }
 
         public Material(ICarbonGraphics graphics, MaterialElement content)

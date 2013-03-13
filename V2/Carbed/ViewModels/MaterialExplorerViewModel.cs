@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
-
-using Carbed.Contracts;
+﻿using Carbed.Contracts;
 
 using Carbon.Engine.Contracts;
 
 namespace Carbed.ViewModels
 {
-    public class MaterialExplorerViewModel : ContentExplorerViewModel, IMaterialExplorerViewModel
+    using System;
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+
+    public class MaterialExplorerViewModel : ContentExplorerViewModel<IMaterialViewModel>, IMaterialExplorerViewModel
     {
         private readonly ICarbedLogic logic;
 
@@ -17,12 +19,18 @@ namespace Carbed.ViewModels
             : base(factory, logic)
         {
             this.logic = logic;
+            ((INotifyCollectionChanged)this.logic.Materials).CollectionChanged += this.OnSourceCollectionChangend;
+        }
+
+        private void OnSourceCollectionChangend(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.UpdateDocuments();
         }
 
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected override void DoUpdate(List<ICarbedDocument> target)
+        protected override void DoUpdate(ObservableCollection<IMaterialViewModel> target)
         {
             foreach (IMaterialViewModel material in this.logic.Materials)
             {

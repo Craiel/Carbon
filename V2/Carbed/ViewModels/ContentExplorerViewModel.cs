@@ -9,12 +9,13 @@ using Carbon.Engine.Contracts;
 
 namespace Carbed.ViewModels
 {
-    public abstract class ContentExplorerViewModel : ToolViewModel, IContentExplorerViewModel
+    public abstract class ContentExplorerViewModel<T> : ToolViewModel, IContentExplorerViewModel<T>
+        where T : ICarbedDocument
     {
         private readonly ICarbedLogic logic;
         private readonly IEngineFactory factory;
 
-        private readonly List<ICarbedDocument> documents;
+        private readonly ObservableCollection<T> filteredDocuments;
 
         private ICommand commandReload;
 
@@ -29,7 +30,7 @@ namespace Carbed.ViewModels
             this.logic = logic;
             this.logic.ProjectChanged += this.OnProjectChanged;
 
-            this.documents = new List<ICarbedDocument>();
+            this.filteredDocuments = new ObservableCollection<T>();
         }
 
         // -------------------------------------------------------------------
@@ -48,11 +49,11 @@ namespace Carbed.ViewModels
             }
         }
         
-        public ReadOnlyCollection<ICarbedDocument> Documents
+        public ReadOnlyObservableCollection<T> Documents
         {
             get
             {
-                return this.documents.AsReadOnly();
+                return new ReadOnlyObservableCollection<T>(this.filteredDocuments);
             }
         }
 
@@ -81,24 +82,24 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected abstract void DoUpdate(List<ICarbedDocument> target);
+        protected abstract void DoUpdate(ObservableCollection<T> target);
 
-        // -------------------------------------------------------------------
-        // Private
-        // -------------------------------------------------------------------
-        private void UpdateDocuments()
+        protected void UpdateDocuments()
         {
-            this.documents.Clear();
+            this.filteredDocuments.Clear();
 
             if (!this.logic.IsProjectLoaded)
             {
                 return;
             }
 
-            this.DoUpdate(this.documents);
+            this.DoUpdate(this.filteredDocuments);
             this.NotifyPropertyChanged("Documents");
         }
 
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
         private void OnProjectChanged()
         {
             this.UpdateDocuments();

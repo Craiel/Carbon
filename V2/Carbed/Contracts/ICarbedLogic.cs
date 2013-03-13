@@ -4,6 +4,8 @@ using Carbon.Engine.Resource.Content;
 
 namespace Carbed.Contracts
 {
+    using System.Collections.ObjectModel;
+
     public delegate void ProjectChangedEventHandler();
 
     public interface ICarbedLogic : ICarbedBase
@@ -12,8 +14,8 @@ namespace Carbed.Contracts
 
         bool IsProjectLoaded { get; }
 
-        IReadOnlyCollection<IMaterialViewModel> Materials { get; }
-        IReadOnlyCollection<IFolderViewModel> Folders { get; }
+        ReadOnlyObservableCollection<IMaterialViewModel> Materials { get; }
+        ReadOnlyObservableCollection<IFolderViewModel> Folders { get; }
         
         void NewProject();
         void CloseProject();
@@ -42,5 +44,11 @@ namespace Carbed.Contracts
         IList<IResourceViewModel> GetResourceTreeContent(int node);
 
         IFolderViewModel LocateFolder(string hash);
+
+        // Todo: Need to optimize and refactor this:
+        IResourceViewModel LocateResource(int id);
+        IResourceViewModel LocateResource(string hash);
+
+        IList<IResourceViewModel> LocateResources(string filter);
     }
 }

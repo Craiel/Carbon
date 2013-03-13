@@ -59,6 +59,35 @@ namespace Carbon.Engine.Resource
             return new ContentQueryResult(this, this.log, this.GetCommand(criteria));
         }
 
+        public T Load<T>(ContentLink link)
+            where T : ICarbonContent
+        {
+            if (link.ContentId == null || link.Type == ContentLinkType.Unknown)
+            {
+                throw new ArgumentException("Invalid ContentLink");
+            }
+
+            switch (link.Type)
+            {
+                case ContentLinkType.Resource:
+                    {
+                        if (typeof(T) != typeof(ResourceEntry))
+                        {
+                            throw new InvalidOperationException();
+                        }
+
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new NotImplementedException();
+                    }
+            }
+
+            return this.TypedLoad(new ContentQuery<T>().IsEqual("Id", link.ContentId)).UniqueResult<T>();
+        }
+
         public void Save(ICarbonContent content)
         {
             this.Connect();

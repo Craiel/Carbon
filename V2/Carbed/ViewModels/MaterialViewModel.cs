@@ -6,26 +6,33 @@ using Carbed.Contracts;
 using Carbed.Logic.MVVM;
 
 using Carbon.Engine.Contracts;
-using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
+    using Carbon.Engine.Contracts.Resource;
+
+    using global::Carbed.Views;
+
     public class MaterialViewModel : ContentViewModel, IMaterialViewModel
     {
         private readonly ICarbedLogic logic;
-        private MaterialEntry data;
-
-        private ImageSource previewDiffuseImage;
-        private ImageSource previewNormalImage;
-        private ImageSource previewSpecularImage;
-        private ImageSource previewAlphaImage;
-
-        private ResourceEntry diffuseResource;
-        private ResourceEntry normalResource;
-        private ResourceEntry specularResource;
-        private ResourceEntry alphaResource;
+        private readonly MaterialEntry data;
         
+        private IResourceViewModel diffuseTexture;
+        private IResourceViewModel normalTexture;
+        private IResourceViewModel specularTexture;
+        private IResourceViewModel alphaTexture;
+        
+        private ICommand commandSelectColor;
+
+        private ICommand commandSelectDiffuse;
+        private ICommand commandSelectNormal;
+        private ICommand commandSelectAlpha;
+        private ICommand commandSelectSpecular;
+
+        private bool needSave;
+
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -36,11 +43,7 @@ namespace Carbed.ViewModels
 
             this.data = data;
 
-            this.CommandUpdatePreview = new RelayCommand(this.OnUpdatePreview, this.CanPreview);
-
             this.Template = StaticResources.MaterialTemplate;
-
-            this.UpdatePreview();
         }
 
         // -------------------------------------------------------------------
@@ -58,8 +61,21 @@ namespace Carbed.ViewModels
         {
             get
             {
-                return this.data.IsChanged || this.diffuseResource.IsChanged || this.normalResource.IsChanged ||
-                       this.specularResource.IsChanged || this.alphaResource.IsChanged;
+                return base.IsChanged || this.needSave;
+            }
+        }
+
+        public override string Name
+        {
+            get
+            {
+                return base.Name;
+            }
+
+            set
+            {
+                base.Name = value;
+                this.NotifyPropertyChanged("Title");
             }
         }
         
@@ -71,104 +87,234 @@ namespace Carbed.ViewModels
             }
         }
 
-        public ImageSource PreviewDiffuseImage
+        public int? Id
         {
             get
             {
-                return this.previewDiffuseImage;
+                return this.data.Id;
             }
         }
 
-        public ImageSource PreviewNormalImage
+        public Color Color
         {
             get
             {
-                return this.previewNormalImage;
+                return Color.FromScRgb(this.data.ColorA, this.data.ColorR, this.data.ColorG, this.data.ColorB);
+            }
+
+            private set
+            {
+                this.data.ColorA = value.ScA;
+                this.data.ColorR = value.ScR;
+                this.data.ColorG = value.ScG;
+                this.data.ColorB = value.ScB;
+                this.NotifyPropertyChanged();
             }
         }
 
-        public ImageSource PreviewSpecularImage
+        public IResourceViewModel DiffuseTexture
         {
             get
             {
-                return this.previewSpecularImage;
+                return this.diffuseTexture;
+            }
+
+            private set
+            {
+                if (this.diffuseTexture != value)
+                {
+                    this.CreateUndoState();
+                    this.diffuseTexture = value;
+                    this.needSave = true;
+                    this.NotifyPropertyChanged("IsChanged");
+                    this.NotifyPropertyChanged();
+                }
             }
         }
 
-        public ImageSource PreviewAlphaImage
+        public IResourceViewModel NormalTexture
         {
             get
             {
-                return this.previewAlphaImage;
+                return this.normalTexture;
+            }
+
+            private set
+            {
+                if (this.normalTexture != value)
+                {
+                    this.CreateUndoState();
+                    this.normalTexture = value;
+                    this.needSave = true;
+                    this.NotifyPropertyChanged("IsChanged");
+                    this.NotifyPropertyChanged();
+                }
             }
         }
-        
-        public ICommand CommandUpdatePreview { get; private set; }
+
+        public IResourceViewModel AlphaTexture
+        {
+            get
+            {
+                return this.alphaTexture;
+            }
+
+            private set
+            {
+                if (this.alphaTexture != value)
+                {
+                    this.CreateUndoState();
+                    this.alphaTexture = value;
+                    this.needSave = true;
+                    this.NotifyPropertyChanged("IsChanged");
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public IResourceViewModel SpecularTexture
+        {
+            get
+            {
+                return this.specularTexture;
+            }
+
+            private set
+            {
+                if (this.specularTexture != value)
+                {
+                    this.CreateUndoState();
+                    this.specularTexture = value;
+                    this.needSave = true;
+                    this.NotifyPropertyChanged("IsChanged");
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public ICommand CommandSelectColor
+        {
+            get
+            {
+                return this.commandSelectColor ?? (this.commandSelectColor = new RelayCommand(this.OnSelectColor));
+            }
+        }
+
+        public ICommand CommandSelectDiffuse
+        {
+            get
+            {
+                return this.commandSelectDiffuse ?? (this.commandSelectDiffuse = new RelayCommand(x => this.DiffuseTexture = this.SelectTexture()));
+            }
+        }
+
+        public ICommand CommandSelectNormal
+        {
+            get
+            {
+                return this.commandSelectNormal ?? (this.commandSelectNormal = new RelayCommand(x => this.NormalTexture = this.SelectTexture())); ;
+            }
+        }
+
+        public ICommand CommandSelectAlpha
+        {
+            get
+            {
+                return this.commandSelectAlpha ?? (this.commandSelectAlpha = new RelayCommand(x => this.AlphaTexture = this.SelectTexture())); ;
+            }
+        }
+
+        public ICommand CommandSelectSpecular
+        {
+            get
+            {
+                return this.commandSelectSpecular ?? (this.commandSelectSpecular = new RelayCommand(x => this.SpecularTexture = this.SelectTexture())); ;
+            }
+        }
+
+        private static ContentLink ProcessContentLink(ContentLink existing, ContentLinkType type, int? contentId, IContentManager host)
+        {
+            if (contentId != null)
+            {
+                ContentLink result;
+                if (existing != null)
+                {
+                    if (existing.Type != type)
+                    {
+                        throw new InvalidOperationException("Content Link was set to be updated with a different type, this is probably not intended!");
+                    }
+
+                    result = existing;
+                }
+                else
+                {
+                    result = new ContentLink { Type = type };
+                }
+
+                result.ContentId = contentId;
+                return result;
+            }
+
+            if (existing != null)
+            {
+                host.Delete(existing);
+            }
+
+            return null;
+        }
 
         public new void Save(IContentManager target)
         {
+            int? id = this.diffuseTexture == null ? null : this.diffuseTexture.Id;
+            this.data.DiffuseTexture = ProcessContentLink(this.data.DiffuseTexture, ContentLinkType.Resource, id, target);
+
+            id = this.normalTexture == null ? null : this.normalTexture.Id;
+            this.data.NormalTexture = ProcessContentLink(this.data.NormalTexture, ContentLinkType.Resource, id, target);
+
+            id = this.alphaTexture == null ? null : this.alphaTexture.Id;
+            this.data.AlphaTexture = ProcessContentLink(this.data.AlphaTexture, ContentLinkType.Resource, id, target);
+
+            id = this.specularTexture == null ? null : this.specularTexture.Id;
+            this.data.SpecularTexture = ProcessContentLink(this.data.SpecularTexture, ContentLinkType.Resource, id, target);
+
             base.Save(target);
-
-            if (this.diffuseResource != null && (this.diffuseResource.IsNew || this.diffuseResource.IsChanged))
-            {
-                target.Save(this.diffuseResource);
-            }
-
-            if (this.normalResource != null && (this.normalResource.IsNew || this.normalResource.IsChanged))
-            {
-                target.Save(this.normalResource);
-            }
-
-            if (this.specularResource != null && (this.specularResource.IsNew || this.specularResource.IsChanged))
-            {
-                target.Save(this.specularResource);
-            }
-
-            if (this.alphaResource != null && (this.alphaResource.IsNew || this.alphaResource.IsChanged))
-            {
-                target.Save(this.alphaResource);
-            }
-
             this.NotifyPropertyChanged();
         }
 
         public new void Delete(IContentManager target)
         {
             base.Delete(target);
-
-            if (this.diffuseResource != null && !this.diffuseResource.IsNew)
-            {
-                target.Delete(this.diffuseResource);
-            }
-
-            if (this.normalResource != null && !this.normalResource.IsNew)
-            {
-                target.Delete(this.diffuseResource);
-            }
-
-            if (this.specularResource != null && !this.specularResource.IsNew)
-            {
-                target.Delete(this.diffuseResource);
-            }
-
-            if (this.alphaResource != null && !this.alphaResource.IsNew)
-            {
-                target.Delete(this.diffuseResource);
-            }
-
             this.NotifyPropertyChanged();
+        }
+
+        public override void Load()
+        {
+            base.Load();
+
+            if (this.data.DiffuseTexture != null)
+            {
+                this.diffuseTexture = this.logic.LocateResource((int)this.data.DiffuseTexture.ContentId);
+            }
+
+            if (this.data.AlphaTexture != null)
+            {
+                this.alphaTexture = this.logic.LocateResource((int)this.data.AlphaTexture.ContentId);
+            }
+
+            if (this.data.NormalTexture != null)
+            {
+                this.normalTexture = this.logic.LocateResource((int)this.data.NormalTexture.ContentId);
+            }
+
+            if (this.data.SpecularTexture != null)
+            {
+                this.specularTexture = this.logic.LocateResource((int)this.data.SpecularTexture.ContentId);
+            }
         }
 
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected override void RestoreMemento(object memento)
-        {
-            base.RestoreMemento(memento);
-
-            this.UpdatePreview();
-        }
-
         protected override void OnSave(object obj)
         {
             this.logic.Save(this);
@@ -177,19 +323,21 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void OnUpdatePreview(object obj)
+        private void OnSelectColor(object obj)
         {
-            this.UpdatePreview();
+            throw new NotImplementedException();
         }
 
-        private bool CanPreview(object obj)
+        private IResourceViewModel SelectTexture()
         {
-            return false;
-        }
+            var browser = new ResourceBrowser(this.logic);
+            browser.CheckSelection = true;
+            if (browser.ShowDialog() == true)
+            {
+                return browser.SelectedResource;
+            }
 
-        private void UpdatePreview()
-        {
-            // Todo
+            return null;
         }
     }
 }
