@@ -33,26 +33,26 @@ namespace Carbon.Engine.Logic.Scripting
         }
 
         [ScriptingMethod]
-        public string Desc(object source)
+        public static string Desc(object source)
         {
             Type type = source.GetType();
             return type.Name;
         }
 
         [ScriptingMethod]
-        public Vector2 Vector2(float x = 0, float y = 0)
+        public static Vector2 Vector2(float x = 0, float y = 0)
         {
             return new Vector2(x, y);
         }
 
         [ScriptingMethod]
-        public Vector3 Vector3(float x = 0, float y = 0, float z = 0)
+        public static Vector3 Vector3(float x = 0, float y = 0, float z = 0)
         {
             return new Vector3(x, y, z);
         }
 
         [ScriptingMethod]
-        public Vector4 Vector4(float x = 0, float y = 0, float z = 0, float w = 0)
+        public static Vector4 Vector4(float x = 0, float y = 0, float z = 0, float w = 0)
         {
             return new Vector4(x, y, z, w);
         }

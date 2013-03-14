@@ -5,6 +5,16 @@ namespace Core.Utils
 {
     public static class TypeExtension
     {
+        public static bool Implements<T>(this Type type) where T : class
+        {
+            if (!typeof(T).IsInterface)
+            {
+                throw new InvalidOperationException("Interface type expected for Implements call");
+            }
+
+            return typeof(T).IsAssignableFrom(type);
+        }
+
         public static object ConvertValue(this Type type, object source)
         {
             bool isNullable = type.IsClass;

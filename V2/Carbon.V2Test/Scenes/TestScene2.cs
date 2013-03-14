@@ -31,9 +31,9 @@ namespace Carbon.V2Test.Scenes
         private readonly IRenderer renderer;
         private readonly ICarbonGraphics graphics;
         private readonly IScriptingEngine scriptingEngine;
+
+        private INodeManager nodeManager;
         
-        private Material stoneMaterial;
-        private Material checkerboardMaterial;
         private Material deferredLightTexture;
         private Material forwardDebugTexture;
         private Material normalDebugTexture;
@@ -42,23 +42,12 @@ namespace Carbon.V2Test.Scenes
         private Material gBufferDiffuseAlbedoTexture;
         private Material gBufferSpecularAlbedoTexture;
         private Material gBufferDepthTexture;
-
-        private Material shadowMapTexture;
         
-        private float testRotation;
-        private LightNode lightTesting;
-        private LightNode screenAmbient;
-        private INode root;
-
         private readonly IFirstPersonController controller;
         private readonly IProjectionCamera camera;
         private readonly IOrthographicCamera overlayCamera;
 
-        private INode hirarchyTestNode;
-        private INode middleNode;
-
-        private Mesh testQuad;
-        private Mesh testMesh;
+        private Mesh screenQuad;
         
         public override void Dispose()
         {
@@ -74,9 +63,7 @@ namespace Carbon.V2Test.Scenes
             this.frameManager = factory.Get<IFrameManager>();
             this.renderer = factory.Get<IRenderer>();
             this.graphics = factory.Get<ICarbonGraphics>();
-            this.scriptingEngine = factory.Get<IScriptingEngine>();
-            this.scriptingEngine.Register(new ScriptingCoreProvider(factory.Get<IApplicationLog>()));
-
+            
             this.controller = factory.Get<IFirstPersonController>();
             this.camera = factory.Get<IProjectionCamera>();
             this.overlayCamera = factory.Get<IOrthographicCamera>();
@@ -84,30 +71,9 @@ namespace Carbon.V2Test.Scenes
             this.resourceManager = factory.GetResourceManager("Data");
             this.contentManager = factory.GetContentManager(this.resourceManager, "Main.db");
             
-            this.root = new Node();
-        }
-
-        private ModelNode LoadModel(string hash)
-        {
-            var resource = this.resourceManager.Load<ModelResource>(hash);
-            if (resource == null)
-            {
-                return null;
-            }
-
-            return this.CreateNode(this.graphics, resource);
-        }
-
-        private void ApplyMaterialRecurse(IModelNode node, Material material)
-        {
-            node.Material = material;
-            foreach (IEntity child in node.Children)
-            {
-                if (child as IModelNode != null)
-                {
-                    this.ApplyMaterialRecurse(child as IModelNode, material);
-                }
-            }
+            // Setup the basic scripting environment for the scene
+            this.scriptingEngine = factory.Get<IScriptingEngine>();
+            this.scriptingEngine.Register(new ScriptingCoreProvider(factory.Get<IApplicationLog>()));
         }
         
         public override void Initialize(ICarbonGraphics graphics)
@@ -120,54 +86,15 @@ namespace Carbon.V2Test.Scenes
             this.controller.Position = new Vector4(0, 5, -10, 1.0f);
             this.controller.Speed = 0.1f;
 
-            // Ambient Light testing
-            this.root.AddChild(new LightNode { Light = new Light { Type = LightType.Ambient, Color = new Vector4(0.2f) } });
-
-            Light testLight;
-            testLight = new Light { Color = new Vector4(1, 1, 0.5f, 1), Direction = new Vector3(0.5f, -1, 1), Type = LightType.Direction, SpecularPower = 1};
-            this.root.AddChild(new LightNode { Light = testLight });
-
-            testLight = new Light { Color = new Vector4(1, 1, 1, 0.2f), Direction = new Vector3(-1), Type = LightType.Direction, SpecularPower = 1 };
-            this.root.AddChild(new LightNode { Light = testLight });
-            
-            testLight = new Light { Color = new Vector4(0.5f, 1.0f, 1.0f, 1.0f), Type = LightType.Point, Range = 20.0f, SpecularPower = 10.0f };
-            this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(5, 1, 0, 1) });
-
-            testLight = new Light { Color = new Vector4(1.0f), Type = LightType.Point, Range = 20.0f, SpecularPower = 10.0f };
-            this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(15, 1, 0, 1) });
-
-            testLight = new Light { Color = new Vector4(1.0f), Type = LightType.Point, Range = 20.0f, SpecularPower = 10.0f };
-            this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(10f, 1, 5f, 1) });
-
-            testLight = new Light { Color = new Vector4(1.0f, 1.0f, 0.5f, 1.0f), Type = LightType.Point, Range = 10.0f, SpecularPower = 10.0f };
-            this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(11f, 1, 5f, 1) });
-
-            testLight = new Light { Color = new Vector4(1), Type = LightType.Spot, Range = 20.0f, SpecularPower = 10.0f, Direction = -Vector3.UnitY, SpotAngles = new Vector2(MathExtension.DegreesToRadians(50), MathExtension.DegreesToRadians(90)) };
-            this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(5f, 7, 20f, 1) });
-
-            testLight = new Light { Color = new Vector4(1), Type = LightType.Spot, Range = 10.0f, SpecularPower = 10.0f, Direction = Vector3.UnitY, SpotAngles = new Vector2(5, 10) };
-            this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(15f, 5, 20f, 1) });
-
-            testLight = new Light { Color = new Vector4(1), Type = LightType.Spot, Range = 10.0f, SpecularPower = 10.0f, Direction = Vector3.UnitY, SpotAngles = new Vector2(5, 10) };
-            this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(25f, 2, 20f, 1) });
-
-            testLight = new Light { Color = new Vector4(1), Type = LightType.Spot, Range = 10.0f, SpecularPower = 10.0f, Direction = Vector3.UnitY, SpotAngles = new Vector2(5, 10) };
-            this.root.AddChild(new LightNode { Light = testLight, Position = new Vector4(35f, 0.5f, 20f, 1) });
-
-            var testMaterialData =
-                this.contentManager.TypedLoad(new ContentQuery<MaterialEntry>().IsEqual("Id", 1))
-                    .UniqueResult<MaterialEntry>();
-            var testMaterial = new Material(this.graphics, this.contentManager, testMaterialData);
+            // Setup additional scripting and managers
+            this.nodeManager = new NodeManager(graphics, this.contentManager, this.resourceManager);
+            this.scriptingEngine.Register(this.nodeManager);
 
             var testScriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
             var testScript = new CarbonScript(testScriptData);
             this.scriptingEngine.Execute(testScript);
 
-            /*this.checkerboardMaterial = new Material(graphics, (MaterialEntry)materialResource);
-            link = this.resourceManager.GetLink(@"Textures\stone.dds");
-            this.stoneMaterial = new Material(
-                graphics,
-                new MaterialEntry { DiffuseTexture = link });*/
+            // Setup the hard textures for internals
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
             this.normalDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1002));
 
@@ -254,97 +181,9 @@ namespace Carbon.V2Test.Scenes
             /*Mesh cube = Cube.Create(new Vector3(0), 2);
             this.root.AddChild(new ModelNode { Mesh = cube, Position = new Vector4(50, 10, 2, 1), Scale = new Vector3(5, 5, 5), Material = this.checkerboardMaterial });
             */
-            Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
+            /*Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
             this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
-
-            var node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House6.dae"));
-            this.ApplyMaterialRecurse(node, testMaterial);
-            node.Position = new Vector4(3.0f, 5.0f, 4.0f, 1.0f);
-            node.Rotation = Quaternion.RotationAxis(Vector3.UnitX, MathExtension.DegreesToRadians(-90));
-            this.root.AddChild(node);
-
-            /*node = this.LoadModel(HashUtils.BuildResourceHash(@"Models\House6.dae"));
-            node.Position = new Vector4(-3.0f, 1.0f, 4.0f, 1.0f);
-            this.root.AddChild(node);*/
-
-            //testResource = this.resourceManager.Load<ModelResource>(HashUtils.BuildResourceHash(@"Models\rock_4.dae"));
-            //this.root.AddChild(new ModelNode { Mesh = new Mesh(testResource), Position = new Vector4(0, 2, 0, 1), Material = this.checkerboardMaterial });
-
-            //this.contentManager.Save(materialResource);
-            //var testCriteria = new ContentQuery<MaterialEntry>().IsEqual("Id", 0);
-            //this.contentManager.TypedLoad(testCriteria).UniqueResult<MaterialEntry>();
-
-            /*RawResource resource;
-            resource = this.resourceManager.Load<RawResource>(@"Models\room.dae");
-            if (resource != null)
-            {
-                ColladaModel testModel = ColladaModel.Load(resource.Data);
-                ColladaCarbonConverter.Convert("room", testModel);
-                node.Material = this.defaultMaterial;
-                node.Rotation = Quaternion.RotationAxis(Vector3.UnitX, MathExtension.DegreesToRadians(-90));
-                node.Position = new Vector4(25, 3, 10, 1);
-                this.root.AddChild(node);
-            }*/
-
-            /*resource = this.resourceManager.Load<RawResource>(@"Models\sponza_vase.dae");
-            if (resource != null)
-            {
-                ColladaModel testModel = ColladaModel.Load(resource.Data);
-                ColladaCarbonConverter.Convert("sponza", testModel);
-                node.Material = this.redColorMaterial;
-                node.Scale = new Vector3(0.02f);
-                //node.Rotation = Quaternion.RotationAxis(Vector3.UnitY, MathExtension.DegreesToRadians(30));
-                node.Position = new Vector4(6, 0, 0, 1);
-                this.root.AddChild(node);
-            }*/
-
-            /*resource = this.resourceManager.Load<RawResource>(@"Models\house6.dae");
-            if (resource != null)
-            {
-                ColladaModel testModel = ColladaModel.Load(resource.Data);
-                ModelNode node = ColladaCarbonConverter.Convert("house6", testModel, this.checkerboardMaterial);
-                //node.Material = this.redColorMaterial;
-                //node.Scale = new Vector3(0.01f);
-                //node.Rotation = Quaternion.RotationAxis(Vector3.UnitY, MathExtension.DegreesToRadians(30));
-                node.Position = new Vector4(0, 0, 0, 1);
-                this.root.AddChild(node);
-            }*/
-
-            /*resource = this.resourceManager.Load<RawResource>(@"Models\character.dae");
-            if (resource != null)
-            {
-                ColladaModel testModel = ColladaModel.Load(resource.Data);
-                ModelNode node = ColladaCarbonConverter.Convert("character", testModel);
-                //node.Material = this.redColorMaterial;
-                node.Scale = new Vector3(4f);
-                node.Rotation = Quaternion.RotationYawPitchRoll(MathExtension.DegreesToRadians(-180), MathExtension.DegreesToRadians(-90), 0);
-                node.Position = new Vector4(5, 1, 15, 1);
-                this.root.AddChild(node);
-            }
-
-            resource = this.resourceManager.Load<RawResource>(@"Models\dodge.dae");
-            if (resource != null)
-            {
-                ColladaModel testModel = ColladaModel.Load(resource.Data);
-                ModelNode node = ColladaCarbonConverter.Convert("dodge", testModel);
-                //node.Material = this.redColorMaterial;
-                //node.Scale = new Vector3(4f);
-                node.Rotation = Quaternion.RotationYawPitchRoll(MathExtension.DegreesToRadians(-180), MathExtension.DegreesToRadians(-90), 0);
-                node.Position = new Vector4(7, 1, 0, 1);
-                this.root.AddChild(node);
-            }
-
-            resource = this.resourceManager.Load<RawResource>(@"Models\test_rotation.dae");
-            if (resource != null)
-            {
-                ColladaModel testModel = ColladaModel.Load(resource.Data);
-                ModelNode node = ColladaCarbonConverter.Convert("test_rotation", testModel);
-                //node.Material = this.redColorMaterial;
-                node.Scale = new Vector3(0.2f);
-                //node.Rotation = Quaternion.RotationYawPitchRoll(MathExtension.DegreesToRadians(-180), MathExtension.DegreesToRadians(-90), 0);
-                node.Position = new Vector4(-10, 1, -30, 1);
-                this.root.AddChild(node);
-            }*/
+            */
         }
 
         public override void Resize(int width, int height)
@@ -352,7 +191,7 @@ namespace Carbon.V2Test.Scenes
             this.camera.SetPerspective(width, height, 0.01f, 2000.0f);
             this.overlayCamera.SetPerspective(width, height, 0.01f, 2000.0f);
 
-            this.testQuad = new Mesh(Quad.CreateScreen(new Vector2(0), new Vector2(width, height)));
+            this.screenQuad = new Mesh(Quad.CreateScreen(new Vector2(0), new Vector2(width, height)));
         }
 
         public override void Update(ITimer gameTime)
@@ -366,13 +205,7 @@ namespace Carbon.V2Test.Scenes
             this.camera.Update(gameTime);
 
             this.overlayCamera.Update(gameTime);
-
-            this.testRotation += 0.01f;
-            if (this.testRotation > 360)
-            {
-                this.testRotation = 0;
-            }
-
+            
             /*this.testRotation += 0.01f;
             this.hirarchyTestNode.Rotation = Quaternion.RotationAxis(Vector3.UnitY, MathExtension.DegreesToRadians(this.testRotation));
             this.middleNode.Rotation = Quaternion.RotationAxis(Vector3.UnitX, MathExtension.DegreesToRadians(this.testRotation));*/
@@ -383,7 +216,7 @@ namespace Carbon.V2Test.Scenes
                 lightTesting.Position = new Vector4(5f, 7.0f, 0, 1);
             }*/
 
-            this.root.Update(gameTime);
+            this.nodeManager.RootNode.Update(gameTime);
         }
 
         public override void Render()
@@ -391,21 +224,21 @@ namespace Carbon.V2Test.Scenes
             // The scene to deferred
             FrameInstructionSet set = this.frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Deferred;
-            this.root.Render(set);
+            this.nodeManager.RootNode.Render(set);
             frameManager.RenderSet(set);
 
             // The scene to Forward
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Forward;
             set.DesiredTarget = RenderTargetDescription.Texture(1001, 1024, 1024);
-            this.root.Render(set);
+            this.nodeManager.RootNode.Render(set);
             frameManager.RenderSet(set);
 
             // The scene to Debug Normal
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.DebugNormal;
             set.DesiredTarget = RenderTargetDescription.Texture(1002, 1024, 1024);
-            this.root.Render(set);
+            this.nodeManager.RootNode.Render(set);
             frameManager.RenderSet(set);
             
             this.RenderDebugScreens();
@@ -438,7 +271,7 @@ namespace Carbon.V2Test.Scenes
                 new FrameInstruction
                 {
                     Material = this.gBufferNormalTexture,
-                    Mesh = this.testQuad,
+                    Mesh = this.screenQuad,
                     World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(0, this.graphics.WindowViewport.Height - this.graphics.WindowViewport.Height * scale, 0)
                 });
 
@@ -446,7 +279,7 @@ namespace Carbon.V2Test.Scenes
                 new FrameInstruction
                 {
                     Material = this.gBufferDiffuseAlbedoTexture,
-                    Mesh = this.testQuad,
+                    Mesh = this.screenQuad,
                     World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(this.graphics.WindowViewport.Width * scale + 10, this.graphics.WindowViewport.Height - this.graphics.WindowViewport.Height * scale, 0)
                 });
 
@@ -454,7 +287,7 @@ namespace Carbon.V2Test.Scenes
                 new FrameInstruction
                 {
                     Material = this.gBufferSpecularAlbedoTexture,
-                    Mesh = this.testQuad,
+                    Mesh = this.screenQuad,
                     World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation((this.graphics.WindowViewport.Width * scale) * 2 + 20, this.graphics.WindowViewport.Height - this.graphics.WindowViewport.Height * scale, 0)
                 });
 
@@ -462,7 +295,7 @@ namespace Carbon.V2Test.Scenes
                 new FrameInstruction
                 {
                     Material = this.deferredLightTexture,
-                    Mesh = this.testQuad,
+                    Mesh = this.screenQuad,
                     World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation((this.graphics.WindowViewport.Width * scale) * 3 + 30, this.graphics.WindowViewport.Height - this.graphics.WindowViewport.Height * scale, 0)
                 });
 
@@ -471,7 +304,7 @@ namespace Carbon.V2Test.Scenes
                 new FrameInstruction
                 {
                     Material = this.forwardDebugTexture,
-                    Mesh = this.testQuad,
+                    Mesh = this.screenQuad,
                     World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(0, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 2 - 10, 0)
                 });
 
@@ -479,16 +312,8 @@ namespace Carbon.V2Test.Scenes
                 new FrameInstruction
                 {
                     Material = this.normalDebugTexture,
-                    Mesh = this.testQuad,
+                    Mesh = this.screenQuad,
                     World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(this.graphics.WindowViewport.Width * scale + 10, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 2 - 10, 0)
-                });
-
-            set.Instructions.Add(
-                new FrameInstruction
-                {
-                    Material = this.shadowMapTexture,
-                    Mesh = this.testQuad,
-                    World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation((this.graphics.WindowViewport.Width * scale) * 2 + 20, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 2 - 10, 0)
                 });
 
             frameManager.RenderSet(set);
@@ -500,7 +325,7 @@ namespace Carbon.V2Test.Scenes
                 new FrameInstruction
                 {
                     Material = this.gBufferDepthTexture,
-                    Mesh = this.testQuad,
+                    Mesh = this.screenQuad,
                     World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation((this.graphics.WindowViewport.Width * scale) * 3 + 30, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 2 - 10, 0)
                 });
             frameManager.RenderSet(set);

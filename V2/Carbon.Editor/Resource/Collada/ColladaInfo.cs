@@ -237,12 +237,19 @@ namespace Carbon.Editor.Resource.Collada
                         if (normalTexture == diffuseTexture)
                         {
                             string normalName = string.Concat(Path.GetFileNameWithoutExtension(normalTexture), "_N", Path.GetExtension(normalTexture));
-                            this.colorToNormalImages.Add(normalName, normalTexture);
+                            if (!this.colorToNormalImages.ContainsKey(normalName))
+                            {
+                                this.colorToNormalImages.Add(normalName, normalTexture);
+                            }
+
                             normalTexture = normalName;
                         }
                         else
                         {
-                            this.normalImages.Add(normalTexture);
+                            if (!normalImages.Contains(normalTexture))
+                            {
+                                this.normalImages.Add(normalTexture);
+                            }
                         }
                     }
                 }

@@ -124,8 +124,6 @@
     <Compile Include="Logic\KeyStateManager.cs" />
     <Compile Include="Logic\Scripting\CarbonScript.cs" />
     <Compile Include="Logic\Scripting\ScriptingCoreProvider.cs" />
-    <Compile Include="Logic\Scripting\ScriptingNodeProvider.cs" />
-    <Compile Include="Logic\Scripting\ScriptingResourceProvider.cs" />
     <Compile Include="Logic\Scripting\ScriptingEngine.cs" />
     <Compile Include="Logic\Scripting\ScriptingMethodInfo.cs" />
     <Compile Include="Logic\Scripting\ScriptingPropertyInfo.cs" />
@@ -211,6 +209,7 @@
     <Compile Include="Scene\LightNode.cs" />
     <Compile Include="Scene\ModelNode.cs" />
     <Compile Include="Scene\Node.cs" />
+    <Compile Include="Scene\NodeManager.cs" />
     <Compile Include="Scene\Scene.cs" />
   </ItemGroup>
   <ItemGroup>

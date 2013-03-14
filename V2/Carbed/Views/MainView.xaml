@@ -99,7 +99,13 @@
                             <views:FontView/>
                         </DataTemplate>
                     </local:PanesTemplateSelector.FontTemplate>
-                    
+
+                    <local:PanesTemplateSelector.ScriptTemplate>
+                        <DataTemplate>
+                            <views:ScriptView/>
+                        </DataTemplate>
+                    </local:PanesTemplateSelector.ScriptTemplate>
+
                     <local:PanesTemplateSelector.ResourceExplorerTemplate>
                         <DataTemplate>
                             <views:ResourceExplorerView/>

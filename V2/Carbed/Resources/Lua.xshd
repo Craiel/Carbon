@@ -1,0 +1,95 @@
+﻿<?xml version="1.0"?>
+<SyntaxDefinition name="Lua" extensions=".lua" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+
+    <Color name="CommentColor" foreground="#FFC7DD0C"/>
+    <Color name="StringColor" foreground="#FFFFC600"/>
+    <Color name="FunctionColor" foreground="#FFD25252"/>
+    <Color name="OperatorColor" foreground="#FFD8D8D8"/>
+    <Color name="NumberColor" foreground="#FF7FB347"/>
+    <Color name="KeywordColor" foreground="#FF79ABFF"/>
+
+    <RuleSet>
+			
+		<Span color="CommentColor" multiline="true">
+			<Begin>--\[\[</Begin>
+			<End>\]\]</End>
+		</Span>
+			
+		<Span color="CommentColor">
+			<Begin>--</Begin>
+		</Span>
+			
+		<Span color="StringColor">
+			<Begin>"</Begin>
+			<End>"</End>
+            <RuleSet>
+                <!-- span for escape sequences -->
+                <Span begin="\\" end="."/>
+            </RuleSet>
+		</Span>
+
+        <Rule color="FunctionColor">
+            \b
+            [\d\w_]+  # an identifier
+            (?=\s*\() # followed by (
+        </Rule>
+
+        <Keywords fontWeight="bold" color="FunctionColor">
+            <Word>print</Word>
+		</Keywords>
+
+        <Keywords fontWeight="bold" color="FunctionColor">
+            <Word>function</Word>
+		</Keywords>
+						
+		<Keywords fontWeight="bold" color="FunctionColor">
+            <Word>for</Word>
+            <Word>in</Word>
+            <Word>while</Word>
+            <Word>do</Word>
+            <Word>break</Word>
+            <Word>repeat</Word>
+            <Word>until</Word>
+		</Keywords>
+					
+		<Keywords fontWeight="bold" color="FunctionColor">
+            <Word>and</Word>
+            <Word>not</Word>
+            <Word>or</Word>
+		</Keywords>
+					
+		<Keywords fontWeight="bold" color="FunctionColor">
+            <Word>else</Word>
+            <Word>if</Word>
+            <Word>elseif</Word>
+            <Word>then</Word>
+		</Keywords>
+
+        <Keywords fontWeight="bold" color="KeywordColor">
+            <Word>local</Word>
+            <Word>end</Word>
+            <Word>nil</Word>
+            <Word>return</Word>
+        </Keywords>
+
+        <Rule color="FunctionColor">
+            \b
+            [\d\w_]+  # an identifier
+            (?=\s*\() # followed by (
+        </Rule>
+        
+        <!-- Digits -->
+        <Rule color="NumberColor">
+            \b0[xX][0-9a-fA-F]+  # hex number
+            |
+            (	\b\d+(\.[0-9]+)?   #number with optional floating point
+            |	\.[0-9]+           #or just starting with floating point
+            )
+            ([eE][+-]?[0-9]+)? # optional exponent
+        </Rule>
+
+        <Rule color="OperatorColor">
+            [?,.;()\[\]{}+\-/%*&lt;&gt;^+~!|&amp;]+
+        </Rule>
+	</RuleSet>
+</SyntaxDefinition>

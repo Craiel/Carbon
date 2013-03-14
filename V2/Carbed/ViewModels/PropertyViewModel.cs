@@ -80,11 +80,6 @@ namespace Carbed.ViewModels
                     this.PropertyControl = new FolderProperties { DataContext = this.activeContext };
                 }
 
-                if (this.activeContext is IFontViewModel)
-                {
-                    this.PropertyControl = new FontProperties { DataContext = this.activeContext };
-                }
-
                 if (this.activeContext is IResourceViewModel)
                 {
                     this.PropertyControl = new ResourceProperties { DataContext = this.activeContext };

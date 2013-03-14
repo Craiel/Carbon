@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -22,6 +23,9 @@ using Carbon.Engine.Resource;
 using Carbon.Engine.Resource.Content;
 
 using Core.Utils;
+
+using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Document;
 
 using Microsoft.Win32;
 
@@ -58,10 +62,15 @@ namespace Carbed.ViewModels
         private string oldHash;
 
         private bool needReexport;
+        private bool isUpdatingPreview;
+        private bool scriptWasChanged;
+        private bool keepLocalScriptChanges;
         
         private ColladaInfo colladaSourceInfo;
 
         private ImageSource previewImage;
+
+        private ITextSource scriptDocument;
         
         // -------------------------------------------------------------------
         // Constructor
@@ -453,18 +462,39 @@ namespace Carbed.ViewModels
         {
             get
             {
-                if (this.previewImage != null)
+                if (this.previewImage == null)
                 {
-                    return this.previewImage;
+                    if (!this.isUpdatingPreview)
+                    {
+                        this.isUpdatingPreview = true;
+                        new Task(this.UpdatePreviewImage).Start();
+                    }
+
+                    return new BitmapImage(StaticResources.NoPreviewImageUri);
                 }
 
-                return new BitmapImage(StaticResources.NoPreviewImageUri);
+                return this.previewImage;
+                
             }
 
             private set
             {
                 this.previewImage = value;
                 this.NotifyPropertyChanged();
+            }
+        }
+
+        public ITextSource ScriptDocument
+        {
+            get
+            {
+                if (this.scriptDocument == null)
+                {
+                    this.scriptDocument = this.GetScriptingSource();
+                    this.scriptDocument.TextChanged += this.OnScriptDocumentChanged;
+                }
+
+                return this.scriptDocument;
             }
         }
 
@@ -512,6 +542,12 @@ namespace Carbed.ViewModels
             if (this.textureFolder != null)
             {
                 this.SetMetaValue(MetaDataKey.TextureFolder, this.textureFolder.Hash);
+            }
+
+            // See if we have changes in the script that need to be saved before export
+            if (this.scriptWasChanged && this.scriptDocument != null)
+            {
+                Application.Current.Dispatcher.Invoke(this.SaveScript);
             }
 
             this.data.TreeNode = this.parent.Id;
@@ -659,17 +695,16 @@ namespace Carbed.ViewModels
                 this.needReexport = true;
                 return;
             }
-
-            if (this.previewImage == null)
-            {
-                this.UpdatePreviewImage();
-            }
-
+            
             DateTime changeTime = File.GetLastWriteTime(path);
             if (this.LastChangeDate != changeTime)
             {
                 this.needReexport = true;
                 this.LastChangeDate = changeTime;
+                if (this.Type == ResourceType.Script && !keepLocalScriptChanges)
+                {
+                    this.HandleSourceScriptChange();
+                }
                 this.UpdateSourceElements();
             }
 
@@ -698,43 +733,9 @@ namespace Carbed.ViewModels
             }
         }
 
-        private void UpdateSourceElements()
+        public void UpdateAutoCompletion(IList<ICompletionData> completionList, string context = null)
         {
-            string path = this.SourcePath;
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
-            {
-                return;
-            }
-
-            string selection = this.SelectedSourceElement;
-            this.sourceElements.Clear();
-            switch (this.Type)
-            {
-                case ResourceType.Model:
-                    {
-                        try
-                        {
-                            this.colladaSourceInfo = new ColladaInfo(path);
-                            this.textureSynchronizer.SetSource(this.colladaSourceInfo);
-                            foreach (ColladaMeshInfo meshInfo in this.colladaSourceInfo.MeshInfos)
-                            {
-                                this.sourceElements.Add(meshInfo.Name);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            this.Log.Error("Could not get collada info of source file for mesh, please check the format");
-                        }
-                        break;
-                    }
-            }
-
-            if (string.IsNullOrEmpty(selection) || this.sourceElements.Contains(selection))
-            {
-                return;
-            }
-
-            this.SelectedSourceElement = null;
+            // Todo
         }
 
         // -------------------------------------------------------------------
@@ -766,10 +767,15 @@ namespace Carbed.ViewModels
 
         protected override void OnRefresh(object arg)
         {
-            this.textureSynchronizer.Refresh();
-            if (this.AutoUpdateTextures)
+            this.CheckSource();
+
+            if (this.Type == ResourceType.Model)
             {
-                this.textureSynchronizer.Synchronize();
+                this.textureSynchronizer.Refresh();
+                if (this.AutoUpdateTextures)
+                {
+                    this.textureSynchronizer.Synchronize();
+                }
             }
         }
 
@@ -881,6 +887,10 @@ namespace Carbed.ViewModels
 
         private void UpdateTypeStatus()
         {
+            // Clear out some type specific editor data that will be re-done dynamically if needed
+            this.UnloadScript();
+            this.previewImage = null;
+
             switch (this.data.Type)
             {
                 case ResourceType.Model:
@@ -927,6 +937,106 @@ namespace Carbed.ViewModels
                         break;
                     }
             }
+
+            this.isUpdatingPreview = false;
         }
+
+        private void UpdateSourceElements()
+        {
+            string path = this.SourcePath;
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                return;
+            }
+
+            string selection = this.SelectedSourceElement;
+            this.sourceElements.Clear();
+            switch (this.Type)
+            {
+                case ResourceType.Model:
+                    {
+                        try
+                        {
+                            this.colladaSourceInfo = new ColladaInfo(path);
+                            this.textureSynchronizer.SetSource(this.colladaSourceInfo);
+                            foreach (ColladaMeshInfo meshInfo in this.colladaSourceInfo.MeshInfos)
+                            {
+                                this.sourceElements.Add(meshInfo.Name);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            this.Log.Error("Could not get collada info of source file for mesh, please check the format");
+                        }
+                        break;
+                    }
+            }
+
+            if (string.IsNullOrEmpty(selection) || this.sourceElements.Contains(selection))
+            {
+                return;
+            }
+
+            this.SelectedSourceElement = null;
+        }
+
+        private void OnScriptDocumentChanged(object sender, EventArgs e)
+        {
+            this.scriptWasChanged = true;
+        }
+
+        private ITextSource GetScriptingSource()
+        {
+            if (!File.Exists(this.SourcePath))
+            {
+                return new TextDocument();
+            }
+
+            using (var reader = new StreamReader(this.SourcePath))
+            {
+                return new TextDocument(reader.ReadToEnd());
+            }
+        }
+
+        private void UnloadScript()
+        {
+            if (this.scriptDocument != null)
+            {
+                this.scriptDocument.TextChanged -= this.OnScriptDocumentChanged;
+                this.scriptDocument = null;
+                this.NotifyPropertyChanged("ScriptDocument");
+            }
+        }
+
+        private void HandleSourceScriptChange()
+        {
+            if (this.scriptWasChanged)
+            {
+                if (
+                    MessageBox.Show(
+                        "Source script was changed and you have un-saved modifications. Do you want to reload the source?\n(This will discard all local changes)",
+                        "Source changed",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question) == MessageBoxResult.No)
+                {
+                    this.keepLocalScriptChanges = true;
+                    return;
+                }
+            }
+
+            this.UnloadScript();
+        }
+
+        private void SaveScript()
+        {
+            using (var writer = new StreamWriter(this.SourcePath, false))
+            {
+                writer.Write(this.scriptDocument.Text);
+            }
+
+            this.scriptWasChanged = false;
+            this.keepLocalScriptChanges = false;
+        }
+
     }
 }

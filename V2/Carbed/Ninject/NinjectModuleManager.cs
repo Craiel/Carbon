@@ -42,7 +42,6 @@ namespace Carbed.Ninject
                 this.Bind<ICarbedSettingsViewModel>().To<CarbedSettingsViewModel>();
                 this.Bind<IProjectViewModel>().To<ProjectViewModel>();
                 this.Bind<IFolderViewModel>().To<FolderViewModel>();
-                this.Bind<IFontViewModel>().To<FontViewModel>();
                 this.Bind<IStageViewModel>().To<StageViewModel>();
                 this.Bind<IResourceViewModel>().To<ResourceViewModel>();
                 this.Bind<IMaterialViewModel>().To<MaterialViewModel>();

@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using System.Xml;
 
 using Carbed.Contracts;
 using Carbed.Views;
@@ -15,6 +17,9 @@ using Carbon.Engine.Resource;
 using Carbon.Engine.Resource.Content;
 
 using Core.Utils.Contracts;
+
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
 namespace Carbed.Logic
 {
@@ -48,6 +53,8 @@ namespace Carbed.Logic
 
             this.materials = new ObservableCollection<IMaterialViewModel>();
             this.folders = new ObservableCollection<IFolderViewModel>();
+
+            this.LoadSyntaxHightlighting();
         }
 
         // -------------------------------------------------------------------
@@ -526,6 +533,25 @@ namespace Carbed.Logic
                 this.AddFolder().Name = "Textures";
                 this.AddFolder().Name = "Models";
                 this.AddFolder().Name = "Scripts";
+            }
+        }
+
+        private void LoadSyntaxHightlighting()
+        {
+            using (Stream s = Assembly.GetAssembly(this.GetType()).GetManifestResourceStream(@"Carbed.Resources.Lua.xshd"))
+            {
+                if (s != null)
+                {
+                    using (XmlTextReader reader = new XmlTextReader(s))
+                    {
+                        IHighlightingDefinition luaHighlightingDefinition = HighlightingLoader.Load(reader, HighlightingManager.Instance);
+                        if (luaHighlightingDefinition != null)
+                        {
+                            HighlightingManager.Instance.RegisterHighlighting(
+                                "Lua", new[] { ".lua" }, luaHighlightingDefinition);
+                        }
+                    }
+                }
             }
         }
     }

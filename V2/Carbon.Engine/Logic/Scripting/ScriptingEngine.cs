@@ -5,6 +5,7 @@ using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 
 using Core.Utils.Contracts;
+using Core.Utils.Diagnostics;
 
 using LuaInterface;
 
@@ -58,10 +59,13 @@ namespace Carbon.Engine.Logic.Scripting
             string processedScript = script.Script;
             try
             {
-                using (Lua runtime = new Lua())
+                using (new ProfileRegion("ScriptingEngine.Execute"))
                 {
-                    this.PrepareRuntime(runtime);
-                    runtime.DoString(processedScript);
+                    using (Lua runtime = new Lua())
+                    {
+                        this.PrepareRuntime(runtime);
+                        runtime.DoString(processedScript);
+                    }
                 }
             }
             catch (Exception e)

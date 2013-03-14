@@ -27,11 +27,6 @@ namespace Carbed.Ninject
             return this.kernel.Get<IFolderViewModel>(new ConstructorArgument("data", data));
         }
 
-        public IFontViewModel GetFontViewModel(FontEntry data)
-        {
-            return this.kernel.Get<IFontViewModel>(new ConstructorArgument("data", data));
-        }
-
         public IStageViewModel GetStageViewModel(StageEntry data)
         {
             return this.kernel.Get<IStageViewModel>(new ConstructorArgument("data", data));

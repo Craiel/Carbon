@@ -6,7 +6,6 @@
     {
         IFolderViewModel GetFolderViewModel(ResourceTree data);
 
-        IFontViewModel GetFontViewModel(FontEntry data);
         IStageViewModel GetStageViewModel(StageEntry data);
         IMaterialViewModel GetMaterialViewModel(MaterialEntry data);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -6,6 +7,9 @@ using System.Windows.Media;
 using Carbon.Editor.Processors;
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource.Content;
+
+using ICSharpCode.AvalonEdit.CodeCompletion;
+using ICSharpCode.AvalonEdit.Document;
 
 namespace Carbed.Contracts
 {
@@ -50,6 +54,9 @@ namespace Carbed.Contracts
         bool AutoUpdateTextures { get; set; }
         IFolderViewModel TextureFolder { get; set; }
 
+        // Script Options
+        ITextSource ScriptDocument { get; }
+
         // Functions and Commands
         ICommand CommandSelectFile { get; }
         ICommand CommandSelectTextureFolder { get; }
@@ -59,5 +66,7 @@ namespace Carbed.Contracts
 
         void SelectFile(string path);
         void CheckSource();
+
+        void UpdateAutoCompletion(IList<ICompletionData> completionList, string context = null);
     }
 }

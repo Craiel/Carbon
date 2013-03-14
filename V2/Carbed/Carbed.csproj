@@ -69,6 +69,9 @@
     <Reference Include="Fluent">
       <HintPath>..\..\..\CarbonExt\FluentRibbon c2848bed6826\Fluent.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\..\..\CarbonExt\AvalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\..\CarbonExt\log4net 1.2.10\log4net.dll</HintPath>
     </Reference>
@@ -121,7 +124,6 @@
     <Compile Include="Contracts\IResourceExplorerViewModel.cs" />
     <Compile Include="Contracts\IFolderViewModel.cs" />
     <Compile Include="Contracts\IPropertyViewModel.cs" />
-    <Compile Include="Contracts\IFontViewModel.cs" />
     <Compile Include="Contracts\IMainViewModel.cs" />
     <Compile Include="Contracts\IOperationProgress.cs" />
     <Compile Include="Contracts\IProjectViewModel.cs" />
@@ -171,7 +173,6 @@
     <Compile Include="ViewModels\ResourceExplorerViewModel.cs" />
     <Compile Include="ViewModels\FolderViewModel.cs" />
     <Compile Include="ViewModels\PropertyViewModel.cs" />
-    <Compile Include="ViewModels\FontViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ProjectViewModel.cs" />
     <Compile Include="ViewModels\ToolViewModel.cs" />
@@ -202,11 +203,11 @@
     <Compile Include="Views\Properties\ProjectProperties.xaml.cs">
       <DependentUpon>ProjectProperties.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Properties\FontProperties.xaml.cs">
-      <DependentUpon>FontProperties.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\PropertyView.xaml.cs">
       <DependentUpon>PropertyView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ScriptView.xaml.cs">
+      <DependentUpon>ScriptView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SelectFolderDialog.xaml.cs">
       <DependentUpon>SelectFolderDialog.xaml</DependentUpon>
@@ -249,6 +250,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <EmbeddedResource Include="Resources\Lua.xshd" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -328,11 +330,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Properties\FontProperties.xaml">
+    <Page Include="Views\PropertyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PropertyView.xaml">
+    <Page Include="Views\ScriptView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
