@@ -27,9 +27,6 @@ node = AddDirectionalLight(Vector4(1, 1, 1, 0.2), Vector3(-1, -1, -1))
 node = AddModel("Models\\rock_4.dae")
 node.Position = Vector4(2, 1, -2, 1)
 
-node = AddModel("Models\\sintel.dae")
-node.Position = Vector4(6, 1, 10, 1)
-
 node = AddModel("Models\\House6.dae")
 node.Position = Vector4(5, 1, 0, 1)
 

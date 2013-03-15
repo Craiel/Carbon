@@ -1,32 +1,32 @@
 ﻿<?xml version="1.0"?>
 <SyntaxDefinition name="Lua" extensions=".lua" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 
-    <Color name="CommentColor" foreground="#FFC7DD0C"/>
-    <Color name="StringColor" foreground="#FFFFC600"/>
-    <Color name="FunctionColor" foreground="#FFD25252"/>
-    <Color name="OperatorColor" foreground="#FFD8D8D8"/>
-    <Color name="NumberColor" foreground="#FF7FB347"/>
-    <Color name="KeywordColor" foreground="#FF79ABFF"/>
+    <Color name="CommentColor" foreground="#FF008000"/>
+    <Color name="StringColor" foreground="#FFA31515"/>
+    <Color name="FunctionColor" foreground="#FF0000FF"/>
+    <Color name="OperatorColor" foreground="#FF000000"/>
+    <Color name="NumberColor" foreground="#FF000064"/>
+    <Color name="KeywordColor" foreground="#FF0000FF"/>
 
     <RuleSet>
-			
-		<Span color="CommentColor" multiline="true">
-			<Begin>--\[\[</Begin>
-			<End>\]\]</End>
-		</Span>
-			
-		<Span color="CommentColor">
-			<Begin>--</Begin>
-		</Span>
-			
-		<Span color="StringColor">
-			<Begin>"</Begin>
-			<End>"</End>
+      
+    <Span color="CommentColor" multiline="true">
+      <Begin>--\[\[</Begin>
+      <End>\]\]</End>
+    </Span>
+      
+    <Span color="CommentColor">
+      <Begin>--</Begin>
+    </Span>
+      
+    <Span color="StringColor">
+      <Begin>"</Begin>
+      <End>"</End>
             <RuleSet>
                 <!-- span for escape sequences -->
                 <Span begin="\\" end="."/>
             </RuleSet>
-		</Span>
+    </Span>
 
         <Rule color="FunctionColor">
             \b
@@ -36,13 +36,13 @@
 
         <Keywords fontWeight="bold" color="FunctionColor">
             <Word>print</Word>
-		</Keywords>
+    </Keywords>
 
         <Keywords fontWeight="bold" color="FunctionColor">
             <Word>function</Word>
-		</Keywords>
-						
-		<Keywords fontWeight="bold" color="FunctionColor">
+    </Keywords>
+            
+    <Keywords fontWeight="bold" color="FunctionColor">
             <Word>for</Word>
             <Word>in</Word>
             <Word>while</Word>
@@ -50,20 +50,20 @@
             <Word>break</Word>
             <Word>repeat</Word>
             <Word>until</Word>
-		</Keywords>
-					
-		<Keywords fontWeight="bold" color="FunctionColor">
+    </Keywords>
+          
+    <Keywords fontWeight="bold" color="FunctionColor">
             <Word>and</Word>
             <Word>not</Word>
             <Word>or</Word>
-		</Keywords>
-					
-		<Keywords fontWeight="bold" color="FunctionColor">
+    </Keywords>
+          
+    <Keywords fontWeight="bold" color="FunctionColor">
             <Word>else</Word>
             <Word>if</Word>
             <Word>elseif</Word>
             <Word>then</Word>
-		</Keywords>
+    </Keywords>
 
         <Keywords fontWeight="bold" color="KeywordColor">
             <Word>local</Word>
@@ -91,5 +91,5 @@
         <Rule color="OperatorColor">
             [?,.;()\[\]{}+\-/%*&lt;&gt;^+~!|&amp;]+
         </Rule>
-	</RuleSet>
+  </RuleSet>
 </SyntaxDefinition>
