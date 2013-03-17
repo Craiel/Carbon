@@ -12,6 +12,7 @@
         TextureFolder = 16,
         ResourceFlags = 17,
         TextureTargetFormat = 18,
+        ResourceCoreFlags = 19,
     }
 
     public enum MetaDataTargetEnum

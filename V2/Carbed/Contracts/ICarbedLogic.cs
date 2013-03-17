@@ -34,7 +34,10 @@ namespace Carbed.Contracts
         void Delete(IFolderViewModel folder);
         IFolderViewModel Clone(IFolderViewModel source);
 
-        IResourceViewModel AddResource();
+        IResourceTextureViewModel AddResourceTexture();
+        IResourceModelViewModel AddResourceModel();
+        IResourceScriptViewModel AddResourceScript();
+        IResourceRawViewModel AddResourceRaw();
         void Save(IResourceViewModel resource);
         void Delete(IResourceViewModel resource);
         IResourceViewModel Clone(IResourceViewModel source);

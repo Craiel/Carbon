@@ -6,6 +6,7 @@ using Carbed.Contracts;
 
 using Carbon.Editor.Resource.Collada;
 using Carbon.Engine.Contracts;
+using Carbon.Engine.Resource.Content;
 
 namespace Carbed.Logic
 {
@@ -235,7 +236,7 @@ namespace Carbed.Logic
         {
             foreach (SynchronizationEntry entry in this.queuedForAdd)
             {
-                IResourceViewModel viewModel = this.logic.AddResource();
+                IResourceTextureViewModel viewModel = this.logic.AddResourceTexture();
                 viewModel.SelectFile(entry.File);
                 viewModel.IsNormalMap = entry.IsNormal;
                 viewModel.ConvertToNormalMap = entry.ToNormal;

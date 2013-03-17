@@ -258,9 +258,24 @@ namespace Carbed.Logic
             throw new NotImplementedException();
         }
         
-        public IResourceViewModel AddResource()
+        public IResourceTextureViewModel AddResourceTexture()
         {
-            return this.viewModelFactory.GetResourceViewModel(new ResourceEntry());
+            return this.viewModelFactory.GetResourceTextureViewModel(new ResourceEntry { Type = ResourceType.Texture });
+        }
+
+        public IResourceModelViewModel AddResourceModel()
+        {
+            return this.viewModelFactory.GetResourceModelViewModel(new ResourceEntry { Type = ResourceType.Model });
+        }
+
+        public IResourceScriptViewModel AddResourceScript()
+        {
+            return this.viewModelFactory.GetResourceScriptViewModel(new ResourceEntry { Type = ResourceType.Script });
+        }
+
+        public IResourceRawViewModel AddResourceRaw()
+        {
+            return this.viewModelFactory.GetResourceRawViewModel(new ResourceEntry { Type = ResourceType.Raw });
         }
 
         public void Save(IResourceViewModel resource)
@@ -314,12 +329,48 @@ namespace Carbed.Logic
             IList<ResourceEntry> resourceData =
                 this.projectContent.TypedLoad(new ContentQuery<ResourceEntry>().IsEqual("TreeNode", node))
                     .ToList<ResourceEntry>();
-            return resourceData.Select(x => this.viewModelFactory.GetResourceViewModel(x)).ToList();
+
+            IList<IResourceViewModel> results = new List<IResourceViewModel>();
+            foreach (ResourceEntry entry in resourceData)
+            {
+                switch (entry.Type)
+                {
+                    case ResourceType.Texture:
+                        {
+                            results.Add(this.viewModelFactory.GetResourceTextureViewModel(entry));
+                            break;
+                        }
+                    case ResourceType.Model:
+                        {
+                            results.Add(this.viewModelFactory.GetResourceModelViewModel(entry));
+                            break;
+                        }
+
+                    case ResourceType.Script:
+                        {
+                            results.Add(this.viewModelFactory.GetResourceScriptViewModel(entry));
+                            break;
+                        }
+
+                    case ResourceType.Raw:
+                        {
+                            results.Add(this.viewModelFactory.GetResourceRawViewModel(entry));
+                            break;
+                        }
+
+                    default:
+                        {
+                            throw new InvalidDataException("Unknown resource type " + entry.Type);
+                        }
+                }
+            }
+
+            return results;
         }
 
         public IFolderViewModel LocateFolder(string hash)
         {
-            foreach (IFolderViewModel folder in folders)
+            foreach (IFolderViewModel folder in this.folders)
             {
                 var result = this.LocateFolder(folder, hash);
                 if (result != null)

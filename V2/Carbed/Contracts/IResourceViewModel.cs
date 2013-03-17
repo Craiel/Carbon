@@ -13,22 +13,54 @@ using ICSharpCode.AvalonEdit.Document;
 
 namespace Carbed.Contracts
 {
+    public interface IResourceRawViewModel : IResourceViewModel
+    {
+    }
+
+    public interface IResourceTextureViewModel : IResourceViewModel
+    {
+        bool IsNormalMap { get; set; }
+        bool ConvertToNormalMap { get; set; }
+        bool CompressTexture { get; set; }
+
+        TextureTargetFormat TextureTargetFormat { get; set; }
+    }
+
+    public interface IResourceModelViewModel : IResourceViewModel
+    {
+        bool IsHavingSourceElements { get; }
+
+        ReadOnlyCollection<string> SourceElements { get; }
+        string SelectedSourceElement { get; set; }
+
+        ITextureSynchronizer TextureSynchronizer { get; }
+
+        bool AutoUpdateTextures { get; set; }
+        IFolderViewModel TextureFolder { get; set; }
+
+        ICommand CommandSelectTextureFolder { get; }
+    }
+
+    public interface IResourceScriptViewModel : IResourceViewModel
+    {
+        ITextSource ScriptDocument { get; }
+
+        void UpdateAutoCompletion(IList<ICompletionData> completionList, string context = null);
+    }
+
     public interface IResourceViewModel : ICarbedDocument
     {
         int? Id { get; }
 
         string Hash { get; }
 
-        ResourceType Type { get; set; }
+        ResourceType Type { get; }
 
         long? SourceSize { get; }
         long? TargetSize { get; }
 
-        bool CanChangeType { get; }
-
         bool IsValidSource { get; }
-        bool IsHavingSourceElements { get; }
-
+        
         bool ForceExport { get; set; }
 
         string SourcePath { get; }
@@ -38,35 +70,14 @@ namespace Carbed.Contracts
         IFolderViewModel Parent { get; set; }
 
         ImageSource PreviewImage { get; }
-
-        // Texture Options
-        bool IsNormalMap { get; set; }
-        bool ConvertToNormalMap { get; set; }
-        bool CompressTexture { get; set; }
-        TextureTargetFormat TextureTargetFormat { get; set; }
-
-        // Model Options
-        ReadOnlyCollection<string> SourceElements { get; }
-        string SelectedSourceElement { get; set; }
-
-        ITextureSynchronizer TextureSynchronizer { get; }
-
-        bool AutoUpdateTextures { get; set; }
-        IFolderViewModel TextureFolder { get; set; }
-
-        // Script Options
-        ITextSource ScriptDocument { get; }
-
+        
         // Functions and Commands
         ICommand CommandSelectFile { get; }
-        ICommand CommandSelectTextureFolder { get; }
-
+        
         void Save(IContentManager target, IResourceManager resourceTarget);
         void Delete(IContentManager target, IResourceManager resourceTarget);
 
         void SelectFile(string path);
         void CheckSource();
-
-        void UpdateAutoCompletion(IList<ICompletionData> completionList, string context = null);
     }
 }

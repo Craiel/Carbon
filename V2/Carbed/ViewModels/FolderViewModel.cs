@@ -454,13 +454,43 @@ namespace Carbed.ViewModels
             {
                 foreach (string fileName in dialog.FileNames)
                 {
-                    IResourceViewModel vm = this.logic.AddResource();
+                    IResourceViewModel vm = this.GetResourceViewModelForFile(fileName);
                     vm.Parent = this;
                     vm.SelectFile(fileName);
                     this.content.Add(vm);
                 }
 
                 this.ContentCount += dialog.FileNames.Length;
+            }
+        }
+
+        private IResourceViewModel GetResourceViewModelForFile(string file)
+        {
+            switch (Path.GetExtension(file))
+            {
+                case ".dds":
+                case ".png":
+                case ".tga":
+                case ".tif":
+                case ".jpg":
+                    {
+                        return this.logic.AddResourceTexture();
+                    }
+
+                case ".dae":
+                    {
+                        return this.logic.AddResourceModel();
+                    }
+
+                case ".lua":
+                    {
+                        return this.logic.AddResourceScript();
+                    }
+
+                default:
+                    {
+                        return this.logic.AddResourceRaw();
+                    }
             }
         }
 

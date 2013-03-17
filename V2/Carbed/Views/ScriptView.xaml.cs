@@ -37,7 +37,7 @@ namespace Carbed.Views
             {
                 this.completion.Clear();
                 string context = this.GetContext(sender as TextArea, 1);
-                ((IResourceViewModel)this.DataContext).UpdateAutoCompletion(this.completion, context);
+                ((IResourceScriptViewModel)this.DataContext).UpdateAutoCompletion(this.completion, context);
 
                 this.ShowAutoCompletion();
             }
@@ -50,7 +50,7 @@ namespace Carbed.Views
             {
                 // Todo: This is very very not good!
                 this.completion.Clear();
-                ((IResourceViewModel)this.DataContext).UpdateAutoCompletion(this.completion);
+                ((IResourceScriptViewModel)this.DataContext).UpdateAutoCompletion(this.completion);
 
                 this.ShowAutoCompletion();
                 args.Handled = true;
