@@ -13,8 +13,18 @@ using ICSharpCode.AvalonEdit.Document;
 
 namespace Carbed.Contracts
 {
+    using System.Drawing;
+
     public interface IResourceRawViewModel : IResourceViewModel
     {
+    }
+
+    public interface IResourceFontViewModel : IResourceViewModel
+    {
+        FontStyle FontStyle { get; set; }
+
+        int FontSize { get; set; }
+        int FontCharactersPerRow { get; set; }
     }
 
     public interface IResourceTextureViewModel : IResourceViewModel

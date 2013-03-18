@@ -1,29 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Drawing.Text;
-using System.IO;
-
-using Carbon.Editor.Resource;
-using Carbon.Engine.Rendering;
-using Carbon.Engine.Resource;
-
-namespace Carbon.Editor.Processors
+﻿namespace Carbon.Editor.Processors
 {
-    /*using Carbon.Editor.Contracts;
-    using Carbon.Editor.Logic;
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Drawing.Imaging;
+    using System.Drawing.Text;
+    using System.IO;
 
-    public class FontProcessor : IContentProcessor
+    using Carbon.Engine.Rendering;
+    using Carbon.Engine.Resource.Resources;
+
+    public struct FontProcessingOptions
     {
-        private const int CharactersPerRow = 20;
-        private const int RowCount = byte.MaxValue / CharactersPerRow;
+        public FontStyle Style;
 
-        private static readonly bool[] chars;
+        public int Size;
+        public int CharactersPerRow;
+    }
 
-        private Font font;
+    public static class FontProcessor
+    {
+        private static readonly bool[] Characters;
 
+        // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
         static FontProcessor()
         {
             var charSelection = new List<char>();
@@ -36,88 +38,59 @@ namespace Carbon.Editor.Processors
                 }
             }
 
-            chars = new bool[255];
+            Characters = new bool[255];
             foreach (char c in charSelection)
             {
-                chars[(byte)c] = true;
+                Characters[(byte)c] = true;
             }
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public ProcessingResult Process(CarbonBuilderEntry entry)
+        public static RawResource Process(string path, FontProcessingOptions options)
         {
-            return null;
-        }
-
-        public void Process(Stream target, CarbonBuilderEntry entry)
-        {
-            SourceTextureFont source = (SourceTextureFont)entry.Content;
-
-            this.font = new Font(source.Font.Reference, source.FontSize, FontStyle.Regular);
-            
-            // Todo: Evaluate reference
-
-            // - Pre-process -> texture -> save md5 of texture -> store reference to texture -> 
-
-            // Draw and return
-            using (Bitmap image = this.Draw())
+            if (options.Size <= 0 || options.CharactersPerRow <= 0)
             {
-                // Todo: Move this into pre-processing and use it as a referenced resource
-                switch (format)
+                throw new ArgumentException("Invalid Font Processing options");
+            }
+
+            var font = new Font("Arial", options.Size, options.Style);
+            using (Bitmap image = Draw(options, font))
+            {
+                using (var stream = new MemoryStream())
                 {
-                    case ProcessingTargetFormat.Preview:
-                        {
-                            image.Save(target, ImageFormat.Png);
-                            return;
-                        }
-
-                    case ProcessingTargetFormat.Baked:
-                        {
-                            using (var stream = new MemoryStream())
-                            {
-                                image.Save(stream, ImageFormat.Png);
-                                stream.Position = 0;
-                                byte[] textureData = new byte[stream.Length];
-                                stream.Read(textureData, 0, (int)stream.Length);
-                                var processedResource = new FontResource
-                                    {
-                                        CharactersPerRow = CharactersPerRow,
-                                        RowCount = byte.MaxValue / CharactersPerRow,
-                                        TextureData = textureData
-                                    };
-                                processedResource.Save(target);
-                            }
-                            return;
-                        }
-
-                    default:
-                        {
-                            throw new NotImplementedException();
-                        }
+                    image.Save(stream, ImageFormat.Png);
+                    stream.Position = 0;
+                    var resource = new RawResource();
+                    resource.Load(stream);
+                    return resource;
                 }
             }
         }
-        
-        private Point Measure()
+
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private static Point Measure(Font font)
         {
             Bitmap image = new Bitmap(1, 1);
             Graphics graphics = Graphics.FromImage(image);
             int width = 0;
             int height = 0;
-            for (int i = 0; i < chars.Length; i++)
+            for (int i = 0; i < Characters.Length; i++)
             {
-                if (!chars[i])
+                if (!Characters[i])
                 {
                     continue;
                 }
 
-                SizeF size = graphics.MeasureString(new string((char)i, 1), this.font);
+                SizeF size = graphics.MeasureString(new string((char)i, 1), font);
                 if (size.Width > width)
                 {
                     width = (int)size.Width;
                 }
+
                 if (size.Height > height)
                 {
                     height = (int)size.Height;
@@ -127,11 +100,12 @@ namespace Carbon.Editor.Processors
             return new Point(width, height);
         }
 
-        private Bitmap Draw()
+        private static Bitmap Draw(FontProcessingOptions options, Font font)
         {
-            Point glyphSize = this.Measure();
+            Point glyphSize = Measure(font);
 
-            var image = new Bitmap(glyphSize.X * FontBuilder.CharactersPerRow, glyphSize.Y * RowCount);
+            int rowCount = byte.MaxValue / options.CharactersPerRow;
+            var image = new Bitmap(glyphSize.X * FontBuilder.CharactersPerRow, glyphSize.Y * rowCount);
             var graphics = Graphics.FromImage(image);
             graphics.Clear(Color.Transparent);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -140,9 +114,9 @@ namespace Carbon.Editor.Processors
             int rowCounter = 0;
             int x = 0;
             int y = 0;
-            for (int i = 0; i < chars.Length; i++)
+            for (int i = 0; i < Characters.Length; i++)
             {
-                string str = chars[i] ? new string((char)i, 1) : "";
+                string str = Characters[i] ? new string((char)i, 1) : string.Empty;
 
                 graphics.DrawString(str, font, new SolidBrush(Color.White), x, y);
                 x += glyphSize.X;
@@ -158,5 +132,5 @@ namespace Carbon.Editor.Processors
             graphics.Flush();
             return image;
         }
-    }*/
+    }
 }

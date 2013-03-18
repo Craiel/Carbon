@@ -166,6 +166,7 @@
     <Compile Include="ViewModels\ContentViewModel.cs" />
     <Compile Include="ViewModels\MaterialViewModel.cs" />
     <Compile Include="ViewModels\MaterialExplorerViewModel.cs" />
+    <Compile Include="ViewModels\ResourceFontViewModel.cs" />
     <Compile Include="ViewModels\ResourceModelViewModel.cs" />
     <Compile Include="ViewModels\ResourceRawViewModel.cs" />
     <Compile Include="ViewModels\ResourceScriptViewModel.cs" />

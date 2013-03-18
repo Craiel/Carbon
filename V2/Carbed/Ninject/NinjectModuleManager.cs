@@ -46,6 +46,7 @@ namespace Carbed.Ninject
                 this.Bind<IResourceTextureViewModel>().To<ResourceTextureViewModel>();
                 this.Bind<IResourceModelViewModel>().To<ResourceModelViewModel>();
                 this.Bind<IResourceScriptViewModel>().To<ResourceScriptViewModel>();
+                this.Bind<IResourceFontViewModel>().To<ResourceFontViewModel>();
                 this.Bind<IResourceRawViewModel>().To<ResourceRawViewModel>();
                 this.Bind<IMaterialViewModel>().To<MaterialViewModel>();
 

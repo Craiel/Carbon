@@ -8,6 +8,10 @@ using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
+    using System.IO;
+
+    using global::Carbed.Logic.MVVM;
+
     public class ResourceTextureViewModel : ResourceViewModel, IResourceTextureViewModel
     {
         private enum Flags
@@ -162,6 +166,21 @@ namespace Carbed.ViewModels
                         break;
                     }
             }
+        }
+
+        protected override System.Windows.Media.ImageSource GetPreviewImage()
+        {
+            switch (Path.GetExtension(this.SourcePath))
+            {
+                case ".png":
+                case ".tif":
+                case ".jpg":
+                    {
+                        return WPFUtilities.FileToImage(this.SourcePath);
+                    }
+            }
+
+            return null;
         }
     }
 }

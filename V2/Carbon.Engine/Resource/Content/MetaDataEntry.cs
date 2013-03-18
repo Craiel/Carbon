@@ -13,6 +13,9 @@
         ResourceFlags = 17,
         TextureTargetFormat = 18,
         ResourceCoreFlags = 19,
+        FontSize = 20,
+        FontCharactersPerRow = 21,
+        FontStyle = 22,
     }
 
     public enum MetaDataTargetEnum

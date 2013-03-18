@@ -14,6 +14,7 @@ namespace Carbed.Logic.MVVM
 
             Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             var result = new BitmapImage();
+            result.CacheOption = BitmapCacheOption.OnDemand;
             result.BeginInit();
             result.StreamSource = stream;
             result.EndInit();

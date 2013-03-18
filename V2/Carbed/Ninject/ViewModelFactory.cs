@@ -56,5 +56,10 @@ namespace Carbed.Ninject
         {
             return this.kernel.Get<IResourceRawViewModel>(new ConstructorArgument("data", data));
         }
+
+        public IResourceFontViewModel GetResourceFontViewModel(ResourceEntry data)
+        {
+            return this.kernel.Get<IResourceFontViewModel>(new ConstructorArgument("data", data));
+        }
     }
 }

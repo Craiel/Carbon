@@ -26,6 +26,7 @@ namespace Carbed.ViewModels
         }
 
         private readonly ICarbedLogic logic;
+        private readonly ICarbedSettings settings;
         private readonly IResourceProcessor resourceProcessor;
         private readonly List<string> sourceElements;
 
@@ -43,6 +44,7 @@ namespace Carbed.ViewModels
             : base(factory, data)
         {
             this.logic = factory.Get<ICarbedLogic>();
+            this.settings = factory.Get<ICarbedSettings>();
             this.resourceProcessor = factory.Get<IResourceProcessor>();
 
             this.sourceElements = new List<string>();
@@ -113,15 +115,6 @@ namespace Carbed.ViewModels
             {
                 return this.textureSynchronizer;
             }
-
-            private set
-            {
-                if (this.textureSynchronizer != value)
-                {
-                    this.textureSynchronizer = value;
-                    this.NotifyPropertyChanged();
-                }
-            }
         }
 
         public IFolderViewModel TextureFolder
@@ -159,6 +152,25 @@ namespace Carbed.ViewModels
             this.textureFolder = this.logic.LocateFolder(this.GetMetaValue(MetaDataKey.TextureFolder));
             this.textureSynchronizer.SetTarget(this.textureFolder);
             this.textureSynchronizer.Refresh();
+        }
+
+        public override void SelectFile(string path)
+        {
+            base.SelectFile(path);
+
+            this.UpdateSourceElements();
+
+            if (this.settings.ModelTextureAutoCreateFolder && this.settings.ModelTextureParentFolder != null && this.TextureFolder == null)
+            {
+                var textureParent = this.logic.LocateFolder(this.settings.ModelTextureParentFolder);
+                if (textureParent != null)
+                {
+                    var folder = textureParent.AddFolder();
+                    folder.Name = string.Concat(this.Name, "_textures");
+                    this.AutoUpdateTextures = true;
+                    this.TextureFolder = folder;
+                }
+            }
         }
 
         // -------------------------------------------------------------------
@@ -254,25 +266,19 @@ namespace Carbed.ViewModels
 
             string selection = this.SelectedSourceElement;
             this.sourceElements.Clear();
-            switch (this.Type)
+
+            try
             {
-                case ResourceType.Model:
-                    {
-                        try
-                        {
-                            this.colladaSourceInfo = new ColladaInfo(path);
-                            this.textureSynchronizer.SetSource(this.colladaSourceInfo);
-                            foreach (ColladaMeshInfo meshInfo in this.colladaSourceInfo.MeshInfos)
-                            {
-                                this.sourceElements.Add(meshInfo.Name);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            this.Log.Error("Could not get collada info of source file for mesh, please check the format");
-                        }
-                        break;
-                    }
+                this.colladaSourceInfo = new ColladaInfo(path);
+                this.textureSynchronizer.SetSource(this.colladaSourceInfo);
+                foreach (ColladaMeshInfo meshInfo in this.colladaSourceInfo.MeshInfos)
+                {
+                    this.sourceElements.Add(meshInfo.Name);
+                }
+            }
+            catch (Exception e)
+            {
+                this.Log.Error("Could not get collada info of source file for mesh, please check the format", e);
             }
 
             if (string.IsNullOrEmpty(selection) || this.sourceElements.Contains(selection))

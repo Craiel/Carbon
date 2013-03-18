@@ -253,7 +253,7 @@ namespace Carbed.ViewModels
                     if (!this.isUpdatingPreview)
                     {
                         this.isUpdatingPreview = true;
-                        new Task(this.UpdatePreviewImage).Start();
+                        this.DoUpdatePreview();
                     }
 
                     return new BitmapImage(StaticResources.NoPreviewImageUri);
@@ -307,7 +307,7 @@ namespace Carbed.ViewModels
             this.data.TreeNode = this.parent.Id;
             this.data.Hash = HashUtils.BuildResourceHash(Path.Combine(this.parent.FullPath, this.Name));
 
-            bool force = this.GetMetaValueBit(MetaDataKey.ResourceFlags, (int)CoreFlags.AlwaysForceExport) ?? false;
+            bool force = this.GetMetaValueBit(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceExport) ?? false;
             if (this.NeedReExport || force)
             {
                 this.DoExport(target, resourceTarget);
@@ -343,7 +343,7 @@ namespace Carbed.ViewModels
             this.NotifyPropertyChanged();
         }
 
-        public void SelectFile(string path)
+        public virtual void SelectFile(string path)
         {
             if(string.IsNullOrEmpty(path) || !File.Exists(path))
             {
@@ -473,6 +473,11 @@ namespace Carbed.ViewModels
         {
         }
 
+        protected virtual ImageSource GetPreviewImage()
+        {
+            return null;
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
@@ -534,17 +539,12 @@ namespace Carbed.ViewModels
             }
         }*/
 
-        private void UpdatePreviewImage()
+        private void DoUpdatePreview()
         {
-            switch (Path.GetExtension(this.SourcePath))
+            ImageSource source = this.GetPreviewImage();
+            if (source != null)
             {
-                case ".png":
-                case ".tif":
-                case ".jpg":
-                    {
-                        this.PreviewImage = WPFUtilities.FileToImage(this.SourcePath);
-                        break;
-                    }
+                this.PreviewImage = source;
             }
 
             this.isUpdatingPreview = false;

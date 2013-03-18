@@ -24,6 +24,7 @@ namespace Carbed.ViewModels
         public ResourceScriptViewModel(IEngineFactory factory, ResourceEntry data)
             : base(factory, data)
         {
+            this.ForceExport = true;
         }
 
         // -------------------------------------------------------------------

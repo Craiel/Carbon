@@ -54,6 +54,11 @@ namespace Carbon.Editor.Logic
             return TextureProcessor.Process(path, options);
         }
 
+        public RawResource ProcessFont(string path, FontProcessingOptions options)
+        {
+            return FontProcessor.Process(path, options);
+        }
+
         public ModelResource ProcessModel(ColladaInfo info, string element, string texturePath)
         {
             if (info == null || string.IsNullOrEmpty(info.Source) || !File.Exists(info.Source))

@@ -273,6 +273,11 @@ namespace Carbed.Logic
             return this.viewModelFactory.GetResourceScriptViewModel(new ResourceEntry { Type = ResourceType.Script });
         }
 
+        public IResourceFontViewModel AddResourceFont()
+        {
+            return this.viewModelFactory.GetResourceFontViewModel(new ResourceEntry { Type = ResourceType.Font });
+        }
+
         public IResourceRawViewModel AddResourceRaw()
         {
             return this.viewModelFactory.GetResourceRawViewModel(new ResourceEntry { Type = ResourceType.Raw });
@@ -349,6 +354,12 @@ namespace Carbed.Logic
                     case ResourceType.Script:
                         {
                             results.Add(this.viewModelFactory.GetResourceScriptViewModel(entry));
+                            break;
+                        }
+
+                    case ResourceType.Font:
+                        {
+                            results.Add(this.viewModelFactory.GetResourceFontViewModel(entry));
                             break;
                         }
 

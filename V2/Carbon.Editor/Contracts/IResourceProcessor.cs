@@ -10,6 +10,7 @@ namespace Carbon.Editor.Contracts
 
         RawResource ProcessRaw(string path);
         RawResource ProcessTexture(string path, TextureProcessingOptions options);
+        RawResource ProcessFont(string path, FontProcessingOptions options);
         ModelResource ProcessModel(ColladaInfo info, string element, string texturePath);
     }
 }

@@ -487,6 +487,11 @@ namespace Carbed.ViewModels
                         return this.logic.AddResourceScript();
                     }
 
+                case ".ttf":
+                    {
+                        return this.logic.AddResourceFont();
+                    }
+
                 default:
                     {
                         return this.logic.AddResourceRaw();
