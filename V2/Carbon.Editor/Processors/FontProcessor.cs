@@ -50,21 +50,27 @@
         // -------------------------------------------------------------------
         public static RawResource Process(string path, FontProcessingOptions options)
         {
-            if (options.Size <= 0 || options.CharactersPerRow <= 0)
+            if (options.Size <= 0 || options.CharactersPerRow <= 0 || string.IsNullOrEmpty(path) || !File.Exists(path))
             {
                 throw new ArgumentException("Invalid Font Processing options");
             }
 
-            var font = new Font("Arial", options.Size, options.Style);
-            using (Bitmap image = Draw(options, font))
+            using (var fontCollection = new PrivateFontCollection())
             {
-                using (var stream = new MemoryStream())
+                fontCollection.AddFontFile(path);
+                using (var font = new Font(fontCollection.Families[0], options.Size, options.Style))
                 {
-                    image.Save(stream, ImageFormat.Png);
-                    stream.Position = 0;
-                    var resource = new RawResource();
-                    resource.Load(stream);
-                    return resource;
+                    using (Bitmap image = Draw(options, font))
+                    {
+                        using (var stream = new MemoryStream())
+                        {
+                            image.Save(stream, ImageFormat.Png);
+                            stream.Position = 0;
+                            var resource = new RawResource();
+                            resource.Load(stream);
+                            return resource;
+                        }
+                    }
                 }
             }
         }
