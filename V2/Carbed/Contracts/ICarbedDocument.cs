@@ -7,6 +7,7 @@ namespace Carbed.Contracts
     {
         string Title { get; }
         string Name { get; set; }
+        string ContentId { get; }
 
         bool IsNamed { get; }
         bool IsChanged { get; }

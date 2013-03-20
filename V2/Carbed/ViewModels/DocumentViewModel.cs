@@ -41,6 +41,8 @@ namespace Carbed.ViewModels
         public abstract string Title { get; }
         public abstract string Name { get; set; }
 
+        public string ContentId { get; protected set; }
+
         public virtual bool IsNamed
         {
             get

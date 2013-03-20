@@ -5,6 +5,7 @@ namespace Carbed.Contracts
     public interface ICarbedTool : ICarbedBase
     {
         string Title { get; }
+        string ContentId { get; }
 
         Uri IconUri { get; }
 

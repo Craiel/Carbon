@@ -37,12 +37,14 @@ namespace Carbed.ViewModels
         private readonly IUndoRedoManager undoRedoManager;
         private readonly IOperationProgress operationProgress;
         private readonly IPropertyViewModel propertyViewModel;
-        private readonly IResourceExplorerViewModel projectExplorerViewModel;
+        private readonly IResourceExplorerViewModel resourceExplorerViewModel;
         private readonly IMaterialExplorerViewModel materialExplorerViewModel;
         private readonly IFontExplorerViewModel fontExplorerViewModel;
 
         private readonly List<IDocumentTemplate> documentTemplates;
         private readonly List<IDocumentTemplateCategory> documentTemplateCategories;
+
+        private readonly List<ICarbedTool> availableTools;
 
         private string currentProjectFile;
 
@@ -68,14 +70,21 @@ namespace Carbed.ViewModels
             this.undoRedoManager.PropertyChanged += this.OnUndoRedoManagerChanged;
             this.operationProgress = factory.Get<IOperationProgress>();
             this.propertyViewModel = factory.Get<IPropertyViewModel>();
-            this.projectExplorerViewModel = factory.Get<IResourceExplorerViewModel>();
+            this.resourceExplorerViewModel = factory.Get<IResourceExplorerViewModel>();
             this.materialExplorerViewModel = factory.Get<IMaterialExplorerViewModel>();
             this.fontExplorerViewModel = factory.Get<IFontExplorerViewModel>();
             
             this.documentTemplates = new List<IDocumentTemplate>();
             this.documentTemplateCategories = new List<IDocumentTemplateCategory>();
-            
-            this.ToolWindows = new ObservableCollection<ICarbedTool>();
+
+            this.ToolWindows = new ObservableCollection<ICarbedTool>()
+                                   {
+                                       this.propertyViewModel,
+                                       this.resourceExplorerViewModel,
+                                       this.materialExplorerViewModel,
+                                       this.fontExplorerViewModel,
+                                   };
+
             this.Documents = new ObservableCollection<ICarbedDocument>();
 
             this.CommandNewProject = new RelayCommand(this.OnNewProject);
@@ -417,7 +426,7 @@ namespace Carbed.ViewModels
 
         private void OnOpenProject(object obj)
         {
-            OpenFileDialog dialog = new OpenFileDialog
+            var dialog = new OpenFileDialog
                 {
                     CheckFileExists = true,
                     DefaultExt = DefaultProjectFileExtension
@@ -473,45 +482,29 @@ namespace Carbed.ViewModels
         {
             Application.Current.Shutdown(0);
         }
-
+        
         private void OnShowResourceExplorer(object obj)
         {
-            if (!this.ToolWindows.Contains(this.projectExplorerViewModel))
-            {
-                this.ToolWindows.Add(this.projectExplorerViewModel);
-            }
+            this.resourceExplorerViewModel.IsVisible = true;
+            this.resourceExplorerViewModel.IsActive = true;
         }
 
         private void OnShowMaterialExplorer(object obj)
         {
-            if (!this.ToolWindows.Contains(this.materialExplorerViewModel))
-            {
-                this.ToolWindows.Add(this.materialExplorerViewModel);
-            }
+            this.materialExplorerViewModel.IsVisible = true;
+            this.materialExplorerViewModel.IsActive = true;
         }
 
         private void OnShowFontExplorer(object obj)
         {
-            if (!this.ToolWindows.Contains(this.fontExplorerViewModel))
-            {
-                this.ToolWindows.Add(this.fontExplorerViewModel);
-            }
+            this.fontExplorerViewModel.IsVisible = true;
+            this.fontExplorerViewModel.IsActive = true;
         }
 
         private void OnShowProperties(object obj)
         {
-            var vm = this.ToolWindows.FirstOrDefault(x => x is IPropertyViewModel);
-            if (vm == null)
-            {
-                vm = this.factory.Get<IPropertyViewModel>();
-            }
-
-            if (this.ToolWindows.Contains(vm))
-            {
-                return;
-            }
-
-            this.ToolWindows.Add(vm);
+            this.propertyViewModel.IsVisible = true;
+            this.propertyViewModel.IsActive = true;
         }
 
         private void OnShowSettings(object obj)
@@ -570,24 +563,6 @@ namespace Carbed.ViewModels
             StaticResources.MeshTemplate.Categories.Add(resourceMain);
             this.documentTemplates.Add(StaticResources.MeshTemplate);
         }
-        
-        private void InsertFolderContent(IResourceViewModel content)
-        {
-            if (this.currentCreationContext != null)
-            {
-                this.currentCreationContext.AddContent(content);
-            }
-            else
-            {
-                IFolderViewModel folder = this.projectExplorerViewModel.Folders.LastOrDefault();
-                if (folder == null)
-                {
-                    throw new InvalidOperationException("No folder was present to hold the content");
-                }
-
-                folder.AddContent(content);
-            }
-        }
 
         private void OnBuild(object obj)
         {
@@ -635,7 +610,7 @@ namespace Carbed.ViewModels
                 return;
             }
 
-            this.eventRelay.Relay(new EventLoadLayout(file));
+            this.eventRelay.Relay(new EventLoadLayout(this, file));
         }
 
         private void SaveProjectLayout()

@@ -1,13 +1,12 @@
-﻿using Carbed.Contracts;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+
+using Carbed.Contracts;
 
 using Carbon.Engine.Contracts;
 
 namespace Carbed.ViewModels
 {
-    using System;
-    using System.Collections.ObjectModel;
-    using System.Collections.Specialized;
-
     public class MaterialExplorerViewModel : ContentExplorerViewModel<IMaterialViewModel>, IMaterialExplorerViewModel
     {
         private readonly ICarbedLogic logic;
@@ -22,9 +21,15 @@ namespace Carbed.ViewModels
             ((INotifyCollectionChanged)this.logic.Materials).CollectionChanged += this.OnSourceCollectionChangend;
         }
 
-        private void OnSourceCollectionChangend(object sender, NotifyCollectionChangedEventArgs e)
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
+        public override string Title
         {
-            this.UpdateDocuments();
+            get
+            {
+                return string.Format("Materials {0} / {1}", this.Documents.Count, this.logic.Materials.Count);
+            }
         }
 
         // -------------------------------------------------------------------
@@ -36,6 +41,16 @@ namespace Carbed.ViewModels
             {
                 target.Add(material);
             }
+
+            this.NotifyPropertyChanged("Title");
+        }
+
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private void OnSourceCollectionChangend(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.UpdateDocuments();
         }
     }
 }

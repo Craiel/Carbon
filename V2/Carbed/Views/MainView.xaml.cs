@@ -1,5 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.IO;
 
+using AvalonDock.Layout.Serialization;
+
+using Carbed.Contracts;
 using Carbed.Events;
 
 using Core.Utils.Contracts;
@@ -9,6 +14,8 @@ namespace Carbed.Views
     public partial class MainView
     {
         private readonly IEventRelay eventRelay;
+
+        private IMainViewModel currentSerializiationContext;
 
         public MainView(IEventRelay eventRelay)
         {
@@ -29,25 +36,28 @@ namespace Carbed.Views
         private void OnLoadLayoutEvent(EventLoadLayout args)
         {
             // Not yet supported properly, can't do this
-            /*if (string.IsNullOrEmpty(args.File) || !File.Exists(args.File))
+            if (string.IsNullOrEmpty(args.File) || !File.Exists(args.File))
             {
                 throw new ArgumentException();
             }
 
-            var serialzier = new XmlLayoutSerializer(this.dockingManager);
+            this.currentSerializiationContext = args.MainViewModel;
+            var serializer = new XmlLayoutSerializer(this.dockingManager);
             using (var stream = new FileStream(args.File, FileMode.Open, FileAccess.Read))
             {
-                serialzier.Deserialize(stream);
-            }*/
+                serializer.Deserialize(stream);
+            }
+
+            this.currentSerializiationContext = null;
         }
 
         private void OnSaveLayoutEvent(EventSaveLayout args)
         {
-            /*var serializer = new XmlLayoutSerializer(this.dockingManager);
+            var serializer = new XmlLayoutSerializer(this.dockingManager);
             using (var stream = new FileStream(args.File, FileMode.Create, FileAccess.ReadWrite))
             {
                 serializer.Serialize(stream);
-            }*/
+            }
         }
     }
 }

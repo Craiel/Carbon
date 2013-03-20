@@ -63,9 +63,6 @@
     <Reference Include="AvalonDock">
       <HintPath>..\..\..\CarbonExt\AvalonDock 2.0.1746\AvalonDock.dll</HintPath>
     </Reference>
-    <Reference Include="AvalonDock.Themes.Metro">
-      <HintPath>..\..\..\CarbonExt\AvalonDock 2.0.1746\AvalonDock.Themes.Metro.dll</HintPath>
-    </Reference>
     <Reference Include="Fluent">
       <HintPath>..\..\..\CarbonExt\FluentRibbon c2848bed6826\Fluent.dll</HintPath>
     </Reference>
@@ -290,6 +287,14 @@
     <Resource Include="Resources\icon_tool.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Logic\Docking\Theme\Brushes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Logic\Docking\Theme\Theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Converters.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -426,6 +431,44 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\no_preview.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Logic\Docking\Theme\Images\DockAnchorableBottom.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockAnchorableLeft.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockAnchorableRight.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockAnchorableTop.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockDocumentAsAnchorableBottom.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockDocumentAsAnchorableLeft.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockDocumentAsAnchorableRight.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockDocumentAsAnchorableTop.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockDocumentBottom.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockDocumentInside.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockDocumentLeft.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockDocumentRight.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockDocumentTop.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockPaneEmpty.png" />
+    <Resource Include="Logic\Docking\Theme\Images\DockPaneLargeEmpty.png" />
+    <Resource Include="Logic\Docking\Theme\Images\HTabGroup.png" />
+    <Resource Include="Logic\Docking\Theme\Images\Locked.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinAutoHide.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinAutoHide_Black.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinAutoHide_Dark.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinClose.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinClose_Black.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinClose_Dark.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinDocMenu.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinDocMenu_Black.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinMaximize.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinMaximize_Black.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinMaximize_Dark.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinMenu.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinMenu_Black.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinMenu_Dark.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinRestore.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinRestore_Black.png" />
+    <Resource Include="Logic\Docking\Theme\Images\PinRestore_Dark.png" />
+    <Resource Include="Logic\Docking\Theme\Images\VTabGroup.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

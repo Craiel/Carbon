@@ -8,6 +8,7 @@ namespace Carbed.Contracts
     {
         ReadOnlyObservableCollection<T> Documents { get; }
 
+        ICommand CommandSave { get; }
         ICommand CommandReload { get; }
         ICommand CommandOpenNewDialog { get; }
     }

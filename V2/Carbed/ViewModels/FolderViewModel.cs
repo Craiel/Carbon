@@ -303,8 +303,11 @@ namespace Carbed.ViewModels
 
             this.content.Clear();
             IList<IFolderViewModel> children = this.logic.GetResourceTreeChildren((int)this.data.Id);
+            TaskProgress.CurrentMaxProgress += children.Count;
             foreach (IFolderViewModel child in children)
             {
+                TaskProgress.CurrentProgress++;
+                TaskProgress.CurrentMessage = "Folder: " + child.Id.ToString();
                 child.Load();
                 child.Parent = this;
                 this.content.Add(child);
@@ -312,8 +315,11 @@ namespace Carbed.ViewModels
 
             int resourceCount = 0;
             IList<IResourceViewModel> contentList = this.logic.GetResourceTreeContent((int)this.data.Id);
+            TaskProgress.CurrentMaxProgress += contentList.Count;
             foreach (IResourceViewModel entry in contentList)
             {
+                TaskProgress.CurrentProgress++;
+                TaskProgress.CurrentMessage = "Content: " + entry.Id.ToString();
                 resourceCount++;
                 entry.Parent = this;
                 entry.Load();

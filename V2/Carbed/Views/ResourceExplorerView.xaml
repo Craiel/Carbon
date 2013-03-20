@@ -88,8 +88,8 @@
             </Grid.RowDefinitions>
             
             <StackPanel Orientation="Horizontal">
-                <Button Command="{Binding Path=CommandSave}" Content="{StaticResource IconSave}"/>
-                <Button Command="{Binding Path=CommandRefresh}" Content="{StaticResource IconRefresh}"/>
+                <Button Command="{Binding Path=CommandSave}" ToolTip="Save all" Content="{StaticResource IconSave}"/>
+                <Button Command="{Binding Path=CommandRefresh}" ToolTip="Refresh" Content="{StaticResource IconRefresh}"/>
             </StackPanel>
         </Grid>
 

@@ -26,6 +26,14 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         public abstract string Title { get; }
 
+        public string ContentId
+        {
+            get
+            {
+                return string.Concat("Tool|", this.GetType().ToString());
+            }
+        }
+
         public virtual Uri IconUri
         {
             get

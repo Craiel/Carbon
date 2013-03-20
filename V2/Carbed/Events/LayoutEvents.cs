@@ -1,13 +1,17 @@
-﻿namespace Carbed.Events
+﻿using Carbed.Contracts;
+
+namespace Carbed.Events
 {
     public class EventLoadLayout
     {
-        public EventLoadLayout(string file)
+        public EventLoadLayout(IMainViewModel mainViewModel, string file)
         {
+            this.MainViewModel = mainViewModel;
             this.File = file;
         }
 
-        public string File { get; set; }
+        public IMainViewModel MainViewModel { get; private set; }
+        public string File { get; private set; }
     }
 
     public class EventSaveLayout
@@ -17,7 +21,7 @@
             this.File = file;
         }
 
-        public string File { get; set; }
+        public string File { get; private set; }
     }
 
     public class EventWindowClosing

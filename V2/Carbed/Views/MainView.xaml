@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:Carbed.Logic.Docking"
         xmlns:views="clr-namespace:Carbed.Views" 
         xmlns:mvvm="clr-namespace:Carbed.Logic.MVVM"
-        xmlns:carbed="clr-namespace:Carbed"
-        Icon="{Binding Source={x:Static carbed:StaticResources.IconUri}}">
+        xmlns:carbed="clr-namespace:Carbed" xmlns:themes="clr-namespace:AvalonDock.Themes"
+                     Icon="{Binding Source={x:Static carbed:StaticResources.IconUri}}">
 
     <fluent:RibbonWindow.Title>
         <MultiBinding StringFormat="{} Carbed - {0}">
@@ -19,11 +19,12 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/presentationframework.Aero;component/themes/aero.normalcolor.xaml" />
-                <ResourceDictionary Source="/AvalonDock.Themes.Metro;component/Theme.xaml" />
+                <ResourceDictionary Source="/Logic/Docking/Theme/Theme.xaml" />
                 <ResourceDictionary Source="/Resources/Converters.xaml"/>
                 <ResourceDictionary Source="/Resources/Icons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
+        
     </fluent:RibbonWindow.Resources>
 
     <Grid>
@@ -86,9 +87,6 @@
                                    Grid.Row="1"
                                    x:Name="dockingManager">
             
-            <avalonDock:DockingManager.Theme>
-                <avalonDock:MetroTheme/>
-            </avalonDock:DockingManager.Theme>
             <avalonDock:DockingManager.LayoutItemTemplateSelector>
                 <local:PanesTemplateSelector>
                     <local:PanesTemplateSelector.ResourceTemplate>
@@ -145,6 +143,7 @@
                     <local:PanesStyleSelector.ToolStyle>
                         <Style TargetType="{x:Type avalonDock:LayoutAnchorableItem}">
                             <Setter Property="Title" Value="{Binding Model.Title}"/>
+                            <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
                             <Setter Property="IconSource" Value="{Binding Model.IconUri}"/>
                             <Setter Property="Visibility" Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}"/>
                             <Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}"/>
@@ -154,6 +153,7 @@
                     <local:PanesStyleSelector.DocumentStyle>
                         <Style TargetType="{x:Type avalonDock:LayoutItem}">
                             <Setter Property="mvvm:DynamicBasedOn.DynamicBasedOn" Value="{DynamicResource {x:Type avalonDock:LayoutItem}}"/>
+                            <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
                             <Setter Property="Title" Value="{Binding Model.Title}"/>
                             <Setter Property="ToolTip" Value="{Binding Model.Type}"/>
                             <Setter Property="CloseCommand" Value="{Binding Model.CommandClose}"/>

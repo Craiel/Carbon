@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
@@ -186,28 +187,54 @@ namespace Carbed.Logic
             this.Unload();
 
             // Resources need to be first, content has dependencies
+            Task[] tasks = new[] { new Task(this.ReloadResources) };
+            TaskProgress.Message = "Loading Resources";
+            new TaskProgress(tasks);
+
+            tasks = new[] { new Task(this.ReloadMaterials), new Task(this.ReloadFonts) };
+            TaskProgress.Message = "Loading Content";
+            new TaskProgress(tasks, tasks.Length);
+        }
+
+        private void ReloadResources()
+        {
+            TaskProgress.CurrentProgress = 0;
+            TaskProgress.CurrentMaxProgress = 0;
             ContentQueryResult<ResourceTree> treeData = this.projectContent.TypedLoad(new ContentQuery<ResourceTree>().IsEqual("Parent", null));
             var treeEntries = treeData.ToList<ResourceTree>();
+            TaskProgress.CurrentMaxProgress = treeEntries.Count;
             foreach (ResourceTree entry in treeEntries)
             {
+                TaskProgress.CurrentProgress++;
+                TaskProgress.CurrentMessage = "Folder: " + entry.Id.ToString();
                 IFolderViewModel vm = this.viewModelFactory.GetFolderViewModel(entry);
                 vm.Load();
                 Application.Current.Dispatcher.Invoke(() => this.folders.Add(vm));
             }
+        }
 
+        private void ReloadMaterials()
+        {
             ContentQueryResult<MaterialEntry> materialData = this.projectContent.TypedLoad(new ContentQuery<MaterialEntry>());
             var materialEntries = materialData.ToList<MaterialEntry>();
+            TaskProgress.CurrentMaxProgress += materialEntries.Count;
             foreach (MaterialEntry entry in materialEntries)
             {
+                TaskProgress.CurrentProgress++;
                 IMaterialViewModel vm = this.viewModelFactory.GetMaterialViewModel(entry);
                 vm.Load();
                 Application.Current.Dispatcher.Invoke(() => this.materials.Add(vm));
             }
+        }
 
+        private void ReloadFonts()
+        {
             ContentQueryResult<FontEntry> fontData = this.projectContent.TypedLoad(new ContentQuery<FontEntry>());
             var fontEntries = fontData.ToList<FontEntry>();
+            TaskProgress.CurrentMaxProgress += fontEntries.Count;
             foreach (FontEntry entry in fontEntries)
             {
+                TaskProgress.CurrentProgress++;
                 IFontViewModel vm = this.viewModelFactory.GetFontViewModel(entry);
                 vm.Load();
                 Application.Current.Dispatcher.Invoke(() => this.fonts.Add(vm));

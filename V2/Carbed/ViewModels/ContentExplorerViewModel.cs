@@ -17,6 +17,7 @@ namespace Carbed.ViewModels
 
         private readonly ObservableCollection<T> filteredDocuments;
 
+        private ICommand commandSave;
         private ICommand commandReload;
 
         private IMainViewModel mainViewModel;
@@ -65,6 +66,14 @@ namespace Carbed.ViewModels
                 return this.mainViewModel.CommandOpenNewDialog;
             }
         }
+       
+        public ICommand CommandSave
+        {
+            get
+            {
+                return this.commandSave ?? (this.commandSave = new RelayCommand(this.OnSave, this.CanSave));
+            }
+        }
 
         public ICommand CommandReload
         {
@@ -99,6 +108,22 @@ namespace Carbed.ViewModels
         {
             this.UpdateDocuments();
             this.NotifyPropertyChanged(string.Empty);
+        }
+
+        private void OnSave(object obj)
+        {
+            foreach (var document in this.Documents)
+            {
+                if (document.CommandSave.CanExecute(obj))
+                {
+                    document.CommandSave.Execute(obj);
+                }
+            }
+        }
+
+        private bool CanSave(object obj)
+        {
+            return this.logic.IsProjectLoaded;
         }
 
         private void OnReload(object obj)
