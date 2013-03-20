@@ -49,6 +49,7 @@ namespace Carbed.Contracts
 
         ICommand CommandOpenResourceExplorer { get; }
         ICommand CommandOpenMaterialExplorer { get; }
+        ICommand CommandOpenFontExplorer { get; }
         ICommand CommandOpenProperties { get; }
         ICommand CommandOpenNewDialog { get; }
         ICommand CommandOpenSettings { get; }

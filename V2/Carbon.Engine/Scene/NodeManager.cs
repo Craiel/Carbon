@@ -16,6 +16,10 @@ using SlimDX;
 
 namespace Carbon.Engine.Scene
 {
+    using System.Data;
+
+    using Carbon.Engine.Logic;
+
     public interface INodeManager : IScriptingProvider
     {
         INode RootNode { get; }
@@ -30,6 +34,8 @@ namespace Carbon.Engine.Scene
         INode AddNode(INode parent = null);
         INode AddModel(string path, INode parent = null);
         INode AddSphere(int detailLevel, INode parent = null);
+        INode AddPlane(INode parent = null);
+        INode AddStaticText(int fontId, string text, Vector2 charSize, INode parent = null);
     }
 
     public class NodeManager : INodeManager
@@ -172,6 +178,62 @@ namespace Carbon.Engine.Scene
             }
 
             ModelNode node = this.CreateModelNode(resource);
+            parent.AddChild(node);
+            return node;
+        }
+
+        [ScriptingMethod]
+        public INode AddPlane(INode parent = null)
+        {
+            if (parent == null)
+            {
+                parent = this.root;
+            }
+
+            var resource = Quad.Create(Vector3.Zero, -Vector3.UnitZ, Vector3.UnitY, 1, 1);
+            if (resource == null) 
+            {
+                return null;
+            }
+
+            ModelNode node = this.CreateModelNode(resource);
+            parent.AddChild(node);
+            return node;
+        }
+
+        [ScriptingMethod]
+        public INode AddStaticText(int fontId, string text, Vector2 size, INode parent = null)
+        {
+            if (parent == null)
+            {
+                parent = this.root;
+            }
+
+            FontEntry font = this.contentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", fontId)).UniqueResult<FontEntry>();
+            if (font == null)
+            {
+                throw new DataException("Font was not found for id " + fontId);
+            }
+
+            var resource = FontBuilder.Build(text, size, font);
+            if (resource == null)
+            {
+                return null;
+            }
+            
+            ModelNode node = this.CreateModelNode(resource);
+
+            // Todo: This is more for testing than anything else..., needs refactoring at some point
+            if (font.Resource != null)
+            {
+                var resourceEntry = this.contentManager.Load<ResourceEntry>(font.Resource);
+                if (resourceEntry != null)
+                {
+                    TextureReference reference = this.graphics.TextureManager.Register(resourceEntry.Hash);
+                    node.Material = new Material(reference) { AlphaTexture = reference };
+                }
+            }
+
             parent.AddChild(node);
             return node;
         }

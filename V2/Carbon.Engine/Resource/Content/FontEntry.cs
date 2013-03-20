@@ -8,9 +8,12 @@
         // -------------------------------------------------------------------
         [ContentEntryElement(PrimaryKey = PrimaryKeyMode.AutoIncrement)]
         public int? Id { get; set; }
+
+        [ContentEntryElement]
+        public int CharactersPerRow { get; set; }
         
         [ContentEntryElement]
-        public ContentLink Material { get; set; }
+        public ContentLink Resource { get; set; }
 
         public override bool IsNew
         {
@@ -25,6 +28,34 @@
             get
             {
                 return MetaDataTargetEnum.Font;
+            }
+        }
+
+        public override Contracts.Resource.ICarbonContent Clone(bool fullCopy = false)
+        {
+            var clone = new FontEntry();
+            clone.LoadFrom(this);
+            if (fullCopy)
+            {
+                clone.Id = this.Id;
+                if (clone.Resource != null)
+                {
+                    clone.Resource.Id = this.Resource.Id;
+                }
+            }
+
+            return clone;
+        }
+
+        public override void LoadFrom(Contracts.Resource.ICarbonContent source)
+        {
+            var other = source as FontEntry;
+            this.CharactersPerRow = other.CharactersPerRow;
+
+            if (other.Resource != null)
+            {
+                this.Resource = new ContentLink();
+                this.Resource.LoadFrom(other.Resource);
             }
         }
     }

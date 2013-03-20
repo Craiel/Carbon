@@ -74,9 +74,9 @@ namespace Carbon.Engine.Rendering
             }
         }
 
-        public Material(TextureReference diffuseReference)
+        public Material(TextureReference diffuse = null)
         {
-            this.DiffuseTexture = diffuseReference;
+            this.DiffuseTexture = diffuse;
         }
 
         // -------------------------------------------------------------------
@@ -84,10 +84,10 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         public Vector4? Color { get; private set; }
 
-        public TextureReference DiffuseTexture { get; private set; }
-        public TextureReference NormalTexture { get; private set; }
-        public TextureReference SpecularTexture { get; private set; }
-        public TextureReference AlphaTexture { get; private set; }
+        public TextureReference DiffuseTexture { get; set; }
+        public TextureReference NormalTexture { get; set; }
+        public TextureReference SpecularTexture { get; set; }
+        public TextureReference AlphaTexture { get; set; }
 
         public void Dispose()
         {

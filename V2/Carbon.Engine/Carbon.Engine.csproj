@@ -198,7 +198,6 @@
     <Compile Include="Resource\Content\ResourceEntry.cs" />
     <Compile Include="Resource\Content\ScriptEntry.cs" />
     <Compile Include="Resource\Resources\ModelResource.cs" />
-    <Compile Include="Resource\Resources\FontResource.cs" />
     <Compile Include="Resource\FolderContent.cs" />
     <Compile Include="Resource\Resources\RawResource.cs" />
     <Compile Include="Resource\ResourceManager.cs" />

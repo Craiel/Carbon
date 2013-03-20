@@ -8,7 +8,6 @@
     using System.Drawing.Text;
     using System.IO;
 
-    using Carbon.Engine.Rendering;
     using Carbon.Engine.Resource.Resources;
 
     public struct FontProcessingOptions
@@ -111,7 +110,7 @@
             Point glyphSize = Measure(font);
 
             int rowCount = byte.MaxValue / options.CharactersPerRow;
-            var image = new Bitmap(glyphSize.X * FontBuilder.CharactersPerRow, glyphSize.Y * rowCount);
+            var image = new Bitmap(glyphSize.X * options.CharactersPerRow, glyphSize.Y * rowCount);
             var graphics = Graphics.FromImage(image);
             graphics.Clear(Color.Transparent);
             graphics.SmoothingMode = SmoothingMode.AntiAlias;
@@ -127,7 +126,7 @@
                 graphics.DrawString(str, font, new SolidBrush(Color.White), x, y);
                 x += glyphSize.X;
                 rowCounter++;
-                if (rowCounter >= FontBuilder.CharactersPerRow)
+                if (rowCounter >= options.CharactersPerRow)
                 {
                     rowCounter = 0;
                     y += glyphSize.Y;

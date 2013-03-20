@@ -142,6 +142,12 @@ namespace Carbon.Editor.Resource.Collada
 
             foreach (ColladaImage image in images.Images)
             {
+                if (string.IsNullOrEmpty(image.InitFrom.Source))
+                {
+                    System.Diagnostics.Trace.TraceError("Collada Image InitFrom value was null for " + image.Name);
+                    continue;
+                }
+
                 this.imageInfo.Add(image.Id, image.InitFrom.Source);
             }
         }

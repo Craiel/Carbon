@@ -33,6 +33,7 @@ namespace Carbed.Logic
         private readonly ICarbedSettings settings;
 
         private readonly ObservableCollection<IMaterialViewModel> materials;
+        private readonly ObservableCollection<IFontViewModel> fonts;
         private readonly ObservableCollection<IFolderViewModel> folders;
 
         private string projectPath;
@@ -52,6 +53,7 @@ namespace Carbed.Logic
             this.settings = factory.Get<ICarbedSettings>();
 
             this.materials = new ObservableCollection<IMaterialViewModel>();
+            this.fonts = new ObservableCollection<IFontViewModel>();
             this.folders = new ObservableCollection<IFolderViewModel>();
 
             this.LoadSyntaxHightlighting();
@@ -75,6 +77,14 @@ namespace Carbed.Logic
             get
             {
                 return new ReadOnlyObservableCollection<IMaterialViewModel>(this.materials);
+            }
+        }
+
+        public ReadOnlyObservableCollection<IFontViewModel> Fonts
+        {
+            get
+            {
+                return new ReadOnlyObservableCollection<IFontViewModel>(this.fonts);
             }
         }
 
@@ -193,6 +203,15 @@ namespace Carbed.Logic
                 vm.Load();
                 Application.Current.Dispatcher.Invoke(() => this.materials.Add(vm));
             }
+
+            ContentQueryResult<FontEntry> fontData = this.projectContent.TypedLoad(new ContentQuery<FontEntry>());
+            var fontEntries = fontData.ToList<FontEntry>();
+            foreach (FontEntry entry in fontEntries)
+            {
+                IFontViewModel vm = this.viewModelFactory.GetFontViewModel(entry);
+                vm.Load();
+                Application.Current.Dispatcher.Invoke(() => this.fonts.Add(vm));
+            }
         }
 
         public IMaterialViewModel AddMaterial()
@@ -218,6 +237,33 @@ namespace Carbed.Logic
         }
 
         public IMaterialViewModel Clone(IMaterialViewModel source)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFontViewModel AddFont()
+        {
+            var vm = this.viewModelFactory.GetFontViewModel(new FontEntry());
+            this.fonts.Insert(0, vm);
+            return vm;
+        }
+
+        public void Save(IFontViewModel font)
+        {
+            if (this.projectContent == null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            font.Save(this.projectContent);
+        }
+
+        public void Delete(IFontViewModel font)
+        {
+            font.Delete(this.projectContent);
+        }
+
+        public IFontViewModel Clone(IFontViewModel source)
         {
             throw new NotImplementedException();
         }
@@ -470,7 +516,7 @@ namespace Carbed.Logic
 
         private IFolderViewModel LocateFolder(IFolderViewModel current, string hash)
         {
-            if (current.Hash.Equals(hash))
+            if (!string.IsNullOrEmpty(current.Hash) && current.Hash.Equals(hash))
             {
                 return current;
             }
@@ -595,6 +641,7 @@ namespace Carbed.Logic
                 this.AddFolder().Name = "Textures";
                 this.AddFolder().Name = "Models";
                 this.AddFolder().Name = "Scripts";
+                this.AddFolder().Name = "Fonts";
             }
         }
 

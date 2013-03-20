@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Carbed.Views.MaterialExplorerView"
+﻿<UserControl x:Class="Carbed.Views.ContentExplorerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:carbed="clr-namespace:Carbed"
              xmlns:mvvm="clr-namespace:Carbed.Logic.MVVM" xmlns:logic="clr-namespace:Carbed.Logic">
@@ -9,11 +9,6 @@
                 <ResourceDictionary Source="/Resources/Converters.xaml"/>
                 <ResourceDictionary Source="/Resources/Icons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
-            <x:Array Type="Brush" x:Key="EntryForegroundColors">
-                <SolidColorBrush Color="Black"/>
-                <SolidColorBrush Color="Red"/>
-            </x:Array>
 
             <mvvm:CommandReference x:Key="CommandAddReference" Command="{Binding Path=CommandOpenNewDialog}" />
             <mvvm:CommandReference x:Key="CommandReloadReference" Command="{Binding Path=CommandReload}"/>

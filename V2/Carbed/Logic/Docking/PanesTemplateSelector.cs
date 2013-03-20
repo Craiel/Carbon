@@ -17,6 +17,7 @@ namespace Carbed.Logic.Docking
         // Tool window templates
         public DataTemplate ResourceExplorerTemplate { get; set; }
         public DataTemplate MaterialExplorerTemplate { get; set; }
+        public DataTemplate FontExplorerTemplate { get; set; }
         public DataTemplate PropertiesTemplate { get; set; }
 
         // Misc
@@ -26,6 +27,7 @@ namespace Carbed.Logic.Docking
         {
             if (item is IResourceExplorerViewModel) return ResourceExplorerTemplate;
             if (item is IMaterialExplorerViewModel) return MaterialExplorerTemplate;
+            if (item is IFontExplorerViewModel) return FontExplorerTemplate;
             if (item is IPropertyViewModel) return PropertiesTemplate;
             if (item is ICarbedSettingsViewModel) return CarbedSettingsTemplate;
 

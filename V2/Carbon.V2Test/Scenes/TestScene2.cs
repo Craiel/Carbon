@@ -188,8 +188,8 @@ namespace Carbon.V2Test.Scenes
 
         public override void Resize(int width, int height)
         {
-            this.camera.SetPerspective(width, height, 0.01f, 2000.0f);
-            this.overlayCamera.SetPerspective(width, height, 0.01f, 2000.0f);
+            this.camera.SetPerspective(width, height, 0.05f, 200.0f);
+            this.overlayCamera.SetPerspective(width, height, 0.05f, 200.0f);
 
             this.screenQuad = new Mesh(Quad.CreateScreen(new Vector2(0), new Vector2(width, height)));
         }

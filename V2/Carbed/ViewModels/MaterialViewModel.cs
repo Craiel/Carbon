@@ -231,38 +231,7 @@ namespace Carbed.ViewModels
                 return this.commandSelectSpecular ?? (this.commandSelectSpecular = new RelayCommand(x => this.SpecularTexture = this.SelectTexture())); ;
             }
         }
-
-        private static ContentLink ProcessContentLink(ContentLink existing, ContentLinkType type, int? contentId, IContentManager host)
-        {
-            if (contentId != null)
-            {
-                ContentLink result;
-                if (existing != null)
-                {
-                    if (existing.Type != type)
-                    {
-                        throw new InvalidOperationException("Content Link was set to be updated with a different type, this is probably not intended!");
-                    }
-
-                    result = existing;
-                }
-                else
-                {
-                    result = new ContentLink { Type = type };
-                }
-
-                result.ContentId = contentId;
-                return result;
-            }
-
-            if (existing != null)
-            {
-                host.Delete(existing);
-            }
-
-            return null;
-        }
-
+        
         public new void Save(IContentManager target)
         {
             int? id = this.diffuseTexture == null ? null : this.diffuseTexture.Id;

@@ -317,5 +317,36 @@ namespace Carbed.ViewModels
                 this.metaData[key].ValueLong ^= bitValue;
             }
         }
+
+        protected static ContentLink ProcessContentLink(ContentLink existing, ContentLinkType type, int? contentId, IContentManager host)
+        {
+            if (contentId != null)
+            {
+                ContentLink result;
+                if (existing != null)
+                {
+                    if (existing.Type != type)
+                    {
+                        throw new InvalidOperationException("Content Link was set to be updated with a different type, this is probably not intended!");
+                    }
+
+                    result = existing;
+                }
+                else
+                {
+                    result = new ContentLink { Type = type };
+                }
+
+                result.ContentId = contentId;
+                return result;
+            }
+
+            if (existing != null)
+            {
+                host.Delete(existing);
+            }
+
+            return null;
+        }
     }
 }

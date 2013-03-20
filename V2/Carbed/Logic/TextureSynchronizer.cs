@@ -158,7 +158,7 @@ namespace Carbed.Logic
             IList<SynchronizationEntry> resources = new List<SynchronizationEntry>();
             foreach (string file in this.source.ImageInfos.Values)
             {
-                var entry = new SynchronizationEntry()
+                var entry = new SynchronizationEntry
                     {
                         File = System.IO.Path.Combine(sourcePath, Uri.UnescapeDataString(file)),
                         IsNormal = this.source.NormalImages.Contains(file),

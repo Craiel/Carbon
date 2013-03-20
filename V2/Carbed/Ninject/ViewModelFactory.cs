@@ -37,6 +37,11 @@ namespace Carbed.Ninject
             return this.kernel.Get<IMaterialViewModel>(new ConstructorArgument("data", data));
         }
 
+        public IFontViewModel GetFontViewModel(FontEntry data)
+        {
+            return this.kernel.Get<IFontViewModel>(new ConstructorArgument("data", data));
+        }
+
         public IResourceTextureViewModel GetResourceTextureViewModel(ResourceEntry data)
         {
             return this.kernel.Get<IResourceTextureViewModel>(new ConstructorArgument("data", data));

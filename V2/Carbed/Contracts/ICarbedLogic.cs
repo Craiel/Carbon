@@ -15,6 +15,7 @@ namespace Carbed.Contracts
         bool IsProjectLoaded { get; }
 
         ReadOnlyObservableCollection<IMaterialViewModel> Materials { get; }
+        ReadOnlyObservableCollection<IFontViewModel> Fonts { get; }
         ReadOnlyObservableCollection<IFolderViewModel> Folders { get; }
         
         void NewProject();
@@ -28,6 +29,11 @@ namespace Carbed.Contracts
         void Save(IMaterialViewModel material);
         void Delete(IMaterialViewModel material);
         IMaterialViewModel Clone(IMaterialViewModel source);
+
+        IFontViewModel AddFont();
+        void Save(IFontViewModel material);
+        void Delete(IFontViewModel material);
+        IFontViewModel Clone(IFontViewModel source);
 
         IFolderViewModel AddFolder();
         void Save(IFolderViewModel folder);

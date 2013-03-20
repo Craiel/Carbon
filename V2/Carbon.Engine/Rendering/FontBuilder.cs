@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Carbon.Engine.Resource;
 using Carbon.Engine.Resource.Resources;
 using Carbon.Engine.Scene;
 
@@ -9,6 +8,8 @@ using SlimDX;
 
 namespace Carbon.Engine.Rendering
 {
+    using Carbon.Engine.Resource.Content;
+
     internal struct FontBuilderLine
     {
         public Vector2 Position { get; set; }
@@ -30,27 +31,9 @@ namespace Carbon.Engine.Rendering
 
     public static class FontBuilder
     {
-        public const int CharactersPerRow = 20;
-        public const int RowCount = byte.MaxValue / CharactersPerRow;
-
-        private static Vector2 characterUVSize;
-
-        private static Vector2 currentOffset;
-
-        static FontBuilder()
-        {
-            characterUVSize = new Vector2(1.0f / CharactersPerRow, 1.0f / RowCount);
-        }
-
-        // -------------------------------------------------------------------
-        // Public
-        // -------------------------------------------------------------------
-
         // String can have processing information
-        public static ModelNode Build(string text, Vector2 characterSize, FontResource font)
+        public static ModelResource Build(string text, Vector2 characterSize, FontEntry font)
         {
-            currentOffset = new Vector2(0);
-
             ProcessText(text);
 
             /*
@@ -61,7 +44,9 @@ namespace Carbon.Engine.Rendering
              * - return wrapper node
              */
 
-            /*var builder = new MeshBuilder("Font");
+            int rowCount = byte.MaxValue / font.CharactersPerRow;
+            Vector2 characterUVSize = new Vector2(1.0f / font.CharactersPerRow, 1.0f / rowCount);
+            var builder = new MeshBuilder("Font");
 
             string[] lines = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
             
@@ -73,15 +58,15 @@ namespace Carbon.Engine.Rendering
                 foreach (char c in lines[l])
                 {
                     Vector2 uvx;
-                    uvx.Y = (int)((byte)c / CharactersPerRow);
-                    uvx.X = (byte)c - (uvx.Y * CharactersPerRow);
-                    if ((byte)c >= CharactersPerRow)
+                    uvx.Y = ((byte)c / font.CharactersPerRow);
+                    uvx.X = (byte)c - (uvx.Y * font.CharactersPerRow);
+                    if ((byte)c >= font.CharactersPerRow)
                     {
                         uvx.Y++;
                     }
 
-                    uvx.Y = (uvx.Y / RowCount);
-                    uvx.X = uvx.X / CharactersPerRow;
+                    uvx.Y = (uvx.Y / rowCount);
+                    uvx.X = uvx.X / font.CharactersPerRow;
 
                     builder.BeginPolygon();
                     builder.AddVertex(new Vector3(x, y, 0), Vector3.UnitZ, uvx);
@@ -101,7 +86,7 @@ namespace Carbon.Engine.Rendering
                 y += characterSize.Y;
             }
 
-            return builder.ToMesh();*/
+            return builder.ToMesh();
 
             return null;
         }

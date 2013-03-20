@@ -65,6 +65,8 @@
                 <fluent:RibbonGroupBox>
                     <fluent:Button Command="{Binding Path=CommandOpenResourceExplorer}" Header="Resource Explorer"/>
                     <fluent:Button Command="{Binding Path=CommandOpenMaterialExplorer}" Header="Material Explorer"/>
+                    <fluent:Button Command="{Binding Path=CommandOpenFontExplorer}" Header="Font Explorer"/>
+                    <Separator/>
                     <fluent:Button Command="{Binding Path=CommandOpenProperties}" Header="Properties"/>
                     <Separator/>
                     <fluent:Button Command="{Binding Path=CommandOpenSettings}" Header="Settings"/>
@@ -114,10 +116,16 @@
 
                     <local:PanesTemplateSelector.MaterialExplorerTemplate>
                         <DataTemplate>
-                            <views:MaterialExplorerView/>
+                            <views:ContentExplorerView/>
                         </DataTemplate>
                     </local:PanesTemplateSelector.MaterialExplorerTemplate>
-                    
+
+                    <local:PanesTemplateSelector.FontExplorerTemplate>
+                        <DataTemplate>
+                            <views:ContentExplorerView/>
+                        </DataTemplate>
+                    </local:PanesTemplateSelector.FontExplorerTemplate>
+
                     <local:PanesTemplateSelector.PropertiesTemplate>
                         <DataTemplate>
                             <views:PropertyView/>

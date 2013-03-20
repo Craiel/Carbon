@@ -68,6 +68,12 @@ namespace Carbon.Engine.Resource.Content
                     continue;
                 }
 
+                if (value as ContentEntry != null)
+                {
+                    hashes[i] = ((ContentEntry)value).GetState();
+                    continue;
+                }
+
                 hashes[i] = value.GetHashCode();
             }
 

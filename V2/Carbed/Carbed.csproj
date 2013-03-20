@@ -104,6 +104,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\IFontExplorerViewModel.cs" />
+    <Compile Include="Contracts\IFontViewModel.cs" />
     <Compile Include="Contracts\IApplicationLog.cs" />
     <Compile Include="Contracts\Carbed.cs" />
     <Compile Include="Contracts\ICarbedBase.cs" />
@@ -164,6 +166,8 @@
     <Compile Include="ViewModels\CarbedSettingsViewModel.cs" />
     <Compile Include="ViewModels\ContentExplorerViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
+    <Compile Include="ViewModels\FontExplorerViewModel.cs" />
+    <Compile Include="ViewModels\FontViewModel.cs" />
     <Compile Include="ViewModels\MaterialViewModel.cs" />
     <Compile Include="ViewModels\MaterialExplorerViewModel.cs" />
     <Compile Include="ViewModels\ResourceFontViewModel.cs" />
@@ -184,8 +188,11 @@
     <Compile Include="Views\CarbedSettingsView.xaml.cs">
       <DependentUpon>CarbedSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MaterialExplorerView.xaml.cs">
-      <DependentUpon>MaterialExplorerView.xaml</DependentUpon>
+    <Compile Include="Views\ContentExplorerView.xaml.cs">
+      <DependentUpon>ContentExplorerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Properties\FontProperties.xaml.cs">
+      <DependentUpon>FontProperties.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ResourceBrowser.xaml.cs">
       <DependentUpon>ResourceBrowser.xaml</DependentUpon>
@@ -299,9 +306,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MaterialExplorerView.xaml">
+    <Page Include="Views\ContentExplorerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Properties\FontProperties.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ResourceBrowser.xaml">
       <SubType>Designer</SubType>

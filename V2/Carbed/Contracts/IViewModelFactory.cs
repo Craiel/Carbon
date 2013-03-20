@@ -8,6 +8,7 @@
 
         IStageViewModel GetStageViewModel(StageEntry data);
         IMaterialViewModel GetMaterialViewModel(MaterialEntry data);
+        IFontViewModel GetFontViewModel(FontEntry data);
 
         IResourceTextureViewModel GetResourceTextureViewModel(ResourceEntry data);
         IResourceModelViewModel GetResourceModelViewModel(ResourceEntry data);

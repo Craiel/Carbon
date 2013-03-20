@@ -39,6 +39,7 @@ namespace Carbed.ViewModels
         private readonly IPropertyViewModel propertyViewModel;
         private readonly IResourceExplorerViewModel projectExplorerViewModel;
         private readonly IMaterialExplorerViewModel materialExplorerViewModel;
+        private readonly IFontExplorerViewModel fontExplorerViewModel;
 
         private readonly List<IDocumentTemplate> documentTemplates;
         private readonly List<IDocumentTemplateCategory> documentTemplateCategories;
@@ -69,6 +70,7 @@ namespace Carbed.ViewModels
             this.propertyViewModel = factory.Get<IPropertyViewModel>();
             this.projectExplorerViewModel = factory.Get<IResourceExplorerViewModel>();
             this.materialExplorerViewModel = factory.Get<IMaterialExplorerViewModel>();
+            this.fontExplorerViewModel = factory.Get<IFontExplorerViewModel>();
             
             this.documentTemplates = new List<IDocumentTemplate>();
             this.documentTemplateCategories = new List<IDocumentTemplateCategory>();
@@ -92,6 +94,7 @@ namespace Carbed.ViewModels
             this.CommandExit = new RelayCommand(this.OnExit);
             this.CommandOpenResourceExplorer = new RelayCommand(this.OnShowResourceExplorer);
             this.CommandOpenMaterialExplorer = new RelayCommand(this.OnShowMaterialExplorer);
+            this.CommandOpenFontExplorer = new RelayCommand(this.OnShowFontExplorer);
             this.CommandOpenProperties = new RelayCommand(this.OnShowProperties);
             this.CommandOpenNewDialog = new RelayCommand(this.OnNewDialog);
             this.CommandReload = new RelayCommand(this.OnReload, this.CanReload);
@@ -235,6 +238,7 @@ namespace Carbed.ViewModels
 
         public ICommand CommandOpenResourceExplorer { get; private set; }
         public ICommand CommandOpenMaterialExplorer { get; private set; }
+        public ICommand CommandOpenFontExplorer { get; private set; }
         public ICommand CommandOpenProperties { get; private set; }
         public ICommand CommandOpenNewDialog { get; private set; }
         public ICommand CommandOpenSettings { get; private set; }
@@ -316,7 +320,7 @@ namespace Carbed.ViewModels
 
         private void OnNewFont(object obj)
         {
-            throw new NotImplementedException();
+            this.logic.AddFont();
         }
 
         private void OnNewStage(object obj)
@@ -483,6 +487,14 @@ namespace Carbed.ViewModels
             if (!this.ToolWindows.Contains(this.materialExplorerViewModel))
             {
                 this.ToolWindows.Add(this.materialExplorerViewModel);
+            }
+        }
+
+        private void OnShowFontExplorer(object obj)
+        {
+            if (!this.ToolWindows.Contains(this.fontExplorerViewModel))
+            {
+                this.ToolWindows.Add(this.fontExplorerViewModel);
             }
         }
 
