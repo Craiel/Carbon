@@ -109,11 +109,13 @@
     <Compile Include="Contracts\Resource\ICarbonResource.cs" />
     <Compile Include="Contracts\Resource\IContentManager.cs" />
     <Compile Include="Contracts\Resource\IResourceManager.cs" />
+    <Compile Include="Contracts\Scene\IEntity.cs" />
     <Compile Include="Logic\CarbonConsole.cs" />
     <Compile Include="Logic\CarbonGraphics.cs" />
     <Compile Include="Logic\CarbonWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Logic\TypingController.cs" />
     <Compile Include="Logic\Cursor.cs" />
     <Compile Include="Logic\DebugController.cs" />
     <Compile Include="Logic\EngineComponent.cs" />
@@ -210,6 +212,8 @@
     <Compile Include="Scene\Node.cs" />
     <Compile Include="Scene\NodeManager.cs" />
     <Compile Include="Scene\Scene.cs" />
+    <Compile Include="UserInterface\UserInterfaceConsole.cs" />
+    <Compile Include="UserInterface\UserInterfaceControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

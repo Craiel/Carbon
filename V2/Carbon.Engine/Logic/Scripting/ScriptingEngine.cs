@@ -74,6 +74,13 @@ namespace Carbon.Engine.Logic.Scripting
             }
         }
 
+        public Lua GetContext()
+        {
+            var runtime = new Lua();
+            this.PrepareRuntime(runtime);
+            return runtime;
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------

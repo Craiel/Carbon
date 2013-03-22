@@ -18,6 +18,10 @@ using SlimDX;
 
 namespace Carbon.V2Test.Scenes
 {
+    using System;
+
+    using Carbon.Engine.UserInterface;
+
     public interface ITestScene : IScene
     {
     }
@@ -47,6 +51,12 @@ namespace Carbon.V2Test.Scenes
         private readonly IProjectionCamera camera;
         private readonly IOrthographicCamera overlayCamera;
 
+        private IUserInterfaceConsole console;
+
+        private FontEntry consoleFont;
+        private IModelNode consoleTestNode;
+        private int lastConsoleUpdate;
+
         private Mesh screenQuad;
         
         public override void Dispose()
@@ -74,6 +84,9 @@ namespace Carbon.V2Test.Scenes
             // Setup the basic scripting environment for the scene
             this.scriptingEngine = factory.Get<IScriptingEngine>();
             this.scriptingEngine.Register(new ScriptingCoreProvider(factory.Get<IApplicationLog>()));
+
+            // Create a manual console for testing purpose
+            this.console = factory.Get<IUserInterfaceConsole>();
         }
         
         public override void Initialize(ICarbonGraphics graphics)
@@ -82,7 +95,7 @@ namespace Carbon.V2Test.Scenes
 
             this.camera.Initialize(graphics);
             this.controller.Initialize(graphics);
-
+            
             this.controller.Position = new Vector4(0, 5, -10, 1.0f);
             this.controller.Speed = 0.1f;
 
@@ -94,6 +107,15 @@ namespace Carbon.V2Test.Scenes
             var testScript = new CarbonScript(testScriptData);
             this.scriptingEngine.Execute(testScript);
 
+            this.consoleFont =
+                this.contentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 4)).UniqueResult<FontEntry>();
+            this.consoleTestNode = (IModelNode)this.nodeManager.AddStaticText(4, " ", new Vector2(1, 1.2f));
+            this.nodeManager.RootNode.RemoveChild(this.consoleTestNode);
+            this.consoleTestNode.Position = new Vector4(0, 20, 0, 1);
+            this.console.Initialize(graphics);
+            this.console.IsActive = true;
+            this.console.IsVisible = true;
+            
             // Setup the hard textures for internals
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
             this.normalDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1002));
@@ -205,6 +227,18 @@ namespace Carbon.V2Test.Scenes
             this.camera.Update(gameTime);
 
             this.overlayCamera.Update(gameTime);
+
+            string consoleText = string.Join(Environment.NewLine, this.console.Text);
+            if (this.lastConsoleUpdate != consoleText.GetHashCode() && !string.IsNullOrEmpty(consoleText))
+            {
+                var mesh =
+                    new Mesh(
+                        FontBuilder.Build(
+                            string.Join(Environment.NewLine, this.console.Text), new Vector2(10f, 11f), this.consoleFont));
+                this.consoleTestNode.Mesh = mesh;
+                this.lastConsoleUpdate = consoleText.GetHashCode();
+            }
+            this.consoleTestNode.Update(gameTime);
             
             /*this.testRotation += 0.01f;
             this.hirarchyTestNode.Rotation = Quaternion.RotationAxis(Vector3.UnitY, MathExtension.DegreesToRadians(this.testRotation));
@@ -242,6 +276,13 @@ namespace Carbon.V2Test.Scenes
             frameManager.RenderSet(set);
             
             this.RenderDebugScreens();
+
+            // The UI
+            set = frameManager.BeginSet(this.overlayCamera);
+            set.LightingEnabled = false;
+            //set.Technique = FrameTechnique.Forward;
+            this.consoleTestNode.Render(set);
+            frameManager.RenderSet(set);
 
             /*set = frameManager.BeginSet(this.overlayCamera);
             set.LightingEnabled = false;

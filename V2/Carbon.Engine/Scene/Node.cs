@@ -5,6 +5,8 @@ using Carbon.Engine.Rendering;
 
 namespace Carbon.Engine.Scene
 {
+    using Carbon.Engine.Contracts.Scene;
+
     public interface INode : IEntity
     {
         IReadOnlyCollection<IEntity> Children { get; }

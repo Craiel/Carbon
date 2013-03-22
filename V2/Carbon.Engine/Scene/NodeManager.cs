@@ -18,6 +18,7 @@ namespace Carbon.Engine.Scene
 {
     using System.Data;
 
+    using Carbon.Engine.Contracts.Scene;
     using Carbon.Engine.Logic;
 
     public interface INodeManager : IScriptingProvider

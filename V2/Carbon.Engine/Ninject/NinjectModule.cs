@@ -12,6 +12,8 @@ using Ninject.Modules;
 
 namespace Carbon.Engine.Ninject
 {
+    using Carbon.Engine.UserInterface;
+
     public class EngineModule : NinjectModule
     {
         public override void Load()
@@ -26,6 +28,7 @@ namespace Carbon.Engine.Ninject
             this.Bind<ICursor>().To<Cursor>().InSingletonScope();
             this.Bind<IFirstPersonController>().To<FirstPersonController>();
             this.Bind<IDebugController>().To<DebugController>();
+            this.Bind<ITypingController>().To<TypingController>();
             this.Bind<IScriptingEngine>().To<ScriptingEngine>();
 
             // Rendering
@@ -42,6 +45,9 @@ namespace Carbon.Engine.Ninject
             // Resource
             this.Bind<IContentManager>().To<ContentManager>();
             this.Bind<IResourceManager>().To<ResourceManager>();
+
+            // User Interface
+            this.Bind<IUserInterfaceConsole>().To<UserInterfaceConsole>();
         }
     }
 }

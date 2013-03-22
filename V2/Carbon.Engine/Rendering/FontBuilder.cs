@@ -34,6 +34,11 @@ namespace Carbon.Engine.Rendering
         // String can have processing information
         public static ModelResource Build(string text, Vector2 characterSize, FontEntry font)
         {
+            if (string.IsNullOrEmpty(text))
+            {
+                return null;
+            }
+
             ProcessText(text);
 
             /*
