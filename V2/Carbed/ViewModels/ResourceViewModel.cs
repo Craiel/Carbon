@@ -263,7 +263,7 @@ namespace Carbed.ViewModels
                 
             }
 
-            private set
+            protected set
             {
                 this.previewImage = value;
                 this.NotifyPropertyChanged();

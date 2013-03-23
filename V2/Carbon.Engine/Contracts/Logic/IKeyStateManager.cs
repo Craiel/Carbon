@@ -1,4 +1,6 @@
-﻿using SlimDX.DirectInput;
+﻿using Carbon.Engine.Logic;
+
+using SlimDX.DirectInput;
 
 namespace Carbon.Engine.Contracts.Logic
 {
@@ -11,9 +13,12 @@ namespace Carbon.Engine.Contracts.Logic
         void ReceiveReleased(Key key, ref bool isHandled);
     }
 
-    public interface IKeyStateManager : IEngineComponent
+    public interface IKeyStateManager : IEngineComponent, IScriptingProvider
     {
         void RegisterReceiver(IKeyStateReceiver receiver);
         void UnregisterReceiver(IKeyStateReceiver receiver);
+
+        KeyBindings RegisterKeyBinding(string name);
+        KeyBindings GetBindings(string name);
     }
 }

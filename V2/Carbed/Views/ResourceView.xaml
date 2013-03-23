@@ -9,8 +9,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ScrollViewer Margin="4" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="MediumPurple">
-            <Border BorderThickness="1" BorderBrush="Black" Width="{Binding Path=PreviewImage.Width}" Height="{Binding Path=PreviewImage.Height}">
+        <ScrollViewer Margin="4" Width="{Binding Path=PreviewImage.Width}" Height="{Binding Path=PreviewImage.Height}" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="MediumPurple">
+            <Border BorderThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black">
                 <Image Source="{Binding Path=PreviewImage}" Width="{Binding Path=PreviewImage.Width}" Height="{Binding Path=PreviewImage.Height}" Margin="4" Stretch="None"/>
             </Border>
         </ScrollViewer>

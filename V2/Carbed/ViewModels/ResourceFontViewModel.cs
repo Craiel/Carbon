@@ -1,4 +1,8 @@
-﻿namespace Carbed.ViewModels
+﻿using Carbed.Logic.MVVM;
+
+using Carbon.Engine.Resource.Resources;
+
+namespace Carbed.ViewModels
 {
     using System.Drawing;
 
@@ -41,6 +45,7 @@
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.FontStyle, (int)value);
                     this.NeedReExport = true;
+                    this.PreviewImage = null;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -60,6 +65,7 @@
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.FontSize, value);
                     this.NeedReExport = true;
+                    this.PreviewImage = null;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -79,6 +85,7 @@
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.FontCharactersPerRow, value);
                     this.NeedReExport = true;
+                    this.PreviewImage = null;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -125,6 +132,23 @@
             {
                 this.Log.Error("Failed to export font resource {0}", null, this.SourcePath);
             }
+        }
+
+        protected override System.Windows.Media.ImageSource GetPreviewImage()
+        {
+            var options = new FontProcessingOptions
+            {
+                Style = this.FontStyle,
+                Size = this.FontSize,
+                CharactersPerRow = this.FontCharactersPerRow,
+            };
+            RawResource resource = this.resourceProcessor.ProcessFont(this.SourcePath, options);
+            if (resource != null)
+            {
+                return WPFUtilities.DataToImage(resource.Data);
+            }
+
+            return null;
         }
     }
 }

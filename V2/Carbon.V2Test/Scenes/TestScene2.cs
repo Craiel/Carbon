@@ -84,6 +84,7 @@ namespace Carbon.V2Test.Scenes
             // Setup the basic scripting environment for the scene
             this.scriptingEngine = factory.Get<IScriptingEngine>();
             this.scriptingEngine.Register(new ScriptingCoreProvider(factory.Get<IApplicationLog>()));
+            this.scriptingEngine.Register(factory.Get<IKeyStateManager>());
 
             // Create a manual console for testing purpose
             this.console = factory.Get<IUserInterfaceConsole>();
@@ -108,13 +109,14 @@ namespace Carbon.V2Test.Scenes
             this.scriptingEngine.Execute(testScript);
 
             this.consoleFont =
-                this.contentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 4)).UniqueResult<FontEntry>();
-            this.consoleTestNode = (IModelNode)this.nodeManager.AddStaticText(4, " ", new Vector2(1, 1.2f));
+                this.contentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 1)).UniqueResult<FontEntry>();
+            this.consoleTestNode = (IModelNode)this.nodeManager.AddStaticText(1, " ", new Vector2(1, 1.2f));
             this.nodeManager.RootNode.RemoveChild(this.consoleTestNode);
             this.consoleTestNode.Position = new Vector4(0, 20, 0, 1);
             this.console.Initialize(graphics);
             this.console.IsActive = true;
             this.console.IsVisible = true;
+            this.console.SetInputBindings("console");
             
             // Setup the hard textures for internals
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));

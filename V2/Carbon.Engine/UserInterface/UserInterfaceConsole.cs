@@ -13,6 +13,8 @@
     public interface IUserInterfaceConsole : IUserInterfaceControl
     {
         IReadOnlyCollection<string> Text { get; }
+
+        void SetInputBindings(string name);
     }
 
     public class UserInterfaceConsole : UserInterfaceControl, IUserInterfaceConsole
@@ -80,6 +82,14 @@
             }
         }
 
+        public void SetInputBindings(string name)
+        {
+            this.controller.SetInputBindings(name);
+        }
+
+        // -------------------------------------------------------------------
+        // private
+        // -------------------------------------------------------------------
         private void ControllerOnOnReturnPressed()
         {
             var newBuffer = this.controller.GetBuffer();
@@ -89,9 +99,12 @@
                 try
                 {
                     object[] outData = this.consoleContext.DoString(line);
-                    foreach (object o in outData)
+                    if (outData != null)
                     {
-                        this.buffer.Add(" -> Output: "+o);
+                        foreach (object o in outData)
+                        {
+                            this.buffer.Add(" -> Output: " + o);
+                        }
                     }
                 } 
                 catch (Exception e)

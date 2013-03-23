@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Carbon.Engine.Contracts.Logic;
+using Carbon.Engine.Logic.Scripting;
+
 using Core.Utils.Contracts;
 using SlimDX.DirectInput;
 
@@ -13,6 +15,8 @@ namespace Carbon.Engine.Logic
 
         private readonly IList<IKeyStateReceiver> receivers;
         private readonly IDictionary<Key, bool> keyPressedState;
+
+        private readonly IDictionary<string, KeyBindings> keyBindings;
 
         private readonly DirectInput directInput;
         private readonly Keyboard keyboard;
@@ -32,6 +36,8 @@ namespace Carbon.Engine.Logic
             this.directInput = new DirectInput();
             this.keyboard = new Keyboard(directInput);
             this.keyboard.Acquire();
+
+            this.keyBindings = new Dictionary<string, KeyBindings>();
         }
 
         public override void Dispose()
@@ -104,6 +110,29 @@ namespace Carbon.Engine.Logic
             }
 
             this.lastUpdateTime = gameTimer.ElapsedTime;
+        }
+
+        [ScriptingMethod]
+        public KeyBindings RegisterKeyBinding(string name)
+        {
+            if (this.keyBindings.ContainsKey(name))
+            {
+                throw new InvalidOperationException("Key bindings with the same name are already registered");
+            }
+
+            var bindings = new KeyBindings();
+            this.keyBindings.Add(name, bindings);
+            return bindings;
+        }
+
+        public KeyBindings GetBindings(string name)
+        {
+            if (!this.keyBindings.ContainsKey(name))
+            {
+                throw new InvalidOperationException("No keybinding found for name " + name);
+            }
+
+            return this.keyBindings[name];
         }
 
         // -------------------------------------------------------------------

@@ -115,6 +115,7 @@
     <Compile Include="Logic\CarbonWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Logic\KeyBindings.cs" />
     <Compile Include="Logic\TypingController.cs" />
     <Compile Include="Logic\Cursor.cs" />
     <Compile Include="Logic\DebugController.cs" />

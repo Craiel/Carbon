@@ -10,7 +10,7 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer Margin="4" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="MediumPurple">
-            <Border BorderThickness="1" BorderBrush="Black" Width="{Binding Path=PreviewImage.Width}" Height="{Binding Path=PreviewImage.Height}">
+            <Border BorderThickness="1" BorderBrush="Black" Width="Auto" Height="Auto" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Image Source="{Binding Path=PreviewImage}" Width="{Binding Path=PreviewImage.Width}" Height="{Binding Path=PreviewImage.Height}" Margin="4" Stretch="None"/>
             </Border>
         </ScrollViewer>

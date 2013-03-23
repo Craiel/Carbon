@@ -96,35 +96,43 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         private static void BuildLookupCache(Type type)
         {
-            IList<ContentReflectionProperty> properties = new List<ContentReflectionProperty>();
-            PropertyInfo[] propertyInfos = type.GetProperties();
-            foreach (PropertyInfo info in propertyInfos)
+            lock (propertyLookupCache)
             {
-                var attribute = info.GetCustomAttributes(typeof(ContentEntryElementAttribute), false).FirstOrDefault() as
-                    ContentEntryElementAttribute;
-                if (attribute != null)
+                IList<ContentReflectionProperty> properties = new List<ContentReflectionProperty>();
+                PropertyInfo[] propertyInfos = type.GetProperties();
+                foreach (PropertyInfo info in propertyInfos)
                 {
-                    var propertyInfo = new ContentReflectionProperty(attribute, info) { PrimaryKey = attribute.PrimaryKey };
-                    properties.Add(propertyInfo);
-
-                    if (attribute.PrimaryKey != PrimaryKeyMode.None)
+                    var attribute =
+                        info.GetCustomAttributes(typeof(ContentEntryElementAttribute), false).FirstOrDefault() as
+                        ContentEntryElementAttribute;
+                    if (attribute != null)
                     {
-                        if (primaryKeyPropertyLookupCache.ContainsKey(type))
-                        {
-                            throw new DataException("Only one primary key is currently supported for type " + type);
-                        }
+                        var propertyInfo = new ContentReflectionProperty(attribute, info)
+                                               {
+                                                   PrimaryKey =
+                                                       attribute.PrimaryKey
+                                               };
+                        properties.Add(propertyInfo);
 
-                        primaryKeyPropertyLookupCache.Add(type, propertyInfo);
+                        if (attribute.PrimaryKey != PrimaryKeyMode.None)
+                        {
+                            if (primaryKeyPropertyLookupCache.ContainsKey(type))
+                            {
+                                throw new DataException("Only one primary key is currently supported for type " + type);
+                            }
+
+                            primaryKeyPropertyLookupCache.Add(type, propertyInfo);
+                        }
                     }
                 }
-            }
 
-            if (!primaryKeyPropertyLookupCache.ContainsKey(type))
-            {
-                throw new DataException("Type does not have a primary key defined: " + type);
-            }
+                if (!primaryKeyPropertyLookupCache.ContainsKey(type))
+                {
+                    throw new DataException("Type does not have a primary key defined: " + type);
+                }
 
-            propertyLookupCache.Add(type, properties);
+                propertyLookupCache.Add(type, properties);
+            }
         }
     }
 }

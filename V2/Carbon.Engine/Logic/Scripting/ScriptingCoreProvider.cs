@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 using Carbon.Engine.Contracts.Logic;
 
@@ -30,6 +32,23 @@ namespace Carbon.Engine.Logic.Scripting
             {
                 return this.log;
             }
+        }
+
+        [ScriptingMethod]
+        public static object[] Params(LuaInterface.LuaTable table)
+        {
+            if (table == null)
+            {
+                return null;
+            }
+
+            var entries = new List<object>();
+            foreach (DictionaryEntry entry in table)
+            {
+                entries.Add(entry.Value);
+            }
+
+            return entries.ToArray();
         }
 
         [ScriptingMethod]
