@@ -33,7 +33,7 @@ namespace Carbon.Engine.Rendering
 
         private readonly CarbonShaderDescription desiredVertexShader;
         private readonly CarbonShaderDescription desiredPixelShader;
-        private readonly InputLayoutDescription desiredInputLayout;
+        private readonly ShaderInputLayoutDescription desiredInputLayout;
 
         private readonly ShaderMacro[] globalMacros;
         
@@ -146,7 +146,7 @@ namespace Carbon.Engine.Rendering
 
             this.desiredVertexShader = new CarbonShaderDescription();
             this.desiredPixelShader = new CarbonShaderDescription();
-            this.desiredInputLayout = new InputLayoutDescription(this.desiredVertexShader);
+            this.desiredInputLayout = new ShaderInputLayoutDescription(this.desiredVertexShader);
 
             this.globalMacros = new ShaderMacro[2];
             this.globalMacros[0].Name = "INSTANCED";

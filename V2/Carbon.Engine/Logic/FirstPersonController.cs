@@ -18,7 +18,7 @@ namespace Carbon.Engine.Logic
     
     public class FirstPersonController : EngineComponent, IFirstPersonController
     {
-        private readonly IKeyStateManager keyStateManager;
+        private readonly IInputManager keyStateManager;
         private readonly ICursor cursor;
         
         private Vector4 position;
@@ -32,7 +32,7 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public FirstPersonController(ICursor cursor, IKeyStateManager keyStateManager)
+        public FirstPersonController(ICursor cursor, IInputManager keyStateManager)
         {
             this.keyStateManager = keyStateManager;
             this.keyStateManager.RegisterReceiver(this);
@@ -48,14 +48,6 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public int Order
-        {
-            get
-            {
-                return 100;
-            }
-        }
-
         public float Speed { get; set; }
 
         public float RotationSpeed { get; set; }

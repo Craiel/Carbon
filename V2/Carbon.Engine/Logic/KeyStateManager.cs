@@ -9,26 +9,24 @@ using SlimDX.DirectInput;
 
 namespace Carbon.Engine.Logic
 {
-    public class KeyStateManager : EngineComponent, IKeyStateManager
+    public class InputManager : EngineComponent, IInputManager
     {
         private static readonly TimeSpan updateCycle = TimeSpan.FromMilliseconds(10);
 
         private readonly IList<IKeyStateReceiver> receivers;
         private readonly IDictionary<Key, bool> keyPressedState;
 
-        private readonly IDictionary<string, KeyBindings> keyBindings;
+        private readonly IDictionary<string, InputBindings> bindings;
 
         private readonly DirectInput directInput;
         private readonly Keyboard keyboard;
-
-        private IOrderedEnumerable<IKeyStateReceiver> orderedReceivers;
 
         private TimeSpan lastUpdateTime;
         
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public KeyStateManager()
+        public InputManager()
         {
             this.receivers = new List<IKeyStateReceiver>();
             this.keyPressedState = new Dictionary<Key, bool>();
@@ -37,7 +35,7 @@ namespace Carbon.Engine.Logic
             this.keyboard = new Keyboard(directInput);
             this.keyboard.Acquire();
 
-            this.keyBindings = new Dictionary<string, KeyBindings>();
+            this.bindings = new Dictionary<string, InputBindings>();
         }
 
         public override void Dispose()
@@ -56,7 +54,6 @@ namespace Carbon.Engine.Logic
             if (!this.receivers.Contains(receiver))
             {
                 this.receivers.Add(receiver);
-                this.orderedReceivers = this.receivers.OrderBy(x => x.Order);
             }
         }
 
@@ -65,7 +62,6 @@ namespace Carbon.Engine.Logic
             if (this.receivers.Contains(receiver))
             {
                 this.receivers.Remove(receiver);
-                this.orderedReceivers = this.receivers.OrderBy(x => x.Order);
             }
         }
 
@@ -113,26 +109,26 @@ namespace Carbon.Engine.Logic
         }
 
         [ScriptingMethod]
-        public KeyBindings RegisterKeyBinding(string name)
+        public InputBindings RegisterBinding(string name)
         {
-            if (this.keyBindings.ContainsKey(name))
+            if (this.bindings.ContainsKey(name))
             {
-                throw new InvalidOperationException("Key bindings with the same name are already registered");
+                throw new InvalidOperationException("Bindings with the same name are already registered");
             }
 
-            var bindings = new KeyBindings();
-            this.keyBindings.Add(name, bindings);
+            var bindings = new InputBindings();
+            this.bindings.Add(name, bindings);
             return bindings;
         }
 
-        public KeyBindings GetBindings(string name)
+        public InputBindings GetBindings(string name)
         {
-            if (!this.keyBindings.ContainsKey(name))
+            if (!this.bindings.ContainsKey(name))
             {
-                throw new InvalidOperationException("No keybinding found for name " + name);
+                throw new InvalidOperationException("No binding found for name " + name);
             }
 
-            return this.keyBindings[name];
+            return this.bindings[name];
         }
 
         // -------------------------------------------------------------------
@@ -140,7 +136,7 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         private void OnKeystateChange(Key key)
         {
-            if(this.orderedReceivers == null)
+            if(this.receivers == null)
             {
                 // No receivers registered yet, bail out
                 return;
@@ -148,42 +144,30 @@ namespace Carbon.Engine.Logic
 
             bool isPressed = this.keyPressedState[key];
 
-            foreach (IKeyStateReceiver receiver in this.orderedReceivers)
+            foreach (IKeyStateReceiver receiver in this.receivers)
             {
-                bool isExclusive = false;
                 if (isPressed)
                 {
-                    receiver.ReceivePressed(key, ref isExclusive);
+                    receiver.ReceivePressed(key);
                 }
                 else
                 {
-                    receiver.ReceiveReleased(key, ref isExclusive);
-                }
-
-                if (isExclusive)
-                {
-                    break;
+                    receiver.ReceiveReleased(key);
                 }
             }
         }
 
         private void OnKeyStatePersists(Key key)
         {
-            if (this.orderedReceivers == null)
+            if (this.receivers == null)
             {
                 // No receivers registered yet, bail out
                 return;
             }
 
-            foreach (IKeyStateReceiver receiver in this.orderedReceivers)
+            foreach (IKeyStateReceiver receiver in this.receivers)
             {
-                bool isExclusive = false;
-                receiver.ReceivePersists(key, ref isExclusive);
-
-                if (isExclusive)
-                {
-                    break;
-                }
+                receiver.ReceivePersists(key);
             }
         }
     }

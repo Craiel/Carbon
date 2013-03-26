@@ -26,11 +26,9 @@ namespace Carbon.Engine.Logic
 
     public class CarbonConsole : EngineComponent, ICarbonConsole
     {
-        private readonly IKeyStateManager keyStateManager;
+        private readonly IInputManager keyStateManager;
 
         private string currentLine;
-
-        private int order;
 
         private bool enableTimeStamp;
 
@@ -49,7 +47,7 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         public CarbonConsole(IEngineFactory factory)
         {
-            this.keyStateManager = factory.Get<IKeyStateManager>();
+            this.keyStateManager = factory.Get<IInputManager>();
 
             this.keyStateManager.RegisterReceiver(this);
         }
@@ -60,14 +58,6 @@ namespace Carbon.Engine.Logic
         public void Render(FrameInstructionSet activeSet)
         {
             throw new System.NotImplementedException();
-        }
-
-        public int Order
-        {
-            get
-            {
-                return this.order;
-            }
         }
 
         public void ReceivePersists(Key key, ref bool isHandled)

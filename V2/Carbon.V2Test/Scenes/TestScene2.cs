@@ -84,7 +84,7 @@ namespace Carbon.V2Test.Scenes
             // Setup the basic scripting environment for the scene
             this.scriptingEngine = factory.Get<IScriptingEngine>();
             this.scriptingEngine.Register(new ScriptingCoreProvider(factory.Get<IApplicationLog>()));
-            this.scriptingEngine.Register(factory.Get<IKeyStateManager>());
+            this.scriptingEngine.Register(factory.Get<IInputManager>());
 
             // Create a manual console for testing purpose
             this.console = factory.Get<IUserInterfaceConsole>();

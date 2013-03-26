@@ -121,7 +121,7 @@ namespace Carbon.Engine.Logic
             return (Buffer)this.bufferCache[description];
         }
 
-        public InputLayout GetInputLayout(InputLayoutDescription description, ShaderSignature signature)
+        public InputLayout GetInputLayout(ShaderInputLayoutDescription description, ShaderSignature signature)
         {
             if (!InputStructures.InputLayouts.ContainsKey(description.Type))
             {

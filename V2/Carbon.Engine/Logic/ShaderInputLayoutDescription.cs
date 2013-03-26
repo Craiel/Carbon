@@ -4,9 +4,9 @@ using Core.Utils;
 
 namespace Carbon.Engine.Logic
 {
-    public class InputLayoutDescription
+    public class ShaderInputLayoutDescription
     {
-        public InputLayoutDescription(CarbonShaderDescription description)
+        public ShaderInputLayoutDescription(CarbonShaderDescription description)
         {
             this.Description = description;
         }
@@ -16,7 +16,7 @@ namespace Carbon.Engine.Logic
 
         public override bool Equals(object obj)
         {
-            var other = obj as InputLayoutDescription;
+            var other = obj as ShaderInputLayoutDescription;
             if (other == null)
             {
                 return false;

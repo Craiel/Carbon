@@ -96,7 +96,7 @@
     <Compile Include="Contracts\Logic\ICarbonGraphics.cs" />
     <Compile Include="Contracts\Logic\IEngineComponent.cs" />
     <Compile Include="Contracts\Logic\IEngineLog.cs" />
-    <Compile Include="Contracts\Logic\IKeyStateManager.cs" />
+    <Compile Include="Contracts\Logic\IInputManager.cs" />
     <Compile Include="Contracts\Network\INetworkMessage.cs" />
     <Compile Include="Contracts\Network\INetworkTarget.cs" />
     <Compile Include="Contracts\Rendering\ICamera.cs" />
@@ -115,7 +115,8 @@
     <Compile Include="Logic\CarbonWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Logic\KeyBindings.cs" />
+    <Compile Include="Logic\BoundController.cs" />
+    <Compile Include="Logic\InputBindings.cs" />
     <Compile Include="Logic\TypingController.cs" />
     <Compile Include="Logic\Cursor.cs" />
     <Compile Include="Logic\DebugController.cs" />
@@ -154,7 +155,7 @@
     <Compile Include="Rendering\DynamicBuffer.cs" />
     <Compile Include="Rendering\FontBuilder.cs" />
     <Compile Include="Rendering\FrameStatistics.cs" />
-    <Compile Include="Logic\InputLayoutDescription.cs" />
+    <Compile Include="Logic\ShaderInputLayoutDescription.cs" />
     <Compile Include="Rendering\Light.cs" />
     <Compile Include="Rendering\Material.cs" />
     <Compile Include="Rendering\Mesh.cs" />

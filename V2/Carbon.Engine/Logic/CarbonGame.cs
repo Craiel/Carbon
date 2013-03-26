@@ -53,7 +53,7 @@ namespace Carbon.Engine.Logic
         private readonly ILog log;
 
         private readonly IResourceManager coreResourceManager;
-        private readonly IKeyStateManager keyStateManager;
+        private readonly IInputManager keyStateManager;
         private readonly ICursor cursor;
         private readonly IFrameManager mainFrameManager;
         private readonly IRenderer mainRenderer;
@@ -86,7 +86,7 @@ namespace Carbon.Engine.Logic
             this.coreResourceManager = factory.GetResourceManager("Data");
             this.graphics = factory.GetGraphics(this.coreResourceManager);
             this.debugController = factory.Get<IDebugController>();
-            this.keyStateManager = factory.Get<IKeyStateManager>();
+            this.keyStateManager = factory.Get<IInputManager>();
             this.cursor = factory.Get<ICursor>();
             this.mainFrameManager = factory.Get<IFrameManager>();
             this.mainRenderer = factory.Get<IRenderer>();

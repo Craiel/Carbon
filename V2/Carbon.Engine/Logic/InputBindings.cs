@@ -6,41 +6,52 @@ using SlimDX.DirectInput;
 
 namespace Carbon.Engine.Logic
 {
-    public enum KeyBindingModifierMode
+    public enum InputBindingModifierMode
     {
         And,
         Or
     }
 
-    public class KeyBindingEntry
+    public class InputBindingEntry
     {
         public string Value { get; set; }
 
-        public KeyBindingModifierMode ModifierMode { get; set; }
+        public InputBindingModifierMode ModifierMode { get; set; }
         public Key[] Modifiers { get; set; }
     }
 
-    public class KeyBindings
+    public class InputBindings
     {
-        private readonly IDictionary<Key, IList<KeyBindingEntry>> bindings;
+        private readonly IDictionary<Key, IList<InputBindingEntry>> bindings;
+
+        private readonly List<Key> usedModifiers;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public KeyBindings()
+        public InputBindings()
         {
-            this.bindings = new Dictionary<Key, IList<KeyBindingEntry>>();
+            this.bindings = new Dictionary<Key, IList<InputBindingEntry>>();
+            this.usedModifiers = new List<Key>();
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public KeyBindingEntry Bind(string keyName, string value, object[] modifierNames = null)
+        public IReadOnlyCollection<Key> UsedModifiers
+        {
+            get
+            {
+                return this.usedModifiers.AsReadOnly();
+            }
+        }
+
+        public InputBindingEntry Bind(string keyName, string value, object[] modifierNames = null)
         {
             Key key = this.GetKey(keyName);
             if (!this.bindings.ContainsKey(key))
             {
-                this.bindings.Add(key, new List<KeyBindingEntry>());
+                this.bindings.Add(key, new List<InputBindingEntry>());
             }
 
             Key[] modifiers = null;
@@ -50,22 +61,26 @@ namespace Carbon.Engine.Logic
                 for (int i = 0; i < modifierNames.Length; i++)
                 {
                     modifiers[i] = this.GetKey(modifierNames[i] as string);
+                    if (!this.usedModifiers.Contains(modifiers[i]))
+                    {
+                        this.usedModifiers.Add(modifiers[i]);
+                    }
                 }
             }
 
-            var entry = new KeyBindingEntry { Value = value, Modifiers = modifiers };
+            var entry = new InputBindingEntry { Value = value, Modifiers = modifiers };
             this.bindings[key].Add(entry);
             return entry;
         }
 
-        public KeyBindingEntry BindOr(string keyName, string value, object[] modifierNames = null)
+        public InputBindingEntry BindOr(string keyName, string value, object[] modifierNames = null)
         {
             var entry = this.Bind(keyName, value, modifierNames);
-            entry.ModifierMode = KeyBindingModifierMode.Or;
+            entry.ModifierMode = InputBindingModifierMode.Or;
             return entry;
         }
 
-        public KeyBindingEntry[] GetBindings(string keyName)
+        public InputBindingEntry[] GetBindings(string keyName)
         {
             Key key = this.GetKey(keyName);
             if (!this.bindings.ContainsKey(key) || this.bindings[key].Count <= 0)
@@ -76,7 +91,7 @@ namespace Carbon.Engine.Logic
             return this.bindings[key].ToArray();
         }
 
-        public KeyBindingEntry[] GetBindings(Key key)
+        public InputBindingEntry[] GetBindings(Key key)
         {
             if (!this.bindings.ContainsKey(key) || this.bindings[key].Count <= 0)
             {

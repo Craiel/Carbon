@@ -11,7 +11,7 @@ namespace Carbon.Engine.Logic
 
     public class DebugController : EngineComponent, IDebugController
     {
-        private readonly IKeyStateManager keyStateManager;
+        private readonly IInputManager keyStateManager;
         private readonly ICursor cursor;
         private readonly ICarbonGraphics graphics;
         private readonly IFrameManager frameManager;
@@ -19,7 +19,7 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public DebugController(ICursor cursor, IKeyStateManager keyStateManager, ICarbonGraphics graphics, IFrameManager frameManager)
+        public DebugController(ICursor cursor, IInputManager keyStateManager, ICarbonGraphics graphics, IFrameManager frameManager)
         {
             this.frameManager = frameManager;
 
@@ -35,14 +35,6 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public int Order
-        {
-            get
-            {
-                return 100;
-            }
-        }
-        
         public void ReceivePersists(Key key, ref bool isHandled)
         {
         }

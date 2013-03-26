@@ -105,9 +105,6 @@
     <Compile Include="Contracts\IApplicationLog.cs" />
     <Compile Include="Contracts\IV2Test.cs" />
     <Compile Include="Logic\ApplicationLog.cs" />
-    <Compile Include="Logic\Playfield.cs" />
-    <Compile Include="Logic\Tile.cs" />
-    <Compile Include="Logic\TileController.cs" />
     <Compile Include="Logic\V2Test.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="Ninject\FactoryExtension.cs" />

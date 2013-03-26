@@ -24,7 +24,7 @@ namespace Carbon.Engine.Ninject
             this.Bind<IEngineLog>().To<EngineLog>().InSingletonScope();
 
             // Logic
-            this.Bind<IKeyStateManager>().To<KeyStateManager>().InSingletonScope();
+            this.Bind<IInputManager>().To<KeyStateManager>().InSingletonScope();
             this.Bind<ICursor>().To<Cursor>().InSingletonScope();
             this.Bind<IFirstPersonController>().To<FirstPersonController>();
             this.Bind<IDebugController>().To<DebugController>();
