@@ -5,7 +5,9 @@ using SlimDX.DirectInput;
 
 namespace Carbon.Engine.Logic
 {
-    public interface IFirstPersonController : IEngineComponent, IKeyStateReceiver
+    using System;
+
+    public interface IFirstPersonController : IBoundController
     {
         float Speed { get; set; }
 
@@ -16,10 +18,22 @@ namespace Carbon.Engine.Logic
         Quaternion Rotation { get; }
     }
     
-    public class FirstPersonController : EngineComponent, IFirstPersonController
+    public class FirstPersonController : BoundController, IFirstPersonController
     {
-        private readonly IInputManager keyStateManager;
-        private readonly ICursor cursor;
+        internal enum FirstPersonControllerAction
+        {
+            MoveForward,
+            MoveBackward,
+            MoveLeft,
+            MoveRight,
+            
+            RotateLeft,
+            RotateRight,
+            RotateUp,
+            RotateDown,
+
+            ToggleRotation,
+        }
         
         private Vector4 position;
 
@@ -32,14 +46,9 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public FirstPersonController(ICursor cursor, IInputManager keyStateManager)
+        public FirstPersonController(IInputManager inputManager)
+            : base(inputManager)
         {
-            this.keyStateManager = keyStateManager;
-            this.keyStateManager.RegisterReceiver(this);
-
-            this.cursor = cursor;
-            this.cursor.ButtonChanged += this.OnButtonChanged;
-
             this.Speed = 0.1f;
             this.RotationSpeed = 0.01f;
             this.Forward = Vector3.UnitZ;
@@ -74,69 +83,107 @@ namespace Carbon.Engine.Logic
                 return this.rotation;
             }
         }
-        
-        public void ReceivePersists(Key key, ref bool isHandled)
+
+        public override void ReceiveAxisChange(string axis, float value)
         {
-            Vector4 side;
-            switch (key)
+            if (!this.isRotating)
             {
-                case Key.W:
-                    side = Vector3.Transform(new Vector3(0, 0, this.Speed), this.rotation);
-                    this.position += side;
-                    break;
-                case Key.A:
-                    side = Vector3.Transform(new Vector3(-this.Speed, 0, 0), this.rotation);
-                    this.position += side;
-                    break;
-                case Key.S:
-                    side = Vector3.Transform(new Vector3(0, 0, -this.Speed), this.rotation);
-                    this.position += side;
-                    break;
-                case Key.D:
-                    side = Vector3.Transform(new Vector3(this.Speed, 0, 0), this.rotation);
-                    this.position += side;
-                    break;
+                return;
             }
-        }
 
-        public void ReceivePressed(Key key, ref bool isHandled)
-        {
-        }
-
-        public void ReceiveReleased(Key key, ref bool isHandled)
-        {
-        }
-        
-        public override void Update(ITimer gameTime)
-        {
-            if (this.isRotating)
+            switch (axis)
             {
-                this.yaw += this.cursor.LastDelta.X * this.RotationSpeed;
-                this.pitch += this.cursor.LastDelta.Y * this.RotationSpeed;
-
-                this.rotation = Quaternion.RotationYawPitchRoll(this.yaw, this.pitch, 0);
-            }
-        }
-
-        public override void Dispose()
-        {
-            this.keyStateManager.UnregisterReceiver(this);
-
-            base.Dispose();
-        }
-
-        // -------------------------------------------------------------------
-        // Private
-        // -------------------------------------------------------------------
-        private void OnButtonChanged(int button, bool pressed)
-        {
-            switch (button)
-            {
-                case 1:
+                case "MouseX":
                     {
-                        this.isRotating = pressed;
+                        this.yaw += value * this.RotationSpeed;
                         break;
                     }
+
+                case "MouseY":
+                    {
+                        this.pitch += value * this.RotationSpeed;
+                        break;
+                    }
+
+                default:
+                    {
+                        // Unknown axis, nothing to do here
+                        return;
+                    }
+            }
+
+            this.rotation = Quaternion.RotationYawPitchRoll(this.yaw, this.pitch, 0);
+        }
+
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected override void OnBindingsTriggered(System.Collections.Generic.IReadOnlyCollection<InputBindingEntry> triggeredBindings)
+        {
+            foreach (InputBindingEntry binding in triggeredBindings)
+            {
+                FirstPersonControllerAction action;
+                if (Enum.TryParse(binding.Value, out action))
+                {
+                    switch (action)
+                    {
+                        case FirstPersonControllerAction.ToggleRotation:
+                            {
+                                this.isRotating = true;
+                                break;
+                            }
+                    }
+                }
+            }
+        }
+
+        protected override void OnBindingsTriggeredPersist(System.Collections.Generic.IReadOnlyCollection<InputBindingEntry> triggeredBindings)
+        {
+            foreach (InputBindingEntry binding in triggeredBindings)
+            {
+                FirstPersonControllerAction action;
+                if (Enum.TryParse(binding.Value, out action))
+                {
+                    Vector4 side;
+                    switch (action)
+                    {
+                        case FirstPersonControllerAction.MoveForward:
+                            side = Vector3.Transform(new Vector3(0, 0, this.Speed), this.rotation);
+                            this.position += side;
+                            break;
+                        case FirstPersonControllerAction.MoveLeft:
+                            side = Vector3.Transform(new Vector3(-this.Speed, 0, 0), this.rotation);
+                            this.position += side;
+                            break;
+                        case FirstPersonControllerAction.MoveBackward:
+                            side = Vector3.Transform(new Vector3(0, 0, -this.Speed), this.rotation);
+                            this.position += side;
+                            break;
+                        case FirstPersonControllerAction.MoveRight:
+                            side = Vector3.Transform(new Vector3(this.Speed, 0, 0), this.rotation);
+                            this.position += side;
+                            break;
+                    }
+                }
+            }
+        }
+
+        protected override void OnBindingsTriggeredRelease(System.Collections.Generic.IReadOnlyCollection<InputBindingEntry> triggeredBindings)
+        {
+            foreach (InputBindingEntry binding in triggeredBindings)
+            {
+                FirstPersonControllerAction action;
+                if (Enum.TryParse(binding.Value, out action))
+                {
+                    switch (action)
+                    {
+                        case FirstPersonControllerAction.ToggleRotation:
+                            {
+                                this.isRotating = false;
+                                break;
+                            }
+                    }
+                }
             }
         }
     }

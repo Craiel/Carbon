@@ -3,13 +3,14 @@ using System.Linq;
 
 using Carbon.Engine.Contracts.Logic;
 using Core.Utils.Contracts;
-using SlimDX.DirectInput;
 
 namespace Carbon.Engine.Logic
 {
-    public interface IBoundController : IEngineComponent, IKeyStateReceiver
+    using SlimDX;
+
+    public interface IBoundController : IEngineComponent, IInputReceiver
     {
-        bool IsActive { get; set; }
+        new bool IsActive { get; set; }
 
         void SetInputBindings(string name);
     }
@@ -18,7 +19,7 @@ namespace Carbon.Engine.Logic
     {
         private readonly IInputManager inputManager;
 
-        private readonly IList<Key> modifiers;
+        private readonly IList<string> modifiers;
         private readonly List<InputBindingEntry> bindingTriggerCache;
 
         private InputBindings bindings;
@@ -31,7 +32,7 @@ namespace Carbon.Engine.Logic
             this.inputManager = inputManager;
             this.inputManager.RegisterReceiver(this);
             
-            this.modifiers = new List<Key>();
+            this.modifiers = new List<string>();
             this.bindingTriggerCache = new List<InputBindingEntry>();
         }
 
@@ -39,33 +40,76 @@ namespace Carbon.Engine.Logic
         // Public
         // -------------------------------------------------------------------
         public bool IsActive { get; set; }
-
-        public virtual void ReceivePersists(Key key)
-        {
-        }
         
-        public virtual void ReceivePressed(Key key)
+        public virtual void ReceivePersists(string input, object argument = null)
         {
             if (!this.IsActive)
             {
                 return;
             }
 
-            if (this.bindings.UsedModifiers.Contains(key))
-            {
-                this.modifiers.Add(key);
-            }
-
-            switch (key)
+            switch (input)
             {
                 default:
                     {
                         this.bindingTriggerCache.Clear();
-                        var activeBindings = this.bindings.GetBindings(key);
+                        var activeBindings = this.bindings.GetBindings(input);
                         if (activeBindings != null && activeBindings.Length > 0)
                         {
                             foreach (InputBindingEntry binding in activeBindings)
                             {
+                                if (binding.TriggerMode != InputBindingTriggerMode.Always
+                                    && binding.TriggerMode != InputBindingTriggerMode.HeldOnly)
+                                {
+                                    continue;
+                                }
+
+                                if (this.MatchModifiers(binding))
+                                {
+                                    this.bindingTriggerCache.Add(binding);
+                                }
+                            }
+                        }
+
+                        if (this.bindingTriggerCache.Count > 0)
+                        {
+                            this.OnBindingsTriggeredPersist(this.bindingTriggerCache.AsReadOnly());
+                        }
+
+                        break;
+                    }
+            }
+        }
+
+        public virtual void ReceivePressed(string input, object argument = null)
+        {
+            if (!this.IsActive)
+            {
+                return;
+            }
+
+            if (this.bindings.UsedModifiers.Contains(input))
+            {
+                this.modifiers.Add(input);
+            }
+
+            switch (input)
+            {
+                default:
+                    {
+                        this.bindingTriggerCache.Clear();
+                        var activeBindings = this.bindings.GetBindings(input);
+                        if (activeBindings != null && activeBindings.Length > 0)
+                        {
+                            foreach (InputBindingEntry binding in activeBindings)
+                            {
+                                if (binding.TriggerMode != InputBindingTriggerMode.Always
+                                    && binding.TriggerMode != InputBindingTriggerMode.Press
+                                    && binding.TriggerMode != InputBindingTriggerMode.PressAndRelease)
+                                {
+                                    continue;
+                                }
+
                                 if (this.MatchModifiers(binding))
                                 {
                                     this.bindingTriggerCache.Add(binding);
@@ -83,17 +127,54 @@ namespace Carbon.Engine.Logic
             }
         }
 
-        public virtual void ReceiveReleased(Key key)
+        public virtual void ReceiveReleased(string input, object argument = null)
         {
             if (!this.IsActive)
             {
                 return;
             }
 
-            if (this.modifiers.Contains(key))
+            if (this.modifiers.Contains(input))
             {
-                this.modifiers.Remove(key);
+                this.modifiers.Remove(input);
             }
+
+            switch (input)
+            {
+                default:
+                    {
+                        this.bindingTriggerCache.Clear();
+                        var activeBindings = this.bindings.GetBindings(input);
+                        if (activeBindings != null && activeBindings.Length > 0)
+                        {
+                            foreach (InputBindingEntry binding in activeBindings)
+                            {
+                                if (binding.TriggerMode != InputBindingTriggerMode.Always
+                                    && binding.TriggerMode != InputBindingTriggerMode.Release
+                                    && binding.TriggerMode != InputBindingTriggerMode.PressAndRelease)
+                                {
+                                    continue;
+                                }
+
+                                if (this.MatchModifiers(binding))
+                                {
+                                    this.bindingTriggerCache.Add(binding);
+                                }
+                            }
+                        }
+
+                        if (this.bindingTriggerCache.Count > 0)
+                        {
+                            this.OnBindingsTriggeredRelease(this.bindingTriggerCache.AsReadOnly());
+                        }
+
+                        break;
+                    }
+            }
+        }
+
+        public virtual void ReceiveAxisChange(string axis, float value)
+        {
         }
 
         public override void Update(ITimer gameTime)
@@ -116,6 +197,14 @@ namespace Carbon.Engine.Logic
         // Protected
         // -------------------------------------------------------------------
         protected virtual void OnBindingsTriggered(IReadOnlyCollection<InputBindingEntry> triggeredBindings)
+        {
+        }
+
+        protected virtual void OnBindingsTriggeredRelease(IReadOnlyCollection<InputBindingEntry> triggeredBindings)
+        {
+        }
+
+        protected virtual void OnBindingsTriggeredPersist(IReadOnlyCollection<InputBindingEntry> triggeredBindings)
         {
         }
 

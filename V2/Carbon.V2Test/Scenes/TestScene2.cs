@@ -104,7 +104,7 @@ namespace Carbon.V2Test.Scenes
             this.nodeManager = new NodeManager(graphics, this.contentManager, this.resourceManager);
             this.scriptingEngine.Register(this.nodeManager);
 
-            var testScriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
+            var testScriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene.lua"));
             var testScript = new CarbonScript(testScriptData);
             this.scriptingEngine.Execute(testScript);
 
@@ -116,7 +116,6 @@ namespace Carbon.V2Test.Scenes
             this.console.Initialize(graphics);
             this.console.IsActive = true;
             this.console.IsVisible = true;
-            this.console.SetInputBindings("console");
             
             // Setup the hard textures for internals
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));

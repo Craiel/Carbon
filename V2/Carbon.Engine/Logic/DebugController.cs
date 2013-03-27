@@ -1,91 +1,110 @@
 ﻿using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
-using Core.Utils.Contracts;
-using SlimDX.DirectInput;
 
 namespace Carbon.Engine.Logic
 {
-    public interface IDebugController : IEngineComponent, IKeyStateReceiver
+    using System;
+
+    public interface IDebugController : IBoundController
     {
     }
 
-    public class DebugController : EngineComponent, IDebugController
+    public class DebugController : BoundController, IDebugController
     {
-        private readonly IInputManager keyStateManager;
-        private readonly ICursor cursor;
+        internal enum DebugControllerAction
+        {
+            ToggleDebugOverlay,
+            ToggleDepth,
+            ToggleWireframe,
+        }
+
         private readonly ICarbonGraphics graphics;
         private readonly IFrameManager frameManager;
+
+        private bool depthState;
+        private bool wireframeState;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public DebugController(ICursor cursor, IInputManager keyStateManager, ICarbonGraphics graphics, IFrameManager frameManager)
+        public DebugController(IInputManager inputManager, ICarbonGraphics graphics, IFrameManager frameManager)
+            : base(inputManager)
         {
             this.frameManager = frameManager;
 
-            this.keyStateManager = keyStateManager;
-            this.keyStateManager.RegisterReceiver(this);
-
-            this.cursor = cursor;
-            this.cursor.ButtonChanged += this.OnButtonChanged;
-
             this.graphics = graphics;
+
+            this.SetInputBindings("debug");
         }
 
         // -------------------------------------------------------------------
-        // Public
+        // Protected
         // -------------------------------------------------------------------
-        public void ReceivePersists(Key key, ref bool isHandled)
+        protected override void OnBindingsTriggered(System.Collections.Generic.IReadOnlyCollection<InputBindingEntry> triggeredBindings)
         {
-        }
-
-        public void ReceivePressed(Key key, ref bool isHandled)
-        {
-            switch (key)
+            foreach (InputBindingEntry binding in triggeredBindings)
             {
-                case Key.F3:
-                    this.frameManager.EnableDebugOverlay = !this.frameManager.EnableDebugOverlay;
-                    break;
-                case Key.F4:
-                    //this.renderer.FrameStatistics.Trace();
-                    break;
-
-                case Key.F9:
-                    this.graphics.DisableDepth();
-                    break;
-                case Key.F10:
-                    this.graphics.EnableDepth();
-                    break;
-                
-                case Key.F12:
-                    this.graphics.EnableWireframe();
-                    break;
-                case Key.F11:
-                    this.graphics.DisableWireframe();
-                    break;
+                DebugControllerAction action;
+                if (Enum.TryParse(binding.Value, out action))
+                {
+                    this.OnAction(action);
+                }
             }
-        }
 
-        public void ReceiveReleased(Key key, ref bool isHandled)
-        {
-        }
-
-        public override void Update(ITimer gameTime)
-        {
-        }
-
-        public override void Dispose()
-        {
-            this.keyStateManager.UnregisterReceiver(this);
-
-            base.Dispose();
+            this.UpdateStates();
         }
 
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void OnButtonChanged(int button, bool pressed)
+        private void OnAction(DebugControllerAction action)
         {
+            switch (action)
+            {
+                case DebugControllerAction.ToggleDepth:
+                    {
+                        this.depthState = !this.depthState;
+                        break;
+                    }
+
+                case DebugControllerAction.ToggleWireframe:
+                    {
+                        this.wireframeState = !this.wireframeState;
+                        break;
+                    }
+
+                case DebugControllerAction.ToggleDebugOverlay:
+                    {
+                        this.frameManager.EnableDebugOverlay = !this.frameManager.EnableDebugOverlay;
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new NotImplementedException("No action implemented for " + action);
+                    }
+            }
+        }
+
+        private void UpdateStates()
+        {
+            if (this.depthState)
+            {
+                this.graphics.EnableDepth();
+            }
+            else
+            {
+                this.graphics.DisableDepth();
+            }
+
+            if (this.wireframeState)
+            {
+                this.graphics.EnableWireframe();
+            }
+            else
+            {
+                this.graphics.DisableWireframe();
+            }
         }
     }
 }

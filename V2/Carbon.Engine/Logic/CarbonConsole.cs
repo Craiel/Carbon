@@ -8,7 +8,7 @@ using SlimDX.DirectInput;
 
 namespace Carbon.Engine.Logic
 {
-    public interface ICarbonConsole : IEngineComponent, IRenderable, IKeyStateReceiver
+    public interface ICarbonConsole : IEngineComponent, IRenderable
     {
         bool EnableTimeStamp { get; set; }
         bool IsEnabled { get; set; }
@@ -26,7 +26,7 @@ namespace Carbon.Engine.Logic
 
     public class CarbonConsole : EngineComponent, ICarbonConsole
     {
-        private readonly IInputManager keyStateManager;
+        private readonly ITypingController controller;
 
         private string currentLine;
 
@@ -37,9 +37,7 @@ namespace Carbon.Engine.Logic
         private Vector4 backgroundColor;
 
         private string text;
-
-        private bool isEnabled;
-
+        
         private bool isVisible;
 
         // -------------------------------------------------------------------
@@ -47,9 +45,7 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         public CarbonConsole(IEngineFactory factory)
         {
-            this.keyStateManager = factory.Get<IInputManager>();
-
-            this.keyStateManager.RegisterReceiver(this);
+            this.controller = factory.Get<ITypingController>();
         }
 
         // -------------------------------------------------------------------
@@ -92,12 +88,12 @@ namespace Carbon.Engine.Logic
         {
             get
             {
-                return this.isEnabled;
+                return this.controller.IsActive;
             }
 
             set
             {
-                this.isEnabled = value;
+                this.controller.IsActive = value;
             }
         }
 

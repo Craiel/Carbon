@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Carbon.Engine.Contracts.Logic;
-using Core.Utils.Contracts;
 using SlimDX.DirectInput;
 
 namespace Carbon.Engine.Logic
@@ -17,6 +16,11 @@ namespace Carbon.Engine.Logic
 
     public class TypingController : BoundController, ITypingController
     {
+        internal enum TypingControllerAction
+        {
+            Submit,
+        }
+
         private readonly IList<string> buffer;
         private string lineBuffer;
         
@@ -35,33 +39,6 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         public event Action OnReturnPressed;
         
-        public override void ReceivePressed(Key key)
-        {
-            if (!this.IsActive)
-            {
-                return;
-            }
-            
-            switch (key)
-            {
-                case Key.Return:
-                case Key.NumberPadEnter:
-                    {
-                        this.buffer.Add(this.lineBuffer);
-                        this.lineBuffer = string.Empty;
-
-                        if (this.OnReturnPressed != null)
-                        {
-                            this.OnReturnPressed();
-                        }
-
-                        break;
-                    }
-            }
-
-            base.ReceivePressed(key);
-        }
-        
         public string[] GetBuffer()
         {
             var values = this.buffer.ToArray();
@@ -76,6 +53,28 @@ namespace Carbon.Engine.Logic
         {
             foreach (var binding in triggeredBindings)
             {
+                TypingControllerAction action;
+                if (Enum.TryParse(binding.Value, out action))
+                {
+                    switch (action)
+                    {
+                        case TypingControllerAction.Submit:
+                            {
+                                this.buffer.Add(this.lineBuffer);
+                                this.lineBuffer = string.Empty;
+
+                                if (this.OnReturnPressed != null)
+                                {
+                                    this.OnReturnPressed();
+                                }
+
+                                break;
+                            }
+                    }
+
+                    return;
+                }
+
                 this.lineBuffer += binding.Value;
             }
         }

@@ -32,7 +32,8 @@
         public UserInterfaceConsole(IEngineFactory factory, ITypingController controller)
         {
             this.controller = controller;
-            this.controller.OnReturnPressed += this.ControllerOnOnReturnPressed;
+            this.controller.OnReturnPressed += this.ControllerOnReturnPressed;
+            this.controller.SetInputBindings("console");
 
             this.scriptingEngine = factory.Get<IScriptingEngine>();
             this.scriptingEngine.Register(new ScriptingCoreProvider(factory.Get<IEngineLog>()));
@@ -90,7 +91,7 @@
         // -------------------------------------------------------------------
         // private
         // -------------------------------------------------------------------
-        private void ControllerOnOnReturnPressed()
+        private void ControllerOnReturnPressed()
         {
             var newBuffer = this.controller.GetBuffer();
             foreach (string line in newBuffer)

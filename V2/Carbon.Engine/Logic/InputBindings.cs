@@ -12,55 +12,98 @@ namespace Carbon.Engine.Logic
         Or
     }
 
+    public enum InputBindingTriggerMode
+    {
+        Press,
+        PressAndRelease,
+        Release,
+        HeldOnly,
+        Always
+    }
+
     public class InputBindingEntry
     {
         public string Value { get; set; }
 
+        public InputBindingTriggerMode TriggerMode { get; set; }
+
         public InputBindingModifierMode ModifierMode { get; set; }
-        public Key[] Modifiers { get; set; }
+        public string[] Modifiers { get; set; }
     }
 
     public class InputBindings
     {
-        private readonly IDictionary<Key, IList<InputBindingEntry>> bindings;
+        private readonly IDictionary<string, IList<InputBindingEntry>> bindings;
 
-        private readonly List<Key> usedModifiers;
+        private readonly List<string> usedModifiers;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
         public InputBindings()
         {
-            this.bindings = new Dictionary<Key, IList<InputBindingEntry>>();
-            this.usedModifiers = new List<Key>();
+            this.bindings = new Dictionary<string, IList<InputBindingEntry>>();
+            this.usedModifiers = new List<string>();
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public IReadOnlyCollection<Key> UsedModifiers
+        public IReadOnlyCollection<string> UsedModifiers
         {
             get
             {
                 return this.usedModifiers.AsReadOnly();
             }
         }
-
+        
         public InputBindingEntry Bind(string keyName, string value, object[] modifierNames = null)
         {
-            Key key = this.GetKey(keyName);
-            if (!this.bindings.ContainsKey(key))
+            return this.DoBind(keyName, value, modifierNames);
+        }
+
+        public InputBindingEntry BindEx(string keyName, string value, string trigger, string mode, object[] modifierNames = null)
+        {
+            var entry = this.Bind(keyName, value, modifierNames);
+
+            InputBindingModifierMode modifierMode;
+            Enum.TryParse(mode, out modifierMode);
+            entry.ModifierMode = modifierMode;
+
+            InputBindingTriggerMode triggerMode;
+            Enum.TryParse(trigger, out triggerMode);
+            entry.TriggerMode = triggerMode;
+
+            return entry;
+        }
+
+        public InputBindingEntry[] GetBindings(string entry)
+        {
+            if (!this.bindings.ContainsKey(entry) || this.bindings[entry].Count <= 0)
             {
-                this.bindings.Add(key, new List<InputBindingEntry>());
+                return null;
             }
 
-            Key[] modifiers = null;
+            return this.bindings[entry].ToArray();
+        }
+        
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private InputBindingEntry DoBind(string entryName, string value, object[] modifierNames = null)
+        {
+            if (!this.bindings.ContainsKey(entryName))
+            {
+                this.bindings.Add(entryName, new List<InputBindingEntry>());
+            }
+
+            string[] modifiers = null;
             if (modifierNames != null && modifierNames.Length > 0)
             {
-                modifiers = new Key[modifierNames.Length];
+                modifiers = new string[modifierNames.Length];
                 for (int i = 0; i < modifierNames.Length; i++)
                 {
-                    modifiers[i] = this.GetKey(modifierNames[i] as string);
+                    modifiers[i] = modifierNames[i] as string;
                     if (!this.usedModifiers.Contains(modifiers[i]))
                     {
                         this.usedModifiers.Add(modifiers[i]);
@@ -68,50 +111,14 @@ namespace Carbon.Engine.Logic
                 }
             }
 
-            var entry = new InputBindingEntry { Value = value, Modifiers = modifiers };
-            this.bindings[key].Add(entry);
+            var entry = new InputBindingEntry
+            {
+                Value = value,
+                Modifiers = modifiers,
+                TriggerMode = InputBindingTriggerMode.PressAndRelease
+            };
+            this.bindings[entryName].Add(entry);
             return entry;
-        }
-
-        public InputBindingEntry BindOr(string keyName, string value, object[] modifierNames = null)
-        {
-            var entry = this.Bind(keyName, value, modifierNames);
-            entry.ModifierMode = InputBindingModifierMode.Or;
-            return entry;
-        }
-
-        public InputBindingEntry[] GetBindings(string keyName)
-        {
-            Key key = this.GetKey(keyName);
-            if (!this.bindings.ContainsKey(key) || this.bindings[key].Count <= 0)
-            {
-                return null;
-            }
-
-            return this.bindings[key].ToArray();
-        }
-
-        public InputBindingEntry[] GetBindings(Key key)
-        {
-            if (!this.bindings.ContainsKey(key) || this.bindings[key].Count <= 0)
-            {
-                return null;
-            }
-
-            return this.bindings[key].ToArray();
-        }
-
-        // -------------------------------------------------------------------
-        // Private
-        // -------------------------------------------------------------------
-        private Key GetKey(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new InvalidOperationException("null or empty binding name");
-            }
-
-            return (Key)Enum.Parse(typeof(Key), name);
         }
     }
 }

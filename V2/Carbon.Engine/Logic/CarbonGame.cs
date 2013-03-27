@@ -53,8 +53,7 @@ namespace Carbon.Engine.Logic
         private readonly ILog log;
 
         private readonly IResourceManager coreResourceManager;
-        private readonly IInputManager keyStateManager;
-        private readonly ICursor cursor;
+        private readonly IInputManager inputManager;
         private readonly IFrameManager mainFrameManager;
         private readonly IRenderer mainRenderer;
         private readonly IScriptingEngine scriptingEngine;
@@ -86,8 +85,7 @@ namespace Carbon.Engine.Logic
             this.coreResourceManager = factory.GetResourceManager("Data");
             this.graphics = factory.GetGraphics(this.coreResourceManager);
             this.debugController = factory.Get<IDebugController>();
-            this.keyStateManager = factory.Get<IInputManager>();
-            this.cursor = factory.Get<ICursor>();
+            this.inputManager = factory.Get<IInputManager>();
             this.mainFrameManager = factory.Get<IFrameManager>();
             this.mainRenderer = factory.Get<IRenderer>();
             this.scriptingEngine = factory.Get<IScriptingEngine>();
@@ -154,29 +152,21 @@ namespace Carbon.Engine.Logic
                 return this.scriptingEngine;
             }
         }
-
-        protected ICursor Cursor
-        {
-            get
-            {
-                return this.cursor;
-            }
-        }
         
         protected abstract string InternalGameName { get; }
 
         protected virtual void Initialize()
         {
-            this.keyStateManager.Initialize(this.graphics);
-            this.cursor.Initialize(this.graphics);
+            this.inputManager.Initialize(this.graphics);
             this.mainRenderer.Initialize(this.graphics);
             this.mainFrameManager.Initialize(this.graphics);
+
+            this.debugController.IsActive = true;
         }
         
         protected virtual void Update(ITimer gameTime)
         {
-            this.keyStateManager.Update(gameTime);
-            this.cursor.Update(gameTime);
+            this.inputManager.Update(gameTime);
 
             Thread.Sleep(1);
         }
@@ -320,8 +310,7 @@ namespace Carbon.Engine.Logic
         {
             this.gameTimer.Pause();
             
-            this.keyStateManager.Dispose();
-            this.cursor.Dispose();
+            this.inputManager.Dispose();
             this.mainRenderer.Dispose();
             this.mainFrameManager.Dispose();
             this.graphics.Dispose();

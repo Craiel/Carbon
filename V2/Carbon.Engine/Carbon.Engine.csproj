@@ -118,14 +118,13 @@
     <Compile Include="Logic\BoundController.cs" />
     <Compile Include="Logic\InputBindings.cs" />
     <Compile Include="Logic\TypingController.cs" />
-    <Compile Include="Logic\Cursor.cs" />
     <Compile Include="Logic\DebugController.cs" />
     <Compile Include="Logic\EngineComponent.cs" />
     <Compile Include="Contracts\Logic\ICarbonGame.cs" />
     <Compile Include="Logic\CarbonGame.cs" />
     <Compile Include="Logic\EngineLog.cs" />
     <Compile Include="Logic\FirstPersonController.cs" />
-    <Compile Include="Logic\KeyStateManager.cs" />
+    <Compile Include="Logic\InputManager.cs" />
     <Compile Include="Logic\Scripting\CarbonScript.cs" />
     <Compile Include="Logic\Scripting\ScriptingCoreProvider.cs" />
     <Compile Include="Logic\Scripting\ScriptingEngine.cs" />

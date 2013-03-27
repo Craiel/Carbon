@@ -64,8 +64,9 @@ namespace Carbon.V2Test.Logic
 
             this.log.Debug("OnWindowResize {0}", this.Window.Location.ToString());
 
-            this.Cursor.MinPosition = new Vector2(this.Window.Location.X, this.Window.Location.Y);
-            this.Cursor.MaxPosition = new Vector2(this.Window.Location.X + this.Window.ClientSize.Width, this.Window.Location.Y + this.Window.ClientSize.Height);
+            // Todo: need to fix this
+            //this.Cursor.MinPosition = new Vector2(this.Window.Location.X, this.Window.Location.Y);
+            //this.Cursor.MaxPosition = new Vector2(this.Window.Location.X + this.Window.ClientSize.Width, this.Window.Location.Y + this.Window.ClientSize.Height);
 
             this.testScene.Resize(this.Window.ClientSize.Width, this.Window.ClientSize.Height);
             this.testSceneSponza.Resize(this.Window.ClientSize.Width, this.Window.ClientSize.Height);
@@ -80,7 +81,7 @@ namespace Carbon.V2Test.Logic
             //this.testSceneSponza.Update(gameTime);
 
             // Some useful debug output next
-            this.Window.Text = string.Format("V2Test GameTime: {0:hh\\:mm\\:ss\\:fff}, FPS: {1}, Cursor: {2}", gameTime.ElapsedTime, this.FramesPerSecond, this.Cursor.Position);
+            this.Window.Text = string.Format("V2Test GameTime: {0:hh\\:mm\\:ss\\:fff}, FPS: {1}", gameTime.ElapsedTime, this.FramesPerSecond);
 
             // Lock the cursor to the screencenter after everyone is done with the updates
             //this.cursor.Position = this.Window.Center;

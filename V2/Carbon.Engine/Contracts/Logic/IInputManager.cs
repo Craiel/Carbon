@@ -1,20 +1,24 @@
 ﻿using Carbon.Engine.Logic;
 
-using SlimDX.DirectInput;
-
 namespace Carbon.Engine.Contracts.Logic
 {
-    public interface IKeyStateReceiver
+    using SlimDX;
+
+    public interface IInputReceiver
     {
-        void ReceivePersists(Key key);
-        void ReceivePressed(Key key);
-        void ReceiveReleased(Key key);
+        bool IsActive { get; }
+        
+        void ReceivePersists(string input, object argument = null);
+        void ReceivePressed(string input, object argument = null);
+        void ReceiveReleased(string input, object argument = null);
+
+        void ReceiveAxisChange(string axis, float value);
     }
 
     public interface IInputManager : IEngineComponent, IScriptingProvider
     {
-        void RegisterReceiver(IKeyStateReceiver receiver);
-        void UnregisterReceiver(IKeyStateReceiver receiver);
+        void RegisterReceiver(IInputReceiver receiver);
+        void UnregisterReceiver(IInputReceiver receiver);
 
         InputBindings RegisterBinding(string name);
         InputBindings GetBindings(string name);
