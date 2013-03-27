@@ -104,9 +104,11 @@ namespace Carbon.V2Test.Scenes
             this.nodeManager = new NodeManager(graphics, this.contentManager, this.resourceManager);
             this.scriptingEngine.Register(this.nodeManager);
 
-            var testScriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene.lua"));
-            var testScript = new CarbonScript(testScriptData);
-            this.scriptingEngine.Execute(testScript);
+            var scriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
+            var script = new CarbonScript(scriptData);
+            this.scriptingEngine.Execute(script);
+            this.controller.SetInputBindings("worldmap_controls");
+            this.controller.IsActive = true;
 
             this.consoleFont =
                 this.contentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 1)).UniqueResult<FontEntry>();
@@ -126,6 +128,10 @@ namespace Carbon.V2Test.Scenes
             this.gBufferSpecularAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(13));
             this.gBufferDepthTexture = new Material(this.graphics.TextureManager.GetRegisterReference(14));
             this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));
+
+            scriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene.lua"));
+            script = new CarbonScript(scriptData);
+            this.scriptingEngine.Execute(script);
 
             /*PositionNormalVertex[] meshData;
             uint[] indices;
@@ -235,7 +241,7 @@ namespace Carbon.V2Test.Scenes
                 var mesh =
                     new Mesh(
                         FontBuilder.Build(
-                            string.Join(Environment.NewLine, this.console.Text), new Vector2(10f, 11f), this.consoleFont));
+                            string.Join(Environment.NewLine, this.console.Text), new Vector2(13f, 15f), this.consoleFont));
                 this.consoleTestNode.Mesh = mesh;
                 this.lastConsoleUpdate = consoleText.GetHashCode();
             }
@@ -281,7 +287,7 @@ namespace Carbon.V2Test.Scenes
             // The UI
             set = frameManager.BeginSet(this.overlayCamera);
             set.LightingEnabled = false;
-            //set.Technique = FrameTechnique.Forward;
+            set.Technique = FrameTechnique.Forward;
             this.consoleTestNode.Render(set);
             frameManager.RenderSet(set);
 

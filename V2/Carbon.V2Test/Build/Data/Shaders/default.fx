@@ -120,11 +120,16 @@ float4 PS(PS_INPUT input) : SV_Target
 	textureColor.w *= alpha;
 #endif
 	color = textureColor;
+	#if USECOLOR == 1
+		color *= MeshColor;
+	#endif
+#else
+	#if USECOLOR == 1
+		color = MeshColor;
+	#endif
 #endif
-	
-#if USECOLOR == 1
-	color *= MeshColor;
-#endif
+
+
 
 #if LIGHTING
 	float3 lighting = AmbientLight;
@@ -137,7 +142,8 @@ float4 PS(PS_INPUT input) : SV_Target
 	#endif
 	
 	#if SPECULARMAP
-	float specular = SpecularMap.Load(input.TextureCoordinates).x;
+	int3 specularCoord = int3(input.TextureCoordinates.xy, 0);
+	float specular = SpecularMap.Load(specularCoord).x;
 	return float4(1, 0, 0, 1); // Todo: not implemented
 	#endif
 

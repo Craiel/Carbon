@@ -9,14 +9,13 @@ namespace Carbed.Contracts
     {
         int? Id { get; }
 
-        Color Color { get; }
+        Color Color { get; set; }
 
         IResourceViewModel DiffuseTexture { get; }
         IResourceViewModel NormalTexture { get; }
         IResourceViewModel AlphaTexture { get; }
         IResourceViewModel SpecularTexture { get; }
 
-        ICommand CommandSelectColor { get; }
         ICommand CommandSelectDiffuse { get; }
         ICommand CommandSelectNormal { get; }
         ICommand CommandSelectAlpha { get; }

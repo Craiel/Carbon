@@ -13,7 +13,7 @@ ChangeMaterial(node, 2, true)
 node = AddPlane()
 node.Scale = Vector3(1000, 1000, 1000)
 RotateNode(node, Vector3(1, 0, 0), 90)
-ChangeMaterial(node, 1, true)
+ChangeMaterial(node, 6, true)
 
 node = AddStaticText(2, "Final Fantasy Font\n1 2 3 4 5 - ABCDE", Vector2(1, 1))
 node.Position = Vector4(0, 12, 0, 1)

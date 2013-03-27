@@ -4,16 +4,14 @@ using System.Windows.Media;
 
 using Carbed.Contracts;
 using Carbed.Logic.MVVM;
+using Carbed.Views;
 
 using Carbon.Engine.Contracts;
+using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource.Content;
 
 namespace Carbed.ViewModels
 {
-    using Carbon.Engine.Contracts.Resource;
-
-    using global::Carbed.Views;
-
     public class MaterialViewModel : ContentViewModel, IMaterialViewModel
     {
         private readonly ICarbedLogic logic;
@@ -102,7 +100,7 @@ namespace Carbed.ViewModels
                 return Color.FromScRgb(this.data.ColorA, this.data.ColorR, this.data.ColorG, this.data.ColorB);
             }
 
-            private set
+            set
             {
                 this.data.ColorA = value.ScA;
                 this.data.ColorR = value.ScR;
@@ -191,15 +189,7 @@ namespace Carbed.ViewModels
                 }
             }
         }
-
-        public ICommand CommandSelectColor
-        {
-            get
-            {
-                return this.commandSelectColor ?? (this.commandSelectColor = new RelayCommand(this.OnSelectColor));
-            }
-        }
-
+        
         public ICommand CommandSelectDiffuse
         {
             get
@@ -292,11 +282,6 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void OnSelectColor(object obj)
-        {
-            throw new NotImplementedException();
-        }
-
         private IResourceViewModel SelectTexture()
         {
             var browser = new ResourceBrowser(this.logic);

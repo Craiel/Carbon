@@ -6,8 +6,6 @@ using Core.Utils.Contracts;
 
 namespace Carbon.Engine.Logic
 {
-    using SlimDX;
-
     public interface IBoundController : IEngineComponent, IInputReceiver
     {
         new bool IsActive { get; set; }

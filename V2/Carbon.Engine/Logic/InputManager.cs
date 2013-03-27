@@ -86,7 +86,7 @@ namespace Carbon.Engine.Logic
             KeyboardState keyState = this.keyboard.GetCurrentState();
             MouseState mouseState = this.mouse.GetCurrentState();
 
-            IList<string> previouslyPressed = this.pressedState.Keys.ToList();
+            IList<string> previouslyPressed = this.pressedState.Keys.Where(entry => this.pressedState[entry]).ToList();
             IList<string> currentPressed = new List<string>();
             foreach (Key key in keyState.PressedKeys)
             {
@@ -96,7 +96,10 @@ namespace Carbon.Engine.Logic
             bool[] buttons = mouseState.GetButtons();
             for (int i = 0; i < buttons.Length; i++)
             {
-                currentPressed.Add(string.Format("Mouse{0}", i));
+                if (buttons[i])
+                {
+                    currentPressed.Add(string.Format("Mouse{0}", i));
+                }
             }
 
             foreach (string entry in currentPressed)

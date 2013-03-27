@@ -75,7 +75,7 @@ namespace Carbon.Engine.Rendering
 
         public void BeginFrame()
         {
-            this.backBufferRenderTarget.Clear(this.graphics, new Vector4(0, 1, 1, 1));
+            this.backBufferRenderTarget.Clear(this.graphics, Vector4.Zero);
             this.gBufferTarget.Clear(this.graphics, Vector4.Zero);
             this.deferredLightTarget.Clear(this.graphics, Vector4.Zero);
             this.shadowMapTarget.Clear(this.graphics, Vector4.Zero);
@@ -270,15 +270,19 @@ namespace Carbon.Engine.Rendering
         {
             // Set the state and prepare the target
             this.SetGraphicState(set);
+
+            RenderTargetBase compositionTarget;
             if (set.DesiredTarget.Type == RenderTargetType.Texture)
             {
-                this.PrepareTextureTarget(set.DesiredTarget);
+                compositionTarget = this.PrepareTextureTarget(set.DesiredTarget);
             }
             else
             {
-                this.backBufferRenderTarget.Set(this.graphics);
+                compositionTarget = this.backBufferRenderTarget;
             }
 
+            compositionTarget.BlendMode = RendertargetBlendMode.Alpha;
+            compositionTarget.Set(this.graphics);
 
             // Set the parameters for the rendering process (these don't change regardless of instruction)
             var parameters = new RenderParameters
@@ -389,19 +393,26 @@ namespace Carbon.Engine.Rendering
 
             if(source.Material != null)
             {
+                instruction.Color = source.Material.Color;
+
                 if (source.Material.DiffuseTexture != null)
                 {
-                    instruction.DiffuseTexture = this.graphics.TextureManager.GetTexture((TextureReference)source.Material.DiffuseTexture);
+                    instruction.DiffuseTexture = this.graphics.TextureManager.GetTexture(source.Material.DiffuseTexture);
                 }
 
                 if (source.Material.NormalTexture != null)
                 {
-                    instruction.NormalTexture = this.graphics.TextureManager.GetTexture((TextureReference)source.Material.NormalTexture);
+                    instruction.NormalTexture = this.graphics.TextureManager.GetTexture(source.Material.NormalTexture);
+                }
+
+                if (source.Material.SpecularTexture != null)
+                {
+                    instruction.SpecularTexture = this.graphics.TextureManager.GetTexture(source.Material.SpecularTexture);
                 }
 
                 if (source.Material.AlphaTexture != null)
                 {
-                    instruction.AlphaTexture = this.graphics.TextureManager.GetTexture((TextureReference)source.Material.AlphaTexture);
+                    instruction.AlphaTexture = this.graphics.TextureManager.GetTexture(source.Material.AlphaTexture);
                 }
             }
             else
