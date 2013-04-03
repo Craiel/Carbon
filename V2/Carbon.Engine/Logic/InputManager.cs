@@ -284,30 +284,31 @@ namespace Carbon.Engine.Logic
             binding.BindEx("Z", "z", "Always", "And");
             binding.BindEx("Z", "Z", "Always", "Or", capsModifiers);
 
-            binding.BindEx("D0", "0", "Always", "And");
+            binding.BindEx("D0", "#48", "Always", "And");
             binding.BindEx("D0", ")", "Always", "Or", capsModifiers);
-            binding.BindEx("D1", "1", "Always", "And");
+            binding.BindEx("D1", "#49", "Always", "And");
             binding.BindEx("D1", "!", "Always", "Or", capsModifiers);
-            binding.BindEx("D2", "2", "Always", "And");
+            binding.BindEx("D2", "#50", "Always", "And");
             binding.BindEx("D2", "@", "Always", "Or", capsModifiers);
-            binding.BindEx("D3", "3", "Always", "And");
+            binding.BindEx("D3", "#51", "Always", "And");
             binding.BindEx("D3", "#", "Always", "Or", capsModifiers);
-            binding.BindEx("D4", "4", "Always", "And");
-            binding.BindEx("D4", "$", "Always", "Or", capsModifiers);
-            binding.BindEx("D5", "5", "Always", "And");
+            binding.BindEx("D4", "#52", "Always", "And");
+            binding.BindEx("D4", "@", "Always", "Or", capsModifiers);
+            binding.BindEx("D5", "#53", "Always", "And");
             binding.BindEx("D5", "%", "Always", "Or", capsModifiers);
-            binding.BindEx("D6", "6", "Always", "And");
+            binding.BindEx("D6", "#54", "Always", "And");
             binding.BindEx("D6", "^", "Always", "Or", capsModifiers);
-            binding.BindEx("D7", "7", "Always", "And");
-            binding.BindEx("D7", "7", "Always", "Or", capsModifiers);
-            binding.BindEx("D8", "8", "Always", "And");
+            binding.BindEx("D7", "#55", "Always", "And");
+            binding.BindEx("D7", "&", "Always", "Or", capsModifiers);
+            binding.BindEx("D8", "#56", "Always", "And");
             binding.BindEx("D8", "*", "Always", "Or", capsModifiers);
-            binding.BindEx("D9", "9", "Always", "And");
+            binding.BindEx("D9", "#57", "Always", "And");
             binding.BindEx("D9", "(", "Always", "Or", capsModifiers);
 
             binding.BindEx("Return", "Submit", "Always", "And");
             binding.BindEx("NumberPadEnter", "Submit", "Always", "And");
             binding.BindEx("Backspace", "Backspace", "Always", "And");
+            binding.BindEx("Tab", "Complete", "Always", "And");
             
             binding.BindEx("LeftBracket", "[", "Always", "And");
             binding.BindEx("LeftBracket", "{", "Always", "Or", capsModifiers);
@@ -321,7 +322,6 @@ namespace Carbon.Engine.Logic
             binding.BindEx("Apostrophe", "\"", "Always", "Or", capsModifiers);
             binding.BindEx("Backslash", "\\", "Always", "And");
             binding.BindEx("Backslash", "|", "Always", "Or", capsModifiers);
-            binding.BindEx("Tab", "\t", "Always", "And");
             binding.BindEx("Space", " ", "Always", "And");
             binding.BindEx("Slash", "/", "Always", "And");
             binding.BindEx("Slash", "?", "Always", "Or", capsModifiers);
@@ -332,16 +332,16 @@ namespace Carbon.Engine.Logic
             binding.BindEx("Period", ".", "Always", "And");
             binding.BindEx("Period", ">", "Always", "Or", capsModifiers);
 
-            binding.BindEx("NumberPad0", "0", "Always", "And");
-            binding.BindEx("NumberPad1", "1", "Always", "And");
-            binding.BindEx("NumberPad2", "2", "Always", "And");
-            binding.BindEx("NumberPad3", "3", "Always", "And");
-            binding.BindEx("NumberPad4", "4", "Always", "And");
-            binding.BindEx("NumberPad5", "5", "Always", "And");
-            binding.BindEx("NumberPad6", "6", "Always", "And");
-            binding.BindEx("NumberPad7", "7", "Always", "And");
-            binding.BindEx("NumberPad8", "8", "Always", "And");
-            binding.BindEx("NumberPad9", "9", "Always", "And");
+            binding.BindEx("NumberPad0", "#48", "Always", "And");
+            binding.BindEx("NumberPad1", "#49", "Always", "And");
+            binding.BindEx("NumberPad2", "#50", "Always", "And");
+            binding.BindEx("NumberPad3", "#51", "Always", "And");
+            binding.BindEx("NumberPad4", "#52", "Always", "And");
+            binding.BindEx("NumberPad5", "#53", "Always", "And");
+            binding.BindEx("NumberPad6", "#54", "Always", "And");
+            binding.BindEx("NumberPad7", "#55", "Always", "And");
+            binding.BindEx("NumberPad8", "#56", "Always", "And");
+            binding.BindEx("NumberPad9", "#57", "Always", "And");
 
             binding.BindEx("NumberPadMinus", "-", "Always", "And");
             binding.BindEx("NumberPadSlash", "/", "Always", "And");

@@ -115,6 +115,8 @@
             {
                 return;
             }
+
+            this.controller.Update(gameTime);
         }
 
         public void SetInputBindings(string name)

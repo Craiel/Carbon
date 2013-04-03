@@ -113,8 +113,8 @@ namespace Carbon.V2Test.Scenes
             this.controller.IsActive = true;
 
             this.consoleFont =
-                this.contentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 4)).UniqueResult<FontEntry>();
-            this.consoleTestNode = (IModelNode)this.nodeManager.AddStaticText(4, " ", new Vector2(1, 1.2f));
+                this.contentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 1)).UniqueResult<FontEntry>();
+            this.consoleTestNode = (IModelNode)this.nodeManager.AddStaticText(1, " ", new Vector2(1, 1.2f));
             this.nodeManager.RootNode.RemoveChild(this.consoleTestNode);
             this.consoleTestNode.Position = new Vector4(0, 20, 0, 1);
             this.console.Initialize(graphics);
@@ -251,6 +251,7 @@ namespace Carbon.V2Test.Scenes
 
             this.overlayCamera.Update(gameTime);
 
+            this.console.Update(gameTime);
             string consoleText = string.Join(Environment.NewLine, string.Join(Environment.NewLine, this.console.History), this.console.Text);
             if (this.lastConsoleUpdate != consoleText.GetHashCode() && !string.IsNullOrEmpty(consoleText))
             {
