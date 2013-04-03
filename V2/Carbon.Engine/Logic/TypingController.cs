@@ -10,7 +10,9 @@ namespace Carbon.Engine.Logic
     public interface ITypingController : IBoundController
     {
         event Action OnReturnPressed;
-        
+
+        string Peek();
+
         string[] GetBuffer();
     }
 
@@ -19,6 +21,7 @@ namespace Carbon.Engine.Logic
         internal enum TypingControllerAction
         {
             Submit,
+            Backspace,
         }
 
         private readonly IList<string> buffer;
@@ -39,6 +42,11 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         public event Action OnReturnPressed;
         
+        public string Peek()
+        {
+            return this.lineBuffer;
+        }
+
         public string[] GetBuffer()
         {
             var values = this.buffer.ToArray();
@@ -68,6 +76,17 @@ namespace Carbon.Engine.Logic
                                     this.OnReturnPressed();
                                 }
 
+                                break;
+                            }
+
+                        case TypingControllerAction.Backspace:
+                            {
+                                if (string.IsNullOrEmpty(this.lineBuffer))
+                                {
+                                    continue;
+                                }
+
+                                this.lineBuffer.Remove(this.lineBuffer.Length - 2);
                                 break;
                             }
                     }

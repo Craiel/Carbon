@@ -209,6 +209,29 @@ namespace Carbon.Engine.Logic
             }
         }
 
+        public void ClearCache()
+        {
+            lock (this.textureCache)
+            {
+                IList<TextureReference> clearQueue = new List<TextureReference>();
+                foreach (TextureReference reference in this.textureCache.Keys)
+                {
+                    if (reference.Register <= StaticRegisterLimit)
+                    {
+                        continue;
+                    }
+
+                    this.textureCache[reference].Dispose();
+                    clearQueue.Add(reference);
+                }
+
+                foreach (TextureReference textureReference in clearQueue)
+                {
+                    this.textureCache.Remove(textureReference);
+                }
+            }
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------

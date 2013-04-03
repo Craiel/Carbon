@@ -16,5 +16,7 @@ namespace Carbon.Engine.Contracts.Resource
         void Delete(ICarbonContent content);
 
         ContentLink ResolveLink(int id);
+
+        void ClearCache();
     }
 }

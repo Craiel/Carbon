@@ -35,5 +35,7 @@ namespace Carbon.Engine.Contracts.Logic
         void UpdateStates();
 
         void Present(PresentFlags flags);
+
+        void ClearCache();
     }
 }

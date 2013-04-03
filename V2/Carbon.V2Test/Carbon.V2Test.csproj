@@ -84,6 +84,10 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LuaInterface, Version=2.0.4.28670, Culture=neutral, PublicKeyToken=1e1fb15b02227b8a, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\CarbonExt\LuaInterface 2.0.4\x64\LuaInterface.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject">
       <HintPath>..\..\..\CarbonExt\Ninject 2.2.1.0\Ninject.dll</HintPath>
     </Reference>

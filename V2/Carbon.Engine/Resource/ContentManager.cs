@@ -158,6 +158,11 @@ namespace Carbon.Engine.Resource
 
             return this.contentLinkCache[id];
         }
+
+        public void ClearCache()
+        {
+            this.contentLinkCache.Clear();
+        }
         
         // -------------------------------------------------------------------
         // Private

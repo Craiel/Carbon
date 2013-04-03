@@ -15,7 +15,7 @@ namespace Carbon.Engine.Contracts.Resource
 
         ResourceInfo GetInfo(string hash);
 
-        void Clear();
+        void ClearCache();
         void AddContent(ResourceContent content);
     }
 }

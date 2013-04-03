@@ -103,6 +103,8 @@ namespace Carbon.V2Test.Scenes
             // Setup additional scripting and managers
             this.nodeManager = new NodeManager(graphics, this.contentManager, this.resourceManager);
             this.scriptingEngine.Register(this.nodeManager);
+            this.scriptingEngine.Register(new ScriptingGraphicsProvider(graphics));
+            this.scriptingEngine.Register(new ScriptingContentProvider(this.contentManager, this.resourceManager));
 
             var scriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
             var script = new CarbonScript(scriptData);
@@ -111,13 +113,14 @@ namespace Carbon.V2Test.Scenes
             this.controller.IsActive = true;
 
             this.consoleFont =
-                this.contentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 1)).UniqueResult<FontEntry>();
-            this.consoleTestNode = (IModelNode)this.nodeManager.AddStaticText(1, " ", new Vector2(1, 1.2f));
+                this.contentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 4)).UniqueResult<FontEntry>();
+            this.consoleTestNode = (IModelNode)this.nodeManager.AddStaticText(4, " ", new Vector2(1, 1.2f));
             this.nodeManager.RootNode.RemoveChild(this.consoleTestNode);
             this.consoleTestNode.Position = new Vector4(0, 20, 0, 1);
             this.console.Initialize(graphics);
             this.console.IsActive = true;
             this.console.IsVisible = true;
+            this.console.OnLineEntered += this.OnConsoleLineEntered;
             
             // Setup the hard textures for internals
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
@@ -215,6 +218,19 @@ namespace Carbon.V2Test.Scenes
             */
         }
 
+        private void OnConsoleLineEntered(string line)
+        {
+            try
+            {
+                this.scriptingEngine.GetContext().DoString(line);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.TraceError("Exception in Console script execution: {0}", e.Message);
+            }
+            
+        }
+
         public override void Resize(int width, int height)
         {
             this.camera.SetPerspective(width, height, 0.05f, 200.0f);
@@ -235,13 +251,13 @@ namespace Carbon.V2Test.Scenes
 
             this.overlayCamera.Update(gameTime);
 
-            string consoleText = string.Join(Environment.NewLine, this.console.Text);
+            string consoleText = string.Join(Environment.NewLine, string.Join(Environment.NewLine, this.console.History), this.console.Text);
             if (this.lastConsoleUpdate != consoleText.GetHashCode() && !string.IsNullOrEmpty(consoleText))
             {
                 var mesh =
                     new Mesh(
                         FontBuilder.Build(
-                            string.Join(Environment.NewLine, this.console.Text), new Vector2(13f, 15f), this.consoleFont));
+                            consoleText, new Vector2(13f, 15f), this.consoleFont));
                 this.consoleTestNode.Mesh = mesh;
                 this.lastConsoleUpdate = consoleText.GetHashCode();
             }

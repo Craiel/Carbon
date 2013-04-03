@@ -307,15 +307,16 @@ namespace Carbon.Engine.Logic
 
             binding.BindEx("Return", "Submit", "Always", "And");
             binding.BindEx("NumberPadEnter", "Submit", "Always", "And");
-
+            binding.BindEx("Backspace", "Backspace", "Always", "And");
+            
             binding.BindEx("LeftBracket", "[", "Always", "And");
             binding.BindEx("LeftBracket", "{", "Always", "Or", capsModifiers);
             binding.BindEx("RightBracket", "]", "Always", "And");
             binding.BindEx("RightBracket", "}", "Always", "Or", capsModifiers);
             binding.BindEx("Comma", ",", "Always", "And");
             binding.BindEx("Comma", "<", "Always", "Or", capsModifiers);
-            binding.BindEx("Colon", ";", "Always", "And");
-            binding.BindEx("Colon", ":", "Always", "Or", capsModifiers);
+            binding.BindEx("Semicolon", ";", "Always", "And");
+            binding.BindEx("Semicolon", ":", "Always", "Or", capsModifiers);
             binding.BindEx("Apostrophe", "'", "Always", "And");
             binding.BindEx("Apostrophe", "\"", "Always", "Or", capsModifiers);
             binding.BindEx("Backslash", "\\", "Always", "And");

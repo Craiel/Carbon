@@ -225,6 +225,12 @@ namespace Carbon.Engine.Logic
             this.context.Present(flags);
         }
 
+        public void ClearCache()
+        {
+            this.textureManager.ClearCache();
+            this.shaderManager.ClearCache();
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------    

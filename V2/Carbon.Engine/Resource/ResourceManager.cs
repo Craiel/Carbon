@@ -190,10 +190,15 @@ namespace Carbon.Engine.Resource
             return null;
         }
 
-        public void Clear()
+        public void ClearCache()
         {
-            // Todo: Unload all resources and clear caches
-            this.content.Clear();
+            foreach (ICarbonResource carbonResource in this.cache.Values)
+            {
+                carbonResource.Dispose();
+            }
+
+            this.cache.Clear();
+            this.infoCache.Clear();
         }
 
         public void AddContent(ResourceContent newContent)

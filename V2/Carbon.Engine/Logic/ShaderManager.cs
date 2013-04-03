@@ -12,6 +12,8 @@ using System.Text;
 
 namespace Carbon.Engine.Logic
 {
+    using System.Collections.Generic;
+
     internal class ShaderIncludeHandler : Include
     {
         public void Open(IncludeType type, string fileName, Stream parentStream, out Stream stream)
@@ -33,9 +35,9 @@ namespace Carbon.Engine.Logic
         internal const string ShaderCacheKeyPrefix = @"_ShaderCache";
 
         private readonly IResourceManager resourceManager;
-        private readonly Hashtable vertexShaderCache;
-        private readonly Hashtable pixelShaderCache;
-        private readonly Hashtable signatureCache;
+        private readonly IDictionary<int, VertexShader> vertexShaderCache;
+        private readonly IDictionary<int, PixelShader> pixelShaderCache;
+        private readonly IDictionary<int, ShaderSignature> signatureCache;
         private readonly Device device;
 
         private readonly ShaderIncludeHandler includeHandler;
@@ -47,9 +49,9 @@ namespace Carbon.Engine.Logic
         {
             this.resourceManager = resourceManager;
 
-            this.vertexShaderCache = new Hashtable();
-            this.pixelShaderCache = new Hashtable();
-            this.signatureCache = new Hashtable();
+            this.vertexShaderCache = new Dictionary<int, VertexShader>();
+            this.pixelShaderCache = new Dictionary<int, PixelShader>();
+            this.signatureCache = new Dictionary<int, ShaderSignature>();
             this.device = device;
 
             this.includeHandler = new ShaderIncludeHandler();
@@ -59,6 +61,71 @@ namespace Carbon.Engine.Logic
         // Public
         // -------------------------------------------------------------------
         public void Dispose()
+        {
+            this.ClearCache();
+        }
+
+        public VertexShader GetVertexShader(CarbonShaderDescription description)
+        {
+            int key = description.GetHashCode();
+            if (this.vertexShaderCache.ContainsKey(key))
+            {
+                return this.vertexShaderCache[key];
+            }
+
+            CompiledShader data = this.GetData(description);
+            using (var stream = new DataStream(data.ShaderData, true, false))
+            {
+                using (var byteCode = new ShaderBytecode(stream))
+                {
+                    var shader = new VertexShader(this.device, byteCode);
+                    this.vertexShaderCache.Add(key, shader);
+                    return shader;
+                }
+            }
+        }
+
+        public ShaderSignature GetShaderSignature(CarbonShaderDescription description)
+        {
+            int key = description.GetHashCode();
+            if (this.signatureCache.ContainsKey(key))
+            {
+                return this.signatureCache[key];
+            }
+
+            CompiledShader data = this.GetData(description);
+            using (var stream = new DataStream(data.ShaderData, true, false))
+            {
+                using (var byteCode = new ShaderBytecode(stream))
+                {
+                    var signature = ShaderSignature.GetInputSignature(byteCode);
+                    this.signatureCache.Add(key, signature);
+                    return signature;
+                }
+            }
+        }
+
+        public PixelShader GetPixelShader(CarbonShaderDescription description)
+        {
+            int key = description.GetHashCode();
+            if (this.pixelShaderCache.ContainsKey(key))
+            {
+                return this.pixelShaderCache[key];
+            }
+
+            CompiledShader data = this.GetData(description);
+            using (var stream = new DataStream(data.ShaderData, true, false))
+            {
+                using (var byteCode = new ShaderBytecode(stream))
+                {
+                    var shader = new PixelShader(this.device, byteCode);
+                    this.pixelShaderCache.Add(key, shader);
+                    return shader;
+                }
+            }
+        }
+
+        public void ClearCache()
         {
             foreach (VertexShader entry in this.vertexShaderCache.Values)
             {
@@ -80,64 +147,6 @@ namespace Carbon.Engine.Logic
             }
 
             this.signatureCache.Clear();
-        }
-
-        public VertexShader GetVertexShader(CarbonShaderDescription description)
-        {
-            int key = description.GetHashCode();
-            if (this.vertexShaderCache.ContainsKey(key))
-            {
-                return this.vertexShaderCache[key] as VertexShader;
-            }
-
-            CompiledShader data = this.GetData(description);
-            using (var stream = new DataStream(data.ShaderData, true, false))
-            {
-                using (var byteCode = new ShaderBytecode(stream))
-                {
-                    var shader = new VertexShader(this.device, byteCode);
-                    this.vertexShaderCache.Add(key, shader);
-                    return shader;
-                }
-            }
-        }
-
-        public ShaderSignature GetShaderSignature(CarbonShaderDescription description)
-        {
-            if (this.signatureCache.ContainsKey(description))
-            {
-                return this.signatureCache[description] as ShaderSignature;
-            }
-
-            CompiledShader data = this.GetData(description);
-            using (var stream = new DataStream(data.ShaderData, true, false))
-            {
-                using (var byteCode = new ShaderBytecode(stream))
-                {
-                    var signature = ShaderSignature.GetInputSignature(byteCode);
-                    this.signatureCache.Add(description, signature);
-                    return signature;
-                }
-            }
-        }
-
-        public PixelShader GetPixelShader(CarbonShaderDescription description)
-        {
-            if (this.pixelShaderCache.ContainsKey(description))
-            {
-                return this.pixelShaderCache[description] as PixelShader;
-            }
-
-            CompiledShader data = this.GetData(description);
-            using (var stream = new DataStream(data.ShaderData, true, false))
-            {
-                using (var byteCode = new ShaderBytecode(stream))
-                {
-                    var shader = new PixelShader(this.device, byteCode);
-                    this.pixelShaderCache.Add(description, shader);
-                    return shader;
-                }
-            }
         }
 
         // -------------------------------------------------------------------

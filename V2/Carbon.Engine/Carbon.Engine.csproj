@@ -117,6 +117,8 @@
     </Compile>
     <Compile Include="Logic\BoundController.cs" />
     <Compile Include="Logic\InputBindings.cs" />
+    <Compile Include="Logic\Scripting\ScriptingContentProvider.cs" />
+    <Compile Include="Logic\Scripting\ScriptingGraphicsProvider.cs" />
     <Compile Include="Logic\TypingController.cs" />
     <Compile Include="Logic\DebugController.cs" />
     <Compile Include="Logic\EngineComponent.cs" />
