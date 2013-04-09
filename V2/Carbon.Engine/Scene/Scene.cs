@@ -1,14 +1,8 @@
-﻿using Carbon.Engine.Contracts.Logic;
+﻿using Carbon.Engine.Contracts.Scene;
 using Carbon.Engine.Logic;
 
 namespace Carbon.Engine.Scene
 {
-    public interface IScene : IEngineComponent
-    {
-        void Render();
-        void Resize(int width, int height);
-    }
-
     public abstract class Scene : EngineComponent, IScene
     {        
         // -------------------------------------------------------------------

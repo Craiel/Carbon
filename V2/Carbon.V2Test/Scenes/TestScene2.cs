@@ -1,7 +1,10 @@
-﻿using Carbon.Engine.Contracts;
+﻿using System.Linq;
+
+using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
 using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Contracts.UserInterface;
 using Carbon.Engine.Logic;
 using Carbon.Engine.Logic.Scripting;
 using Carbon.Engine.Rendering;
@@ -58,11 +61,13 @@ namespace Carbon.V2Test.Scenes
         private int lastConsoleUpdate;
 
         private Mesh screenQuad;
+
+        private LuaInterface.Lua consoleContext;
         
         public override void Dispose()
         {
             this.controller.Dispose();
-            this.camera.Dispose();            
+            this.camera.Dispose();
 
             base.Dispose();
         }
@@ -103,8 +108,7 @@ namespace Carbon.V2Test.Scenes
             // Setup additional scripting and managers
             this.nodeManager = new NodeManager(graphics, this.contentManager, this.resourceManager);
             this.scriptingEngine.Register(this.nodeManager);
-            this.scriptingEngine.Register(new ScriptingGraphicsProvider(graphics));
-            this.scriptingEngine.Register(new ScriptingContentProvider(this.contentManager, this.resourceManager));
+            this.scriptingEngine.Register(new ScriptingGameProvider(this));
 
             var scriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
             var script = new CarbonScript(scriptData);
@@ -121,6 +125,7 @@ namespace Carbon.V2Test.Scenes
             this.console.IsActive = true;
             this.console.IsVisible = true;
             this.console.OnLineEntered += this.OnConsoleLineEntered;
+            this.console.OnRequestCompletion += this.OnConsoleCompletionRequested;
             
             // Setup the hard textures for internals
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
@@ -135,6 +140,8 @@ namespace Carbon.V2Test.Scenes
             scriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene.lua"));
             script = new CarbonScript(scriptData);
             this.scriptingEngine.Execute(script);
+
+            this.consoleContext = this.scriptingEngine.GetContext();
 
             /*PositionNormalVertex[] meshData;
             uint[] indices;
@@ -218,17 +225,43 @@ namespace Carbon.V2Test.Scenes
             */
         }
 
+        private string OnConsoleCompletionRequested(string arg)
+        {
+            var matches = this.consoleContext.Globals.Where(x => x.StartsWith(arg)).ToList();
+            if (matches.Count == 1)
+            {
+                return matches[0];
+            }
+
+            if (matches.Count > 0)
+            {
+                this.console.AddSystemLine(string.Join(", ", matches));
+            }
+
+            return arg;
+        }
+
         private void OnConsoleLineEntered(string line)
         {
             try
             {
-                this.scriptingEngine.GetContext().DoString(line);
+                object[] output = this.consoleContext.DoString(line);
+                foreach (var o in output)
+                {
+                    if (o is string)
+                    {
+                        continue;
+                    }
+
+                    this.console.AddLine((string)o);
+                }
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError("Exception in Console script execution: {0}", e.Message);
+                string error = string.Format("Exception in Console script execution: {0}", e.Message);
+                this.console.AddSystemLine(error);
+                System.Diagnostics.Trace.TraceError(error);
             }
-            
         }
 
         public override void Resize(int width, int height)
@@ -258,7 +291,7 @@ namespace Carbon.V2Test.Scenes
                 var mesh =
                     new Mesh(
                         FontBuilder.Build(
-                            consoleText, new Vector2(13f, 15f), this.consoleFont));
+                            consoleText, new Vector2(12f, 17f), this.consoleFont));
                 this.consoleTestNode.Mesh = mesh;
                 this.lastConsoleUpdate = consoleText.GetHashCode();
             }

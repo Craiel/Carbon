@@ -1,26 +1,12 @@
 ﻿using Carbon.Engine.Contracts.Logic;
+using Carbon.Engine.Contracts.UserInterface;
+
+using Core.Utils.Contracts;
 
 using SlimDX;
 
 namespace Carbon.Engine.UserInterface
 {
-    using Core.Utils.Contracts;
-
-    public interface IUserInterfaceControl : IEngineComponent
-    {
-        bool IsActive { get; set; }
-        bool IsVisible { get; set; }
-
-        Vector2 Position { get; set; }
-        Vector2 Scale { get; set; }
-        Quaternion Rotation { get; set; }
-
-        Vector2 AbsolutePosition { get; }
-        Vector2 AbsoluteSize { get; }
-
-        void Invalidate();
-    }
-
     public class UserInterfaceControl : IUserInterfaceControl
     {
         public virtual void Dispose()

@@ -1,9 +1,8 @@
 ﻿using Carbon.Engine.Ninject;
 using Carbon.V2Test.Contracts;
 using Carbon.V2Test.Logic;
-
-using Ninject.Modules;
 using Carbon.V2Test.Scenes;
+using Ninject.Modules;
 
 namespace Carbon.V2Test.Ninject
 {
@@ -11,7 +10,12 @@ namespace Carbon.V2Test.Ninject
     {
         public static NinjectModule[] GetModules()
         {
-            return new NinjectModule[] { new EngineModule(), new GameModule() };
+            return new NinjectModule[]
+                       {
+                           new EngineModule(), 
+                           new GameModule(), 
+                           new Core.Utils.Ninject.NinjectModuleManager.UtilsModule()
+                       };
         }
 
         public class GameModule : NinjectModule

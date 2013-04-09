@@ -3,5 +3,7 @@
     public interface ICarbonGame
     {
         void Run();
+
+        void ClearCache();
     }
 }

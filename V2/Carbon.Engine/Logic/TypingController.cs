@@ -81,6 +81,12 @@ namespace Carbon.Engine.Logic
         {
             foreach (var binding in triggeredBindings)
             {
+                // Ignore persistent triggers unless we got a trigger before
+                if (this.lastTrigger != binding.Value)
+                {
+                    continue;
+                }
+
                 this.HandleBinding(binding);
             }
         }

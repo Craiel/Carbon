@@ -10,6 +10,7 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         public virtual void Dispose()
         {
+            this.Unload();
         }
 
         public virtual void Initialize(ICarbonGraphics graphics)
@@ -17,6 +18,10 @@ namespace Carbon.Engine.Logic
         }
         
         public virtual void Update(ITimer gameTime)
+        {
+        }
+
+        public virtual void Unload()
         {
         }
     }

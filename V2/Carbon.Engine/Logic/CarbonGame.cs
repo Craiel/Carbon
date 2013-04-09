@@ -59,6 +59,8 @@ namespace Carbon.Engine.Logic
         private readonly IScriptingEngine scriptingEngine;
         private readonly IDebugController debugController;
 
+        private readonly object renderSynchronizationLock = new object();
+
         private CarbonWindow window;
 
         private bool isResizing;
@@ -74,8 +76,6 @@ namespace Carbon.Engine.Logic
         private TimeSpan fpsAccumulator;
         private int frameCount;
         private int frameDropCount;
-        
-        private object renderSynchronizationLock = new object();
 
         // -------------------------------------------------------------------
         // Constructor
@@ -116,6 +116,14 @@ namespace Carbon.Engine.Logic
             this.log.Debug("Main Loop");
 
             MessagePump.Run(this.window, this.MainLoop);
+        }
+
+        public void ClearCache()
+        {
+            lock (this.renderSynchronizationLock)
+            {
+                this.DoClearCache();
+            }
         }
 
         // -------------------------------------------------------------------
@@ -204,6 +212,11 @@ namespace Carbon.Engine.Logic
         protected void SetupDefaultProviders(IScriptingEngine engine)
         {
             // Todo: Register the default providers
+        }
+
+        protected virtual void DoClearCache()
+        {
+            this.graphics.ClearCache();
         }
 
         // -------------------------------------------------------------------

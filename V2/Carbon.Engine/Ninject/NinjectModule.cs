@@ -2,6 +2,7 @@
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
 using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Contracts.UserInterface;
 using Carbon.Engine.Logic;
 using Carbon.Engine.Logic.Scripting;
 using Carbon.Engine.Rendering;

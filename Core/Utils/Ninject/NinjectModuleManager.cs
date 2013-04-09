@@ -10,6 +10,7 @@ namespace Core.Utils.Ninject
         {
             public override void Load()
             {
+                this.Bind<IFormatter>().To<Formatter>();
                 this.Bind<IEventRelay>().To<EventRelay>().InSingletonScope();
             }
         }

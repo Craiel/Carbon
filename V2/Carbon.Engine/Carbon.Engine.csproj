@@ -89,6 +89,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\Logic\IGameState.cs" />
     <Compile Include="Contracts\Logic\IScriptingEngine.cs" />
     <Compile Include="Contracts\Logic\IScriptingProvider.cs" />
     <Compile Include="Contracts\Network\INetworkClient.cs" />
@@ -110,6 +111,10 @@
     <Compile Include="Contracts\Resource\IContentManager.cs" />
     <Compile Include="Contracts\Resource\IResourceManager.cs" />
     <Compile Include="Contracts\Scene\IEntity.cs" />
+    <Compile Include="Contracts\Scene\IScene.cs" />
+    <Compile Include="Contracts\Scene\ISceneManager.cs" />
+    <Compile Include="Contracts\UserInterface\IUserInterfaceConsole.cs" />
+    <Compile Include="Contracts\UserInterface\IUserInterfaceControl.cs" />
     <Compile Include="Logic\CarbonConsole.cs" />
     <Compile Include="Logic\CarbonGraphics.cs" />
     <Compile Include="Logic\CarbonWindow.cs">
@@ -117,8 +122,7 @@
     </Compile>
     <Compile Include="Logic\BoundController.cs" />
     <Compile Include="Logic\InputBindings.cs" />
-    <Compile Include="Logic\Scripting\ScriptingContentProvider.cs" />
-    <Compile Include="Logic\Scripting\ScriptingGraphicsProvider.cs" />
+    <Compile Include="Logic\Scripting\ScriptingGameProvider.cs" />
     <Compile Include="Logic\TypingController.cs" />
     <Compile Include="Logic\DebugController.cs" />
     <Compile Include="Logic\EngineComponent.cs" />
@@ -215,6 +219,7 @@
     <Compile Include="Scene\Node.cs" />
     <Compile Include="Scene\NodeManager.cs" />
     <Compile Include="Scene\Scene.cs" />
+    <Compile Include="Scene\SceneManager.cs" />
     <Compile Include="UserInterface\UserInterfaceConsole.cs" />
     <Compile Include="UserInterface\UserInterfaceControl.cs" />
   </ItemGroup>

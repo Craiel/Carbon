@@ -8,5 +8,6 @@ namespace Carbon.Engine.Contracts.Logic
     {
         void Initialize(ICarbonGraphics graphics);
         void Update(ITimer gameTime);
+        void Unload();
     }
 }
