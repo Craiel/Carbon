@@ -16,15 +16,15 @@ namespace Carbon.Engine.Contracts.Scene
         IScene ActiveScene { get; }
         IScene SuspendedScene { get; }
 
-        bool IsPrepared(IScene scene);
+        bool IsPrepared(int key);
 
-        void Register(IScene scene);
+        void Register(int key, IScene scene);
 
-        void Activate(IScene scene, bool suspendCurrent = false);
+        void Activate(int key, bool suspendCurrent = false);
         void Deactivate();
 
-        void Prepare(IScene scene);
+        void Prepare(int key);
 
-        void Reload(IScene scene = null);
+        void Reload(int? key = null);
     }
 }

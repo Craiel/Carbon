@@ -108,9 +108,11 @@
   <ItemGroup>
     <Compile Include="Contracts\IApplicationLog.cs" />
     <Compile Include="Contracts\IV2Test.cs" />
+    <Compile Include="Contracts\IV2TestGameState.cs" />
     <Compile Include="Logic\ApplicationLog.cs" />
     <Compile Include="Logic\V2Test.cs" />
     <Compile Include="Entry.cs" />
+    <Compile Include="Logic\V2TestGameState.cs" />
     <Compile Include="Ninject\FactoryExtension.cs" />
     <Compile Include="Ninject\NinjectModuleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

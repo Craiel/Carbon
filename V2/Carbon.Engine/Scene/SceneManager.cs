@@ -9,8 +9,8 @@ namespace Carbon.Engine.Scene
 {
     public class SceneManager : EngineComponent, ISceneManager
     {
-        private readonly IList<IScene> registeredScenes;
-        private readonly IList<IScene> preparedScenes;
+        private readonly IDictionary<int, IScene> registeredScenes;
+        private readonly IList<int> preparedScenes;
 
         private ICarbonGraphics currentGraphics;
 
@@ -22,8 +22,8 @@ namespace Carbon.Engine.Scene
         // -------------------------------------------------------------------
         public SceneManager()
         {
-            this.registeredScenes = new List<IScene>();
-            this.preparedScenes = new List<IScene>();
+            this.registeredScenes = new Dictionary<int, IScene>();
+            this.preparedScenes = new List<int>();
         }
 
         // -------------------------------------------------------------------

@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
 using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Contracts.Scene;
 using Carbon.Engine.Contracts.UserInterface;
 using Carbon.Engine.Logic;
 using Carbon.Engine.Logic.Scripting;
@@ -21,10 +23,6 @@ using SlimDX;
 
 namespace Carbon.V2Test.Scenes
 {
-    using System;
-
-    using Carbon.Engine.UserInterface;
-
     public interface ITestScene : IScene
     {
     }
@@ -32,12 +30,9 @@ namespace Carbon.V2Test.Scenes
     public class TestScene2 : Scene, ITestScene
     {
         private readonly ILog log;
-        private readonly IResourceManager resourceManager;
-        private readonly IContentManager contentManager;
         private readonly IFrameManager frameManager;
         private readonly IRenderer renderer;
         private readonly ICarbonGraphics graphics;
-        private readonly IScriptingEngine scriptingEngine;
 
         private INodeManager nodeManager;
         
@@ -83,14 +78,6 @@ namespace Carbon.V2Test.Scenes
             this.camera = factory.Get<IProjectionCamera>();
             this.overlayCamera = factory.Get<IOrthographicCamera>();
 
-            this.resourceManager = factory.GetResourceManager("Data");
-            this.contentManager = factory.GetContentManager(this.resourceManager, "Main.db");
-            
-            // Setup the basic scripting environment for the scene
-            this.scriptingEngine = factory.Get<IScriptingEngine>();
-            this.scriptingEngine.Register(new ScriptingCoreProvider(factory.Get<IApplicationLog>()));
-            this.scriptingEngine.Register(factory.Get<IInputManager>());
-
             // Create a manual console for testing purpose
             this.console = factory.Get<IUserInterfaceConsole>();
         }
@@ -108,7 +95,7 @@ namespace Carbon.V2Test.Scenes
             // Setup additional scripting and managers
             this.nodeManager = new NodeManager(graphics, this.contentManager, this.resourceManager);
             this.scriptingEngine.Register(this.nodeManager);
-            this.scriptingEngine.Register(new ScriptingGameProvider(this));
+            //this.scriptingEngine.Register(new ScriptingGameProvider(this));
 
             var scriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
             var script = new CarbonScript(scriptData);

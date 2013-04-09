@@ -1,26 +1,12 @@
-﻿using Carbon.Engine.Contracts.Logic;
-using Carbon.Engine.Contracts.UserInterface;
-
-using Core.Utils.Contracts;
+﻿using Carbon.Engine.Contracts.UserInterface;
+using Carbon.Engine.Logic;
 
 using SlimDX;
 
 namespace Carbon.Engine.UserInterface
 {
-    public class UserInterfaceControl : IUserInterfaceControl
+    public class UserInterfaceControl : EngineComponent, IUserInterfaceControl
     {
-        public virtual void Dispose()
-        {
-        }
-
-        public virtual void Initialize(ICarbonGraphics graphics)
-        {
-        }
-
-        public virtual void Update(ITimer gameTime)
-        {
-        }
-
         public virtual bool IsActive { get; set; }
 
         public virtual bool IsVisible { get; set; }

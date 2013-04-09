@@ -59,8 +59,6 @@ namespace Carbon.Engine.Logic
         private readonly IScriptingEngine scriptingEngine;
         private readonly IDebugController debugController;
 
-        private readonly object renderSynchronizationLock = new object();
-
         private CarbonWindow window;
 
         private bool isResizing;
@@ -120,7 +118,7 @@ namespace Carbon.Engine.Logic
 
         public void ClearCache()
         {
-            lock (this.renderSynchronizationLock)
+            lock (this.RenderSynchronizationLock)
             {
                 this.DoClearCache();
             }
@@ -129,6 +127,8 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
+        protected readonly object RenderSynchronizationLock = new object();
+
         protected CarbonWindow Window
         {
             get
@@ -197,7 +197,7 @@ namespace Carbon.Engine.Logic
 
         protected virtual void OnWindowResize(object sender, EventArgs eventArgs)
         {
-            lock (this.renderSynchronizationLock)
+            lock (this.RenderSynchronizationLock)
             {
                 this.graphics.Resize(this.window.ClientSize.Width, this.window.ClientSize.Height);
                 this.mainFrameManager.Resize(this.window.ClientSize.Width, this.window.ClientSize.Height);
@@ -264,7 +264,7 @@ namespace Carbon.Engine.Logic
                         this.frameAccumulator = TimeSpan.FromTicks(0);
                         this.frameDropCount = 0;
 
-                        lock (this.renderSynchronizationLock)
+                        lock (this.RenderSynchronizationLock)
                         {
                             using (new ProfileRegion("MainLoop - Render"))
                             {

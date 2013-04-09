@@ -2,6 +2,8 @@
 using System.Net.Sockets;
 using System.Threading;
 
+using Carbon.Engine.Logic;
+
 using Google.ProtocolBuffers;
 
 namespace Carbon.Engine.Network
@@ -14,9 +16,15 @@ namespace Carbon.Engine.Network
 
     using Core.Utils.Contracts;
 
-    public class NetworkClient : INetworkClient
+    public class NetworkClient : EngineComponent, INetworkClient
     {
-        private enum ClientState { Idle, Connecting, Connected, Disconnecting };
+        private enum ClientState
+        {
+            Idle,
+            Connecting,
+            Connected,
+            Disconnecting
+        }
         
         private readonly ILog log;
 
@@ -60,18 +68,6 @@ namespace Carbon.Engine.Network
         // -------------------------------------------------------------------
         public static readonly Guid Guid;
         public static readonly Client ClientData;
-
-        public void Dispose()
-        {
-        }
-
-        public void Initialize(ICarbonGraphics graphics)
-        {
-        }
-
-        public void Update(ITimer gameTime)
-        {
-        }
         
         public Guid Id { get; private set; }
 

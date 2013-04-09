@@ -1,14 +1,12 @@
-﻿using Carbon.Engine.Contracts;
+﻿using System;
+
+using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
-using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Contracts.Scene;
 using Carbon.Engine.Logic;
 using Carbon.Engine.Rendering;
 using Carbon.Engine.Rendering.Primitives;
-using Carbon.Engine.Rendering.RenderTarget;
-using Carbon.Engine.Resource;
-using Carbon.Engine.Resource.Content;
-using Carbon.Engine.Resource.Resources;
 using Carbon.Engine.Scene;
 using Carbon.V2Test.Contracts;
 using Core.Utils;
@@ -17,10 +15,6 @@ using SlimDX;
 
 namespace Carbon.V2Test.Scenes
 {
-    using System;
-
-    using Carbon.Editor.Resource.Collada;
-
     public interface ITestSceneSponza : IScene
     {
     }
