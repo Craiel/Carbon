@@ -87,7 +87,22 @@ namespace Carbon.V2Test.Scenes
             this.console.IsActive = false;
             this.console.OnLineEntered -= this.OnConsoleLineEntered;
             this.console.OnRequestCompletion -= this.OnConsoleCompletionRequested;
-            // Todo: More stuff
+            
+            this.deferredLightTexture.Dispose();
+            this.deferredLightTexture = null;
+            this.forwardDebugTexture.Dispose();
+            this.forwardDebugTexture = null;
+            this.normalDebugTexture.Dispose();
+            this.normalDebugTexture = null;
+
+            this.gBufferNormalTexture.Dispose();
+            this.gBufferNormalTexture = null;
+            this.gBufferDiffuseAlbedoTexture.Dispose();
+            this.gBufferDiffuseAlbedoTexture = null;
+            this.gBufferSpecularAlbedoTexture.Dispose();
+            this.gBufferSpecularAlbedoTexture = null;
+            this.gBufferDepthTexture.Dispose();
+            this.gBufferDepthTexture = null;
         }
 
         public override void Initialize(ICarbonGraphics graphics)
@@ -107,8 +122,8 @@ namespace Carbon.V2Test.Scenes
             this.controller.IsActive = true;
 
             this.consoleFont =
-                this.gameState.ContentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 4)).UniqueResult<FontEntry>();
-            this.consoleTestNode = (IModelNode)this.gameState.NodeManager.AddStaticText(4, " ", new Vector2(1, 1.2f));
+                this.gameState.ContentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 1)).UniqueResult<FontEntry>();
+            this.consoleTestNode = (IModelNode)this.gameState.NodeManager.AddStaticText(1, " ", new Vector2(1, 1.2f));
             this.gameState.NodeManager.RootNode.RemoveChild(this.consoleTestNode);
             this.consoleTestNode.Position = new Vector4(0, 20, 0, 1);
             this.console.Initialize(graphics);

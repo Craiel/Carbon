@@ -43,6 +43,13 @@ namespace Carbon.Engine.Scene
             }
         }
 
+        public override void Dispose()
+        {
+            this.Clear();
+
+            base.Dispose();
+        }
+
         public override void Update(Core.Utils.Contracts.ITimer gameTime)
         {
             base.Update(gameTime);
@@ -97,7 +104,15 @@ namespace Carbon.Engine.Scene
 
         public void Clear()
         {
-            this.children.Clear();
+            if (this.children.Count > 0)
+            {
+                for (int i = 0; i < this.children.Count; i++)
+                {
+                    this.children[i].Dispose();
+                }
+
+                this.children.Clear();
+            }
         }
     }
 }

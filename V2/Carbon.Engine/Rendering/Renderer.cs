@@ -201,6 +201,15 @@ namespace Carbon.Engine.Rendering
             this.currentFrameStatistic.EndFrame();
             this.frameStatistics.Add(this.currentFrameStatistic);
         }
+
+        public void ClearCache()
+        {
+            this.defaultShader.ForceReloadOnNextPass = true;
+            this.gBufferShader.ForceReloadOnNextPass = true;
+            this.deferredLightShader.ForceReloadOnNextPass = true;
+            this.debugShader.ForceReloadOnNextPass = true;
+            this.blendShader.ForceReloadOnNextPass = true;
+        }
         
         // -------------------------------------------------------------------
         // Private

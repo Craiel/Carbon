@@ -19,5 +19,7 @@ namespace Carbon.Engine.Contracts.Rendering
         void Render(RenderParameters parameters, RenderInstruction instructions);
 
         void EndFrame();
+
+        void ClearCache();
     }
 }

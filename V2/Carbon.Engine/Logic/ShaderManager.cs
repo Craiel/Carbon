@@ -1,4 +1,6 @@
-﻿using Carbon.Engine.Contracts.Resource;
+﻿using System.IO.Compression;
+
+using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource;
 using Core.Utils;
 using SlimDX;
@@ -169,16 +171,34 @@ namespace Carbon.Engine.Logic
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Re-Compiling shader {0} -> {1}", sourceFile, cachedKey);
-                ShaderBytecode shaderData = ShaderBytecode.Compile(sourceData, description.Entry, description.Profile, ShaderFlags.None, EffectFlags.None, description.Macros, this.includeHandler);
-                shader = new CompiledShader(md5, shaderData);
-                this.resourceManager.Replace(hash, shader);
+                using (ShaderBytecode shaderData = ShaderBytecode.Compile(
+                        sourceData,
+                        description.Entry,
+                        description.Profile,
+                        ShaderFlags.None,
+                        EffectFlags.None,
+                        description.Macros,
+                        this.includeHandler))
+                {
+                    shader = new CompiledShader(md5, shaderData);
+                    this.resourceManager.Replace(hash, shader);
+                }
             }
             else
             {
                 System.Diagnostics.Trace.TraceInformation("Compiling shader {0} -> {1}", sourceFile, cachedKey);
-                ShaderBytecode shaderData = ShaderBytecode.Compile(sourceData, description.Entry, description.Profile, ShaderFlags.None, EffectFlags.None, description.Macros, this.includeHandler);
-                shader = new CompiledShader(md5, shaderData);
-                this.resourceManager.Store(hash, shader);
+                using (ShaderBytecode shaderData = ShaderBytecode.Compile(
+                        sourceData,
+                        description.Entry,
+                        description.Profile,
+                        ShaderFlags.None,
+                        EffectFlags.None,
+                        description.Macros,
+                        this.includeHandler))
+                {
+                    shader = new CompiledShader(md5, shaderData);
+                    this.resourceManager.Store(hash, shader);
+                }
             }
             
             return shader;
@@ -201,5 +221,26 @@ namespace Carbon.Engine.Logic
                 }
             }
         }
+
+        /*private string ReadSource(string file, out byte[] md5)
+        {
+            using (FileStream stream = File.OpenRead(file))
+            {
+                using (var compression = new GZipStream(stream, CompressionMode.Decompress, false))
+                {
+                    using (MD5 hashProvider = MD5.Create())
+                    {
+                        md5 = hashProvider.ComputeHash(compression);
+                    }
+
+                    compression.Position = 0;
+                    using (var reader = new StreamReader(compression, Encoding.ASCII))
+                    {
+                        string result = reader.ReadToEnd();
+                        return result;
+                    }
+                }
+            }
+        }*/
     }
 }

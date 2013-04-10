@@ -22,6 +22,8 @@ namespace Carbon.Engine.Rendering.RenderTarget
         public override void Dispose()
         {
             this.DisposeResources();
+
+            base.Dispose();
         }
         
         public override void Clear(ICarbonGraphics graphics, Vector4 color)

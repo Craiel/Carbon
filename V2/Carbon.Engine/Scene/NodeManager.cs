@@ -72,6 +72,13 @@ namespace Carbon.Engine.Scene
             }
         }
 
+        public override void Dispose()
+        {
+            this.root.Dispose();
+
+            base.Dispose();
+        }
+
         public void InitializeContent(IContentManager content, IResourceManager resource)
         {
             this.contentManager = content;

@@ -20,6 +20,8 @@ namespace Carbon.Engine.Rendering
     {
         bool LightingEnabled { get; set; }
 
+        bool ForceReloadOnNextPass { get; set; }
+
         void Permutate();
 
         void Apply(DeviceContext context, Type vertexType, RenderParameters parameters, RenderInstruction instruction);
@@ -160,12 +162,20 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         public bool LightingEnabled { get; set; }
 
+        public bool ForceReloadOnNextPass { get; set; }
+
         public virtual void Permutate()
         {
         }
 
         public void Apply(DeviceContext context, Type vertexType, RenderParameters parameters, RenderInstruction instruction)
         {
+            if (this.ForceReloadOnNextPass)
+            {
+                this.reloadShaders = true;
+                this.ForceReloadOnNextPass = false;
+            }
+
             // Analyze the instruction and set the macros we may need
             using (new ProfileRegion("configure shader configuration"))
             {
@@ -180,7 +190,6 @@ namespace Carbon.Engine.Rendering
 
                 this.signature = this.graphics.ShaderManager.GetShaderSignature(this.desiredVertexShader);
 
-                this.reloadShaders = false;
                 this.uploadShaders = true;
             }
 
@@ -192,6 +201,8 @@ namespace Carbon.Engine.Rendering
                 this.currentVertexType = vertexType;
                 this.uploadLayout = true;
             }
+
+            this.reloadShaders = false;
 
             using (new ProfileRegion("Upload shader configuration"))
             {

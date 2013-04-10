@@ -53,6 +53,21 @@ namespace Carbon.Engine.Scene
             }
         }
 
+        public override void Dispose()
+        {
+            if (this.mesh != null)
+            {
+                this.mesh.Dispose();
+            }
+
+            if (this.material != null)
+            {
+                this.material.Dispose();
+            }
+
+            base.Dispose();
+        }
+
         public override void Update(Core.Utils.Contracts.ITimer gameTime)
         {
             base.Update(gameTime);

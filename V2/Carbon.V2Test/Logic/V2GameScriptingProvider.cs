@@ -1,10 +1,10 @@
-﻿namespace Carbon.V2Test.Logic
+﻿using System;
+
+using Carbon.Engine.Logic.Scripting;
+using Carbon.V2Test.Contracts;
+
+namespace Carbon.V2Test.Logic
 {
-    using System;
-
-    using Carbon.Engine.Logic.Scripting;
-    using Carbon.V2Test.Contracts;
-
     public class V2GameScriptingProvider : ScriptingGameProvider
     {
         private readonly IV2Test game;
@@ -23,6 +23,12 @@
             {
                 this.game.SwitchScene(key);
             }
+        }
+
+        [ScriptingMethod]
+        public void Reload()
+        {
+            this.game.Reload();
         }
     }
 }

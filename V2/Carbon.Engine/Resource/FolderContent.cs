@@ -44,7 +44,7 @@ namespace Carbon.Engine.Resource
             MemoryStream dataStream = new MemoryStream();
             using (FileStream stream = File.OpenRead(fileName))
             {
-                using (GZipStream compression = new GZipStream(stream, CompressionMode.Decompress, false))
+                using (var compression = new GZipStream(stream, CompressionMode.Decompress, false))
                 {
                     compression.CopyTo(dataStream);
                     System.Diagnostics.Trace.TraceInformation(" -> {0} bytes read and uncompressed to {1}", stream.Length, dataStream.Length);

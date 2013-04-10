@@ -7,7 +7,7 @@ using SlimDX;
 
 namespace Carbon.Engine.Rendering
 {
-    public class Mesh
+    public class Mesh : IDisposable
     {
         private readonly ModelResource resource;
 
@@ -70,6 +70,10 @@ namespace Carbon.Engine.Rendering
             {
                 return this.resource.BoundingBox;
             }
+        }
+
+        public void Dispose()
+        {
         }
         
         public int GetSizeAs<T>()

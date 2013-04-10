@@ -103,7 +103,7 @@ namespace Carbon.Engine.Scene
 
             if (this.activeScene != null)
             {
-                IScene lastActive = this.registeredScenes[key];
+                IScene lastActive = this.registeredScenes[(int)this.activeScene];
                 lastActive.IsActive = false;
                 if (suspendActive)
                 {

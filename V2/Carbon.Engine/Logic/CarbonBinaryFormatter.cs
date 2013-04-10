@@ -160,7 +160,7 @@ namespace Carbon.Engine.Logic
 
         public void Write(byte[] value)
         {
-            this.target.Write(value, 0, value.Length);
+            this.bufferStream.Write(value, 0, value.Length);
         }
 
         // -------------------------------------------------------------------

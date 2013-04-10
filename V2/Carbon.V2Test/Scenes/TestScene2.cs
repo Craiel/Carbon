@@ -106,8 +106,8 @@ namespace Carbon.V2Test.Scenes
             this.controller.IsActive = true;
 
             this.consoleFont =
-                this.gameState.ContentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 4)).UniqueResult<FontEntry>();
-            this.consoleTestNode = (IModelNode)this.gameState.NodeManager.AddStaticText(4, " ", new Vector2(1, 1.2f));
+                this.gameState.ContentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 1)).UniqueResult<FontEntry>();
+            this.consoleTestNode = (IModelNode)this.gameState.NodeManager.AddStaticText(1, " ", new Vector2(1, 1.2f));
             this.gameState.NodeManager.RootNode.RemoveChild(this.consoleTestNode);
             this.consoleTestNode.Position = new Vector4(0, 20, 0, 1);
             this.console.Initialize(graphics);

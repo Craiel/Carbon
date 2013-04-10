@@ -22,6 +22,7 @@ namespace Carbon.V2Test.Logic
         private readonly IEngineFactory factory;
         private readonly ILog log;
         private readonly IV2TestGameState gameState;
+        private readonly IRenderer renderer;
         
         // -------------------------------------------------------------------
         // Constructor
@@ -31,6 +32,7 @@ namespace Carbon.V2Test.Logic
         {
             this.factory = factory;
             this.log = factory.Get<IApplicationLog>().AquireContextLog("Carbon.V2Test");
+            this.renderer = factory.Get<IRenderer>();
 
             this.gameState = factory.Get<IV2TestGameState>();
         }
@@ -125,6 +127,20 @@ namespace Carbon.V2Test.Logic
                 this.gameState.NodeManager.Clear();
                 this.gameState.SceneManager.Activate((int)key);
                 this.gameState.SceneManager.Resize(this.Window.Size.Width, this.Window.Size.Height);
+            }
+        }
+
+        public void Reload()
+        {
+            lock (this.RenderSynchronizationLock)
+            {
+                this.Graphics.ClearCache();
+                this.gameState.ResourceManager.ClearCache();
+                this.gameState.ContentManager.ClearCache();
+                this.renderer.ClearCache();
+
+                this.gameState.NodeManager.Clear();
+                this.gameState.SceneManager.Reload();
             }
         }
     }

@@ -41,6 +41,8 @@ namespace Carbon.Engine.Rendering.RenderTarget
         public override void Dispose()
         {
             this.DisposeResources();
+
+            base.Dispose();
         }
 
         public ShaderResourceView NormalView
@@ -203,8 +205,7 @@ namespace Carbon.Engine.Rendering.RenderTarget
                     this.views[i].Dispose();
                     this.views[i] = null;
                 }
-
-
+                
                 if (this.targetViews[i] != null)
                 {
                     this.targetViews[i].Dispose();

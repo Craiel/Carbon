@@ -87,6 +87,7 @@ namespace Carbon.Engine.Logic
 
         public void Dispose()
         {
+            this.ClearCache();
         }
 
         public TextureReference RegisterStatic(ShaderResourceView view, int register)
@@ -137,7 +138,8 @@ namespace Carbon.Engine.Logic
         {
             if (!this.textureRegister.ContainsKey(register))
             {
-                throw new InvalidDataException("No texture in register " + register);
+                // This is perfectly fine since the same texture can be used plenty of times
+                return;
             }
 
             TextureReference reference = this.textureRegister[register];
@@ -216,17 +218,17 @@ namespace Carbon.Engine.Logic
                 IList<TextureReference> clearQueue = new List<TextureReference>();
                 foreach (TextureReference reference in this.textureCache.Keys)
                 {
-                    if (reference.Register <= StaticRegisterLimit)
+                    if (reference.Type == TextureReferenceType.View)
                     {
                         continue;
                     }
 
-                    this.textureCache[reference].Dispose();
                     clearQueue.Add(reference);
                 }
 
                 foreach (TextureReference textureReference in clearQueue)
                 {
+                    this.textureCache[textureReference].Dispose();
                     this.textureCache.Remove(textureReference);
                 }
             }

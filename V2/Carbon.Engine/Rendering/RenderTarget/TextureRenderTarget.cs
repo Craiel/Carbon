@@ -6,7 +6,7 @@ using SlimDX.Direct3D11;
 
 namespace Carbon.Engine.Rendering.RenderTarget
 {
-    class TextureRenderTarget : RenderTargetBase
+    internal class TextureRenderTarget : RenderTargetBase
     {
         private Texture2D texture;
         private RenderTargetView targetView;
@@ -31,6 +31,8 @@ namespace Carbon.Engine.Rendering.RenderTarget
         public override void Dispose()
         {
             this.DisposeResources();
+
+            base.Dispose();
         }
         
         public override void Clear(ICarbonGraphics graphics, Vector4 color)

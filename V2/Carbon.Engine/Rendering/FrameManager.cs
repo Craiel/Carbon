@@ -30,7 +30,7 @@ namespace Carbon.Engine.Rendering
         private readonly GBufferRenderTarget gBufferTarget;
         private readonly TextureRenderTarget deferredLightTarget;
         private readonly TextureRenderTarget shadowMapTarget;
-        private readonly Hashtable textureTargets;
+        private readonly IDictionary<int, TextureRenderTarget> textureTargets;
 
         private bool targetTexturesRegistered;
         
@@ -50,7 +50,7 @@ namespace Carbon.Engine.Rendering
             this.gBufferTarget = new GBufferRenderTarget();
             this.deferredLightTarget = new TextureRenderTarget { BlendMode = RendertargetBlendMode.Additive};
             this.shadowMapTarget = new TextureRenderTarget();
-            this.textureTargets = new Hashtable();
+            this.textureTargets = new Dictionary<int, TextureRenderTarget>();
         }
 
         public override void Dispose()
@@ -59,6 +59,8 @@ namespace Carbon.Engine.Rendering
 
             this.backBufferRenderTarget.Dispose();
             this.gBufferTarget.Dispose();
+            this.deferredLightTarget.Dispose();
+            this.shadowMapTarget.Dispose();
 
             foreach (TextureRenderTarget target in this.textureTargets.Values)
             {
@@ -447,7 +449,7 @@ namespace Carbon.Engine.Rendering
                 needRegister = true;
             }
 
-            var target = (TextureRenderTarget)this.textureTargets[description.Index];
+            var target = this.textureTargets[description.Index];
             target.Resize(this.graphics, description.Width, description.Height);
             target.Clear(this.graphics, new Vector4(1));
             target.Set(this.graphics);

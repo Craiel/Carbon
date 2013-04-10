@@ -248,6 +248,12 @@ namespace Carbon.Engine.Logic
                 this.shaderManager = null;
             }
 
+            if (this.textureManager != null)
+            {
+                this.textureManager.Dispose();
+                this.textureManager = null;
+            }
+
             if (this.context != null)
             {
                 this.context.Dispose();

@@ -11,6 +11,16 @@ namespace Carbon.Engine.Scene
     {
         public ILight Light { get; set; }
 
+        public override void Dispose()
+        {
+            if (this.Light != null)
+            {
+                this.Light.Dispose();
+            }
+
+            base.Dispose();
+        }
+
         public override void Update(Core.Utils.Contracts.ITimer gameTime)
         {
             base.Update(gameTime);
