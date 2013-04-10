@@ -142,6 +142,16 @@ namespace Carbon.Engine.UserInterface
             this.AddHistory(line, this.lineFormat);
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.controller.OnReturnPressed -= this.ControllerOnReturnPressed;
+            this.controller.OnCompletionRequested -= this.ControllerOnCompletionRequested;
+            this.controller.IsActive = false;
+            this.controller.Dispose();
+        }
+
         // -------------------------------------------------------------------
         // private
         // -------------------------------------------------------------------

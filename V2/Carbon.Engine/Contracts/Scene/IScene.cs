@@ -2,12 +2,11 @@
 
 namespace Carbon.Engine.Contracts.Scene
 {
-    public interface IScene : IEngineComponent
+    using Carbon.Engine.Contracts.Rendering;
+
+    public interface IScene : IEngineComponent, IRenderableComponent
     {
         bool IsActive { get; set; }
         bool IsVisible { get; set; }
-
-        void Render();
-        void Resize(int width, int height);
     }
 }

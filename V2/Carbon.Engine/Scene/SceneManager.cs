@@ -7,6 +7,8 @@ using Carbon.Engine.Logic;
 
 namespace Carbon.Engine.Scene
 {
+    using Carbon.Engine.Contracts.Rendering;
+
     public class SceneManager : EngineComponent, ISceneManager
     {
         private readonly IDictionary<int, IScene> registeredScenes;
@@ -14,8 +16,8 @@ namespace Carbon.Engine.Scene
 
         private ICarbonGraphics currentGraphics;
 
-        private IScene activeScene;
-        private IScene suspendedScene;
+        private int? activeScene;
+        private int? suspendedScene;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -33,7 +35,12 @@ namespace Carbon.Engine.Scene
         {
             get
             {
-                return this.activeScene;
+                if (this.activeScene == null)
+                {
+                    return null;
+                }
+
+                return this.registeredScenes[(int)this.activeScene];
             }
         }
 
@@ -41,7 +48,12 @@ namespace Carbon.Engine.Scene
         {
             get
             {
-                return this.suspendedScene;
+                if (this.suspendedScene == null)
+                {
+                    return null;
+                }
+
+                return this.registeredScenes[(int)this.suspendedScene];
             }
         }
 
@@ -54,66 +66,69 @@ namespace Carbon.Engine.Scene
 
         public override void Unload()
         {
-            foreach (IScene scene in this.preparedScenes)
+            foreach (int key in this.preparedScenes)
             {
-                scene.Unload();
+                this.registeredScenes[key].Unload();
             }
 
             this.preparedScenes.Clear();
         }
         
-        public bool IsPrepared(IScene scene)
+        public bool IsPrepared(int key)
         {
-            if (scene == null || !this.registeredScenes.Contains(scene))
+            if (!this.registeredScenes.ContainsKey(key))
             {
                 throw new ArgumentException();
             }
 
-            return this.preparedScenes.Contains(scene);
+            return this.preparedScenes.Contains(key);
         }
 
-        public void Register(IScene scene)
+        public void Register(int key, IScene scene)
         {
-            this.registeredScenes.Add(scene);
+            this.registeredScenes.Add(key, scene);
         }
 
-        public void Activate(IScene scene, bool suspendActive = false)
+        public void Activate(int key, bool suspendActive = false)
         {
-            if (scene == null || !this.registeredScenes.Contains(scene))
+            if (!this.registeredScenes.ContainsKey(key))
             {
                 throw new ArgumentException();
             }
 
-            if (this.activeScene == scene)
+            if (this.activeScene == key)
             {
-                throw new InvalidOperationException("Scene is already active: " + scene);
+                throw new InvalidOperationException("Scene is already active: " + key);
             }
 
             if (this.activeScene != null)
             {
-                this.activeScene.IsActive = false;
+                IScene lastActive = this.registeredScenes[key];
+                lastActive.IsActive = false;
                 if (suspendActive)
                 {
                     this.suspendedScene = this.activeScene;
                 }
                 else
                 {
-                    this.activeScene.IsVisible = false;
-                    this.activeScene.Unload();
+                    lastActive.IsVisible = false;
+                    lastActive.Unload();
+                    this.preparedScenes.Remove((int)this.activeScene);
                 }
 
                 this.activeScene = null;
             }
 
-            if (!this.preparedScenes.Contains(scene))
+            IScene scene = this.registeredScenes[key];
+            if (!this.preparedScenes.Contains(key))
             {
                 scene.Initialize(this.currentGraphics);
-                this.preparedScenes.Add(scene);
+                this.preparedScenes.Add(key);
             }
 
             scene.IsActive = true;
             scene.IsVisible = true;
-            this.activeScene = scene;
+            this.activeScene = key;
         }
 
         public void Deactivate()
@@ -123,55 +138,94 @@ namespace Carbon.Engine.Scene
                 throw new InvalidOperationException("No active scene to deactivate");
             }
 
-            this.activeScene.Unload();
-            this.preparedScenes.Remove(this.activeScene);
-            this.activeScene.IsActive = false;
-            this.activeScene.IsVisible = false;
+            IScene active = this.registeredScenes[(int)this.activeScene];
+            active.Unload();
+            this.preparedScenes.Remove((int)this.activeScene);
+            active.IsActive = false;
+            active.IsVisible = false;
             this.activeScene = null;
 
             if (this.suspendedScene != null)
             {
                 this.activeScene = this.suspendedScene;
-                this.activeScene.IsActive = true;
-                this.activeScene.IsVisible = true;
+                active = this.registeredScenes[(int)this.activeScene];
+                active.IsActive = true;
+                active.IsVisible = true;
             }
         }
 
-        public void Prepare(IScene scene)
+        public void Prepare(int key)
         {
-            if (scene == null || !this.registeredScenes.Contains(scene))
+            if (!this.registeredScenes.ContainsKey(key))
             {
                 throw new ArgumentException();
             }
 
-            if (this.preparedScenes.Contains(scene))
+            if (this.preparedScenes.Contains(key))
             {
-                throw new InvalidOperationException("Scene was already prepared: " + scene);
+                throw new InvalidOperationException("Scene was already prepared: " + key);
             }
 
-            scene.Initialize(this.currentGraphics);
-            this.preparedScenes.Add(scene);
+            this.registeredScenes[key].Initialize(this.currentGraphics);
+            this.preparedScenes.Add(key);
         }
 
-        public void Reload(IScene scene = null)
+        public void Reload(int? key = null)
         {
-            if (scene != null && !this.registeredScenes.Contains(scene))
+            if (key != null && !this.registeredScenes.ContainsKey((int)key))
             {
                 throw new ArgumentException();
             }
 
-            if (scene == null)
+            if (key == null)
             {
-                foreach (IScene preparedScene in this.preparedScenes)
+                foreach (int preparedKey in this.preparedScenes)
                 {
-                    preparedScene.Unload();
-                    preparedScene.Initialize(this.currentGraphics);
+                    this.registeredScenes[preparedKey].Unload();
+                    this.registeredScenes[preparedKey].Initialize(this.currentGraphics);
                 }
             }
             else
             {
-                scene.Unload();
-                scene.Initialize(this.currentGraphics);
+                this.registeredScenes[(int)key].Unload();
+                this.registeredScenes[(int)key].Initialize(this.currentGraphics);
+            }
+        }
+
+        public override void Update(Core.Utils.Contracts.ITimer gameTime)
+        {
+            base.Update(gameTime);
+
+            if (this.suspendedScene != null)
+            {
+                this.registeredScenes[(int)this.suspendedScene].Update(gameTime);
+            }
+
+            if (this.activeScene != null)
+            {
+                this.registeredScenes[(int)this.activeScene].Update(gameTime);
+            }
+        }
+
+        public void Render(IFrameManager frameManager)
+        {
+            if (this.suspendedScene != null && this.registeredScenes[(int)this.suspendedScene].IsVisible)
+            {
+                // Todo: We probably need to act here to get this rendered as a inactive backend
+                this.registeredScenes[(int)this.suspendedScene].Render(frameManager);
+            }
+
+            if (this.activeScene != null)
+            {
+                this.registeredScenes[(int)this.activeScene].Render(frameManager);
+            }
+        }
+
+        public void Resize(int width, int height)
+        {
+            foreach (int key in this.preparedScenes)
+            {
+                this.registeredScenes[key].Resize(width, height);
             }
         }
     }

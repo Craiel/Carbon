@@ -1,5 +1,6 @@
 Log:Debug("Setting up key bindings", nil)
 
+UnregisterBinding("worldmap_controls")
 binding = RegisterBinding("worldmap_controls")
 binding:BindEx("UpArrow", "MoveForward", "Always", "And", nil)
 binding:BindEx("DownArrow", "MoveBackward", "Always", "And", nil)

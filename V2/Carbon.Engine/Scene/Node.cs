@@ -13,6 +13,8 @@ namespace Carbon.Engine.Scene
 
         void AddChild(IEntity entity);
         void RemoveChild(IEntity entity);
+
+        void Clear();
     }
 
     /// <summary>
@@ -91,6 +93,11 @@ namespace Carbon.Engine.Scene
 
             this.children.Remove(entity);
             entity.Parent = null;
+        }
+
+        public void Clear()
+        {
+            this.children.Clear();
         }
     }
 }

@@ -11,14 +11,15 @@ using Core.Utils.Contracts;
 
 namespace Carbon.V2Test.Logic
 {
+    public enum SceneKeys
+    {
+        Test = 1,
+        Test2 = 2
+    }
+
     public class V2Test : CarbonGame, IV2Test
     {
-        internal enum SceneKeys
-        {
-            Test = 1,
-            Sponza = 2
-        }
-
+        private readonly IEngineFactory factory;
         private readonly ILog log;
         private readonly IV2TestGameState gameState;
         
@@ -28,12 +29,10 @@ namespace Carbon.V2Test.Logic
         public V2Test(IEngineFactory factory)
             : base(factory)
         {
+            this.factory = factory;
             this.log = factory.Get<IApplicationLog>().AquireContextLog("Carbon.V2Test");
 
             this.gameState = factory.Get<IV2TestGameState>();
-
-            this.gameState.SceneManager.Register((int)SceneKeys.Test, factory.Get<ITestScene>());
-            this.gameState.SceneManager.Register((int)SceneKeys.Sponza, factory.Get<ITestSceneSponza>());
         }
 
         // -------------------------------------------------------------------
@@ -52,6 +51,11 @@ namespace Carbon.V2Test.Logic
 
             this.gameState.Initialize(this.Graphics);
 
+            this.gameState.ScriptingEngine.Register(new V2GameScriptingProvider(this));
+
+            this.gameState.SceneManager.Register((int)SceneKeys.Test, factory.Get<ITestScene>());
+            this.gameState.SceneManager.Register((int)SceneKeys.Test2, factory.Get<ITestScene2>());
+
             var content = new EngineContent { FallbackTexture = HashUtils.BuildResourceHash(@"Textures\default.dds") };
             this.SetEngineContent(content);
 
@@ -59,6 +63,7 @@ namespace Carbon.V2Test.Logic
             this.Window.Size = new Size(1024, 768);
            
             this.gameState.SceneManager.Activate((int)SceneKeys.Test);
+            this.gameState.SceneManager.Resize(this.Window.Size.Width, this.Window.Size.Height);
         }
 
         protected override void OnWindowResize(object sender, EventArgs eventArgs)
@@ -101,7 +106,7 @@ namespace Carbon.V2Test.Logic
             renderer.BeginFrame();
             frameManager.BeginFrame();
 
-            this.gameState.SceneManager.Render();
+            this.gameState.SceneManager.Render(frameManager);
 
             renderer.EndFrame();
         }
@@ -111,6 +116,16 @@ namespace Carbon.V2Test.Logic
             base.OnClose(sender, e);
 
             this.gameState.Dispose();
+        }
+
+        public void SwitchScene(SceneKeys key)
+        {
+            lock (this.RenderSynchronizationLock)
+            {
+                this.gameState.NodeManager.Clear();
+                this.gameState.SceneManager.Activate((int)key);
+                this.gameState.SceneManager.Resize(this.Window.Size.Width, this.Window.Size.Height);
+            }
         }
     }
 }

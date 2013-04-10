@@ -2,6 +2,8 @@
 
 namespace Carbon.Engine.Contracts.Scene
 {
+    using Carbon.Engine.Contracts.Rendering;
+
     public enum SceneStatus
     {
         Unknown,
@@ -11,7 +13,7 @@ namespace Carbon.Engine.Contracts.Scene
         Prepared
     }
 
-    public interface ISceneManager : IEngineComponent
+    public interface ISceneManager : IEngineComponent, IRenderableComponent
     {
         IScene ActiveScene { get; }
         IScene SuspendedScene { get; }

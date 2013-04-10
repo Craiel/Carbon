@@ -1,22 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 
+using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
+using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Contracts.Scene;
+using Carbon.Engine.Contracts.UserInterface;
+using Carbon.Engine.Logic;
+using Carbon.Engine.Logic.Scripting;
+using Carbon.Engine.Rendering;
 using Carbon.Engine.Rendering.Primitives;
+using Carbon.Engine.Rendering.RenderTarget;
+using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Content;
+using Carbon.Engine.Resource.Resources;
 using Carbon.Engine.Scene;
 using Carbon.V2Test.Contracts;
+using Core.Utils;
 using Core.Utils.Contracts;
-using Carbon.Engine.Contracts;
-using Carbon.Engine.Rendering;
-using Carbon.Engine.Logic;
-
 using SlimDX;
-using SlimDX.D3DCompiler;
-using SlimDX.Direct3D11;
 
 namespace Carbon.V2Test.Scenes
 {
@@ -28,188 +31,314 @@ namespace Carbon.V2Test.Scenes
     {
         private readonly ILog log;
         private readonly ICarbonGraphics graphics;
+        private readonly IV2TestGameState gameState;
 
-        private TimeSpan lastProcessingTime;
-        private TimeSpan processingInterval = TimeSpan.FromMilliseconds(100);
-        private TimeSpan lastLevelingTime;
+        private Material deferredLightTexture;
+        private Material forwardDebugTexture;
+        private Material normalDebugTexture;
 
-        private IFirstPersonController controller;
-        private ICamera camera;
+        private Material gBufferNormalTexture;
+        private Material gBufferDiffuseAlbedoTexture;
+        private Material gBufferSpecularAlbedoTexture;
+        private Material gBufferDepthTexture;
 
-        private int level;
-        private double experience;
-        private double nextLevel;
+        private readonly IFirstPersonController controller;
+        private readonly IProjectionCamera camera;
+        private readonly IOrthographicCamera overlayCamera;
 
-        private float progress;
-        private float progressSpeed = 1.0f;
+        private IUserInterfaceConsole console;
 
-        private Random random;
+        private FontEntry consoleFont;
+        private IModelNode consoleTestNode;
+        private int lastConsoleUpdate;
 
-        private IMesh mesh;
-        private IShader shader;
-        private SlimDX.Direct3D11.Buffer cameraConstantBuffer;
-        private SlimDX.Direct3D11.Buffer resizeConstantBuffer;
-        private SlimDX.Direct3D11.Buffer perFrameConstantBuffer;
+        private Mesh screenQuad;
+
+        private LuaInterface.Lua consoleContext;
+
+        public override void Dispose()
+        {
+            this.controller.Dispose();
+            this.camera.Dispose();
+            this.overlayCamera.Dispose();
+            this.console.Dispose();
+
+            base.Dispose();
+        }
 
         public TestScene(IEngineFactory factory)
         {
-            this.controller = factory.Get<IFirstPersonController>();
-            this.camera = factory.Get<ICamera>();
-            this.graphics = factory.Get<ICarbonGraphics>();
-
             this.log = factory.Get<IApplicationLog>().AquireContextLog("TestScene");
+            this.graphics = factory.Get<ICarbonGraphics>();
+            this.gameState = factory.Get<IV2TestGameState>();
 
-            this.random = new Random((int)DateTime.Now.Ticks);
+            this.controller = factory.Get<IFirstPersonController>();
+            this.camera = factory.Get<IProjectionCamera>();
+            this.overlayCamera = factory.Get<IOrthographicCamera>();
+
+            // Create a manual console for testing purpose
+            this.console = factory.Get<IUserInterfaceConsole>();
         }
 
-        public override void Initialize()
+        public override void Unload()
         {
-            this.mesh = this.graphics.CreateMesh();
-            this.mesh.SetVertices(Cube.Data, PrimitiveTopology.TriangleList);
-            this.mesh.SetIndices(Cube.Indices);
+            base.Unload();
 
-            var bytecode = ShaderBytecode.CompileFromFile("Color.fx", "fx_5_0", ShaderFlags.Debug, EffectFlags.None);
-            var effect = new Effect(this.graphics.Context.Device, bytecode);
-            this.shader = this.graphics.CreateShader();
-            this.shader.SetEffect(effect);
+            this.console.IsActive = false;
+            this.console.OnLineEntered -= this.OnConsoleLineEntered;
+            this.console.OnRequestCompletion -= this.OnConsoleCompletionRequested;
+            // Todo: More stuff
+        }
 
-            this.InitializeCamera(this.graphics.Context);
+        public override void Initialize(ICarbonGraphics graphics)
+        {
+            base.Initialize(graphics);
 
-            base.Initialize();
+            this.camera.Initialize(graphics);
+            this.controller.Initialize(graphics);
+
+            this.controller.Position = new Vector4(0, 5, -10, 1.0f);
+            this.controller.Speed = 0.1f;
+
+            var scriptData = this.gameState.ResourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
+            var script = new CarbonScript(scriptData);
+            this.gameState.ScriptingEngine.Execute(script);
+            this.controller.SetInputBindings("worldmap_controls");
+            this.controller.IsActive = true;
+
+            this.consoleFont =
+                this.gameState.ContentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 4)).UniqueResult<FontEntry>();
+            this.consoleTestNode = (IModelNode)this.gameState.NodeManager.AddStaticText(4, " ", new Vector2(1, 1.2f));
+            this.gameState.NodeManager.RootNode.RemoveChild(this.consoleTestNode);
+            this.consoleTestNode.Position = new Vector4(0, 20, 0, 1);
+            this.console.Initialize(graphics);
+            this.console.IsActive = true;
+            this.console.IsVisible = true;
+            this.console.OnLineEntered += this.OnConsoleLineEntered;
+            this.console.OnRequestCompletion += this.OnConsoleCompletionRequested;
+
+            // Setup the hard textures for internals
+            this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
+            this.normalDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1002));
+
+            this.gBufferNormalTexture = new Material(this.graphics.TextureManager.GetRegisterReference(11));
+            this.gBufferDiffuseAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(12));
+            this.gBufferSpecularAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(13));
+            this.gBufferDepthTexture = new Material(this.graphics.TextureManager.GetRegisterReference(14));
+            this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));
+
+            scriptData = this.gameState.ResourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene.lua"));
+            script = new CarbonScript(scriptData);
+            this.gameState.ScriptingEngine.Execute(script);
+
+            this.consoleContext = this.gameState.ScriptingEngine.GetContext();
+        }
+
+        private string OnConsoleCompletionRequested(string arg)
+        {
+            var matches = this.consoleContext.Globals.Where(x => x.StartsWith(arg)).ToList();
+            if (matches.Count == 1)
+            {
+                return matches[0];
+            }
+
+            if (matches.Count > 0)
+            {
+                this.console.AddSystemLine(string.Join(", ", matches));
+            }
+
+            return arg;
+        }
+
+        private void OnConsoleLineEntered(string line)
+        {
+            try
+            {
+                object[] output = this.consoleContext.DoString(line);
+                if (output != null)
+                {
+                    foreach (var o in output)
+                    {
+                        if (o is string)
+                        {
+                            continue;
+                        }
+
+                        this.console.AddLine((string)o);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                string error = string.Format("Exception in Console script execution: {0}", e.Message);
+                this.console.AddSystemLine(error);
+                System.Diagnostics.Trace.TraceError(error);
+            }
+        }
+
+        public override void Resize(int width, int height)
+        {
+            this.camera.SetPerspective(width, height, 0.05f, 200.0f);
+            this.overlayCamera.SetPerspective(width, height, 0.05f, 200.0f);
+
+            this.screenQuad = new Mesh(Quad.CreateScreen(new Vector2(0), new Vector2(width, height)));
         }
 
         public override void Update(ITimer gameTime)
         {
+            // Update the controller first
             this.controller.Update(gameTime);
 
-            if (gameTime.ElapsedTime - this.lastProcessingTime > this.processingInterval)
-            {
-                this.UpdateProgress();
-                
-                this.lastProcessingTime = gameTime.ElapsedTime;
-            }
-
-            // Now update final bits
+            // Set the camera to the controller state and update
             this.camera.Position = this.controller.Position;
             this.camera.Rotation = this.controller.Rotation;
             this.camera.Update(gameTime);
+
+            this.overlayCamera.Update(gameTime);
+
+            this.console.Update(gameTime);
+            string consoleText = string.Join(Environment.NewLine, string.Join(Environment.NewLine, this.console.History), this.console.Text);
+            if (this.lastConsoleUpdate != consoleText.GetHashCode() && !string.IsNullOrEmpty(consoleText))
+            {
+                var mesh =
+                    new Mesh(
+                        FontBuilder.Build(
+                            consoleText, new Vector2(12f, 17f), this.consoleFont));
+                this.consoleTestNode.Mesh = mesh;
+                this.lastConsoleUpdate = consoleText.GetHashCode();
+            }
+            this.consoleTestNode.Update(gameTime);
+
+            /*this.testRotation += 0.01f;
+            this.hirarchyTestNode.Rotation = Quaternion.RotationAxis(Vector3.UnitY, MathExtension.DegreesToRadians(this.testRotation));
+            this.middleNode.Rotation = Quaternion.RotationAxis(Vector3.UnitX, MathExtension.DegreesToRadians(this.testRotation));*/
+
+            /*lightTesting.Position -= new Vector4(0f, 0.005f, 0, 1);
+            if (lightTesting.Position.Y <= 1)
+            {
+                lightTesting.Position = new Vector4(5f, 7.0f, 0, 1);
+            }*/
+
+            this.gameState.NodeManager.RootNode.Update(gameTime);
         }
 
-        private void InitializeCamera(CarbonDeviceContext context)
+        public override void Render(IFrameManager frameManager)
         {
-            // Temporary garbage to get their sizes.
-            ConstantBufferCamera perCamera;
-            ConstantBufferResize perResize;
-            ConstantBufferFrame perFrame;
+            // The scene to deferred
+            FrameInstructionSet set = frameManager.BeginSet(this.camera);
+            set.Technique = FrameTechnique.Deferred;
+            this.gameState.NodeManager.RootNode.Render(set);
+            frameManager.RenderSet(set);
 
-            perCamera.View = Matrix.Identity;
-            perResize.Projection = Matrix.Identity;
-            perFrame.World = Matrix.Identity;
+            // The scene to Forward
+            set = frameManager.BeginSet(this.camera);
+            set.Technique = FrameTechnique.Forward;
+            set.DesiredTarget = RenderTargetDescription.Texture(1001, 1024, 1024);
+            this.gameState.NodeManager.RootNode.Render(set);
+            frameManager.RenderSet(set);
 
-            // Create the constant buffers.
-            BufferDescription bd = new BufferDescription();
-            bd.Usage = ResourceUsage.Default;
-            bd.SizeInBytes = Marshal.SizeOf(perCamera);
-            bd.BindFlags = BindFlags.ConstantBuffer;
-            bd.CpuAccessFlags = CpuAccessFlags.None;
+            // The scene to Debug Normal
+            set = frameManager.BeginSet(this.camera);
+            set.Technique = FrameTechnique.DebugNormal;
+            set.DesiredTarget = RenderTargetDescription.Texture(1002, 1024, 1024);
+            this.gameState.NodeManager.RootNode.Render(set);
+            frameManager.RenderSet(set);
 
-            this.cameraConstantBuffer = new SlimDX.Direct3D11.Buffer(context.Device, bd);
+            this.RenderDebugScreens(frameManager);
 
-            bd.SizeInBytes = Marshal.SizeOf(perResize);
-            this.resizeConstantBuffer = new SlimDX.Direct3D11.Buffer(context.Device, bd);
+            // The UI
+            set = frameManager.BeginSet(this.overlayCamera);
+            set.LightingEnabled = false;
+            set.Technique = FrameTechnique.Forward;
+            this.consoleTestNode.Render(set);
+            frameManager.RenderSet(set);
 
-            //bd.SizeInBytes = Marshal.SizeOf(perFrame);
-            //this.perFrameConstantBuffer = new SlimDX.Direct3D11.Buffer(context.Device, bd);
-
-            // Initialize the world matrix.
-            var world = Matrix.Identity;
-
-            // Initialize the view matrix.
-            Vector3 eye = new Vector3(0.0f, 3.0f, -6.0f);
-            Vector3 at = new Vector3(0.0f, 1.0f, 0.0f);
-            Vector3 up = new Vector3(0.0f, 1.0f, 0.0f);
-            var view = Matrix.LookAtLH(eye, at, up);
-
-            perCamera.View = Matrix.Transpose(view);
-            using (DataStream data = new DataStream(Marshal.SizeOf(perCamera), true, true))
-            {
-                data.Write(perCamera);
-                data.Position = 0;
-                context.Device.ImmediateContext.UpdateSubresource(new DataBox(0, 0, data), this.cameraConstantBuffer, 0);
-            }
-
-            // Initialize the projection matrix.
-            var projection = Matrix.PerspectiveFovLH((float)Math.PI / 4, (float)800 / (float)600, 0.01f, 100.0f);
-
-            perResize.Projection = Matrix.Transpose(projection);
-            using (DataStream data = new DataStream(Marshal.SizeOf(perResize), true, true))
-            {
-                data.Write(perResize);
-                data.Position = 0;
-                context.Device.ImmediateContext.UpdateSubresource(new DataBox(0, 0, data), this.resizeConstantBuffer, 0);
-            }
-        }
-
-        public override void Render(CarbonDeviceContext context)
-        {
-            var world = Matrix.Identity;
-            ConstantBufferFrame perFrame;
-            perFrame.World = Matrix.Transpose(world);
-            //perFrame.MeshColor = meshColor;
-            /*using (DataStream data = new DataStream(Marshal.SizeOf(perFrame), true, true))
-            {
-                data.Write(perFrame);
-                data.Position = 0;
-                context.Device.ImmediateContext.UpdateSubresource(new DataBox(0, 0, data), this.perFrameConstantBuffer, 0);
-            }
-
-            context.Device.ImmediateContext.VertexShader.SetConstantBuffers(new[] { this.cameraConstantBuffer }, 0, 1);
-            context.Device.ImmediateContext.VertexShader.SetConstantBuffers(new[] { this.resizeConstantBuffer }, 1, 1);
-            context.Device.ImmediateContext.VertexShader.SetConstantBuffers(new[] { this.perFrameConstantBuffer }, 2, 1);
-
-            context.Device.ImmediateContext.PixelShader.SetConstantBuffers(new[] { this.perFrameConstantBuffer }, 2, 1);
-            
-            this.mesh.Apply(context.Device.ImmediateContext.InputAssembler);
-            this.shader.Apply();*/
-            
-            
-        }
-
-        private void UpdateProgress()
-        {
-            this.progress += this.progressSpeed;
-
-            if (this.progress >= 100.0f)
-            {
-                this.log.Info("Giving Progress Reward!");
-
-                this.progress = 0.0f;
-                this.AddExperience(this.random.Next(200, 2000) + this.random.Next(this.level, this.level * 100));
-            }
-        }
-
-        private void AddExperience(double value)
-        {
-            this.log.Info("Add Experience {0}", value);
-            this.experience += value;
-
-            if (this.experience >= this.nextLevel)
-            {
-                this.level += 1;
-
-                TimeSpan timeForLevel = this.lastProcessingTime - this.lastLevelingTime;
-                this.lastLevelingTime = this.lastProcessingTime;
-                this.log.Info("Level Up to {0} in {1} seconds", this.level, timeForLevel.TotalSeconds);
-
-                this.nextLevel += 1000 + this.level * 1000;
-                this.progressSpeed = 1.0f - (this.level / 1000.0f);
-                if (this.progressSpeed <= 0.0f)
+            /*set = frameManager.BeginSet(this.overlayCamera);
+            set.LightingEnabled = false;
+                IList<FrameStatistics> stats = renderer.FrameStatistics;
+                for (int i = 0; i < stats.Count; i++)
                 {
-                    this.progressSpeed = 0.01f;
+                    set.Instructions.Add(
+                      new FrameInstruction
+                      {
+                          Material = this.stoneMaterial,
+                          Mesh = this.testMesh,
+                          World = Matrix.Scaling(2, (float)stats[i].Duration * 4, 2) * Matrix.Translation(10+(i*3), 5, 0)
+                      });
                 }
 
-                this.log.Info("Next Level at {0}", this.nextLevel);
-            }
+            frameManager.RenderSet(set);*/
+        }
+
+        private void RenderDebugScreens(IFrameManager frameManager)
+        {
+            float scale = 0.2f;
+            var set = frameManager.BeginSet(this.overlayCamera);
+            set.LightingEnabled = false;
+
+            // Top Row
+            set.Instructions.Add(
+                new FrameInstruction
+                {
+                    Material = this.gBufferNormalTexture,
+                    Mesh = this.screenQuad,
+                    World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(0, this.graphics.WindowViewport.Height - this.graphics.WindowViewport.Height * scale, 0)
+                });
+
+            set.Instructions.Add(
+                new FrameInstruction
+                {
+                    Material = this.gBufferDiffuseAlbedoTexture,
+                    Mesh = this.screenQuad,
+                    World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(this.graphics.WindowViewport.Width * scale + 10, this.graphics.WindowViewport.Height - this.graphics.WindowViewport.Height * scale, 0)
+                });
+
+            set.Instructions.Add(
+                new FrameInstruction
+                {
+                    Material = this.gBufferSpecularAlbedoTexture,
+                    Mesh = this.screenQuad,
+                    World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation((this.graphics.WindowViewport.Width * scale) * 2 + 20, this.graphics.WindowViewport.Height - this.graphics.WindowViewport.Height * scale, 0)
+                });
+
+            set.Instructions.Add(
+                new FrameInstruction
+                {
+                    Material = this.deferredLightTexture,
+                    Mesh = this.screenQuad,
+                    World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation((this.graphics.WindowViewport.Width * scale) * 3 + 30, this.graphics.WindowViewport.Height - this.graphics.WindowViewport.Height * scale, 0)
+                });
+
+            // Second Row
+            set.Instructions.Add(
+                new FrameInstruction
+                {
+                    Material = this.forwardDebugTexture,
+                    Mesh = this.screenQuad,
+                    World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(0, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 2 - 10, 0)
+                });
+
+            set.Instructions.Add(
+                new FrameInstruction
+                {
+                    Material = this.normalDebugTexture,
+                    Mesh = this.screenQuad,
+                    World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(this.graphics.WindowViewport.Width * scale + 10, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 2 - 10, 0)
+                });
+
+            frameManager.RenderSet(set);
+
+            // Render the depth
+            set = frameManager.BeginSet(this.overlayCamera);
+            set.Technique = FrameTechnique.DebugDepth;
+            set.Instructions.Add(
+                new FrameInstruction
+                {
+                    Material = this.gBufferDepthTexture,
+                    Mesh = this.screenQuad,
+                    World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation((this.graphics.WindowViewport.Width * scale) * 3 + 30, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 2 - 10, 0)
+                });
+            frameManager.RenderSet(set);
         }
     }
 }

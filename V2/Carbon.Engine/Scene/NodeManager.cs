@@ -21,9 +21,11 @@ namespace Carbon.Engine.Scene
     using Carbon.Engine.Contracts.Scene;
     using Carbon.Engine.Logic;
 
-    public interface INodeManager : IScriptingProvider
+    public interface INodeManager : IEngineComponent, IScriptingProvider
     {
         INode RootNode { get; }
+
+        void InitializeContent(IContentManager contentManager, IResourceManager resourceManager);
 
         void RotateNode(INode node, Vector3 axis, float angle);
 
@@ -37,24 +39,24 @@ namespace Carbon.Engine.Scene
         INode AddSphere(int detailLevel, INode parent = null);
         INode AddPlane(INode parent = null);
         INode AddStaticText(int fontId, string text, Vector2 charSize, INode parent = null);
+
+        void Clear();
     }
 
-    public class NodeManager : INodeManager
+    public class NodeManager : EngineComponent, INodeManager
     {
-        private readonly ICarbonGraphics graphics;
-        private readonly IContentManager contentManager;
-        private readonly IResourceManager resourceManager;
         private readonly INode root;
+
+        private IContentManager contentManager;
+        private IResourceManager resourceManager;
+
+        private ICarbonGraphics graphics;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public NodeManager(ICarbonGraphics graphics, IContentManager contentManager, IResourceManager resourceManager)
+        public NodeManager()
         {
-            this.graphics = graphics;
-            this.contentManager = contentManager;
-            this.resourceManager = resourceManager;
-
             this.root = new Node();
         }
 
@@ -68,6 +70,19 @@ namespace Carbon.Engine.Scene
             {
                 return this.root;
             }
+        }
+
+        public void InitializeContent(IContentManager content, IResourceManager resource)
+        {
+            this.contentManager = content;
+            this.resourceManager = resource;
+        }
+
+        public override void Initialize(ICarbonGraphics graphics)
+        {
+            base.Initialize(graphics);
+
+            this.graphics = graphics;
         }
 
         [ScriptingMethod]
@@ -237,6 +252,11 @@ namespace Carbon.Engine.Scene
 
             parent.AddChild(node);
             return node;
+        }
+
+        public void Clear()
+        {
+            this.root.Clear();
         }
 
         [ScriptingMethod]

@@ -23,19 +23,16 @@ using SlimDX;
 
 namespace Carbon.V2Test.Scenes
 {
-    public interface ITestScene : IScene
+    public interface ITestScene2 : IScene
     {
     }
 
-    public class TestScene2 : Scene, ITestScene
+    public class TestScene2 : Scene, ITestScene2
     {
         private readonly ILog log;
-        private readonly IFrameManager frameManager;
-        private readonly IRenderer renderer;
         private readonly ICarbonGraphics graphics;
+        private readonly IV2TestGameState gameState;
 
-        private INodeManager nodeManager;
-        
         private Material deferredLightTexture;
         private Material forwardDebugTexture;
         private Material normalDebugTexture;
@@ -63,16 +60,17 @@ namespace Carbon.V2Test.Scenes
         {
             this.controller.Dispose();
             this.camera.Dispose();
+            this.overlayCamera.Dispose();
+            this.console.Dispose();
 
             base.Dispose();
         }
         
         public TestScene2(IEngineFactory factory)
         {
-            this.log = factory.Get<IApplicationLog>().AquireContextLog("TestScene");
-            this.frameManager = factory.Get<IFrameManager>();
-            this.renderer = factory.Get<IRenderer>();
+            this.log = factory.Get<IApplicationLog>().AquireContextLog("TestScene2");
             this.graphics = factory.Get<ICarbonGraphics>();
+            this.gameState = factory.Get<IV2TestGameState>();
             
             this.controller = factory.Get<IFirstPersonController>();
             this.camera = factory.Get<IProjectionCamera>();
@@ -80,6 +78,15 @@ namespace Carbon.V2Test.Scenes
 
             // Create a manual console for testing purpose
             this.console = factory.Get<IUserInterfaceConsole>();
+        }
+
+        public override void Unload()
+        {
+            base.Unload();
+
+            this.console.IsActive = false;
+            this.console.OnLineEntered -= this.OnConsoleLineEntered;
+            this.console.OnRequestCompletion -= this.OnConsoleCompletionRequested;
         }
         
         public override void Initialize(ICarbonGraphics graphics)
@@ -91,22 +98,17 @@ namespace Carbon.V2Test.Scenes
             
             this.controller.Position = new Vector4(0, 5, -10, 1.0f);
             this.controller.Speed = 0.1f;
-
-            // Setup additional scripting and managers
-            this.nodeManager = new NodeManager(graphics, this.contentManager, this.resourceManager);
-            this.scriptingEngine.Register(this.nodeManager);
-            //this.scriptingEngine.Register(new ScriptingGameProvider(this));
-
-            var scriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
+            
+            var scriptData = this.gameState.ResourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
             var script = new CarbonScript(scriptData);
-            this.scriptingEngine.Execute(script);
+            this.gameState.ScriptingEngine.Execute(script);
             this.controller.SetInputBindings("worldmap_controls");
             this.controller.IsActive = true;
 
             this.consoleFont =
-                this.contentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 1)).UniqueResult<FontEntry>();
-            this.consoleTestNode = (IModelNode)this.nodeManager.AddStaticText(1, " ", new Vector2(1, 1.2f));
-            this.nodeManager.RootNode.RemoveChild(this.consoleTestNode);
+                this.gameState.ContentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 4)).UniqueResult<FontEntry>();
+            this.consoleTestNode = (IModelNode)this.gameState.NodeManager.AddStaticText(4, " ", new Vector2(1, 1.2f));
+            this.gameState.NodeManager.RootNode.RemoveChild(this.consoleTestNode);
             this.consoleTestNode.Position = new Vector4(0, 20, 0, 1);
             this.console.Initialize(graphics);
             this.console.IsActive = true;
@@ -124,92 +126,11 @@ namespace Carbon.V2Test.Scenes
             this.gBufferDepthTexture = new Material(this.graphics.TextureManager.GetRegisterReference(14));
             this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));
 
-            scriptData = this.resourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene.lua"));
+            scriptData = this.gameState.ResourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene2.lua"));
             script = new CarbonScript(scriptData);
-            this.scriptingEngine.Execute(script);
+            this.gameState.ScriptingEngine.Execute(script);
 
-            this.consoleContext = this.scriptingEngine.GetContext();
-
-            /*PositionNormalVertex[] meshData;
-            uint[] indices;
-            Mesh cube = this.CreateMesh();
-            cube.SetData(Cube.Data, Cube.Indices);
-            this.root.AddChild(new ModelNode { Mesh = cube, Position = new Vector3(5, 10, 2)});*/
-
-            /*Mesh sphere = new Mesh(Sphere.Create(3)) { AllowInstancing = false };
-            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(0), Material = testMaterial });
-            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(0, 10, 0, 1), Material = testMaterial });
-            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(6, 10, 6, 1), Material = testMaterial });
-            this.root.AddChild(new ModelNode { Mesh = sphere, Position = new Vector4(-6, 4, -6, 1), Material = testMaterial });*/
-
-            /*Mesh quad2 = Quad.Create(new Vector3(0), -Vector3.UnitZ, Vector3.UnitY, 100, 100);
-            this.root.AddChild(new ModelNode { Mesh = quad2, Position = new Vector4(0, 0, 2, 1), Material = this.checkerboardMaterial });
-            this.root.AddChild(new ModelNode { Mesh = quad2, Position = new Vector4(8, 0, 2, 1), Rotation = Quaternion.RotationAxis(Vector3.UnitY, MathExtension.DegreesToRadians(90)), Material = this.checkerboardMaterial });
-            this.root.AddChild(new ModelNode { Mesh = quad2, Position = new Vector4(0, 0, 2, 1), Rotation = Quaternion.RotationAxis(Vector3.UnitY, MathExtension.DegreesToRadians(-90)), Material = this.checkerboardMaterial });
-            this.root.AddChild(new ModelNode { Mesh = quad2, Position = new Vector4(0, 8, 2, 1), Rotation = Quaternion.RotationAxis(Vector3.UnitX, MathExtension.DegreesToRadians(-90)), Material = this.checkerboardMaterial });*/
-            //this.root.AddChild(new ModelNode { Mesh = quad2, Position = new Vector4(0, 0, 2, 1), Material = this.checkerboardMaterial });
-            //this.root.AddChild(new ModelNode { Mesh = quad2, Position = new Vector4(0, 0, 2, 1), Material = this.checkerboardMaterial });
-
-            // Instance test
-            /*Mesh instanceMesh = new Mesh(Cube.Create(new Vector3(0), 2)) { AllowInstancing = true };
-            Vector3 offset = new Vector3(-50, 5, 50);
-            for (int x = 0; x < 10; x++)
-            {
-                for (int y = 0; y < 10; y++)
-                {
-                    for (int z = 0; z < 10; z++)
-                    {
-                        this.root.AddChild(
-                            new ModelNode
-                                {
-                                    Mesh = instanceMesh,
-                                    Position = new Vector4(offset + new Vector3(x * 5.0f, y * 5.0f, z * 5.0f), 1.0f),
-                                    Material = this.stoneMaterial,
-                                    Scale = new Vector3(0.2f)
-                                });
-                    }
-                }
-            }*/
-
-            /*this.testFont = new FontBuilder();
-            Mesh mesh = this.testFont.Build("test font 123\nsecond line\nthird line\n  < - > 1234567890\nabc-def-ghi-jkl-mno-pqr-stu-vwx-yz\nThe Big Brown Fox jumped over the hedge!?", new Vector2(0.1f, 0.2f));
-            TextureReference reference = TextureReference.NewFile(@"Textures\font1.dds");
-            Material fontMaterial = new Material { DiffuseTexture = reference, AlphaTexture = reference, Color = new Vector4(1.0f, 0, 0, 1.0f) };
-            var fontNode = new ModelNode { Mesh = mesh, Material = fontMaterial };
-            fontNode.Position = new Vector4(5, 20, 5, 1.0f);
-            fontNode.Scale = new Vector3(2.0f);
-            this.root.AddChild(fontNode);*/
-
-            /*Mesh cone = new Mesh(Cone.Create(20)) { AllowInstancing = true };
-            this.root.AddChild(new ModelNode { Mesh = cone, Position = new Vector4(10, 2, 14, 1), Material = this.stoneMaterial });
-            this.root.AddChild(new ModelNode { Mesh = cone, Position = new Vector4(14, 2, 10, 1), Material = this.checkerboardMaterial });
-            this.root.AddChild(new ModelNode { Mesh = cone, Position = new Vector4(-16, 2, 8, 1) });
-            this.root.AddChild(new ModelNode { Mesh = cone, Position = new Vector4(-18, 1, 10, 1), Rotation = Quaternion.RotationAxis(Vector3.UnitZ, MathExtension.DegreesToRadians(45)), Material = this.stoneMaterial });
-
-            this.hirarchyTestNode = new ModelNode { Mesh = cone, Position = new Vector4(10, 1, -10, 1), Scale = new Vector3(0.5f), Material = this.stoneMaterial };
-            INode parent = this.hirarchyTestNode;
-            this.root.AddChild(this.hirarchyTestNode);
-            for (int i = 0; i < 50; i++)
-            {
-                INode child = new ModelNode { Mesh = cone, Position = new Vector4(1, 1, 0, 1), Material = this.stoneMaterial };
-                if (i == 25)
-                {
-                    this.middleNode = child;
-                }
-
-                parent.AddChild(child);
-                parent = child;
-            }*/
-
-            //this.testMesh = Quad.CreateScreen(new Vector2(0), new Vector2(1));
-            //this.testMesh = Cube.Create(new Vector3(0, 0, 10), 10);
-
-            /*Mesh cube = Cube.Create(new Vector3(0), 2);
-            this.root.AddChild(new ModelNode { Mesh = cube, Position = new Vector4(50, 10, 2, 1), Scale = new Vector3(5, 5, 5), Material = this.checkerboardMaterial });
-            */
-            /*Mesh quad = new Mesh(Quad.Create(Vector3.Zero, Vector3.UnitY, Vector3.UnitZ, 10.0f, 10.0f));
-            this.root.AddChild(new ModelNode { Mesh = quad, Scale = new Vector3(50, 1, 50), Material = this.checkerboardMaterial });
-            */
+            this.consoleContext = this.gameState.ScriptingEngine.GetContext();
         }
 
         private string OnConsoleCompletionRequested(string arg)
@@ -233,14 +154,17 @@ namespace Carbon.V2Test.Scenes
             try
             {
                 object[] output = this.consoleContext.DoString(line);
-                foreach (var o in output)
+                if (output != null)
                 {
-                    if (o is string)
+                    foreach (var o in output)
                     {
-                        continue;
-                    }
+                        if (o is string)
+                        {
+                            continue;
+                        }
 
-                    this.console.AddLine((string)o);
+                        this.console.AddLine((string)o);
+                    }
                 }
             }
             catch (Exception e)
@@ -294,32 +218,32 @@ namespace Carbon.V2Test.Scenes
                 lightTesting.Position = new Vector4(5f, 7.0f, 0, 1);
             }*/
 
-            this.nodeManager.RootNode.Update(gameTime);
+            this.gameState.NodeManager.RootNode.Update(gameTime);
         }
 
-        public override void Render()
+        public override void Render(IFrameManager frameManager)
         {
             // The scene to deferred
-            FrameInstructionSet set = this.frameManager.BeginSet(this.camera);
+            FrameInstructionSet set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Deferred;
-            this.nodeManager.RootNode.Render(set);
+            this.gameState.NodeManager.RootNode.Render(set);
             frameManager.RenderSet(set);
 
             // The scene to Forward
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Forward;
             set.DesiredTarget = RenderTargetDescription.Texture(1001, 1024, 1024);
-            this.nodeManager.RootNode.Render(set);
+            this.gameState.NodeManager.RootNode.Render(set);
             frameManager.RenderSet(set);
 
             // The scene to Debug Normal
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.DebugNormal;
             set.DesiredTarget = RenderTargetDescription.Texture(1002, 1024, 1024);
-            this.nodeManager.RootNode.Render(set);
+            this.gameState.NodeManager.RootNode.Render(set);
             frameManager.RenderSet(set);
             
-            this.RenderDebugScreens();
+            this.RenderDebugScreens(frameManager);
 
             // The UI
             set = frameManager.BeginSet(this.overlayCamera);
@@ -345,7 +269,7 @@ namespace Carbon.V2Test.Scenes
             frameManager.RenderSet(set);*/
         }
 
-        private void RenderDebugScreens()
+        private void RenderDebugScreens(IFrameManager frameManager)
         {
             float scale = 0.2f;
             var set = frameManager.BeginSet(this.overlayCamera);

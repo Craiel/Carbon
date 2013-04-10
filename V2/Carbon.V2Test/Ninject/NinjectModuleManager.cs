@@ -25,9 +25,9 @@ namespace Carbon.V2Test.Ninject
                 this.Bind<IV2Test>().To<Logic.V2Test>().InSingletonScope();
 
                 this.Bind<IApplicationLog>().To<ApplicationLog>();
-                this.Bind<ITestScene>().To<TestScene2>();
-                this.Bind<ITestSceneSponza>().To<TestSceneSponza>();
-                this.Bind<IV2TestGameState>().To<V2TestGameState>();
+                this.Bind<ITestScene>().To<TestScene>();
+                this.Bind<ITestScene2>().To<TestScene2>();
+                this.Bind<IV2TestGameState>().To<V2TestGameState>().InSingletonScope();
             }
         }
     }

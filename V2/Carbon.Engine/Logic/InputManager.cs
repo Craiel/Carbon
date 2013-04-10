@@ -172,6 +172,17 @@ namespace Carbon.Engine.Logic
             return bindings;
         }
 
+        [ScriptingMethod]
+        public void UnregisterBinding(string name)
+        {
+            if (!this.bindings.ContainsKey(name))
+            {
+                return;
+            }
+
+            this.bindings.Remove(name);
+        }
+
         public InputBindings GetBindings(string name)
         {
             if (!this.bindings.ContainsKey(name))

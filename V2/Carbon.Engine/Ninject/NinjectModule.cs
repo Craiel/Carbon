@@ -33,6 +33,7 @@ namespace Carbon.Engine.Ninject
             this.Bind<IDebugController>().To<DebugController>();
             this.Bind<ITypingController>().To<TypingController>();
             this.Bind<IScriptingEngine>().To<ScriptingEngine>();
+            this.Bind<INodeManager>().To<NodeManager>();
             this.Bind<ISceneManager>().To<SceneManager>();
 
             // Rendering
