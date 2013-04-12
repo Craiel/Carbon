@@ -46,7 +46,6 @@ namespace Carbon.Engine.Logic
     public abstract class CarbonGame : ICarbonGame
     {
         private static readonly TimeSpan FrameTime = TimeSpan.FromSeconds(1);
-        private static readonly long TargetFrameRate = 60;
 
         private readonly ITimer gameTimer;
         private readonly ICarbonGraphics graphics;
@@ -61,9 +60,7 @@ namespace Carbon.Engine.Logic
 
         private CarbonWindow window;
 
-        private bool isResizing;
         private bool isClosing;
-        private bool limitFps = false;
 
         private float possibleFramesPerSecond;
         private int currentFrameDrop;
@@ -72,6 +69,7 @@ namespace Carbon.Engine.Logic
         
         private TimeSpan frameAccumulator;
         private TimeSpan fpsAccumulator;
+        private TimeSpan lastUpdateTime;
         private int frameCount;
         private int frameDropCount;
 
@@ -97,6 +95,23 @@ namespace Carbon.Engine.Logic
         // -------------------------------------------------------------------
         public float FramesPerSecond { get; private set; }
         public float FramesSkipped { get; private set; }
+
+        public float GameSpeed
+        {
+            get
+            {
+                return this.gameTimer.TimeModifier;
+            }
+
+            set
+            {
+                this.gameTimer.TimeModifier = value;
+            }
+        }
+
+        public int TargetFrameRate { get; set; }
+
+        public bool LimitFrameRate { get; set; }
 
         public virtual void Run()
         {
@@ -226,7 +241,15 @@ namespace Carbon.Engine.Logic
         {
             using (new ProfileRegion("MainLoop - Update"))
             {
+                this.gameTimer.Update();
+
+                TimeSpan elapsed = this.gameTimer.ActualElapsedTime - this.lastUpdateTime;
+                this.frameAccumulator += elapsed;
+                this.fpsAccumulator += elapsed;
+
                 this.Update(this.gameTimer);
+
+                this.lastUpdateTime = this.gameTimer.ActualElapsedTime;
             }
         }
 
@@ -235,9 +258,6 @@ namespace Carbon.Engine.Logic
             while (!this.isClosing)
             {
                 // Todo: needs some work
-                    TimeSpan updateTime = this.gameTimer.Update();
-                    this.frameAccumulator += updateTime;
-                    this.fpsAccumulator += updateTime;
                     this.possibleFramesPerSecond++;
 
                     if (this.fpsAccumulator >= FrameTime)
@@ -258,7 +278,7 @@ namespace Carbon.Engine.Logic
                         this.possibleFramesPerSecond = 0;
                     }
 
-                    if (!this.limitFps || this.frameDropCount > this.currentFrameDrop)
+                    if (!this.LimitFrameRate || this.frameDropCount > this.currentFrameDrop)
                     {
                         this.frameCount++;
                         this.frameAccumulator = TimeSpan.FromTicks(0);
@@ -298,8 +318,6 @@ namespace Carbon.Engine.Logic
 
             // After all is hooked up register the window events
             this.window.Resize += this.OnWindowResize;
-            this.window.ResizeBegin += (sender, args) => { this.isResizing = true; };
-            this.window.ResizeEnd += (sender, args) => { this.isResizing = false; this.OnWindowResize(sender, args); };
             this.window.FormClosing += this.OnClosing;
             this.window.FormClosed += this.OnClose;
 

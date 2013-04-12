@@ -26,6 +26,24 @@ namespace Carbon.V2Test.Logic
         }
 
         [ScriptingMethod]
+        public void ToggleFrameRateLimit()
+        {
+            this.game.LimitFrameRate = !this.game.LimitFrameRate;
+        }
+
+        [ScriptingMethod]
+        public void SetFrameRate(int value)
+        {
+            this.game.TargetFrameRate = value;
+        }
+
+        [ScriptingMethod]
+        public void SetGameSpeed(float value)
+        {
+            this.game.GameSpeed = value;
+        }
+
+        [ScriptingMethod]
         public void Reload()
         {
             this.game.Reload();

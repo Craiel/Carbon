@@ -2,8 +2,6 @@
 
 namespace Carbon.Engine.Contracts.Logic
 {
-    using SlimDX;
-
     public interface IInputReceiver
     {
         bool IsActive { get; }

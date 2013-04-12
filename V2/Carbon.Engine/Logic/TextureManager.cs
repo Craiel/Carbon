@@ -63,6 +63,7 @@ namespace Carbon.Engine.Logic
         private readonly IResourceManager resourceManager;
         private readonly Device device;
 
+        private readonly IDictionary<string, TextureReference> managedReferenceCache;
         private readonly IDictionary<TextureReference, ShaderResourceView> textureCache;
         private readonly IDictionary<int, TextureReference> textureRegister;
 
@@ -76,6 +77,7 @@ namespace Carbon.Engine.Logic
             this.resourceManager = resourceManager;
             this.device = device;
 
+            this.managedReferenceCache = new Dictionary<string, TextureReference>();
             this.textureCache = new Dictionary<TextureReference, ShaderResourceView>();
             this.textureRegister = new Dictionary<int, TextureReference>();
         }
@@ -120,17 +122,22 @@ namespace Carbon.Engine.Logic
 
         public TextureReference Register(string hash)
         {
-            var reference = new TextureReference(hash, this.nextRegister);
+            // Check if we have a managed reference for this hash, during runtime this will not have to change since texture references hold no runtime info thats relevant
+            if (this.managedReferenceCache.ContainsKey(hash))
+            {
+                return this.managedReferenceCache[hash];
+            }
+
+            var reference = new TextureReference(hash, this.nextRegister++);
             this.textureRegister.Add(reference.Register, reference);
-            this.nextRegister++;
+            this.managedReferenceCache.Add(hash, reference);
             return reference;
         }
 
         public TextureReference Register(byte[] data)
         {
-            var reference = new TextureReference(data, this.nextRegister);
+            var reference = new TextureReference(data, this.nextRegister++);
             this.textureRegister.Add(reference.Register, reference);
-            this.nextRegister++;
             return reference;
         }
 

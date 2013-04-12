@@ -26,6 +26,8 @@ namespace Carbon.Engine.Resource
 
         private readonly IDictionary<int, ContentLink> contentLinkCache;
 
+        private readonly IDictionary<int, ContentQueryResult> contentQueryCache;
+
         private SQLiteConnection connection;
 
         // -------------------------------------------------------------------
@@ -39,6 +41,7 @@ namespace Carbon.Engine.Resource
             this.factory = new SQLiteFactory();
             this.checkedTableList = new List<string>();
             this.contentLinkCache = new Dictionary<int, ContentLink>();
+            this.contentQueryCache = new Dictionary<int, ContentQueryResult>();
         }
 
         public void Dispose()
@@ -54,8 +57,22 @@ namespace Carbon.Engine.Resource
             return new ContentQueryResult<T>(this, this.log, this.GetCommand(criteria));
         }
 
-        public ContentQueryResult Load(ContentQuery criteria)
+        public ContentQueryResult Load(ContentQuery criteria, bool useResultCache = true)
         {
+            if (useResultCache)
+            {
+                int hash = criteria.GetHashCode();
+                if (this.contentQueryCache.ContainsKey(hash))
+                {
+                    return this.contentQueryCache[hash];
+                }
+
+                var result = new ContentQueryResult(this, this.log, this.GetCommand(criteria));
+                this.contentQueryCache.Add(hash, result);
+                
+                return result;
+            }
+
             return new ContentQueryResult(this, this.log, this.GetCommand(criteria));
         }
 
@@ -162,6 +179,7 @@ namespace Carbon.Engine.Resource
         public void ClearCache()
         {
             this.contentLinkCache.Clear();
+            this.contentQueryCache.Clear();
         }
         
         // -------------------------------------------------------------------

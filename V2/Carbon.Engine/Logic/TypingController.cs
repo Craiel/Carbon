@@ -71,7 +71,7 @@ namespace Carbon.Engine.Logic
         {
             base.Update(gameTime);
 
-            this.lastUpdateTime = gameTime.ElapsedTime;
+            this.lastUpdateTime = gameTime.ActualElapsedTime;
         }
 
         // -------------------------------------------------------------------

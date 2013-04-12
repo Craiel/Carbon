@@ -4,6 +4,8 @@ namespace Core.Utils.Contracts
 {
     public interface ITimer
     {
+        float TimeModifier { get; set; }
+
         TimeSpan ElapsedTime { get; }
         TimeSpan ActualElapsedTime { get; }
         TimeSpan TimeLostToPause { get; }
@@ -13,7 +15,6 @@ namespace Core.Utils.Contracts
         void Reset();
         void Pause();
         void Resume();
-
-        TimeSpan Update();
+        void Update();
     }
 }

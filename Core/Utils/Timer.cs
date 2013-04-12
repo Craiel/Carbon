@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using Core.Utils.Contracts;
 
 namespace Core.Utils
@@ -19,11 +18,21 @@ namespace Core.Utils
         private TimeSpan actualElapsedTime;
 
         // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
+        public Timer()
+        {
+            this.TimeModifier = 1.0f;
+        }
+
+        // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static TimeSpan CounterToTimeSpan(long delta)
+        public float TimeModifier { get; set; }
+
+        public static TimeSpan CounterToTimeSpan(float delta)
         {
-            return TimeSpan.FromTicks((delta * 10000000) / Frequency);
+            return TimeSpan.FromTicks((long)(delta * 10000000.0f) / Frequency);
         }
 
         public TimeSpan ElapsedTime
@@ -79,10 +88,9 @@ namespace Core.Utils
             this.IsPaused = false;
         }
 
-        public TimeSpan Update()
+        public void Update()
         {
             long time = Stopwatch.GetTimestamp();
-            TimeSpan elapsed = TimeSpan.FromTicks(0);
 
             if (!this.isLastTimeValid)
             {
@@ -90,17 +98,15 @@ namespace Core.Utils
             }
             else
             {
-                elapsed = CounterToTimeSpan(time - this.lastTime);
-                this.actualElapsedTime += elapsed;
+                this.actualElapsedTime += CounterToTimeSpan(time - this.lastTime);
                 if (!this.IsPaused)
                 {
-                    this.elapsedTime += elapsed;
+                    this.elapsedTime += CounterToTimeSpan((time - this.lastTime) * this.TimeModifier);
                 }
             }
 
             this.lastTime = time;
             this.isLastTimeValid = true;
-            return elapsed;
         }
     }
 }

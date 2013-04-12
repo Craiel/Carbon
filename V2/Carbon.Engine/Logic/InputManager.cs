@@ -78,7 +78,7 @@ namespace Carbon.Engine.Logic
 
         public override void Update(ITimer gameTimer)
         {
-            if ((gameTimer.ElapsedTime - this.lastUpdateTime) < updateCycle)
+            if ((gameTimer.ActualElapsedTime - this.lastUpdateTime) < updateCycle)
             {
                 return;
             }
@@ -87,11 +87,7 @@ namespace Carbon.Engine.Logic
             MouseState mouseState = this.mouse.GetCurrentState();
 
             IList<string> previouslyPressed = this.pressedState.Keys.Where(entry => this.pressedState[entry]).ToList();
-            IList<string> currentPressed = new List<string>();
-            foreach (Key key in keyState.PressedKeys)
-            {
-                currentPressed.Add(key.ToString());
-            }
+            IList<string> currentPressed = keyState.PressedKeys.Select(key => key.ToString()).ToList();
 
             bool[] buttons = mouseState.GetButtons();
             for (int i = 0; i < buttons.Length; i++)
@@ -156,7 +152,7 @@ namespace Carbon.Engine.Logic
                 }
             }
 
-            this.lastUpdateTime = gameTimer.ElapsedTime;
+            this.lastUpdateTime = gameTimer.ActualElapsedTime;
         }
 
         [ScriptingMethod]

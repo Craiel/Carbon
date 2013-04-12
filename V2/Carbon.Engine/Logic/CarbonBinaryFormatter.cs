@@ -99,7 +99,7 @@ namespace Carbon.Engine.Logic
 
         public long Read(out byte[] targetBuffer)
         {
-            targetBuffer = new byte[this.target.Length];
+            targetBuffer = new byte[this.target.Length - this.target.Position];
             return this.target.Read(targetBuffer, 0, targetBuffer.Length);
         }
 
@@ -116,11 +116,17 @@ namespace Carbon.Engine.Logic
             this.SafeWrite(data.Length);
         }
 
-        public void Write(Single value)
+        public void Write(float value)
         {
             byte[] data = BitConverter.GetBytes(value);
             Buffer.BlockCopy(data, 0, this.buffer, 0, data.Length);
             this.SafeWrite(data.Length);
+        }
+
+        public void Write(byte value)
+        {
+            this.buffer[0] = value;
+            this.SafeWrite(1);
         }
 
         public void Write(short value)

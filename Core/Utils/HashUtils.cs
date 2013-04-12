@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -29,6 +32,17 @@ namespace Core.Utils
             }
 
             return FNV.Combine(hashCodes);
+        }
+
+        public static int CombineObjectHashes(IEnumerable data)
+        {
+            IList<byte[]> hashCodes = new List<byte[]>();
+            foreach (object o in data)
+            {
+                hashCodes.Add(BitConverter.GetBytes(o == null ? 0 : o.GetHashCode()));
+            }
+
+            return FNV.Combine(hashCodes.ToArray());
         }
 
         public static int CombineHashes<T>(T[] data)

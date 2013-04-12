@@ -5,6 +5,8 @@ using System.Linq;
 
 using Carbon.Engine.Contracts.Resource;
 
+using Core.Utils;
+
 namespace Carbon.Engine.Resource
 {
     public enum CriterionType
@@ -13,18 +15,28 @@ namespace Carbon.Engine.Resource
         Contains
     }
 
-    public struct ContentCriterion
+    public class ContentCriterion
     {
         public ContentReflectionProperty PropertyInfo { get; set; }
         public CriterionType Type { get; set; }
         public object[] Values { get; set; }
         public bool Negate { get; set; }
+
+        public override int GetHashCode()
+        {
+            return Tuple.Create(this.PropertyInfo, this.Type, HashUtils.CombineObjectHashes(this.Values), this.Negate).GetHashCode();
+        }
     }
 
-    public struct ContentOrder
+    public class ContentOrder
     {
         public ContentReflectionProperty PropertyInfo { get; set; }
         public bool Ascending { get; set; }
+
+        public override int GetHashCode()
+        {
+            return Tuple.Create(this.PropertyInfo, this.Ascending).GetHashCode();
+        }
     }
 
     public sealed class ContentQuery<T> : ContentQuery where T : ICarbonContent
@@ -167,6 +179,13 @@ namespace Carbon.Engine.Resource
 
             this.order.Add(entry);
             return this;
+        }
+
+        public override int GetHashCode()
+        {
+            return
+                Tuple.Create(HashUtils.CombineObjectHashes(this.criteria), HashUtils.CombineObjectHashes(this.order))
+                     .GetHashCode();
         }
 
         // -------------------------------------------------------------------

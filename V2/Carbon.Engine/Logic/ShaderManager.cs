@@ -57,11 +57,15 @@ namespace Carbon.Engine.Logic
             this.device = device;
 
             this.includeHandler = new ShaderIncludeHandler();
+
+            this.UsePrecompiledShaders = true;
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public bool UsePrecompiledShaders { get; set; }
+
         public void Dispose()
         {
             this.ClearCache();
@@ -165,7 +169,7 @@ namespace Carbon.Engine.Logic
             var shader = this.resourceManager.Load<CompiledShader>(hash);
             if (shader != null)
             {
-                if (md5.SequenceEqual(shader.SourceMd5))
+                if (this.UsePrecompiledShaders && md5.SequenceEqual(shader.SourceMd5))
                 {
                     return shader;
                 }
