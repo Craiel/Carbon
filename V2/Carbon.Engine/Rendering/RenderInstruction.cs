@@ -12,7 +12,8 @@ namespace Carbon.Engine.Rendering
         Light,
         Normal,
         Depth,
-        Blend
+        Blend,
+        ShadowMap
     }
 
     public struct RenderParameters
@@ -39,6 +40,9 @@ namespace Carbon.Engine.Rendering
 
         public float Range { get; set; }
         public float SpecularPower { get; set; }
+
+        public Matrix View { get; set; }
+        public Matrix Projection { get; set; }
 
         public Mesh Mesh { get; set; }
     }

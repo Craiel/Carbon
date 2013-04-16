@@ -2,13 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
+using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
 using Carbon.Engine.Logic;
 using Carbon.Engine.Rendering.Debug;
 using Carbon.Engine.Rendering.Primitives;
 using Carbon.Engine.Rendering.RenderTarget;
-using Carbon.Engine.Resource;
 
 using Core.Utils;
 
@@ -20,6 +20,7 @@ namespace Carbon.Engine.Rendering
     {
         private readonly ICarbonGraphics graphics;
         private readonly IRenderer renderer;
+        private readonly IProjectionCamera shadowmapCamera;
 
         private readonly DebugOverlay debugOverlay;
         
@@ -29,7 +30,7 @@ namespace Carbon.Engine.Rendering
         private readonly BackBufferRenderTarget backBufferRenderTarget;
         private readonly GBufferRenderTarget gBufferTarget;
         private readonly TextureRenderTarget deferredLightTarget;
-        private readonly TextureRenderTarget shadowMapTarget;
+        private readonly DepthRenderTarget shadowMapTarget;
         private readonly IDictionary<int, TextureRenderTarget> textureTargets;
 
         private bool targetTexturesRegistered;
@@ -37,10 +38,11 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public FrameManager(ICarbonGraphics graphics, IRenderer renderer)
+        public FrameManager(IEngineFactory factory)
         {
-            this.graphics = graphics;
-            this.renderer = renderer;
+            this.graphics = factory.Get<ICarbonGraphics>();
+            this.renderer = factory.Get<IRenderer>();
+            this.shadowmapCamera = factory.Get<IProjectionCamera>();
 
             this.debugOverlay = new DebugOverlay();
             this.instructionCache = new List<RenderInstruction>();
@@ -49,7 +51,7 @@ namespace Carbon.Engine.Rendering
             this.backBufferRenderTarget = new BackBufferRenderTarget();
             this.gBufferTarget = new GBufferRenderTarget();
             this.deferredLightTarget = new TextureRenderTarget { BlendMode = RendertargetBlendMode.Additive};
-            this.shadowMapTarget = new TextureRenderTarget();
+            this.shadowMapTarget = new DepthRenderTarget();
             this.textureTargets = new Dictionary<int, TextureRenderTarget>();
         }
 
@@ -163,6 +165,24 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
+        private void UpdateShadowMap(RenderLightInstruction instruction, IList<RenderInstruction> instructions)
+        {
+            var lightCameraParameters = new RenderParameters
+                {
+                    CameraPosition = instruction.Position,
+                    LightingEnabled = false,
+                    Mode = RenderMode.ShadowMap,
+                    Projection = instruction.Projection,
+                    View = instruction.View
+                };
+
+            this.shadowMapTarget.Set(this.graphics);
+            for (int i = 0; i < instructions.Count; i++)
+            {
+                this.renderer.Render(lightCameraParameters, instructions[i]);
+            }
+        }
+
         private void RenderSetDeferred(FrameInstructionSet set)
         {
             // Set the state and prepare the target
@@ -181,6 +201,7 @@ namespace Carbon.Engine.Rendering
             
             // Render the scene into the GBuffer for non-transparent objects
             IList<RenderInstruction> transparentInstructions = new List<RenderInstruction>();
+            IList<RenderInstruction> solidInstructions = new List<RenderInstruction>();
             for (int i = 0; i < this.instructionCache.Count; i++)
             {
                 if (this.instructionCache[i].AlphaTexture != null)
@@ -189,8 +210,19 @@ namespace Carbon.Engine.Rendering
                 }
                 else
                 {
+                    solidInstructions.Add(this.instructionCache[i]);
                     this.renderer.Render(parameters, this.instructionCache[i]);
                 }
+            }
+
+            for (int i = 0; i < this.lightInstructionCache.Count; i++)
+            {
+                if (this.lightInstructionCache[i].Type != LightType.Direction && this.lightInstructionCache[i].Type != LightType.Spot)
+                {
+                    continue;
+                }
+
+                this.UpdateShadowMap(this.lightInstructionCache[i], solidInstructions);
             }
 
             // get a quad to use for our operations
@@ -202,7 +234,7 @@ namespace Carbon.Engine.Rendering
                 // Turn off depth for the following parts, we dont want it
                 this.graphics.DisableDepth();
                 this.graphics.UpdateStates();
-
+                
                 this.deferredLightTarget.Set(this.graphics);
                 parameters.Mode = RenderMode.Light;
 
@@ -463,6 +495,31 @@ namespace Carbon.Engine.Rendering
             return target;
         }
 
+        private void GetLightViewProjection(LightInstruction instruction, Vector4 position, out Matrix view, out Matrix projection)
+        {
+            if (instruction.Light.Type != LightType.Direction && instruction.Light.Type != LightType.Spot)
+            {
+                throw new ArgumentException();
+            }
+
+            // Todo: Near / Far for direction is camera max plus extra, for point its the range
+            if (instruction.Light.Type == LightType.Direction)
+            {
+                this.shadowmapCamera.SetPerspective(1024, 768, 0.05f, 400);
+            }
+            else
+            {
+                this.shadowmapCamera.SetPerspective(1024, 768, 0.05f, instruction.Light.Range);
+            }
+
+            this.shadowmapCamera.Position = position;
+            this.shadowmapCamera.LookAt(instruction.Light.Direction);
+            this.shadowmapCamera.Update(null);
+
+            view = this.shadowmapCamera.View;
+            projection = this.shadowmapCamera.Projection;
+        }
+
         private void ProcessLightInstructions(IList<LightInstruction> instructions)
         {
             for (int i = 0; i < instructions.Count; i++)
@@ -481,6 +538,8 @@ namespace Carbon.Engine.Rendering
                         SpecularPower = instruction.Light.SpecularPower
                     };
 
+                Matrix view;
+                Matrix projection;
                 switch (instruction.Light.Type)
                 {
                     case LightType.Ambient:
@@ -490,7 +549,14 @@ namespace Carbon.Engine.Rendering
 
                     case LightType.Direction:
                         {
+                            float translation = 40;
+                            Vector3 position = Vector3.Transform(instruction.Light.Direction.Invert(), Matrix.Translation(new Vector3(translation))).XYZ();
+                            renderInstruction.Position = new Vector4(position, 1);
                             renderInstruction.Direction = instruction.Light.Direction;
+
+                            this.GetLightViewProjection(instruction, renderInstruction.Position, out view, out projection);
+                            renderInstruction.View = view;
+                            renderInstruction.Projection = projection;
                             break;
                         }
 
@@ -505,6 +571,10 @@ namespace Carbon.Engine.Rendering
                             renderInstruction.Direction = instruction.Light.Direction;
                             renderInstruction.Range = instruction.Light.Range;
                             renderInstruction.SpotAngles = instruction.Light.SpotAngles;
+
+                            this.GetLightViewProjection(instruction, renderInstruction.Position, out view, out projection);
+                            renderInstruction.View = view;
+                            renderInstruction.Projection = projection;
                             break;
                         }
 

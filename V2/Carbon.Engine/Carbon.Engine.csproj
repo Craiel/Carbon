@@ -177,6 +177,7 @@
     <Compile Include="Rendering\RenderInstruction.cs" />
     <Compile Include="Rendering\LightInstruction.cs" />
     <Compile Include="Rendering\RenderTarget\BackBufferRenderTarget.cs" />
+    <Compile Include="Rendering\RenderTarget\DepthRenderTarget.cs" />
     <Compile Include="Rendering\RenderTarget\GBufferRenderTarget.cs" />
     <Compile Include="Rendering\RenderTarget\RenderTargetBase.cs" />
     <Compile Include="Rendering\RenderTarget\RenderTargetDescription.cs" />
@@ -187,6 +188,7 @@
     <Compile Include="Rendering\Shaders\DeferredLightShader.cs" />
     <Compile Include="Rendering\Shaders\GBufferShader.cs" />
     <Compile Include="Rendering\Shaders\DefaultShader.cs" />
+    <Compile Include="Rendering\Shaders\ShadowMapShader.cs" />
     <Compile Include="Rendering\Structs.cs" />
     <Compile Include="Rendering\DataContainer.cs" />
     <Compile Include="Logic\CarbonBinaryFormatter.cs" />

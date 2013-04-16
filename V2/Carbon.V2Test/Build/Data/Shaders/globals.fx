@@ -18,6 +18,7 @@ Texture2D AlphaMap : register(t5);
 SamplerState DiffuseSampler : register(s0);
 SamplerState NormalSampler : register(s1);
 SamplerState SpecularSampler : register(s2);
+SamplerState ShadowMapSampler : register(s3);
 
 // ---------------------------------
 // Registers
@@ -28,6 +29,7 @@ cbuffer Constant : register(b0)
     matrix View;
     matrix Projection;
     matrix InvertedProjection;
+    matrix InvertedViewProjection;
 };
 
 #if INSTANCED == 1

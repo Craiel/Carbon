@@ -8,6 +8,7 @@ cbuffer LightBuffer : register(b2)
     float2 SpotlightAngles;
     float LightRange;
     float Padding;
+    matrix LightView;
 };
 
 cbuffer CameraBuffer : register(b3)
@@ -40,7 +41,7 @@ PS_INPUT VS(VS_INPUT input)
     // For a quad we can clamp in the vertex shader, since we only interpolate in the XY direction
     float3 viewSpacePosition = mul(input.Position, InvertedProjection).xyz;
     output.ViewRay = float3(viewSpacePosition.xy / viewSpacePosition.z, 1.0f);
-
+    
     return output;
 }
 
@@ -55,21 +56,46 @@ float4 PS(PS_INPUT input) : SV_Target
     //float3 normal = SpheremapDecode(NormalMap.Load(sampleCoord));
 	float3 normal = NormalMap.Load(sampleCoord).xyz;
     float3 diffuseAlbedo = DiffuseMap.Load(sampleCoord).xyz;
-    float4 specular = SpecularMap.Load(sampleCoord);
-    float3 position = PositionFromDepth(DepthMap.Load(sampleCoord).x, input.ViewRay);
-
+    float4 specular = SpecularMap.Load(sampleCoord);    
+    float depth = DepthMap.Load(sampleCoord).x;
+    
+    float3 position = PositionFromDepth(depth, input.ViewRay);
+        
     float3 specularAlbedo = specular.xyz;
     float specularPower = specular.w * 255.0f;
-    
     float3 color = 0;
 
 	// Camera is at 0,0,0 in View Space
 	float3 cameraPosition = 0;
 	
+	float shadowFactor = 1;
+#if SHADOWMAPPING
+	//float shadowMapDepth = ShadowMap.Sample(ShadowMapSampler, input.LightPosition.xy).r;
+	//float4 viewSpacePosition = mul(position, InvertedProjection);
+	//float3 viewSpacePosition = mul(position, InvertedViewProjection);
+	float4 viewSpacePosition = mul(position, LightView);
+	viewSpacePosition = mul(position, Projection);
+	float2 vShadowTexCoord = 0.5 * viewSpacePosition.xy / viewSpacePosition.w + float2(0.5f, 0.5f);
+	vShadowTexCoord += (0.5f / float2(1024,768));
+	float3 lightVector = LightPosition.xyz - position;
+	float distance = 1.0f - (400 / length(lightVector));
+	
+	float shadowMapDepth = ShadowMap.Sample(ShadowMapSampler, vShadowTexCoord).r;
+	if(shadowMapDepth < distance)
+	{
+		return float4(0, 0, 0, 0);
+	}
+	
+	float near = 0.999f; // 0
+	float far = 0.99999f; // 1
+	float z = (shadowMapDepth - near) / (far - near);
+	return float4(z, z, z, 1.0f);
+#endif
+	
 #if AMBIENTLIGHT
 	color = LightColor;
-#elif DIRECTIONALLIGHT
-    color = CalculateDirectionalLighting(cameraPosition, LightDirection.xyz, LightColor, normal, position, diffuseAlbedo, specularAlbedo, specularPower);
+#elif DIRECTIONALLIGHT	
+	color = CalculateDirectionalLighting(cameraPosition, LightDirection.xyz, LightColor, normal, position, diffuseAlbedo, specularAlbedo, specularPower);
 #elif POINTLIGHT
 	color = CalculatePointLighting(cameraPosition, LightPosition, LightColor, LightRange.x, normal, position, diffuseAlbedo, specularAlbedo, specularPower);
 #elif SPOTLIGHT

@@ -36,6 +36,7 @@ namespace Carbon.V2Test.Scenes
         private Material deferredLightTexture;
         private Material forwardDebugTexture;
         private Material normalDebugTexture;
+        private Material shadowMapTexture;
 
         private Material gBufferNormalTexture;
         private Material gBufferDiffuseAlbedoTexture;
@@ -94,6 +95,8 @@ namespace Carbon.V2Test.Scenes
             this.forwardDebugTexture = null;
             this.normalDebugTexture.Dispose();
             this.normalDebugTexture = null;
+            this.shadowMapTexture.Dispose();
+            this.shadowMapTexture = null;
 
             this.gBufferNormalTexture.Dispose();
             this.gBufferNormalTexture = null;
@@ -135,12 +138,13 @@ namespace Carbon.V2Test.Scenes
             // Setup the hard textures for internals
             this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
             this.normalDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1002));
-
+            
             this.gBufferNormalTexture = new Material(this.graphics.TextureManager.GetRegisterReference(11));
             this.gBufferDiffuseAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(12));
             this.gBufferSpecularAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(13));
             this.gBufferDepthTexture = new Material(this.graphics.TextureManager.GetRegisterReference(14));
             this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));
+            this.shadowMapTexture = new Material(this.graphics.TextureManager.GetRegisterReference(16));
 
             scriptData = this.gameState.ResourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene.lua"));
             script = new CarbonScript(scriptData);
@@ -208,7 +212,7 @@ namespace Carbon.V2Test.Scenes
             this.camera.Position = this.controller.Position;
             this.camera.Rotation = this.controller.Rotation;
             this.camera.Update(gameTime);
-
+            
             this.overlayCamera.Update(gameTime);
 
             this.console.Update(gameTime);
@@ -341,6 +345,14 @@ namespace Carbon.V2Test.Scenes
                     World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(this.graphics.WindowViewport.Width * scale + 10, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 2 - 10, 0)
                 });
 
+            set.Instructions.Add(
+                new FrameInstruction
+                {
+                    Material = this.shadowMapTexture,
+                    Mesh = this.screenQuad,
+                    World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(this.graphics.WindowViewport.Width * scale + 10, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 3 - 10, 0)
+                });
+
             frameManager.RenderSet(set);
 
             // Render the depth
@@ -352,6 +364,13 @@ namespace Carbon.V2Test.Scenes
                     Material = this.gBufferDepthTexture,
                     Mesh = this.screenQuad,
                     World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation((this.graphics.WindowViewport.Width * scale) * 3 + 30, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 2 - 10, 0)
+                });
+            set.Instructions.Add(
+                new FrameInstruction
+                {
+                    Material = this.shadowMapTexture,
+                    Mesh = this.screenQuad,
+                    World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation((this.graphics.WindowViewport.Width * scale) * 4 + 30, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 2 - 10, 0)
                 });
             frameManager.RenderSet(set);
         }

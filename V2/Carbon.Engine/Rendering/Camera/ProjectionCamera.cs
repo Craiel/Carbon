@@ -1,4 +1,6 @@
 ﻿using System;
+
+using Core.Utils;
 using Core.Utils.Contracts;
 
 using SlimDX;
@@ -8,13 +10,15 @@ namespace Carbon.Engine.Rendering.Camera
 {
     class ProjectionCamera : BaseCamera, IProjectionCamera
     {
-        private readonly Vector3 upVector = Vector3.UnitY;
-        private readonly Vector3 targetVector = Vector3.UnitZ;
+        private Vector3 upVector = Vector3.UnitY;
+        private Vector3 targetVector = Vector3.UnitZ;
 
         private Matrix view;
         private Matrix projection;
         private BoundingFrustum frustum;
 
+        private float width;
+        private float height;
         private float near;
         private float far;
 
@@ -48,6 +52,22 @@ namespace Carbon.Engine.Rendering.Camera
             get
             {
                 return this.frustum;
+            }
+        }
+
+        public override float Width
+        {
+            get
+            {
+                return this.width;
+            }
+        }
+
+        public override float Height 
+        {
+            get
+            {
+                return this.height;
             }
         }
 
@@ -101,6 +121,13 @@ namespace Carbon.Engine.Rendering.Camera
             }
         }
 
+        public void LookAt(Vector3 target)
+        {
+            this.targetVector = target;
+            //this.rotation = QuaternionExtension.RotateTo(this.targetVector, target, this.upVector);
+            this.needUpdate = true;
+        }
+
         public override void Update(ITimer gameTime)
         {
             if (this.needUpdate)
@@ -124,12 +151,13 @@ namespace Carbon.Engine.Rendering.Camera
             }
         }
 
-        public override void SetPerspective(float width, float height, float newNear, float newFar)
+        public override void SetPerspective(float newWidth, float newHeight, float newNear, float newFar)
         {
+            this.width = newWidth;
+            this.height = newHeight;
             this.near = newNear;
             this.far = newFar;
-            this.projection = Matrix.PerspectiveFovLH((float)Math.PI / 4, width / height, near, far);
-            this.frustum = new BoundingFrustum(this.View, this.Projection, this.Far);
+            this.projection = Matrix.PerspectiveFovLH((float)Math.PI / 4, this.width / this.height, this.near, this.far);
             this.needUpdate = true;
         }
     }

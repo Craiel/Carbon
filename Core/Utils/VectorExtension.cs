@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SlimDX;
+﻿using SlimDX;
 
 namespace Core.Utils
 {
@@ -16,5 +12,15 @@ namespace Core.Utils
 
         public static Vector3 Vector3Identity { get; private set; }
         public static Vector4 Vector4Identity { get; private set; }
+
+        public static Vector3 Invert(this Vector3 vector)
+        {
+            return new Vector3(-vector.X, -vector.Y, -vector.Z);
+        }
+
+        public static Vector3 XYZ(this Vector4 vector)
+        {
+            return new Vector3(vector.X, vector.Y, vector.Z);
+        }
     }
 }

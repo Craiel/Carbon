@@ -46,6 +46,7 @@ namespace Carbon.Engine.Ninject
             this.Bind<IDeferredLightShader>().To<DeferredLightShader>();
             this.Bind<IDebugShader>().To<DebugShader>();
             this.Bind<IBlendShader>().To<BlendShader>();
+            this.Bind<IShadowMapShader>().To<ShadowMapShader>();
 
             // Resource
             this.Bind<IContentManager>().To<ContentManager>();

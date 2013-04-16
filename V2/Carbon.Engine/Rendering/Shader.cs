@@ -74,6 +74,7 @@ namespace Carbon.Engine.Rendering
             public Matrix View;
             public Matrix Projection;
             public Matrix InvertedProjection;
+            public Matrix InvertedViewProjection;
 
             public Vector4 Padding; // Still no idea why this is needed...
         }

@@ -64,8 +64,8 @@ float4 PS(PS_INPUT input) : SV_Target
 
 #if RENDERDEPTH
 	float4 color = DiffuseMap.Sample(DiffuseSampler, input.TextureCoordinates);
-	float near = 0.99f; // 0
-	float far = 0.9999f; // 1
+	float near = 0.999f; // 0
+	float far = 0.99999f; // 1
 	float z = (color.r - near) / (far - near);
 	float depth = z;
 	

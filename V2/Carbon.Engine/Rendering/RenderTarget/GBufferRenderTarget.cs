@@ -160,7 +160,7 @@ namespace Carbon.Engine.Rendering.RenderTarget
             var desiredDepthView = new ShaderResourceViewDescription
             {
                 Dimension = ShaderResourceViewDimension.Texture2D,
-                MipLevels = 1,
+                MipLevels = this.desiredDepthStencil.MipLevels,
                 MostDetailedMip = 0,
                 Format = Format.R24_UNorm_X8_Typeless
             };

@@ -2,7 +2,7 @@ Log:Debug("Initializing Scene", nil)
 
 node = AddAmbientLight(Vector4(0.2, 0.2, 0.2, 0.2), 0)
 
-node = AddDirectionalLight(Vector4(1, 1, 0.5, 1), Vector3(0.5, -1, 1))
+--node = AddDirectionalLight(Vector4(1, 1, 0.5, 1), Vector3(0.5, -1, 1))
 node = AddDirectionalLight(Vector4(1, 1, 1, 0.2), Vector3(-1, -1, -1))
 
 node = AddModel("Models\\WorldTest.dae")

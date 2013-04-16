@@ -25,5 +25,7 @@ namespace Carbon.Engine.Contracts.Rendering
     public interface IProjectionCamera : ICamera
     {
         Quaternion Rotation { get; set; }
+
+        void LookAt(Vector3 target);
     }
 }

@@ -13,8 +13,8 @@ namespace Carbon.Engine.Rendering.Shaders
     public interface IDeferredLightShader : ICarbonShader
     {
         void SetAmbient(Vector4 color);
-        void SetDirectional(Vector3 direction, Vector4 color);
-        void SetPoint(Vector4 position, Vector4 color, float range);
+        void SetDirectional(Vector4 position, Vector3 direction, Vector4 color, Matrix lightView);
+        void SetPoint(Vector4 position, Vector4 color, float range, Matrix lightView);
         void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles);
     }
 
@@ -34,6 +34,7 @@ namespace Carbon.Engine.Rendering.Shaders
         private readonly SamplerDescription diffuseSamplerDescription;
         private readonly SamplerDescription normalSamplerDescription;
         private readonly SamplerDescription specularSamplerDescription;
+        private readonly SamplerDescription shadowMapSamplerDescription;
 
         private DefaultConstantBuffer defaultConstantBuffer;
         private InstanceConstantBuffer instanceConstantBuffer;
@@ -46,6 +47,7 @@ namespace Carbon.Engine.Rendering.Shaders
         private bool isPoint;
         private bool isSpot;
         private bool isAmbient;
+        private bool isShadowMapping;
         private bool needLightPositionUpdate;
 
         private Vector3 lightPosition;
@@ -61,15 +63,16 @@ namespace Carbon.Engine.Rendering.Shaders
 
             this.buffers = new Buffer[4];
             this.resources = new ShaderResourceView[5];
-            this.samplerStates = new SamplerState[3];
-            this.samplerStateCache = new SamplerDescription[3];
-            this.macros = new ShaderMacro[6];
+            this.samplerStates = new SamplerState[4];
+            this.samplerStateCache = new SamplerDescription[4];
+            this.macros = new ShaderMacro[7];
             this.macros[0].Name = "INSTANCED";
             this.macros[1].Name = "VOLUMERENDERING";
             this.macros[2].Name = "POINTLIGHT";
             this.macros[3].Name = "SPOTLIGHT";
             this.macros[4].Name = "DIRECTIONALLIGHT";
             this.macros[5].Name = "AMBIENTLIGHT";
+            this.macros[6].Name = "SHADOWMAPPING";
 
             this.SetFile("DeferredLight.fx");
             this.SetEntryPoints("VS", "PS");
@@ -109,6 +112,17 @@ namespace Carbon.Engine.Rendering.Shaders
                 MinimumLod = 0,
                 MaximumLod = float.MaxValue
             };
+
+            this.shadowMapSamplerDescription = new SamplerDescription
+            {
+                Filter = Filter.MinMagMipPoint,
+                AddressU = TextureAddressMode.Wrap,
+                AddressV = TextureAddressMode.Wrap,
+                AddressW = TextureAddressMode.Wrap,
+                ComparisonFunction = Comparison.Never,
+                MinimumLod = 0,
+                MaximumLod = float.MaxValue
+            };
         }
 
         // -------------------------------------------------------------------
@@ -122,24 +136,29 @@ namespace Carbon.Engine.Rendering.Shaders
             this.lightConstantBuffer.Color = color;
         }
 
-        public void SetDirectional(Vector3 direction, Vector4 color)
+        public void SetDirectional(Vector4 position, Vector3 direction, Vector4 color, Matrix lightView)
         {
             this.ClearLight();
             this.isDirectional = true;
+            this.isShadowMapping = true;
 
+            this.lightPosition = new Vector3(position.X, position.Y, position.Z);
             this.lightDirection = direction;
             this.lightConstantBuffer.Color = color;
+            this.lightConstantBuffer.LightView = lightView;
             this.needLightPositionUpdate = true;
         }
 
-        public void SetPoint(Vector4 position, Vector4 color, float range)
+        public void SetPoint(Vector4 position, Vector4 color, float range, Matrix lightView)
         {
             this.ClearLight();
             this.isPoint = true;
+            this.isShadowMapping = true;
 
             this.lightPosition = new Vector3(position.X, position.Y, position.Z);
             this.lightConstantBuffer.Color = color;
             this.lightConstantBuffer.Range = range;
+            this.lightConstantBuffer.LightView = lightView;
             this.needLightPositionUpdate = true;
         }
 
@@ -172,9 +191,11 @@ namespace Carbon.Engine.Rendering.Shaders
             public Vector4 Position;
             public Vector4 Direction;
             public Vector2 SpotlightAngles;
-            public float Range;
 
+            public float Range;
             public float padding;
+
+            public Matrix LightView;
 
             public void Clear()
             {
@@ -183,6 +204,7 @@ namespace Carbon.Engine.Rendering.Shaders
                 this.Direction = Vector4.Zero;
                 this.SpotlightAngles = Vector2.Zero;
                 this.Range = 0;
+                this.LightView = Matrix.Identity;
             }
         }
 
@@ -209,6 +231,7 @@ namespace Carbon.Engine.Rendering.Shaders
             this.defaultConstantBuffer.View = Matrix.Transpose(parameters.View);
             this.defaultConstantBuffer.Projection = Matrix.Transpose(parameters.Projection);
             this.defaultConstantBuffer.InvertedProjection = Matrix.Transpose(Matrix.Invert(parameters.Projection));
+            this.defaultConstantBuffer.InvertedViewProjection = Matrix.Transpose(Matrix.Invert(parameters.View * parameters.Projection));
 
             this.SetConstantBufferData(0, this.DefaultConstantBufferSize, this.defaultConstantBuffer);
 
@@ -262,6 +285,13 @@ namespace Carbon.Engine.Rendering.Shaders
             {
                 this.samplerStateCache[2] = this.specularSamplerDescription;
                 this.samplerStates[2] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[2]);
+                samplerStateChanged = true;
+            }
+
+            if (this.shadowMapSamplerDescription != this.samplerStateCache[3])
+            {
+                this.samplerStateCache[3] = this.shadowMapSamplerDescription;
+                this.samplerStates[3] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[3]);
                 samplerStateChanged = true;
             }
 
@@ -371,6 +401,7 @@ namespace Carbon.Engine.Rendering.Shaders
             this.macros[3].Value = this.isSpot ? "1" : "0";
             this.macros[4].Value = this.isDirectional ? "1" : "0";
             this.macros[5].Value = this.isAmbient ? "1" : "0";
+            this.macros[6].Value = this.isShadowMapping ? "1" : "0";
             
             this.SetMacros(this.macros);
         }
@@ -381,6 +412,7 @@ namespace Carbon.Engine.Rendering.Shaders
             this.isPoint = false;
             this.isSpot = false;
             this.isAmbient = false;
+            this.isShadowMapping = false;
 
             this.lightConstantBuffer.Clear();
         }

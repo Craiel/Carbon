@@ -98,6 +98,7 @@
     <Compile Include="MathExtension.cs" />
     <Compile Include="Ninject\NinjectModuleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuaternionExtension.cs" />
     <Compile Include="RuntimeInfo.cs" />
     <Compile Include="TextFile.cs" />
     <Compile Include="Timer.cs" />

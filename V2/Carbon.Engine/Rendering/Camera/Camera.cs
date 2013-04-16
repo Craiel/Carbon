@@ -14,6 +14,8 @@ namespace Carbon.Engine.Rendering.Camera
         public abstract Matrix Projection { get; }
         public abstract BoundingFrustum Frustum { get; }
 
+        public abstract float Width { get; }
+        public abstract float Height { get; }
         public abstract float Near { get; }
         public abstract float Far { get; }
 

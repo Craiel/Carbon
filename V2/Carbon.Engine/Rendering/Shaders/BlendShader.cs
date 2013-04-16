@@ -65,6 +65,7 @@ namespace Carbon.Engine.Rendering.Shaders
             this.defaultConstantBuffer.View = Matrix.Transpose(parameters.View);
             this.defaultConstantBuffer.Projection = Matrix.Transpose(parameters.Projection);
             this.defaultConstantBuffer.InvertedProjection = Matrix.Transpose(Matrix.Invert(parameters.Projection));
+            this.defaultConstantBuffer.InvertedViewProjection = Matrix.Transpose(Matrix.Invert(parameters.View * parameters.Projection));
 
             this.SetConstantBufferData(0, this.DefaultConstantBufferSize, this.defaultConstantBuffer);
         }

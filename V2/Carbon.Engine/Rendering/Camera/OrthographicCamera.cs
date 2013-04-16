@@ -16,11 +16,13 @@ namespace Carbon.Engine.Rendering.Camera
         private Matrix projection;
         private BoundingFrustum frustum;
 
+        private float width;
+        private float height;
         private float near;
         private float far;
 
         private bool needUpdate = true;
-
+        
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
@@ -61,6 +63,22 @@ namespace Carbon.Engine.Rendering.Camera
             }
         }
 
+        public override float Width
+        {
+            get
+            {
+                return this.width;
+            }
+        }
+
+        public override float Height
+        {
+            get
+            {
+                return this.height;
+            }
+        }
+
         public override float Near
         {
             get
@@ -92,12 +110,13 @@ namespace Carbon.Engine.Rendering.Camera
             }
         }
 
-        public override void SetPerspective(float width, float height, float newNear, float newFar)
+        public override void SetPerspective(float newWidth, float newHeight, float newNear, float newFar)
         {
+            this.width = newWidth;
+            this.height = newHeight;
             this.near = newNear;
             this.far = newFar;
-            this.projection = Matrix.OrthoOffCenterLH(0, width, 0, height, near, far);
-            this.frustum = new BoundingFrustum(this.View, this.Projection, this.Far);
+            this.projection = Matrix.OrthoOffCenterLH(0, this.width, 0, this.height, this.near, this.far);
             this.needUpdate = true;
         }
     }

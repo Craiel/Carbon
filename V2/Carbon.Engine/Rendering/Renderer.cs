@@ -25,6 +25,7 @@ namespace Carbon.Engine.Rendering
         private readonly IDeferredLightShader deferredLightShader;
         private readonly IDebugShader debugShader;
         private readonly IBlendShader blendShader;
+        private readonly IShadowMapShader shadowMapShader;
 
         private DynamicBuffer vertexBuffer;
         private DynamicBuffer indexBuffer;
@@ -49,6 +50,7 @@ namespace Carbon.Engine.Rendering
             this.debugShader = factory.Get<IDebugShader>();
             this.deferredLightShader = factory.Get<IDeferredLightShader>();
             this.blendShader = factory.Get<IBlendShader>();
+            this.shadowMapShader = factory.Get<IShadowMapShader>();
         }
 
         public override void Dispose()
@@ -63,6 +65,7 @@ namespace Carbon.Engine.Rendering
             this.debugShader.Dispose();
             this.deferredLightShader.Dispose();
             this.blendShader.Dispose();
+            this.shadowMapShader.Dispose();
         }
 
         // -------------------------------------------------------------------
@@ -90,6 +93,7 @@ namespace Carbon.Engine.Rendering
             this.debugShader.Initialize(graphics);
             this.deferredLightShader.Initialize(graphics);
             this.blendShader.Initialize(graphics);
+            this.shadowMapShader.Initialize(graphics);
         }
 
         public void BeginFrame()
@@ -158,13 +162,13 @@ namespace Carbon.Engine.Rendering
 
                 case LightType.Direction:
                     {
-                        this.deferredLightShader.SetDirectional(instruction.Direction, instruction.Color);
+                        this.deferredLightShader.SetDirectional(instruction.Position, instruction.Direction, instruction.Color, instruction.View);
                         break;
                     }
 
                 case LightType.Point:
                     {
-                        this.deferredLightShader.SetPoint(instruction.Position, instruction.Color, instruction.Range);
+                        this.deferredLightShader.SetPoint(instruction.Position, instruction.Color, instruction.Range, instruction.View);
                         break;
                     }
 
@@ -209,6 +213,7 @@ namespace Carbon.Engine.Rendering
             this.deferredLightShader.ForceReloadOnNextPass = true;
             this.debugShader.ForceReloadOnNextPass = true;
             this.blendShader.ForceReloadOnNextPass = true;
+            this.shadowMapShader.ForceReloadOnNextPass = true;
         }
         
         // -------------------------------------------------------------------
@@ -219,8 +224,8 @@ namespace Carbon.Engine.Rendering
                 // Check if we have to update the mesh data
                 if (this.activeMesh != instruction.Mesh)
                 {
-                    activeMesh = instruction.Mesh;
-                    this.UploadMesh(activeMesh);
+                    this.activeMesh = instruction.Mesh;
+                    this.UploadMesh(this.activeMesh);
                 }
 
                 this.ApplyShader(context, parameters, instruction);
@@ -292,6 +297,13 @@ namespace Carbon.Engine.Rendering
                     {
                         this.ActivateShader(context, this.blendShader);
                         this.blendShader.Apply(context, typeof(PositionVertex), parameters, instruction);
+                        break;
+                    }
+
+                case RenderMode.ShadowMap:
+                    {
+                        this.ActivateShader(context, this.shadowMapShader);
+                        this.shadowMapShader.Apply(context, typeof(PositionVertex), parameters, instruction);
                         break;
                     }
 
