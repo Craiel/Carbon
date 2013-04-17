@@ -162,13 +162,13 @@ namespace Carbon.Engine.Rendering
 
                 case LightType.Direction:
                     {
-                        this.deferredLightShader.SetDirectional(instruction.Position, instruction.Direction, instruction.Color, instruction.View);
+                        this.deferredLightShader.SetDirectional(instruction.Position, instruction.Direction, instruction.Color, Matrix.Transpose(instruction.View * instruction.Projection));
                         break;
                     }
 
                 case LightType.Point:
                     {
-                        this.deferredLightShader.SetPoint(instruction.Position, instruction.Color, instruction.Range, instruction.View);
+                        this.deferredLightShader.SetPoint(instruction.Position, instruction.Color, instruction.Range, Matrix.Transpose(instruction.View * instruction.Projection));
                         break;
                     }
 

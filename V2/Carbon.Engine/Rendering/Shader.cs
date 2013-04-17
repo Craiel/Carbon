@@ -73,6 +73,7 @@ namespace Carbon.Engine.Rendering
             public Matrix World;
             public Matrix View;
             public Matrix Projection;
+            public Matrix InvertedView;
             public Matrix InvertedProjection;
             public Matrix InvertedViewProjection;
 

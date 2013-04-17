@@ -513,6 +513,7 @@ namespace Carbon.Engine.Rendering
             }
 
             this.shadowmapCamera.Position = position;
+            //this.shadowmapCamera.LookAt(new Vector3(0));
             this.shadowmapCamera.LookAt(instruction.Light.Direction);
             this.shadowmapCamera.Update(null);
 

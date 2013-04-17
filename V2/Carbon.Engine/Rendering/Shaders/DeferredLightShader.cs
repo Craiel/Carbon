@@ -13,8 +13,8 @@ namespace Carbon.Engine.Rendering.Shaders
     public interface IDeferredLightShader : ICarbonShader
     {
         void SetAmbient(Vector4 color);
-        void SetDirectional(Vector4 position, Vector3 direction, Vector4 color, Matrix lightView);
-        void SetPoint(Vector4 position, Vector4 color, float range, Matrix lightView);
+        void SetDirectional(Vector4 position, Vector3 direction, Vector4 color, Matrix lightViewProjection);
+        void SetPoint(Vector4 position, Vector4 color, float range, Matrix lightViewProjection);
         void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles);
     }
 
@@ -136,7 +136,7 @@ namespace Carbon.Engine.Rendering.Shaders
             this.lightConstantBuffer.Color = color;
         }
 
-        public void SetDirectional(Vector4 position, Vector3 direction, Vector4 color, Matrix lightView)
+        public void SetDirectional(Vector4 position, Vector3 direction, Vector4 color, Matrix lightViewProjection)
         {
             this.ClearLight();
             this.isDirectional = true;
@@ -145,11 +145,11 @@ namespace Carbon.Engine.Rendering.Shaders
             this.lightPosition = new Vector3(position.X, position.Y, position.Z);
             this.lightDirection = direction;
             this.lightConstantBuffer.Color = color;
-            this.lightConstantBuffer.LightView = lightView;
+            this.lightConstantBuffer.LightViewProjection = lightViewProjection;
             this.needLightPositionUpdate = true;
         }
 
-        public void SetPoint(Vector4 position, Vector4 color, float range, Matrix lightView)
+        public void SetPoint(Vector4 position, Vector4 color, float range, Matrix lightViewProjection)
         {
             this.ClearLight();
             this.isPoint = true;
@@ -158,7 +158,7 @@ namespace Carbon.Engine.Rendering.Shaders
             this.lightPosition = new Vector3(position.X, position.Y, position.Z);
             this.lightConstantBuffer.Color = color;
             this.lightConstantBuffer.Range = range;
-            this.lightConstantBuffer.LightView = lightView;
+            this.lightConstantBuffer.LightViewProjection = lightViewProjection;
             this.needLightPositionUpdate = true;
         }
 
@@ -194,8 +194,8 @@ namespace Carbon.Engine.Rendering.Shaders
 
             public float Range;
             public float padding;
-
-            public Matrix LightView;
+            
+            public Matrix LightViewProjection;
 
             public void Clear()
             {
@@ -204,7 +204,6 @@ namespace Carbon.Engine.Rendering.Shaders
                 this.Direction = Vector4.Zero;
                 this.SpotlightAngles = Vector2.Zero;
                 this.Range = 0;
-                this.LightView = Matrix.Identity;
             }
         }
 
@@ -230,6 +229,7 @@ namespace Carbon.Engine.Rendering.Shaders
             this.defaultConstantBuffer.World = Matrix.Transpose(instruction.World);
             this.defaultConstantBuffer.View = Matrix.Transpose(parameters.View);
             this.defaultConstantBuffer.Projection = Matrix.Transpose(parameters.Projection);
+            this.defaultConstantBuffer.InvertedView = Matrix.Transpose(Matrix.Invert(parameters.View));
             this.defaultConstantBuffer.InvertedProjection = Matrix.Transpose(Matrix.Invert(parameters.Projection));
             this.defaultConstantBuffer.InvertedViewProjection = Matrix.Transpose(Matrix.Invert(parameters.View * parameters.Projection));
 
