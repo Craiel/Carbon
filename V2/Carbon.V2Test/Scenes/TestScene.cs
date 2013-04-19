@@ -345,13 +345,13 @@ namespace Carbon.V2Test.Scenes
                     World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(this.graphics.WindowViewport.Width * scale + 10, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 2 - 10, 0)
                 });
 
-            set.Instructions.Add(
+            /*set.Instructions.Add(
                 new FrameInstruction
                 {
                     Material = this.shadowMapTexture,
                     Mesh = this.screenQuad,
                     World = Matrix.Scaling(new Vector3(scale)) * Matrix.Translation(this.graphics.WindowViewport.Width * scale + 10, this.graphics.WindowViewport.Height - (this.graphics.WindowViewport.Height * scale) * 3 - 10, 0)
-                });
+                });*/
 
             frameManager.RenderSet(set);
 

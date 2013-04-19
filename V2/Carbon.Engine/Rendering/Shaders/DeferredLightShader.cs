@@ -116,9 +116,9 @@ namespace Carbon.Engine.Rendering.Shaders
             this.shadowMapSamplerDescription = new SamplerDescription
             {
                 Filter = Filter.MinMagMipPoint,
-                AddressU = TextureAddressMode.Wrap,
-                AddressV = TextureAddressMode.Wrap,
-                AddressW = TextureAddressMode.Wrap,
+                AddressU = TextureAddressMode.Clamp,
+                AddressV = TextureAddressMode.Clamp,
+                AddressW = TextureAddressMode.Clamp,
                 ComparisonFunction = Comparison.Never,
                 MinimumLod = 0,
                 MaximumLod = float.MaxValue
@@ -194,6 +194,9 @@ namespace Carbon.Engine.Rendering.Shaders
 
             public float Range;
             public float padding;
+
+            public Vector2 ShadowMapSize;
+            public Vector2 padding2;
             
             public Matrix LightViewProjection;
 
@@ -203,6 +206,8 @@ namespace Carbon.Engine.Rendering.Shaders
                 this.Position = Vector4.Zero;
                 this.Direction = Vector4.Zero;
                 this.SpotlightAngles = Vector2.Zero;
+                this.ShadowMapSize = Vector2.Zero;
+                this.LightViewProjection = Matrix.Identity;
                 this.Range = 0;
             }
         }
@@ -328,7 +333,13 @@ namespace Carbon.Engine.Rendering.Shaders
 
             if (instruction.ShadowMap != null)
             {
+                if (instruction.ShadowMapSize == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 this.resources[4] = instruction.ShadowMap;
+                this.lightConstantBuffer.ShadowMapSize = (Vector2)instruction.ShadowMapSize;
                 texturesChanged = true;
             }
 

@@ -1,3 +1,6 @@
+#ifndef GLOBALS
+#define GLOBALS
+
 // ---------------------------------
 // Structs
 // ---------------------------------
@@ -71,36 +74,41 @@ float3 CalculateDirectionalLighting(in float3 cameraPosition, in float3 directio
 
 float3 CalculatePointLighting(in float3 cameraPosition, in float4 lightPosition, in float3 lightColor, in float lightRange, in float3 normal, in float3 position, in float3 diffuseAlbedo, in float3 specularAlbedo, in float specularPower)
 {
-	float3 lightVector = lightPosition.xyz - position;
-	float distance = length(lightVector);
-	float attenuation = max(0, 1.0f - (distance / lightRange.x));
+    float3 lightVector = lightPosition.xyz - position;
+    float distance = length(lightVector);
+    float attenuation = max(0, 1.0f - (distance / lightRange.x));
 
-	lightVector /= distance;
+    lightVector /= distance;
 
-	float intensity = saturate(dot(normal, lightVector));
-	float3 diffuse = intensity * lightColor * DiffuseNormalizationFactor; // diffuseAlbedo
-	float3 specular = CalculateSpecularTerm(cameraPosition, intensity, normal, position, lightVector, specularAlbedo, specularPower, lightColor);
+    float intensity = saturate(dot(normal, lightVector));
+    float3 diffuse = intensity * lightColor * DiffuseNormalizationFactor; // diffuseAlbedo
+    float3 specular = CalculateSpecularTerm(cameraPosition, intensity, normal, position, lightVector, specularAlbedo, specularPower, lightColor);
 
     return (diffuse + specular) * attenuation;
 }
 
 float3 CalculateSpotLighting(in float3 cameraPosition, in float4 lightPosition, in float3 direction, in float3 lightColor, in float lightRange, float2 angles, in float3 normal, in float3 position, in float3 diffuseAlbedo, in float3 specularAlbedo, in float specularPower)
 {
-	float3 lightVector = lightPosition.xyz - position;
-	float distance = length(lightVector);
-	float attenuation = max(0, 1.0f - (distance / lightRange.x));
-	lightVector /= distance;
-	
-	float spotDot = dot(-lightVector, direction);
-	attenuation *= saturate((spotDot - angles.y) / (angles.x - angles.y));
-	
-	float intensity = saturate(dot(normal, lightVector));
-	float3 diffuse = intensity * lightColor * DiffuseNormalizationFactor; // diffuseAlbedo
-	float3 specular = CalculateSpecularTerm(cameraPosition, intensity, normal, position, lightVector, specularAlbedo, specularPower, lightColor);
+    float3 lightVector = lightPosition.xyz - position;
+    float distance = length(lightVector);
+    float attenuation = max(0, 1.0f - (distance / lightRange.x));
+    lightVector /= distance;
+    
+    float spotDot = dot(-lightVector, direction);
+    attenuation *= saturate((spotDot - angles.y) / (angles.x - angles.y));
+    
+    float intensity = saturate(dot(normal, lightVector));
+    float3 diffuse = intensity * lightColor * DiffuseNormalizationFactor; // diffuseAlbedo
+    float3 specular = CalculateSpecularTerm(cameraPosition, intensity, normal, position, lightVector, specularAlbedo, specularPower, lightColor);
 
     return (diffuse + specular) * attenuation;
 }
 #endif
+
+float BringDepthIntoView(float depth, float near, float far)
+{
+    return (depth - near) / (far - near);
+}
 
 // OUTPUTS POSITION IN VIEW SPACE!!!
 // Uses linear depth to figure out where z is
@@ -119,7 +127,8 @@ float3 PositionFromDepth(in float zBufferDepth, in float3 viewRay)
     return viewRay * linearDepth;
 }
 
-float2 SpheremapEncode(float3 normal)
+// Currently not used stuff, pending deletion or re-use
+/*float2 SpheremapEncode(float3 normal)
 {
     half2 encoded = normalize(normal.xy) * (sqrt(-normal.z * 0.5 + 0.5));
     return encoded * 0.5 + 0.5;
@@ -149,4 +158,6 @@ float4 Blend(float3 blended, float4 overlying, float4 underlying)
         (overlying.a * underlying.a) * float4(blended, 1);
 
     return float4(result.rgb / result.a, result.a);
-}
+}*/
+
+#endif

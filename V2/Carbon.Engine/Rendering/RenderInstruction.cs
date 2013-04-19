@@ -73,6 +73,8 @@ namespace Carbon.Engine.Rendering
         public ShaderResourceView AlphaTexture { get; set; }
         
         public Vector4? Color { get; set; }
+
+        public Vector2? ShadowMapSize { get; set; }
         
         public Matrix?[] Instances
         {

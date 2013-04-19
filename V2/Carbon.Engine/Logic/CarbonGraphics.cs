@@ -174,6 +174,12 @@ namespace Carbon.Engine.Logic
 
             this.isResizing = false;
         }
+
+        public void SetCulling(CullMode mode)
+        {
+            this.desiredRasterizerState.CullMode = mode;
+            this.needRasterizerStateUpdate = true;
+        }
         
         public void EnableWireframe()
         {

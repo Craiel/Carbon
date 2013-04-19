@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
@@ -32,6 +33,8 @@ namespace Carbon.Engine.Rendering
         private readonly TextureRenderTarget deferredLightTarget;
         private readonly DepthRenderTarget shadowMapTarget;
         private readonly IDictionary<int, TextureRenderTarget> textureTargets;
+
+        //private readonly IDictionary<int, Stream> shadowMapCache;
 
         private bool targetTexturesRegistered;
         
@@ -167,6 +170,12 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         private void UpdateShadowMap(RenderLightInstruction instruction, IList<RenderInstruction> instructions)
         {
+            /*int shadowMapKey = Tuple.Create(instruction.Position, instruction.View, instruction.Projection).GetHashCode();
+            if (this.shadowMapCache.ContainsKey(shadowMapKey))
+            {
+                
+            }*/
+
             var lightCameraParameters = new RenderParameters
                 {
                     CameraPosition = instruction.Position,
@@ -175,7 +184,7 @@ namespace Carbon.Engine.Rendering
                     Projection = instruction.Projection,
                     View = instruction.View
                 };
-
+            
             this.shadowMapTarget.Set(this.graphics);
             for (int i = 0; i < instructions.Count; i++)
             {
@@ -250,6 +259,7 @@ namespace Carbon.Engine.Rendering
                                 SpecularTexture = this.gBufferTarget.SpecularView,
                                 DepthMap = this.gBufferTarget.DepthView,
                                 ShadowMap = this.shadowMapTarget.View,
+                                ShadowMapSize = new Vector2(1024, 768), // Todo: this is hack
                                 Mesh = quad
                             });
                 }
@@ -451,7 +461,7 @@ namespace Carbon.Engine.Rendering
             }
             else
             {
-                // Set a material to indicate this is errornous
+                // Set a material to indicate this is error nous
                 instruction.Color = new Vector4(1, 0, 0, 1);
             }
 
@@ -513,7 +523,6 @@ namespace Carbon.Engine.Rendering
             }
 
             this.shadowmapCamera.Position = position;
-            //this.shadowmapCamera.LookAt(new Vector3(0));
             this.shadowmapCamera.LookAt(instruction.Light.Direction);
             this.shadowmapCamera.Update(null);
 
@@ -550,7 +559,7 @@ namespace Carbon.Engine.Rendering
 
                     case LightType.Direction:
                         {
-                            float translation = 40;
+                            float translation = 20;
                             Vector3 position = Vector3.Transform(instruction.Light.Direction.Invert(), Matrix.Translation(new Vector3(translation))).XYZ();
                             renderInstruction.Position = new Vector4(position, 1);
                             renderInstruction.Direction = instruction.Light.Direction;

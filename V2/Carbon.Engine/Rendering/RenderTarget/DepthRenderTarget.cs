@@ -1,4 +1,6 @@
-﻿using Carbon.Engine.Contracts.Logic;
+﻿using System.IO;
+
+using Carbon.Engine.Contracts.Logic;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -59,6 +61,14 @@ namespace Carbon.Engine.Rendering.RenderTarget
             graphics.ImmediateContext.Rasterizer.SetViewports(this.Viewport);
 
             base.Set(graphics);
+        }
+
+        public void StoreData(Stream target, ImageFileFormat format = ImageFileFormat.Dds)
+        {
+            if (!this.isResizing && this.texture != null)
+            {
+                Texture2D.ToStream(this.texture.Device.ImmediateContext, this.texture, format, target);
+            }
         }
         
         // -------------------------------------------------------------------

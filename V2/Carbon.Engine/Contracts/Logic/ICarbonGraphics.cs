@@ -25,7 +25,9 @@ namespace Carbon.Engine.Contracts.Logic
         void Reset();
 
         void Resize(int width, int height);
-        
+
+        void SetCulling(CullMode mode);
+
         void EnableWireframe();
         void DisableWireframe();
 
