@@ -137,12 +137,12 @@ namespace Carbon.Engine.Logic
 
         public void Reset()
         {
-            this.settings = new DeviceSettings { CreationFlags = DeviceCreationFlags.None, Width = 640, Height = 480 };
+            this.settings = new DeviceSettings { CreationFlags = DeviceCreationFlags.None, ScreenSize = new TypedVector2<int>(640, 480) };
         }
 
-        public void Resize(int width, int height)
+        public void Resize(TypedVector2<int> size)
         {
-            if (this.isResizing || (this.settings.Width == width && this.settings.Height == height))
+            if (this.isResizing || (this.settings.ScreenSize == size))
             {
                 return;
             }
@@ -152,19 +152,18 @@ namespace Carbon.Engine.Logic
             this.isResizing = true;
             lock (this.context)
             {
-                this.log.Info("Resizing to {0}x{1}", width, height);
+                this.log.Info("Resizing to {0}x{1}", size.X, size.Y);
 
-                this.windowViewport = new Viewport(0, 0, width, height);
+                this.windowViewport = new Viewport(0, 0, size.X, size.Y);
 
-                this.settings.Width = width;
-                this.settings.Height = height;
+                this.settings.ScreenSize = size;
 
                 this.DisposeBuffers();
 
                 this.context.SwapChain.ResizeBuffers(
                     1,
-                    width,
-                    height,
+                    size.X,
+                    size.Y,
                     this.context.SwapChain.Description.ModeDescription.Format,
                     this.context.SwapChain.Description.Flags);
 

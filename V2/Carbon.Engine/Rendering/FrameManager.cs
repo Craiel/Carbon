@@ -88,7 +88,7 @@ namespace Carbon.Engine.Rendering
             this.shadowMapTarget.Clear(this.graphics, Vector4.Zero);
         }
 
-        public void Resize(int width, int height)
+        public void Resize(TypedVector2<int> size)
         {
             if (this.targetTexturesRegistered)
             {
@@ -100,18 +100,18 @@ namespace Carbon.Engine.Rendering
                 this.graphics.TextureManager.Unregister(16);
             }
 
-            this.backBufferRenderTarget.Resize(this.graphics, width, height);
+            this.backBufferRenderTarget.Resize(this.graphics, size);
 
-            this.gBufferTarget.Resize(this.graphics, width, height);
-            this.deferredLightTarget.Resize(this.graphics, width, height);
-            this.shadowMapTarget.Resize(this.graphics, width, height);
+            this.gBufferTarget.Resize(this.graphics, size);
+            this.deferredLightTarget.Resize(this.graphics, size);
+            this.shadowMapTarget.Resize(this.graphics, size);
 
-            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.NormalView, 11);
-            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.DiffuseView, 12);
-            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.SpecularView, 13);
-            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.DepthView, 14);
-            this.graphics.TextureManager.RegisterStatic(this.deferredLightTarget.View, 15);
-            this.graphics.TextureManager.RegisterStatic(this.shadowMapTarget.View, 16);
+            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.NormalView, 11, size);
+            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.DiffuseView, 12, size);
+            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.SpecularView, 13, size);
+            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.DepthView, 14, size);
+            this.graphics.TextureManager.RegisterStatic(this.deferredLightTarget.View, 15, size);
+            this.graphics.TextureManager.RegisterStatic(this.shadowMapTarget.View, 16, size);
             
             this.targetTexturesRegistered = true;
         }
@@ -226,7 +226,7 @@ namespace Carbon.Engine.Rendering
 
             for (int i = 0; i < this.lightInstructionCache.Count; i++)
             {
-                if (this.lightInstructionCache[i].Type != LightType.Direction && this.lightInstructionCache[i].Type != LightType.Spot)
+                if (this.lightInstructionCache[i].Type != LightType.Spot)
                 {
                     continue;
                 }
@@ -235,7 +235,7 @@ namespace Carbon.Engine.Rendering
             }
 
             // get a quad to use for our operations
-            Mesh quad = new Mesh(Quad.CreateScreen(new Vector2(-1), new Vector2(1)));
+            Mesh quad = new Mesh(Quad.CreateScreen(new Vector2(-1), new TypedVector2<int>(1)));
             
             // Render the Lighting
             if (set.LightingEnabled && this.lightInstructionCache.Count > 0)
@@ -492,44 +492,19 @@ namespace Carbon.Engine.Rendering
             }
 
             var target = this.textureTargets[description.Index];
-            target.Resize(this.graphics, description.Width, description.Height);
+            target.Resize(this.graphics, description.Size);
             target.Clear(this.graphics, new Vector4(1));
             target.Set(this.graphics);
 
             if (needRegister)
             {
                 // Register the texture in the texture manager static register
-                this.graphics.TextureManager.RegisterStatic(target.View, description.Index);
+                this.graphics.TextureManager.RegisterStatic(target.View, description.Index, description.Size);
             }
 
             return target;
         }
-
-        private void GetLightViewProjection(LightInstruction instruction, Vector4 position, out Matrix view, out Matrix projection)
-        {
-            if (instruction.Light.Type != LightType.Direction && instruction.Light.Type != LightType.Spot)
-            {
-                throw new ArgumentException();
-            }
-
-            // Todo: Near / Far for direction is camera max plus extra, for point its the range
-            if (instruction.Light.Type == LightType.Direction)
-            {
-                this.shadowmapCamera.SetPerspective(1024, 768, 0.05f, 400);
-            }
-            else
-            {
-                this.shadowmapCamera.SetPerspective(1024, 768, 0.05f, instruction.Light.Range);
-            }
-
-            this.shadowmapCamera.Position = position;
-            this.shadowmapCamera.LookAt(instruction.Light.Direction);
-            this.shadowmapCamera.Update(null);
-
-            view = this.shadowmapCamera.View;
-            projection = this.shadowmapCamera.Projection;
-        }
-
+        
         private void ProcessLightInstructions(IList<LightInstruction> instructions)
         {
             for (int i = 0; i < instructions.Count; i++)
@@ -548,8 +523,6 @@ namespace Carbon.Engine.Rendering
                         SpecularPower = instruction.Light.SpecularPower
                     };
 
-                Matrix view;
-                Matrix projection;
                 switch (instruction.Light.Type)
                 {
                     case LightType.Ambient:
@@ -559,14 +532,9 @@ namespace Carbon.Engine.Rendering
 
                     case LightType.Direction:
                         {
-                            float translation = 20;
-                            Vector3 position = Vector3.Transform(instruction.Light.Direction.Invert(), Matrix.Translation(new Vector3(translation))).XYZ();
-                            renderInstruction.Position = new Vector4(position, 1);
                             renderInstruction.Direction = instruction.Light.Direction;
-
-                            this.GetLightViewProjection(instruction, renderInstruction.Position, out view, out projection);
-                            renderInstruction.View = view;
-                            renderInstruction.Projection = projection;
+                            renderInstruction.View = instruction.Light.View;
+                            renderInstruction.Projection = instruction.Light.Projection;
                             break;
                         }
 
@@ -581,10 +549,8 @@ namespace Carbon.Engine.Rendering
                             renderInstruction.Direction = instruction.Light.Direction;
                             renderInstruction.Range = instruction.Light.Range;
                             renderInstruction.SpotAngles = instruction.Light.SpotAngles;
-
-                            this.GetLightViewProjection(instruction, renderInstruction.Position, out view, out projection);
-                            renderInstruction.View = view;
-                            renderInstruction.Projection = projection;
+                            renderInstruction.View = instruction.Light.View;
+                            renderInstruction.Projection = instruction.Light.Projection;
                             break;
                         }
 

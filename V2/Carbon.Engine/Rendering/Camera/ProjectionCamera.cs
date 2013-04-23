@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Carbon.Engine.Logic;
+
 using Core.Utils;
 using Core.Utils.Contracts;
 
@@ -10,6 +12,9 @@ namespace Carbon.Engine.Rendering.Camera
 {
     class ProjectionCamera : BaseCamera, IProjectionCamera
     {
+        // This camera object is used to perform runtime operations like shadow map calculations
+        private static readonly IProjectionCamera StaticCamera = new ProjectionCamera();
+
         private Vector3 upVector = Vector3.UnitY;
         private Vector3 targetVector = Vector3.UnitZ;
 
@@ -17,8 +22,7 @@ namespace Carbon.Engine.Rendering.Camera
         private Matrix projection;
         private BoundingFrustum frustum;
 
-        private float width;
-        private float height;
+        private TypedVector2<int> viewPort;
         private float near;
         private float far;
 
@@ -31,6 +35,14 @@ namespace Carbon.Engine.Rendering.Camera
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public static IProjectionCamera Camera
+        {
+            get
+            {
+                return StaticCamera;
+            }
+        }
+
         public override Matrix View
         {
             get
@@ -55,19 +67,11 @@ namespace Carbon.Engine.Rendering.Camera
             }
         }
 
-        public override float Width
+        public override TypedVector2<int> ViewPort
         {
             get
             {
-                return this.width;
-            }
-        }
-
-        public override float Height 
-        {
-            get
-            {
-                return this.height;
+                return this.viewPort;
             }
         }
 
@@ -151,13 +155,12 @@ namespace Carbon.Engine.Rendering.Camera
             }
         }
 
-        public override void SetPerspective(float newWidth, float newHeight, float newNear, float newFar)
+        public override void SetPerspective(TypedVector2<int> newViewPort, float newNear, float newFar)
         {
-            this.width = newWidth;
-            this.height = newHeight;
+            this.viewPort = newViewPort;
             this.near = newNear;
             this.far = newFar;
-            this.projection = Matrix.PerspectiveFovLH((float)Math.PI / 4, this.width / this.height, this.near, this.far);
+            this.projection = Matrix.PerspectiveFovLH((float)Math.PI / 4, this.viewPort.X / this.viewPort.Y, this.near, this.far);
             this.needUpdate = true;
         }
     }

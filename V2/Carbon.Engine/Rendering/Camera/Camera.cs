@@ -14,11 +14,10 @@ namespace Carbon.Engine.Rendering.Camera
         public abstract Matrix Projection { get; }
         public abstract BoundingFrustum Frustum { get; }
 
-        public abstract float Width { get; }
-        public abstract float Height { get; }
+        public abstract TypedVector2<int> ViewPort { get; }
         public abstract float Near { get; }
         public abstract float Far { get; }
 
-        public abstract void SetPerspective(float width, float height, float near, float far);
+        public abstract void SetPerspective(TypedVector2<int> viewPort, float near, float far);
     }
 }

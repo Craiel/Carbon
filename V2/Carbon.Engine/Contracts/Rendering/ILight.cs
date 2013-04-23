@@ -10,6 +10,7 @@ namespace Carbon.Engine.Contracts.Rendering
         LightType Type { get; set; }
 
         Vector4 Color { get; set; }
+        Vector4 Position { get; set; }
 
         Vector3 Direction { get; set; }
 
@@ -18,5 +19,8 @@ namespace Carbon.Engine.Contracts.Rendering
         float Range { get; set; }
 
         float SpecularPower { get; set; }
+
+        Matrix View { get; }
+        Matrix Projection { get; }
     }
 }

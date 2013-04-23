@@ -1,4 +1,5 @@
 ﻿using Carbon.Engine.Contracts.Logic;
+using Carbon.Engine.Logic;
 using Carbon.Engine.Rendering;
 
 namespace Carbon.Engine.Contracts.Rendering
@@ -7,7 +8,7 @@ namespace Carbon.Engine.Contracts.Rendering
     {
         bool EnableDebugOverlay { get; set; }
 
-        void Resize(int width, int height);
+        void Resize(TypedVector2<int> size);
 
         FrameInstructionSet BeginSet(ICamera camera);
 

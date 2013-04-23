@@ -214,14 +214,15 @@ namespace Carbon.Engine.Logic
         {
             lock (this.RenderSynchronizationLock)
             {
-                this.graphics.Resize(this.window.ClientSize.Width, this.window.ClientSize.Height);
-                this.mainFrameManager.Resize(this.window.ClientSize.Width, this.window.ClientSize.Height);
+                var size = new TypedVector2<int>(this.window.ClientSize.Width, this.window.ClientSize.Height);
+                this.graphics.Resize(size);
+                this.mainFrameManager.Resize(size);
             }
         }
 
         protected void SetEngineContent(EngineContent content)
         {
-            this.graphics.TextureManager.Fallback = this.graphics.TextureManager.Register(content.FallbackTexture);
+            this.graphics.TextureManager.SetFallback(content.FallbackTexture);
         }
 
         protected void SetupDefaultProviders(IScriptingEngine engine)
@@ -314,7 +315,7 @@ namespace Carbon.Engine.Logic
 
             this.graphics.TargetHandle = this.window.Handle;
             this.graphics.Reset();
-            this.graphics.Resize(this.window.ClientSize.Width, this.window.ClientSize.Height);
+            this.graphics.Resize(new TypedVector2<int>(this.window.ClientSize.Width, this.window.ClientSize.Height));
 
             // After all is hooked up register the window events
             this.window.Resize += this.OnWindowResize;

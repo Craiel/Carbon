@@ -1,4 +1,6 @@
-﻿using SlimDX.Direct3D11;
+﻿using Carbon.Engine.Logic;
+
+using SlimDX.Direct3D11;
 
 namespace Carbon.Engine.Rendering
 {
@@ -6,7 +8,6 @@ namespace Carbon.Engine.Rendering
     {
         public DeviceCreationFlags CreationFlags { get; set; }
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public TypedVector2<int> ScreenSize { get; set; }
     }
 }

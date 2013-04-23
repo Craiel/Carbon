@@ -27,25 +27,29 @@ namespace Carbon.Engine.Rendering
             if (content.DiffuseTexture != null)
             {
                 var resource = contentManager.Load<ResourceEntry>(content.DiffuseTexture);
-                this.DiffuseTexture = graphics.TextureManager.Register(resource.Hash);
+                graphics.TextureManager.Register(resource.Hash);
+                this.DiffuseTexture = graphics.TextureManager.GetReference(resource.Hash);
             }
 
             if (content.NormalTexture != null)
             {
                 var resource = contentManager.Load<ResourceEntry>(content.NormalTexture);
-                this.NormalTexture = graphics.TextureManager.Register(resource.Hash);
+                graphics.TextureManager.Register(resource.Hash);
+                this.NormalTexture = graphics.TextureManager.GetReference(resource.Hash);
             }
 
             if (content.AlphaTexture != null)
             {
                 var resource = contentManager.Load<ResourceEntry>(content.AlphaTexture);
-                this.AlphaTexture = graphics.TextureManager.Register(resource.Hash);
+                graphics.TextureManager.Register(resource.Hash);
+                this.AlphaTexture = graphics.TextureManager.GetReference(resource.Hash);
             }
 
             if (content.SpecularTexture != null)
             {
                 var resource = contentManager.Load<ResourceEntry>(content.SpecularTexture);
-                this.SpecularTexture = graphics.TextureManager.Register(resource.Hash);
+                graphics.TextureManager.Register(resource.Hash);
+                this.SpecularTexture = graphics.TextureManager.GetReference(resource.Hash);
             }
         }
 
@@ -53,30 +57,61 @@ namespace Carbon.Engine.Rendering
         {
             this.graphics = graphics;
 
-            if (content.DiffuseTexture != null)
+            if (!string.IsNullOrEmpty(content.DiffuseTexture))
             {
-                this.DiffuseTexture = graphics.TextureManager.Register(content.DiffuseTexture);
+                graphics.TextureManager.Register(content.DiffuseTexture);
+                this.DiffuseTexture = graphics.TextureManager.GetReference(content.DiffuseTexture);
             }
 
-            if (content.NormalTexture != null)
+            if (!string.IsNullOrEmpty(content.NormalTexture))
             {
-                this.NormalTexture = graphics.TextureManager.Register(content.NormalTexture);
+                graphics.TextureManager.Register(content.NormalTexture);
+                this.NormalTexture = graphics.TextureManager.GetReference(content.NormalTexture);
             }
 
-            if (content.SpecularTexture != null)
+            if (!string.IsNullOrEmpty(content.SpecularTexture))
             {
-                this.SpecularTexture = graphics.TextureManager.Register(content.SpecularTexture);
+                graphics.TextureManager.Register(content.SpecularTexture);
+                this.SpecularTexture = graphics.TextureManager.GetReference(content.SpecularTexture);
             }
 
-            if (content.AlphaTexture != null)
+            if (!string.IsNullOrEmpty(content.AlphaTexture))
             {
-                this.AlphaTexture = graphics.TextureManager.Register(content.AlphaTexture);
+                graphics.TextureManager.Register(content.AlphaTexture);
+                this.AlphaTexture = graphics.TextureManager.GetReference(content.AlphaTexture);
             }
         }
 
-        public Material(TextureReference diffuse = null)
+        public Material(ICarbonGraphics graphics, string diffuse = null, string normal = null, string alpha = null, string specular = null)
         {
-            this.DiffuseTexture = diffuse;
+            this.graphics = graphics;
+            if (!string.IsNullOrEmpty(diffuse))
+            {
+                graphics.TextureManager.Register(diffuse);
+                this.DiffuseTexture = graphics.TextureManager.GetReference(diffuse);
+            }
+
+            if (!string.IsNullOrEmpty(normal))
+            {
+                graphics.TextureManager.Register(normal);
+                this.NormalTexture = graphics.TextureManager.GetReference(normal);
+            }
+
+            if (!string.IsNullOrEmpty(alpha))
+            {
+                graphics.TextureManager.Register(alpha);
+                this.AlphaTexture = graphics.TextureManager.GetReference(alpha);
+            }
+
+            if (!string.IsNullOrEmpty(specular))
+            {
+                graphics.TextureManager.Register(specular);
+                this.SpecularTexture = graphics.TextureManager.GetReference(specular);
+            }
+        }
+
+        public Material()
+        {
         }
 
         // -------------------------------------------------------------------
@@ -97,21 +132,28 @@ namespace Carbon.Engine.Rendering
                 return;
             }
 
-            this.graphics.TextureManager.Unregister(this.DiffuseTexture.Register);
+            if (this.DiffuseTexture != null)
+            {
+                this.graphics.TextureManager.Release(this.DiffuseTexture);
+                this.DiffuseTexture = null;
+            }
 
             if (this.NormalTexture != null)
             {
-                this.graphics.TextureManager.Unregister(this.NormalTexture.Register);
+                this.graphics.TextureManager.Release(this.NormalTexture);
+                this.NormalTexture = null;
             }
 
             if (this.SpecularTexture != null)
             {
-                this.graphics.TextureManager.Unregister(this.SpecularTexture.Register);
+                this.graphics.TextureManager.Release(this.SpecularTexture);
+                this.SpecularTexture = null;
             }
 
             if (this.AlphaTexture != null)
             {
-                this.graphics.TextureManager.Unregister(this.AlphaTexture.Register);
+                this.graphics.TextureManager.Release(this.AlphaTexture);
+                this.AlphaTexture = null;
             }
         }
     }

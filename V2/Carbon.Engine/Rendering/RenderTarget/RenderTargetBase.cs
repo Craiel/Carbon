@@ -1,5 +1,6 @@
 ﻿using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
+using Carbon.Engine.Logic;
 
 using SlimDX;
 using SlimDX.Direct3D11;
@@ -15,8 +16,9 @@ namespace Carbon.Engine.Rendering.RenderTarget
 
     public abstract class RenderTargetBase : IRenderTarget
     {
-        private readonly int[] currentSize = new int[2];
         private readonly BlendStateDescription desiredBlendState;
+
+        private TypedVector2<int> currentSize;
 
         private RendertargetBlendMode blendMode;
         private bool needBlendStateUpdate;
@@ -67,19 +69,18 @@ namespace Carbon.Engine.Rendering.RenderTarget
             }
         }
 
-        public void Resize(ICarbonGraphics graphics, int width, int height)
+        public void Resize(ICarbonGraphics graphics, TypedVector2<int> size)
         {
-            if (currentSize[0] == width && currentSize[1] == height)
+            if (this.currentSize == size)
             {
                 return;
             }
 
-            this.Viewport = new Viewport(0, 0, width, height, 0.0f, 1.0f);
+            this.Viewport = new Viewport(0, 0, size.X, size.Y, 0.0f, 1.0f);
 
-            this.DoResize(graphics, width, height);
+            this.DoResize(graphics, size);
 
-            currentSize[0] = width;
-            currentSize[1] = height;
+            this.currentSize = size;
         }
 
         public abstract void Clear(ICarbonGraphics graphics, Vector4 color);
@@ -106,7 +107,7 @@ namespace Carbon.Engine.Rendering.RenderTarget
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected abstract void DoResize(ICarbonGraphics graphics, int width, int height);
+        protected abstract void DoResize(ICarbonGraphics graphics, TypedVector2<int> size);
 
         private void UpdateBlendState(ICarbonGraphics graphics)
         {

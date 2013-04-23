@@ -27,6 +27,8 @@ namespace Carbon.Engine.Scene
 
             if (this.Light != null)
             {
+                // Set the position and update the game-time, position is used mainly for light perspective updates
+                this.Light.Position = this.Position;
                 this.Light.Update(gameTime);
             }
         }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource.Resources;
@@ -13,49 +12,54 @@ namespace Carbon.Engine.Logic
     public enum TextureReferenceType
     {
         Resource,
-        Memory,
         View,
         Register
     }
 
+    public struct TextureReferenceDescription
+    {
+        public int Register;
+        public TextureReferenceType Type;
+        public TypedVector2<int> Size;
+    }
+
     public class TextureReference
     {
-        internal TextureReference(int register, bool registerReference)
+        internal TextureReference(TextureReferenceDescription description)
         {
-            this.Register = register;
-            this.Type = registerReference ? TextureReferenceType.Register : TextureReferenceType.View;
+            this.Register = description.Register;
+            this.Type = description.Type;
+            this.Size = description.Size;
+            this.IsValid = true;
         }
 
-        internal TextureReference(string resourceHash, int register)
+        internal TextureReference(string resourceHash, TextureReferenceDescription description)
+            : this(description)
         {
             this.ResourceHash = resourceHash;
-            this.Register = register;
-            this.Type = TextureReferenceType.Resource;
-        }
-
-        internal TextureReference(byte[] data, int register)
-        {
-            this.Data = data;
-            this.Register = register;
-            this.Type = TextureReferenceType.Memory;
         }
 
         public TextureReferenceType Type { get; private set; }
 
         public string ResourceHash { get; private set; }
-
-        public byte[] Data { get; private set; }
-
+        
         public int Register { get; private set; }
 
-        internal int ReferenceCount { get; set; }
+        public TypedVector2<int> Size { get; private set; }
+
+        public bool IsValid { get; private set; }
+
+        public void Invalidate()
+        {
+            this.IsValid = false;
+        }
 
         public override int GetHashCode()
         {
             return Tuple.Create(this.ResourceHash).GetHashCode();
         }
     }
-
+    
     public class TextureManager : IDisposable
     {
         private const int StaticRegisterLimit = 4999;
@@ -66,6 +70,7 @@ namespace Carbon.Engine.Logic
         private readonly IDictionary<string, TextureReference> managedReferenceCache;
         private readonly IDictionary<TextureReference, ShaderResourceView> textureCache;
         private readonly IDictionary<int, TextureReference> textureRegister;
+        private readonly IDictionary<TextureReference, int> referenceCount;
 
         private int nextRegister = StaticRegisterLimit + 1;
 
@@ -80,77 +85,112 @@ namespace Carbon.Engine.Logic
             this.managedReferenceCache = new Dictionary<string, TextureReference>();
             this.textureCache = new Dictionary<TextureReference, ShaderResourceView>();
             this.textureRegister = new Dictionary<int, TextureReference>();
+            this.referenceCount = new Dictionary<TextureReference, int>();
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public TextureReference Fallback { get; set; }
+        public TextureReference Fallback { get; private set; }
 
         public void Dispose()
         {
+            if (this.Fallback != null)
+            {
+                this.Release(this.Fallback);
+            }
+
+            foreach (TextureReference reference in this.referenceCount.Keys)
+            {
+                if (this.referenceCount[reference] > 0)
+                {
+                    System.Diagnostics.Trace.TraceError("Texture register {0} has {1} references on dispose", reference.Register, this.referenceCount[reference]);
+                }
+            }
+
             this.ClearCache();
         }
 
-        public TextureReference RegisterStatic(ShaderResourceView view, int register)
+        public void RegisterStatic(ShaderResourceView view, int register, TypedVector2<int> size)
         {
             this.CheckStaticRegister(register);
 
-            var reference = new TextureReference(register, false);
+            var description = new TextureReferenceDescription
+                                  {
+                                      Register = register,
+                                      Type = TextureReferenceType.View,
+                                      Size = size
+                                  };
+            var reference = new TextureReference(description);
             this.textureRegister.Add(register, reference);
             this.textureCache.Add(reference, view);
-            return reference;
+            this.referenceCount.Add(reference, 0);
         }
 
-        public TextureReference RegisterStatic(string hash, int register)
+        public void RegisterStatic(string hash, int register)
         {
             this.CheckStaticRegister(register);
 
-            var reference = new TextureReference(hash, register);
+            var description = new TextureReferenceDescription
+                                  {
+                                      Register = register,
+                                      Type = TextureReferenceType.Resource
+                                  };
+            var reference = new TextureReference(hash, description);
             this.textureRegister.Add(register, reference);
-            return reference;
+            this.referenceCount.Add(reference, 0);
         }
 
-        public TextureReference RegisterStatic(byte[] data, int register)
-        {
-            this.CheckStaticRegister(register);
-
-            var reference = new TextureReference(data, register);
-            this.textureRegister.Add(register, reference);
-            return reference;
-        }
-
-        public TextureReference Register(string hash)
+        public void Register(string hash)
         {
             // Check if we have a managed reference for this hash, during runtime this will not have to change since texture references hold no runtime info thats relevant
             if (this.managedReferenceCache.ContainsKey(hash))
             {
-                return this.managedReferenceCache[hash];
+                return;
             }
 
-            var reference = new TextureReference(hash, this.nextRegister++);
+            var description = new TextureReferenceDescription
+            {
+                Register = this.nextRegister++,
+                Type = TextureReferenceType.Resource
+            };
+            var reference = new TextureReference(hash, description);
             this.textureRegister.Add(reference.Register, reference);
+            this.referenceCount.Add(reference, 0);
             this.managedReferenceCache.Add(hash, reference);
-            return reference;
         }
 
-        public TextureReference Register(byte[] data)
+        public bool IsRegistered(string hash)
         {
-            var reference = new TextureReference(data, this.nextRegister++);
-            this.textureRegister.Add(reference.Register, reference);
-            return reference;
+            return this.managedReferenceCache.ContainsKey(hash);
+        }
+
+        public void Release(TextureReference reference)
+        {
+            if (!this.referenceCount.ContainsKey(reference))
+            {
+                throw new ArgumentException("Release called with unknown texture reference");
+            }
+
+            this.referenceCount[reference]--;
         }
 
         public void Unregister(int register)
         {
             if (!this.textureRegister.ContainsKey(register))
             {
-                // This is perfectly fine since the same texture can be used plenty of times
-                return;
+                throw new InvalidOperationException("Unregister called with non-existing reference");
             }
 
             TextureReference reference = this.textureRegister[register];
+            if (this.referenceCount[reference] > 0)
+            {
+                throw new InvalidOperationException("Unregister called on referenced texture: " + this.referenceCount[reference]);
+            }
+
             this.textureRegister.Remove(register);
+            this.referenceCount.Remove(reference);
+            reference.Invalidate();
 
             if (this.textureCache.ContainsKey(reference))
             {
@@ -164,6 +204,17 @@ namespace Carbon.Engine.Logic
             }
         }
 
+        public TextureReference GetReference(string hash)
+        {
+            if (!this.managedReferenceCache.ContainsKey(hash))
+            {
+                throw new InvalidDataException("No texture registered for hash " + hash);
+            }
+
+            this.referenceCount[this.managedReferenceCache[hash]]++;
+            return this.managedReferenceCache[hash];
+        }
+
         public TextureReference GetRegisterReference(int register)
         {
             if (register > StaticRegisterLimit)
@@ -171,11 +222,16 @@ namespace Carbon.Engine.Logic
                 throw new InvalidOperationException("Can't get register reference outside of static range");
             }
 
-            return new TextureReference(register, true);
+            return new TextureReference(new TextureReferenceDescription { Register = register, Type = TextureReferenceType.Register });
         }
         
         public ShaderResourceView GetTexture(TextureReference reference)
         {
+            if (!reference.IsValid)
+            {
+                throw new ArgumentException("Invalid texture reference was passed, did you keep the reference alive too long?");
+            }
+
             TextureReference textureReference = reference;
             if (reference.Type == TextureReferenceType.Register)
             {
@@ -192,32 +248,9 @@ namespace Carbon.Engine.Logic
                 this.textureCache[reference] = this.Load(textureReference);
             }
 
-            reference.ReferenceCount++;
             return this.textureCache[textureReference];
         }
-
-        public void ReleaseTexture(TextureReference reference)
-        {
-            if (reference.ReferenceCount > 0)
-            {
-                reference.ReferenceCount--;
-            }
-        }
-
-        public void ClearUnclaimed()
-        {
-            lock (this.textureCache)
-            {
-                IList<TextureReference> clearList = this.textureCache.Keys.Where(reference => reference.ReferenceCount <= 0 && reference.Type != TextureReferenceType.View).ToList();
-
-                for (int i = 0; i < clearList.Count; i++)
-                {
-                    this.textureCache[clearList[i]].Dispose();
-                    this.textureCache.Remove(clearList[i]);
-                }
-            }
-        }
-
+        
         public void ClearCache()
         {
             lock (this.textureCache)
@@ -225,7 +258,8 @@ namespace Carbon.Engine.Logic
                 IList<TextureReference> clearQueue = new List<TextureReference>();
                 foreach (TextureReference reference in this.textureCache.Keys)
                 {
-                    if (reference.Type == TextureReferenceType.View)
+                    // Keep all valid View type references
+                    if ((reference.Type == TextureReferenceType.View && reference.IsValid) || this.referenceCount[reference] > 0)
                     {
                         continue;
                     }
@@ -237,8 +271,24 @@ namespace Carbon.Engine.Logic
                 {
                     this.textureCache[textureReference].Dispose();
                     this.textureCache.Remove(textureReference);
+                    textureReference.Invalidate();
                 }
             }
+        }
+
+        public void SetFallback(string resource)
+        {
+            if (this.Fallback != null)
+            {
+                this.Release(this.Fallback);
+            }
+
+            if (!this.IsRegistered(resource))
+            {
+                this.Register(resource);
+            }
+
+            this.Fallback = this.GetReference(resource);
         }
 
         // -------------------------------------------------------------------
@@ -273,16 +323,6 @@ namespace Carbon.Engine.Logic
                         if (textureResource != null)
                         {
                             return textureResource.Data;
-                        }
-
-                        break;
-                    }
-
-                case TextureReferenceType.Memory:
-                    {
-                        if (reference.Data != null && reference.Data.Length > 0)
-                        {
-                            return reference.Data;
                         }
 
                         break;

@@ -1,6 +1,8 @@
 ﻿using System;
 
 using Carbon.Engine.Contracts.Rendering;
+using Carbon.Engine.Logic;
+
 using Core.Utils.Contracts;
 using SlimDX;
 
@@ -16,8 +18,7 @@ namespace Carbon.Engine.Rendering.Camera
         private Matrix projection;
         private BoundingFrustum frustum;
 
-        private float width;
-        private float height;
+        private TypedVector2<int> viewPort;
         private float near;
         private float far;
 
@@ -63,19 +64,11 @@ namespace Carbon.Engine.Rendering.Camera
             }
         }
 
-        public override float Width
+        public override TypedVector2<int> ViewPort
         {
             get
             {
-                return this.width;
-            }
-        }
-
-        public override float Height
-        {
-            get
-            {
-                return this.height;
+                return this.viewPort;
             }
         }
 
@@ -110,13 +103,12 @@ namespace Carbon.Engine.Rendering.Camera
             }
         }
 
-        public override void SetPerspective(float newWidth, float newHeight, float newNear, float newFar)
+        public override void SetPerspective(TypedVector2<int> newViewPort, float newNear, float newFar)
         {
-            this.width = newWidth;
-            this.height = newHeight;
+            this.viewPort = newViewPort;
             this.near = newNear;
             this.far = newFar;
-            this.projection = Matrix.OrthoOffCenterLH(0, this.width, 0, this.height, this.near, this.far);
+            this.projection = Matrix.OrthoOffCenterLH(0, this.viewPort.X, 0, this.viewPort.Y, this.near, this.far);
             this.needUpdate = true;
         }
     }

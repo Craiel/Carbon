@@ -24,7 +24,7 @@ namespace Carbon.Engine.Contracts.Logic
         
         void Reset();
 
-        void Resize(int width, int height);
+        void Resize(TypedVector2<int> size);
 
         void SetCulling(CullMode mode);
 

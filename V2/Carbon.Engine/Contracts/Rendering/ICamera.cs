@@ -1,4 +1,5 @@
 ﻿using Carbon.Engine.Contracts.Logic;
+using Carbon.Engine.Logic;
 using Carbon.Engine.Rendering;
 using SlimDX;
 
@@ -15,7 +16,7 @@ namespace Carbon.Engine.Contracts.Rendering
         float Near { get; }
         float Far { get; }
 
-        void SetPerspective(float width, float height, float near, float far);
+        void SetPerspective(TypedVector2<int> size, float near, float far);
     }
 
     public interface IOrthographicCamera : ICamera

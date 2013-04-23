@@ -123,6 +123,7 @@
     <Compile Include="Logic\BoundController.cs" />
     <Compile Include="Logic\GameState.cs" />
     <Compile Include="Logic\InputBindings.cs" />
+    <Compile Include="Logic\TypedVectors.cs" />
     <Compile Include="Logic\Scripting\ScriptingGameProvider.cs" />
     <Compile Include="Logic\TypingController.cs" />
     <Compile Include="Logic\DebugController.cs" />

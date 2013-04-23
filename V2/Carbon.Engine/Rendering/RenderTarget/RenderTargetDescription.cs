@@ -1,4 +1,6 @@
-﻿namespace Carbon.Engine.Rendering.RenderTarget
+﻿using Carbon.Engine.Logic;
+
+namespace Carbon.Engine.Rendering.RenderTarget
 {
     public enum RenderTargetType
     {
@@ -10,18 +12,16 @@
     {
         public RenderTargetType Type;
 
-        public int Width;
-        public int Height;
+        public TypedVector2<int> Size;
 
         public int Index;
 
-        public static RenderTargetDescription Texture(int index, int width, int height)
+        public static RenderTargetDescription Texture(int index, TypedVector2<int> size)
         {
             return new RenderTargetDescription
                 {
                     Type = RenderTargetType.Texture,
-                    Width = width,
-                    Height = height,
+                    Size = size,
                     Index = index
                 };
         }

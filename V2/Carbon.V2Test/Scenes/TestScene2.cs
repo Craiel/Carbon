@@ -117,14 +117,14 @@ namespace Carbon.V2Test.Scenes
             this.console.OnRequestCompletion += this.OnConsoleCompletionRequested;
             
             // Setup the hard textures for internals
-            this.forwardDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1001));
-            this.normalDebugTexture = new Material(this.graphics.TextureManager.GetRegisterReference(1002));
+            this.forwardDebugTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(1001) };
+            this.normalDebugTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(1002) };
 
-            this.gBufferNormalTexture = new Material(this.graphics.TextureManager.GetRegisterReference(11));
-            this.gBufferDiffuseAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(12));
-            this.gBufferSpecularAlbedoTexture = new Material(this.graphics.TextureManager.GetRegisterReference(13));
-            this.gBufferDepthTexture = new Material(this.graphics.TextureManager.GetRegisterReference(14));
-            this.deferredLightTexture = new Material(this.graphics.TextureManager.GetRegisterReference(15));
+            this.gBufferNormalTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(11) };
+            this.gBufferDiffuseAlbedoTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(12) };
+            this.gBufferSpecularAlbedoTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(13) };
+            this.gBufferDepthTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(14) };
+            this.deferredLightTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(15) };
 
             scriptData = this.gameState.ResourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene2.lua"));
             script = new CarbonScript(scriptData);
@@ -175,12 +175,12 @@ namespace Carbon.V2Test.Scenes
             }
         }
 
-        public override void Resize(int width, int height)
+        public override void Resize(TypedVector2<int> size)
         {
-            this.camera.SetPerspective(width, height, 0.05f, 200.0f);
-            this.overlayCamera.SetPerspective(width, height, 0.05f, 200.0f);
+            this.camera.SetPerspective(size, 0.05f, 200.0f);
+            this.overlayCamera.SetPerspective(size, 0.05f, 200.0f);
 
-            this.screenQuad = new Mesh(Quad.CreateScreen(new Vector2(0), new Vector2(width, height)));
+            this.screenQuad = new Mesh(Quad.CreateScreen(new Vector2(0), size));
         }
 
         public override void Update(ITimer gameTime)
@@ -230,16 +230,17 @@ namespace Carbon.V2Test.Scenes
             frameManager.RenderSet(set);
 
             // The scene to Forward
+            var windowSize = new TypedVector2<int>((int)this.graphics.WindowViewport.Width, (int)this.graphics.WindowViewport.Height);
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Forward;
-            set.DesiredTarget = RenderTargetDescription.Texture(1001, 1024, 1024);
+            set.DesiredTarget = RenderTargetDescription.Texture(1001, windowSize);
             this.gameState.NodeManager.RootNode.Render(set);
             frameManager.RenderSet(set);
 
             // The scene to Debug Normal
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.DebugNormal;
-            set.DesiredTarget = RenderTargetDescription.Texture(1002, 1024, 1024);
+            set.DesiredTarget = RenderTargetDescription.Texture(1002, windowSize);
             this.gameState.NodeManager.RootNode.Render(set);
             frameManager.RenderSet(set);
             

@@ -2,8 +2,9 @@ Log:Debug("Initializing Scene", nil)
 
 node = AddAmbientLight(Vector4(0.2, 0.2, 0.2, 0.2), 0)
 
-node = AddDirectionalLight(Vector4(1, 1, 0.5, 1), Vector3(0.5, -1, 1))
 node = AddDirectionalLight(Vector4(1, 1, 1, 0.2), Vector3(-1, -1, -1))
+node = AddSpotLight(Vector4(1, 0, 0, 1), Vector2(20, 40), Vector3(1, 0, 0), 20, 1)
+node.Position = Vector4(-5, 5, 0)
 
 node = AddModel("Models\\WorldTest.dae")
 node.Scale = Vector3(10, 10, 10)

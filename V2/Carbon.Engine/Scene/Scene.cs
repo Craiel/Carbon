@@ -15,6 +15,6 @@ namespace Carbon.Engine.Scene
 
         public abstract void Render(IFrameManager frameManager);
 
-        public abstract void Resize(int width, int height);
+        public abstract void Resize(TypedVector2<int> size);
     }
 }

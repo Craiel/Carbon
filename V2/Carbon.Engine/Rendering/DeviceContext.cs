@@ -106,7 +106,7 @@ namespace Carbon.Engine.Rendering
                 Usage = Usage.RenderTargetOutput,
                 OutputHandle = this.TargetHandle,
                 IsWindowed = true,
-                ModeDescription = new ModeDescription(this.settings.Width, this.settings.Height, new Rational(60, 1), Format.R8G8B8A8_UNorm),
+                ModeDescription = new ModeDescription(this.settings.ScreenSize.X, this.settings.ScreenSize.Y, new Rational(60, 1), Format.R8G8B8A8_UNorm),
                 SampleDescription = new SampleDescription(1, 0),
                 Flags = SwapChainFlags.AllowModeSwitch,
                 SwapEffect = SwapEffect.Discard

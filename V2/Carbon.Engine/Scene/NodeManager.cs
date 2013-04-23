@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 using Carbon.Engine.Contracts.Logic;
@@ -51,7 +52,7 @@ namespace Carbon.Engine.Scene
         private IResourceManager resourceManager;
 
         private ICarbonGraphics graphics;
-
+        
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -75,7 +76,7 @@ namespace Carbon.Engine.Scene
         public override void Dispose()
         {
             this.root.Dispose();
-
+            
             base.Dispose();
         }
 
@@ -213,7 +214,7 @@ namespace Carbon.Engine.Scene
                 parent = this.root;
             }
 
-            var resource = Quad.Create(Vector3.Zero, -Vector3.UnitZ, Vector3.UnitY, 1, 1);
+            var resource = Quad.Create(Vector3.Zero, -Vector3.UnitZ, Vector3.UnitY, new TypedVector2<int>(1));
             if (resource == null) 
             {
                 return null;
@@ -252,8 +253,12 @@ namespace Carbon.Engine.Scene
                 var resourceEntry = this.contentManager.Load<ResourceEntry>(font.Resource);
                 if (resourceEntry != null)
                 {
-                    TextureReference reference = this.graphics.TextureManager.Register(resourceEntry.Hash);
-                    node.Material = new Material(reference) { AlphaTexture = reference };
+                    if (!this.graphics.TextureManager.IsRegistered(resourceEntry.Hash))
+                    {
+                        this.graphics.TextureManager.Register(resourceEntry.Hash);
+                    }
+
+                    node.Material = new Material(this.graphics, diffuse: resourceEntry.Hash, normal: resourceEntry.Hash);
                 }
             }
 
@@ -263,6 +268,11 @@ namespace Carbon.Engine.Scene
 
         public void Clear()
         {
+            foreach (IEntity child in this.root.Children)
+            {
+                child.Dispose();
+            }
+
             this.root.Clear();
         }
 

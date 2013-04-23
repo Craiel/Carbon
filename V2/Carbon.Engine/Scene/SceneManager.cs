@@ -221,11 +221,11 @@ namespace Carbon.Engine.Scene
             }
         }
 
-        public void Resize(int width, int height)
+        public void Resize(TypedVector2<int> size)
         {
             foreach (int key in this.preparedScenes)
             {
-                this.registeredScenes[key].Resize(width, height);
+                this.registeredScenes[key].Resize(size);
             }
         }
     }

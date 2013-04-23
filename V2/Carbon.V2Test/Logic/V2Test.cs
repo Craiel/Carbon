@@ -62,10 +62,11 @@ namespace Carbon.V2Test.Logic
             this.SetEngineContent(content);
 
             // Set our initial size
-            this.Window.Size = new Size(1024, 768);
+            var size = new TypedVector2<int>(1024, 768);
+            this.Window.Size = new Size(size.X, size.Y);
            
             this.gameState.SceneManager.Activate((int)SceneKeys.Test);
-            this.gameState.SceneManager.Resize(this.Window.Size.Width, this.Window.Size.Height);
+            this.gameState.SceneManager.Resize(size);
         }
 
         protected override void OnWindowResize(object sender, EventArgs eventArgs)
@@ -80,7 +81,7 @@ namespace Carbon.V2Test.Logic
                 //this.Cursor.MinPosition = new Vector2(this.Window.Location.X, this.Window.Location.Y);
                 //this.Cursor.MaxPosition = new Vector2(this.Window.Location.X + this.Window.ClientSize.Width, this.Window.Location.Y + this.Window.ClientSize.Height);
 
-                this.gameState.SceneManager.Resize(this.Window.ClientSize.Width, this.Window.ClientSize.Height);
+                this.gameState.SceneManager.Resize(new TypedVector2<int>(this.Window.ClientSize.Width, this.Window.ClientSize.Height));
             }
         }
 
@@ -115,9 +116,9 @@ namespace Carbon.V2Test.Logic
 
         protected override void OnClose(object sender, System.Windows.Forms.FormClosedEventArgs e)
         {
-            base.OnClose(sender, e);
-
             this.gameState.Dispose();
+
+            base.OnClose(sender, e);
         }
 
         public void SwitchScene(SceneKeys key)
@@ -126,7 +127,7 @@ namespace Carbon.V2Test.Logic
             {
                 this.gameState.NodeManager.Clear();
                 this.gameState.SceneManager.Activate((int)key);
-                this.gameState.SceneManager.Resize(this.Window.Size.Width, this.Window.Size.Height);
+                this.gameState.SceneManager.Resize(new TypedVector2<int>(this.Window.Size.Width, this.Window.Size.Height));
             }
         }
 

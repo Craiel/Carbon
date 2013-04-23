@@ -1,4 +1,5 @@
 ﻿using Carbon.Engine.Contracts.Logic;
+using Carbon.Engine.Logic;
 
 using SlimDX;
 using SlimDX.DXGI;
@@ -71,7 +72,7 @@ namespace Carbon.Engine.Rendering.RenderTarget
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected override void DoResize(ICarbonGraphics graphics, int width, int height)
+        protected override void DoResize(ICarbonGraphics graphics, TypedVector2<int> size)
         {
             this.isResizing = true;
 
@@ -79,8 +80,8 @@ namespace Carbon.Engine.Rendering.RenderTarget
 
             this.desiredTexture = new Texture2DDescription
                 {
-                    Width = width,
-                    Height = height,
+                    Width = size.X,
+                    Height = size.Y,
                     MipLevels = 1,
                     ArraySize = 1,
                     Format = Format.R32G32B32A32_Float,
@@ -101,8 +102,8 @@ namespace Carbon.Engine.Rendering.RenderTarget
             // Recreate the Depth Stencil
             this.desiredDepthStencil = new Texture2DDescription
             {
-                Width = width,
-                Height = height,
+                Width = size.X,
+                Height = size.Y,
                 MipLevels = 1,
                 ArraySize = 1,
                 Format = Format.D24_UNorm_S8_UInt,
