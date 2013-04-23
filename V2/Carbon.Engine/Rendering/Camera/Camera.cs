@@ -18,6 +18,6 @@ namespace Carbon.Engine.Rendering.Camera
         public abstract float Near { get; }
         public abstract float Far { get; }
 
-        public abstract void SetPerspective(TypedVector2<int> viewPort, float near, float far);
+        public abstract void SetPerspective(TypedVector2<int> viewPort, float near, float far, float fov = CameraConstants.DefaultFoV);
     }
 }

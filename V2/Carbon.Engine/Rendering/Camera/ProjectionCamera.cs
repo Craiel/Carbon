@@ -155,12 +155,12 @@ namespace Carbon.Engine.Rendering.Camera
             }
         }
 
-        public override void SetPerspective(TypedVector2<int> newViewPort, float newNear, float newFar)
+        public override void SetPerspective(TypedVector2<int> newViewPort, float newNear, float newFar, float fov = CameraConstants.DefaultFoV)
         {
             this.viewPort = newViewPort;
             this.near = newNear;
             this.far = newFar;
-            this.projection = Matrix.PerspectiveFovLH((float)Math.PI / 4, this.viewPort.X / this.viewPort.Y, this.near, this.far);
+            this.projection = Matrix.PerspectiveFovLH(fov, this.viewPort.X / this.viewPort.Y, this.near, this.far);
             this.needUpdate = true;
         }
     }

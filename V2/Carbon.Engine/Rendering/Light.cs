@@ -29,7 +29,7 @@ namespace Carbon.Engine.Rendering
         private Matrix projection;
 
         private Vector4 position;
-
+        
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -42,6 +42,8 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public bool IsCastingShadow { get; set; }
+
         public LightType Type
         {
             get
@@ -53,6 +55,11 @@ namespace Carbon.Engine.Rendering
             {
                 if (this.type != value)
                 {
+                    if (value == LightType.Spot)
+                    {
+                        this.IsCastingShadow = true;
+                    }
+
                     this.type = value;
                     this.CheckLightViewProjectionUpdate();
                 }

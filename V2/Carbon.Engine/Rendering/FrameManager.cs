@@ -14,6 +14,8 @@ using Carbon.Engine.Rendering.RenderTarget;
 using Core.Utils;
 
 using SlimDX;
+using SlimDX.DXGI;
+using SlimDX.Direct3D11;
 
 namespace Carbon.Engine.Rendering
 {
@@ -21,7 +23,6 @@ namespace Carbon.Engine.Rendering
     {
         private readonly ICarbonGraphics graphics;
         private readonly IRenderer renderer;
-        private readonly IProjectionCamera shadowmapCamera;
 
         private readonly DebugOverlay debugOverlay;
         
@@ -33,9 +34,8 @@ namespace Carbon.Engine.Rendering
         private readonly TextureRenderTarget deferredLightTarget;
         private readonly DepthRenderTarget shadowMapTarget;
         private readonly IDictionary<int, TextureRenderTarget> textureTargets;
-
-        //private readonly IDictionary<int, Stream> shadowMapCache;
-
+        private readonly IDictionary<int, TextureReference> shadowMapCache;
+        
         private bool targetTexturesRegistered;
         
         // -------------------------------------------------------------------
@@ -45,7 +45,6 @@ namespace Carbon.Engine.Rendering
         {
             this.graphics = factory.Get<ICarbonGraphics>();
             this.renderer = factory.Get<IRenderer>();
-            this.shadowmapCamera = factory.Get<IProjectionCamera>();
 
             this.debugOverlay = new DebugOverlay();
             this.instructionCache = new List<RenderInstruction>();
@@ -56,6 +55,7 @@ namespace Carbon.Engine.Rendering
             this.deferredLightTarget = new TextureRenderTarget { BlendMode = RendertargetBlendMode.Additive};
             this.shadowMapTarget = new DepthRenderTarget();
             this.textureTargets = new Dictionary<int, TextureRenderTarget>();
+            this.shadowMapCache = new Dictionary<int, TextureReference>();
         }
 
         public override void Dispose()
@@ -66,6 +66,13 @@ namespace Carbon.Engine.Rendering
             this.gBufferTarget.Dispose();
             this.deferredLightTarget.Dispose();
             this.shadowMapTarget.Dispose();
+
+            foreach (int key in this.shadowMapCache.Keys)
+            {
+                this.graphics.TextureManager.Release(this.shadowMapCache[key]);
+            }
+
+            this.shadowMapCache.Clear();
 
             foreach (TextureRenderTarget target in this.textureTargets.Values)
             {
@@ -170,11 +177,11 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         private void UpdateShadowMap(RenderLightInstruction instruction, IList<RenderInstruction> instructions)
         {
-            /*int shadowMapKey = Tuple.Create(instruction.Position, instruction.View, instruction.Projection).GetHashCode();
-            if (this.shadowMapCache.ContainsKey(shadowMapKey))
+            int key = instruction.GetShadowMapKey();
+            if (this.shadowMapCache.ContainsKey(key))
             {
-                
-            }*/
+                return;
+            }
 
             var lightCameraParameters = new RenderParameters
                 {
@@ -189,6 +196,16 @@ namespace Carbon.Engine.Rendering
             for (int i = 0; i < instructions.Count; i++)
             {
                 this.renderer.Render(lightCameraParameters, instructions[i]);
+            }
+            
+            using (var stream = new MemoryStream())
+            {
+                this.shadowMapTarget.StoreData(stream);
+                stream.Position = 0;
+                var data = new byte[stream.Length];
+                stream.Read(data, 0, data.Length);
+                this.graphics.TextureManager.Register(key, data, new TypedVector2<int>(1024, 1024));
+                this.shadowMapCache.Add(key, this.graphics.TextureManager.GetReference(key));
             }
         }
 
@@ -226,8 +243,8 @@ namespace Carbon.Engine.Rendering
 
             for (int i = 0; i < this.lightInstructionCache.Count; i++)
             {
-                if (this.lightInstructionCache[i].Type != LightType.Spot)
-                {
+                if (this.lightInstructionCache[i].Type != LightType.Spot || !this.lightInstructionCache[i].IsCastingShadow)
+            {
                     continue;
                 }
 
@@ -235,7 +252,7 @@ namespace Carbon.Engine.Rendering
             }
 
             // get a quad to use for our operations
-            Mesh quad = new Mesh(Quad.CreateScreen(new Vector2(-1), new TypedVector2<int>(1)));
+            var quad = new Mesh(Quad.CreateScreen(new Vector2(-1), new TypedVector2<int>(1)));
             
             // Render the Lighting
             if (set.LightingEnabled && this.lightInstructionCache.Count > 0)
@@ -249,19 +266,27 @@ namespace Carbon.Engine.Rendering
 
                 for (int i = 0; i < this.lightInstructionCache.Count; i++)
                 {
+                    var instruction = new RenderInstruction
+                                          {
+                                              DiffuseTexture = this.gBufferTarget.DiffuseView,
+                                              NormalTexture = this.gBufferTarget.NormalView,
+                                              SpecularTexture = this.gBufferTarget.SpecularView,
+                                              DepthMap = this.gBufferTarget.DepthView,
+                                              Mesh = quad
+                                          };
+
+                    if (this.lightInstructionCache[i].IsCastingShadow)
+                    {
+                        int shadowMapKey = this.lightInstructionCache[i].GetShadowMapKey();
+                        if (this.shadowMapCache.ContainsKey(shadowMapKey))
+                        {
+                            instruction.ShadowMap = this.graphics.TextureManager.GetTexture(this.shadowMapCache[shadowMapKey], this.shadowMapTarget.LoadInformation);
+                            instruction.ShadowMapSize = new Vector2(1024, 768); // Todo: this is hack, use the load info instead
+                        }
+                    }
+
                     this.renderer.SetDeferredLighting(this.lightInstructionCache[i]);
-                    this.renderer.Render(
-                        parameters,
-                        new RenderInstruction
-                            {
-                                DiffuseTexture = this.gBufferTarget.DiffuseView,
-                                NormalTexture = this.gBufferTarget.NormalView,
-                                SpecularTexture = this.gBufferTarget.SpecularView,
-                                DepthMap = this.gBufferTarget.DepthView,
-                                ShadowMap = this.shadowMapTarget.View,
-                                ShadowMapSize = new Vector2(1024, 768), // Todo: this is hack
-                                Mesh = quad
-                            });
+                    this.renderer.Render(parameters, instruction);
                 }
             }
             
@@ -551,6 +576,7 @@ namespace Carbon.Engine.Rendering
                             renderInstruction.SpotAngles = instruction.Light.SpotAngles;
                             renderInstruction.View = instruction.Light.View;
                             renderInstruction.Projection = instruction.Light.Projection;
+                            renderInstruction.IsCastingShadow = instruction.Light.IsCastingShadow;
                             break;
                         }
 

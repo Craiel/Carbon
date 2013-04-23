@@ -30,6 +30,8 @@ namespace Carbon.Engine.Rendering
 
     public sealed class RenderLightInstruction
     {
+        public bool IsCastingShadow { get; set; }
+
         public LightType Type { get; set; }
 
         public Vector4 Position { get; set; }
@@ -45,6 +47,11 @@ namespace Carbon.Engine.Rendering
         public Matrix Projection { get; set; }
 
         public Mesh Mesh { get; set; }
+
+        public int GetShadowMapKey()
+        {
+            return Tuple.Create(this.Position, this.Range, this.View, this.Projection).GetHashCode();
+        }
     }
 
     public sealed class RenderInstruction

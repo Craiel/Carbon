@@ -39,9 +39,17 @@ namespace Carbon.Engine.Logic
             this.ResourceHash = resourceHash;
         }
 
+        internal TextureReference(byte[] data, TextureReferenceDescription description)
+            : this(description)
+        {
+            this.Data = data;
+        }
+
         public TextureReferenceType Type { get; private set; }
 
         public string ResourceHash { get; private set; }
+
+        public byte[] Data { get; set; }
         
         public int Register { get; private set; }
 
@@ -68,6 +76,7 @@ namespace Carbon.Engine.Logic
         private readonly Device device;
 
         private readonly IDictionary<string, TextureReference> managedReferenceCache;
+        private readonly IDictionary<int, TextureReference> managedKeyReferenceCache;
         private readonly IDictionary<TextureReference, ShaderResourceView> textureCache;
         private readonly IDictionary<int, TextureReference> textureRegister;
         private readonly IDictionary<TextureReference, int> referenceCount;
@@ -83,6 +92,7 @@ namespace Carbon.Engine.Logic
             this.device = device;
 
             this.managedReferenceCache = new Dictionary<string, TextureReference>();
+            this.managedKeyReferenceCache = new Dictionary<int, TextureReference>();
             this.textureCache = new Dictionary<TextureReference, ShaderResourceView>();
             this.textureRegister = new Dictionary<int, TextureReference>();
             this.referenceCount = new Dictionary<TextureReference, int>();
@@ -160,9 +170,33 @@ namespace Carbon.Engine.Logic
             this.managedReferenceCache.Add(hash, reference);
         }
 
+        public void Register(int key, byte[] data, TypedVector2<int> size)
+        {
+            if (size.X == 0 || size.Y == 0 || data == null || data.Length == 0)
+            {
+                throw new ArgumentException();
+            }
+
+            var description = new TextureReferenceDescription
+            {
+                Register = this.nextRegister++,
+                Type = TextureReferenceType.Resource,
+                Size = size
+            };
+            var reference = new TextureReference(data, description);
+            this.textureRegister.Add(reference.Register, reference);
+            this.referenceCount.Add(reference, 0);
+            this.managedKeyReferenceCache.Add(key, reference);
+        }
+
         public bool IsRegistered(string hash)
         {
             return this.managedReferenceCache.ContainsKey(hash);
+        }
+
+        public bool IsRegistered(int key)
+        {
+            return this.managedKeyReferenceCache.ContainsKey(key);
         }
 
         public void Release(TextureReference reference)
@@ -215,6 +249,17 @@ namespace Carbon.Engine.Logic
             return this.managedReferenceCache[hash];
         }
 
+        public TextureReference GetReference(int key)
+        {
+            if (!this.managedKeyReferenceCache.ContainsKey(key))
+            {
+                throw new ArgumentException("No texture registered for key " + key);
+            }
+
+            this.referenceCount[this.managedKeyReferenceCache[key]]++;
+            return this.managedKeyReferenceCache[key];
+        }
+
         public TextureReference GetRegisterReference(int register)
         {
             if (register > StaticRegisterLimit)
@@ -224,8 +269,8 @@ namespace Carbon.Engine.Logic
 
             return new TextureReference(new TextureReferenceDescription { Register = register, Type = TextureReferenceType.Register });
         }
-        
-        public ShaderResourceView GetTexture(TextureReference reference)
+
+        public ShaderResourceView GetTexture(TextureReference reference, ImageLoadInformation? information = null)
         {
             if (!reference.IsValid)
             {
@@ -245,7 +290,7 @@ namespace Carbon.Engine.Logic
 
             if (!this.textureCache.ContainsKey(textureReference))
             {
-                this.textureCache[reference] = this.Load(textureReference);
+                this.textureCache[reference] = this.Load(textureReference, information);
             }
 
             return this.textureCache[textureReference];
@@ -306,11 +351,20 @@ namespace Carbon.Engine.Logic
                 throw new ArgumentException(string.Format("Static register is already taken ({0}) by {1}", register, this.textureRegister[register].ResourceHash));
             }
         }
-
-        private ShaderResourceView Load(TextureReference reference)
+        
+        private ShaderResourceView Load(TextureReference reference, ImageLoadInformation? information)
         {
-            byte[] data = this.LoadData(reference);
-            return ShaderResourceView.FromMemory(this.device, data);
+            if (reference.Data == null)
+            {
+                reference.Data = this.LoadData(reference);
+            }
+
+            if (information == null)
+            {
+                return ShaderResourceView.FromMemory(this.device, reference.Data);
+            }
+
+            return ShaderResourceView.FromMemory(this.device, reference.Data, (ImageLoadInformation)information);
         }
 
         private byte[] LoadData(TextureReference reference)

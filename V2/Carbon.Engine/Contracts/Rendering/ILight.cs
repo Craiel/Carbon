@@ -7,6 +7,8 @@ namespace Carbon.Engine.Contracts.Rendering
 {
     public interface ILight : IEngineComponent
     {
+        bool IsCastingShadow { get; set; }
+
         LightType Type { get; set; }
 
         Vector4 Color { get; set; }

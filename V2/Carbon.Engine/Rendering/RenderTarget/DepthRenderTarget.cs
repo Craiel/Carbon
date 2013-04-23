@@ -20,6 +20,7 @@ namespace Carbon.Engine.Rendering.RenderTarget
         private Texture2DDescription desiredTexture;
         private DepthStencilViewDescription desiredTargetView;
         private ShaderResourceViewDescription desiredShaderResourceView;
+        private ImageLoadInformation loadInformation;
 
         private bool isResizing;
 
@@ -31,6 +32,14 @@ namespace Carbon.Engine.Rendering.RenderTarget
             get
             {
                 return this.textureView;
+            }
+        }
+
+        public ImageLoadInformation LoadInformation
+        {
+            get
+            {
+                return this.loadInformation;
             }
         }
 
@@ -95,6 +104,18 @@ namespace Carbon.Engine.Rendering.RenderTarget
                 CpuAccessFlags = CpuAccessFlags.None,
                 OptionFlags = ResourceOptionFlags.None,
             };
+
+            this.loadInformation = new ImageLoadInformation
+                                       {
+                                           Width = this.desiredTexture.Width,
+                                           Height = this.desiredTexture.Height,
+                                           MipLevels = this.desiredTexture.MipLevels,
+                                           Format = Format.R24G8_Typeless,
+                                           Usage = ResourceUsage.Default,
+                                           BindFlags = BindFlags.DepthStencil | BindFlags.ShaderResource,
+                                           CpuAccessFlags = CpuAccessFlags.None,
+                                           OptionFlags = ResourceOptionFlags.None
+                                       };
 
             this.desiredTargetView = new DepthStencilViewDescription
             {
