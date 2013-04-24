@@ -145,15 +145,25 @@ namespace Carbon.Engine.Rendering.Shaders
 
             // Configure the Textures
             bool texturesChanged = false;
-            if (instruction.DiffuseTexture != this.resources[0])
+            if (instruction.DiffuseTexture != null)
             {
-                this.resources[0] = instruction.DiffuseTexture;
+                if (instruction.DiffuseTexture.View == null)
+                {
+                    instruction.DiffuseTexture.InitializeView(this.graphics.ImmediateContext.Device);
+                }
+
+                this.resources[0] = instruction.DiffuseTexture.View;
                 texturesChanged = true;
             }
 
-            if (instruction.NormalTexture != this.resources[1])
+            if (instruction.NormalTexture != null)
             {
-                this.resources[1] = instruction.NormalTexture;
+                if (instruction.NormalTexture.View == null)
+                {
+                    instruction.NormalTexture.InitializeView(this.graphics.ImmediateContext.Device);
+                }
+
+                this.resources[1] = instruction.NormalTexture.View;
                 texturesChanged = true;
             }
 

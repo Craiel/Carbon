@@ -73,8 +73,8 @@ float4 PS(PS_INPUT input) : SV_Target
     // Camera is at 0,0,0 in View Space
     float3 cameraPositionVS = 0;
     
-    float shadowTerm = 0;
-    
+    float shadowTerm = 1;
+   
 #if SHADOWMAPPING
     // Bring the View Space position into world space and then back into clip space for our light
     float4 positionWorld = mul(float4(positionVS, 1.0), InvertedView);

@@ -9,11 +9,10 @@ namespace Carbon.Engine.Rendering.RenderTarget
 {
     class GBufferRenderTarget : RenderTargetBase
     {
-        private readonly Texture2D[] textures;
+        private readonly TextureData[] textures;
         private readonly RenderTargetView[] targetViews;
-        private readonly ShaderResourceView[] views;
 
-        private Texture2D depthStencil;
+        private TextureData depthStencil;
         private DepthStencilView depthStencilView;
 
         private Texture2DDescription desiredTexture;
@@ -22,8 +21,6 @@ namespace Carbon.Engine.Rendering.RenderTarget
         private Texture2DDescription desiredDepthStencil;
         private DepthStencilViewDescription desiredDepthStencilView;
         
-        private ShaderResourceView depthView;
-
         private bool isResizing;
         
         // -------------------------------------------------------------------
@@ -31,9 +28,8 @@ namespace Carbon.Engine.Rendering.RenderTarget
         // -------------------------------------------------------------------
         public GBufferRenderTarget()
         {
-            this.textures = new Texture2D[3];
+            this.textures = new TextureData[3];
             this.targetViews = new RenderTargetView[3];
-            this.views = new ShaderResourceView[3];
         }
 
         // -------------------------------------------------------------------
@@ -46,38 +42,38 @@ namespace Carbon.Engine.Rendering.RenderTarget
             base.Dispose();
         }
 
-        public ShaderResourceView NormalView
+        public TextureData NormalData
         {
             get
             {
-                return this.views[0];
+                return this.textures[0];
             }
         }
 
-        public ShaderResourceView DiffuseView
+        public TextureData DiffuseData
         {
             get
             {
-                return this.views[1];
+                return this.textures[1];
             }
         }
 
-        public ShaderResourceView SpecularView
+        public TextureData SpecularData
         {
             get
             {
-                return this.views[2];
+                return this.textures[2];
             }
         }
 
-        public ShaderResourceView DepthView
+        public TextureData DepthData
         {
             get
             {
-                return this.depthView;
+                return this.depthStencil;
             }
         }
-
+        
         public override void Clear(ICarbonGraphics graphics, Vector4 color)
         {
             if (this.isResizing)
@@ -169,27 +165,31 @@ namespace Carbon.Engine.Rendering.RenderTarget
             // 2 Component signed normalized spheremap-encoded normals
             this.desiredTexture.Format = Format.R16G16B16A16_SNorm;
             this.desiredTargetView.Format = this.desiredTexture.Format;
-            this.textures[0] = graphics.StateManager.GetTexture(this.desiredTexture);
-            this.targetViews[0] = graphics.StateManager.GetRenderTargetView(this.textures[0], this.desiredTargetView);
-            this.views[0] = new ShaderResourceView(graphics.ImmediateContext.Device, this.textures[0]);
+            Texture2D texture = graphics.StateManager.GetTexture(this.desiredTexture);
+            ShaderResourceView view = new ShaderResourceView(graphics.ImmediateContext.Device, texture);
+            this.targetViews[0] = graphics.StateManager.GetRenderTargetView(texture, this.desiredTargetView);
+            this.textures[0] = new TextureData(texture, view);
 
             // 3 Component unsigned normalized diffuse albedo
             this.desiredTexture.Format = Format.R10G10B10A2_UNorm;
             this.desiredTargetView.Format = this.desiredTexture.Format;
-            this.textures[1] = graphics.StateManager.GetTexture(this.desiredTexture);
-            this.targetViews[1] = graphics.StateManager.GetRenderTargetView(this.textures[1], this.desiredTargetView);
-            this.views[1] = new ShaderResourceView(graphics.ImmediateContext.Device, this.textures[1]);
+            texture = graphics.StateManager.GetTexture(this.desiredTexture);
+            view = new ShaderResourceView(graphics.ImmediateContext.Device, texture);
+            this.targetViews[1] = graphics.StateManager.GetRenderTargetView(texture, this.desiredTargetView);
+            this.textures[1] = new TextureData(texture, view);
 
             // 4 Component unsigned normalized specular albedo and power
             this.desiredTexture.Format = Format.R8G8B8A8_UNorm;
             this.desiredTargetView.Format = this.desiredTexture.Format;
-            this.textures[2] = graphics.StateManager.GetTexture(this.desiredTexture);
-            this.targetViews[2] = graphics.StateManager.GetRenderTargetView(this.textures[2], this.desiredTargetView);
-            this.views[2] = new ShaderResourceView(graphics.ImmediateContext.Device, this.textures[2]);
+            texture = graphics.StateManager.GetTexture(this.desiredTexture);
+            view = new ShaderResourceView(graphics.ImmediateContext.Device, texture);
+            this.targetViews[2] = graphics.StateManager.GetRenderTargetView(texture, this.desiredTargetView);
+            this.textures[2] = new TextureData(texture, view);
 
-            this.depthStencil = graphics.StateManager.GetTexture(this.desiredDepthStencil);
-            this.depthStencilView = graphics.StateManager.GetDepthStencilView(this.desiredDepthStencilView, this.depthStencil);
-            this.depthView = new ShaderResourceView(graphics.ImmediateContext.Device, this.depthStencil, desiredDepthView);
+            texture = graphics.StateManager.GetTexture(this.desiredDepthStencil);
+            view = new ShaderResourceView(graphics.ImmediateContext.Device, texture, desiredDepthView);
+            this.depthStencilView = graphics.StateManager.GetDepthStencilView(this.desiredDepthStencilView, texture);
+            this.depthStencil = new TextureData(texture, view);
             
             this.isResizing = false;
         }
@@ -201,12 +201,6 @@ namespace Carbon.Engine.Rendering.RenderTarget
         {
             for (int i = 0; i < 3; i++)
             {
-                if (this.views[i] != null)
-                {
-                    this.views[i].Dispose();
-                    this.views[i] = null;
-                }
-                
                 if (this.targetViews[i] != null)
                 {
                     this.targetViews[i].Dispose();
@@ -219,13 +213,7 @@ namespace Carbon.Engine.Rendering.RenderTarget
                     this.textures[i] = null;
                 }
             }
-
-            if (this.depthView != null)
-            {
-                this.depthView.Dispose();
-                this.depthView = null;
-            }
-
+            
             if (this.depthStencilView != null)
             {
                 this.depthStencilView.Dispose();

@@ -19,6 +19,8 @@ using SlimDX.Direct3D11;
 
 namespace Carbon.Engine.Rendering
 {
+    using Carbon.Engine.Rendering.Camera;
+
     public class FrameManager : EngineComponent, IFrameManager
     {
         private readonly ICarbonGraphics graphics;
@@ -113,12 +115,12 @@ namespace Carbon.Engine.Rendering
             this.deferredLightTarget.Resize(this.graphics, size);
             this.shadowMapTarget.Resize(this.graphics, size);
 
-            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.NormalView, 11, size);
-            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.DiffuseView, 12, size);
-            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.SpecularView, 13, size);
-            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.DepthView, 14, size);
-            this.graphics.TextureManager.RegisterStatic(this.deferredLightTarget.View, 15, size);
-            this.graphics.TextureManager.RegisterStatic(this.shadowMapTarget.View, 16, size);
+            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.NormalData, (int)StaticTextureRegister.GBufferNormal, size);
+            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.DiffuseData, (int)StaticTextureRegister.GBufferDiffuse, size);
+            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.SpecularData, (int)StaticTextureRegister.GBufferSpecular, size);
+            this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.DepthData, (int)StaticTextureRegister.GBufferDepth, size);
+            this.graphics.TextureManager.RegisterStatic(this.deferredLightTarget.Data, (int)StaticTextureRegister.DeferredLight, size);
+            this.graphics.TextureManager.RegisterStatic(this.shadowMapTarget.Data, (int)StaticTextureRegister.ShadowMapTarget, size);
             
             this.targetTexturesRegistered = true;
         }
@@ -180,7 +182,7 @@ namespace Carbon.Engine.Rendering
             int key = instruction.GetShadowMapKey();
             if (this.shadowMapCache.ContainsKey(key))
             {
-                return;
+                //return;
             }
 
             var lightCameraParameters = new RenderParameters
@@ -191,6 +193,8 @@ namespace Carbon.Engine.Rendering
                     Projection = instruction.Projection,
                     View = instruction.View
                 };
+            lightCameraParameters.Projection = ProjectionCamera.Camera.Projection;
+            lightCameraParameters.View = ProjectionCamera.Camera.View;
             
             this.shadowMapTarget.Set(this.graphics);
             for (int i = 0; i < instructions.Count; i++)
@@ -198,15 +202,16 @@ namespace Carbon.Engine.Rendering
                 this.renderer.Render(lightCameraParameters, instructions[i]);
             }
             
-            using (var stream = new MemoryStream())
+            /*using (var stream = new MemoryStream())
             {
-                this.shadowMapTarget.StoreData(stream);
+                this.shadowMapTarget.StoreData(this.graphics.ImmediateContext, stream);
                 stream.Position = 0;
                 var data = new byte[stream.Length];
                 stream.Read(data, 0, data.Length);
-                this.graphics.TextureManager.Register(key, data, new TypedVector2<int>(1024, 1024));
-                this.shadowMapCache.Add(key, this.graphics.TextureManager.GetReference(key));
-            }
+                //this.graphics.TextureManager.Unregister(key);
+                //this.graphics.TextureManager.Register(key, data, new TypedVector2<int>(1024, 1024));
+                //this.shadowMapCache.Add(key, this.graphics.TextureManager.GetReference(key));
+            }*/
         }
 
         private void RenderSetDeferred(FrameInstructionSet set)
@@ -268,10 +273,10 @@ namespace Carbon.Engine.Rendering
                 {
                     var instruction = new RenderInstruction
                                           {
-                                              DiffuseTexture = this.gBufferTarget.DiffuseView,
-                                              NormalTexture = this.gBufferTarget.NormalView,
-                                              SpecularTexture = this.gBufferTarget.SpecularView,
-                                              DepthMap = this.gBufferTarget.DepthView,
+                                              DiffuseTexture = this.gBufferTarget.DiffuseData,
+                                              NormalTexture = this.gBufferTarget.NormalData,
+                                              SpecularTexture = this.gBufferTarget.SpecularData,
+                                              DepthMap = this.gBufferTarget.DepthData,
                                               Mesh = quad
                                           };
 
@@ -280,7 +285,8 @@ namespace Carbon.Engine.Rendering
                         int shadowMapKey = this.lightInstructionCache[i].GetShadowMapKey();
                         if (this.shadowMapCache.ContainsKey(shadowMapKey))
                         {
-                            instruction.ShadowMap = this.graphics.TextureManager.GetTexture(this.shadowMapCache[shadowMapKey], this.shadowMapTarget.LoadInformation);
+                            instruction.ShadowMap = this.shadowMapTarget.Data;
+                            //instruction.ShadowMap = this.graphics.TextureManager.GetTexture(this.shadowMapCache[shadowMapKey], this.shadowMapTarget.LoadInformation, this.shadowMapTarget.ViewDescription);
                             instruction.ShadowMapSize = new Vector2(1024, 768); // Todo: this is hack, use the load info instead
                         }
                     }
@@ -318,8 +324,8 @@ namespace Carbon.Engine.Rendering
                         parameters,
                         new RenderInstruction
                         {
-                            DiffuseTexture = this.gBufferTarget.DiffuseView,
-                            SpecularTexture = this.deferredLightTarget.View,
+                            DiffuseTexture = this.gBufferTarget.DiffuseData,
+                            SpecularTexture = this.deferredLightTarget.Data,
                             Mesh = quad
                         });
 
@@ -524,7 +530,7 @@ namespace Carbon.Engine.Rendering
             if (needRegister)
             {
                 // Register the texture in the texture manager static register
-                this.graphics.TextureManager.RegisterStatic(target.View, description.Index, description.Size);
+                this.graphics.TextureManager.RegisterStatic(target.Data, description.Index, description.Size);
             }
 
             return target;

@@ -9,9 +9,8 @@ namespace Carbon.Engine.Rendering.RenderTarget
 {
     internal class TextureRenderTarget : RenderTargetBase
     {
-        private Texture2D texture;
+        private TextureData texture;
         private RenderTargetView targetView;
-        private ShaderResourceView textureView;
 
         private Texture2D depthStencil;
         private DepthStencilView depthStencilView;
@@ -61,11 +60,11 @@ namespace Carbon.Engine.Rendering.RenderTarget
             base.Set(graphics);
         }
 
-        public ShaderResourceView View
+        public TextureData Data
         {
             get
             {
-                return this.textureView;
+                return this.texture;
             }
         }
 
@@ -122,9 +121,10 @@ namespace Carbon.Engine.Rendering.RenderTarget
                 MipSlice = 0,
             };
 
-            this.texture = graphics.StateManager.GetTexture(this.desiredTexture);
-            this.targetView = graphics.StateManager.GetRenderTargetView(this.texture, this.desiredTargetView);
-            this.textureView = new ShaderResourceView(graphics.ImmediateContext.Device, this.texture);
+            Texture2D newTexture = graphics.StateManager.GetTexture(this.desiredTexture);
+            ShaderResourceView view = new ShaderResourceView(graphics.ImmediateContext.Device, newTexture);
+            this.targetView = graphics.StateManager.GetRenderTargetView(newTexture, this.desiredTargetView);
+            this.texture = new TextureData(newTexture, view);
 
             this.depthStencil = graphics.StateManager.GetTexture(this.desiredDepthStencil);
             this.depthStencilView = graphics.StateManager.GetDepthStencilView(this.desiredDepthStencilView, this.depthStencil);
@@ -142,13 +142,7 @@ namespace Carbon.Engine.Rendering.RenderTarget
                 this.blendState.Dispose();
                 this.blendState = null;
             }
-
-            if (this.textureView != null)
-            {
-                this.textureView.Dispose();
-                this.textureView = null;
-            }
-
+            
             if (this.targetView != null)
             {
                 this.targetView.Dispose();

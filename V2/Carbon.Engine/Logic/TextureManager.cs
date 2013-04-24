@@ -23,6 +23,170 @@ namespace Carbon.Engine.Logic
         public TypedVector2<int> Size;
     }
 
+    public enum StaticTextureRegister
+    {
+        Unknown = 0,
+
+        GBufferNormal = 11,
+        GBufferDiffuse = 12,
+        GBufferSpecular = 13,
+        GBufferDepth = 14,
+
+        DeferredLight = 15,
+        ShadowMapTarget = 16,
+    }
+
+    public enum TextureDataType
+    {
+        Unknown,
+        Texture2D
+    }
+
+    public class TextureData : IDisposable
+    {
+        private readonly byte[] data;
+
+        private readonly ImageLoadInformation? loadInformation;
+        private readonly ShaderResourceViewDescription? viewDescription;
+
+        private readonly bool locked;
+
+        public TextureData(TextureDataType type, byte[] data, ImageLoadInformation loadInfo, ShaderResourceViewDescription viewDescription)
+            : this(type, data, loadInfo)
+        {
+            this.viewDescription = viewDescription;
+        }
+
+        public TextureData(TextureDataType type, byte[] data, ImageLoadInformation loadInfo)
+            : this(type, data)
+        {
+            this.loadInformation = loadInfo;
+        }
+
+        public TextureData(TextureDataType type, byte[] data)
+        {
+            this.Type = type;
+            this.data = data;
+        }
+
+        public TextureData(Texture2D data, ShaderResourceView view)
+        {
+            if (data == null)
+            {
+                throw new ArgumentException();
+            }
+
+            this.View = view;
+            this.Texture2D = data;
+            this.Type = TextureDataType.Texture2D;
+            this.locked = true;
+        }
+        
+        public TextureDataType Type { get; private set; }
+        public Texture2D Texture2D { get; private set; }
+        public ShaderResourceView View { get; private set; }
+
+        public void Dispose()
+        {
+            if (this.locked)
+            {
+                return;
+            }
+
+            this.ReleaseView();
+        }
+
+        public void ReleaseView()
+        {
+            if (this.locked)
+            {
+                throw new InvalidOperationException();
+            }
+
+            this.View.Dispose();
+            this.View = null;
+        }
+
+        public void ReleaseTexture()
+        {
+            if (this.locked)
+            {
+                throw new InvalidOperationException();
+            }
+
+            if (this.View != null)
+            {
+                this.ReleaseView();
+            }
+
+            switch (this.Type)
+            {
+                case TextureDataType.Texture2D:
+                    {
+                        if (this.Texture2D != null)
+                        {
+                            this.Texture2D.Dispose();
+                            this.Texture2D = null;
+                        }
+
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new NotImplementedException();
+                    }
+            }
+        }
+
+        public void InitializeView(Device graphics)
+        {
+            switch (this.Type)
+            {
+                    case TextureDataType.Texture2D:
+                    {
+                        if (this.Texture2D == null)
+                        {
+                            this.InitializeTexture(graphics);
+                        }
+                 
+                        if (this.viewDescription != null)
+                        {
+                            this.View = new ShaderResourceView(graphics, this.Texture2D, (ShaderResourceViewDescription)this.viewDescription);
+                        }
+                        else
+                        {
+                            this.View = new ShaderResourceView(graphics, this.Texture2D);
+                        }
+                        
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new NotImplementedException();
+                    }
+            }
+        }
+
+        public void InitializeTexture(Device graphics)
+        {
+            switch (this.Type)
+            {
+                    case TextureDataType.Texture2D:
+                    {
+                        this.Texture2D = this.loadInformation != null ? Texture2D.FromMemory(graphics, this.data, (ImageLoadInformation)this.loadInformation) : Texture2D.FromMemory(graphics, this.data);
+                        break;
+                    }
+
+                default:
+                    {
+                        throw new NotImplementedException();
+                    }
+            }
+        }
+    }
+
     public class TextureReference
     {
         internal TextureReference(TextureReferenceDescription description)
@@ -77,7 +241,7 @@ namespace Carbon.Engine.Logic
 
         private readonly IDictionary<string, TextureReference> managedReferenceCache;
         private readonly IDictionary<int, TextureReference> managedKeyReferenceCache;
-        private readonly IDictionary<TextureReference, ShaderResourceView> textureCache;
+        private readonly IDictionary<TextureReference, TextureData> textureCache;
         private readonly IDictionary<int, TextureReference> textureRegister;
         private readonly IDictionary<TextureReference, int> referenceCount;
 
@@ -93,7 +257,7 @@ namespace Carbon.Engine.Logic
 
             this.managedReferenceCache = new Dictionary<string, TextureReference>();
             this.managedKeyReferenceCache = new Dictionary<int, TextureReference>();
-            this.textureCache = new Dictionary<TextureReference, ShaderResourceView>();
+            this.textureCache = new Dictionary<TextureReference, TextureData>();
             this.textureRegister = new Dictionary<int, TextureReference>();
             this.referenceCount = new Dictionary<TextureReference, int>();
         }
@@ -121,7 +285,7 @@ namespace Carbon.Engine.Logic
             this.ClearCache();
         }
 
-        public void RegisterStatic(ShaderResourceView view, int register, TypedVector2<int> size)
+        public void RegisterStatic(TextureData data, int register, TypedVector2<int> size)
         {
             this.CheckStaticRegister(register);
 
@@ -133,7 +297,7 @@ namespace Carbon.Engine.Logic
                                   };
             var reference = new TextureReference(description);
             this.textureRegister.Add(register, reference);
-            this.textureCache.Add(reference, view);
+            this.textureCache.Add(reference, data);
             this.referenceCount.Add(reference, 0);
         }
 
@@ -270,7 +434,7 @@ namespace Carbon.Engine.Logic
             return new TextureReference(new TextureReferenceDescription { Register = register, Type = TextureReferenceType.Register });
         }
 
-        public ShaderResourceView GetTexture(TextureReference reference, ImageLoadInformation? information = null)
+        public TextureData GetTexture(TextureReference reference, ImageLoadInformation? information = null, ShaderResourceViewDescription? viewDescription = null)
         {
             if (!reference.IsValid)
             {
@@ -290,7 +454,7 @@ namespace Carbon.Engine.Logic
 
             if (!this.textureCache.ContainsKey(textureReference))
             {
-                this.textureCache[reference] = this.Load(textureReference, information);
+                this.textureCache[reference] = this.Load(textureReference, information, viewDescription);
             }
 
             return this.textureCache[textureReference];
@@ -352,8 +516,13 @@ namespace Carbon.Engine.Logic
             }
         }
         
-        private ShaderResourceView Load(TextureReference reference, ImageLoadInformation? information)
+        private TextureData Load(TextureReference reference, ImageLoadInformation? information, ShaderResourceViewDescription? viewDescription)
         {
+            if (viewDescription != null && information == null)
+            {
+                throw new InvalidOperationException("Can not supply custom view description without custom load information");
+            }
+
             if (reference.Data == null)
             {
                 reference.Data = this.LoadData(reference);
@@ -361,10 +530,15 @@ namespace Carbon.Engine.Logic
 
             if (information == null)
             {
-                return ShaderResourceView.FromMemory(this.device, reference.Data);
+                return new TextureData(TextureDataType.Texture2D, reference.Data);
             }
 
-            return ShaderResourceView.FromMemory(this.device, reference.Data, (ImageLoadInformation)information);
+            if (viewDescription == null)
+            {
+                return new TextureData(TextureDataType.Texture2D, reference.Data, (ImageLoadInformation)information);
+            }
+
+            return new TextureData(TextureDataType.Texture2D, reference.Data, (ImageLoadInformation)information, (ShaderResourceViewDescription)viewDescription);
         }
 
         private byte[] LoadData(TextureReference reference)

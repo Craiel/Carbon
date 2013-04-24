@@ -77,13 +77,23 @@ namespace Carbon.Engine.Rendering.Shaders
             bool texturesChanged = false;
             if (instruction.DiffuseTexture != null)
             {
-                this.resources[0] = instruction.DiffuseTexture;
+                if (instruction.DiffuseTexture.View == null)
+                {
+                    instruction.DiffuseTexture.InitializeView(this.graphics.ImmediateContext.Device);
+                }
+
+                this.resources[0] = instruction.DiffuseTexture.View;
                 texturesChanged = true;
             }
 
             if (instruction.SpecularTexture != null)
             {
-                this.resources[2] = instruction.SpecularTexture;
+                if (instruction.SpecularTexture.View == null)
+                {
+                    instruction.SpecularTexture.InitializeView(this.graphics.ImmediateContext.Device);
+                }
+
+                this.resources[2] = instruction.SpecularTexture.View;
                 texturesChanged = true;
             }
 

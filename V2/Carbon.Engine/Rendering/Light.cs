@@ -172,10 +172,10 @@ namespace Carbon.Engine.Rendering
             lock (ProjectionCamera.Camera)
             {
                 // Todo: calculate proper view / projection for the spot parameters
-                var viewPort = new TypedVector2<int>(1024, 768);
-                ProjectionCamera.Camera.SetPerspective(viewPort, 0.05f, this.Range);
-                ProjectionCamera.Camera.Position = this.position;
-                ProjectionCamera.Camera.LookAt(this.Direction);
+                var viewPort = new TypedVector2<int>(1024, 1024);
+                ProjectionCamera.Camera.SetPerspective(viewPort, 0.05f, 20.0f, 1);
+                ProjectionCamera.Camera.Position = new Vector4(2, 5, 0, 1);
+                ProjectionCamera.Camera.LookAt(new Vector3(1, 0, 0)); // Todo: clean this up, confusing what lookat is in this context
                 ProjectionCamera.Camera.Update(null);
 
                 this.view = ProjectionCamera.Camera.View;

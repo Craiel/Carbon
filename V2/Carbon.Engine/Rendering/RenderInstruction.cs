@@ -5,6 +5,8 @@ using SlimDX.Direct3D11;
 
 namespace Carbon.Engine.Rendering
 {
+    using Carbon.Engine.Logic;
+
     public enum RenderMode
     {
         Default,
@@ -72,12 +74,12 @@ namespace Carbon.Engine.Rendering
 
         public PrimitiveTopology Topology { get; set; }
 
-        public ShaderResourceView DiffuseTexture { get; set; }
-        public ShaderResourceView NormalTexture { get; set; }
-        public ShaderResourceView SpecularTexture { get; set; }
-        public ShaderResourceView DepthMap { get; set; }
-        public ShaderResourceView ShadowMap { get; set; }
-        public ShaderResourceView AlphaTexture { get; set; }
+        public TextureData DiffuseTexture { get; set; }
+        public TextureData NormalTexture { get; set; }
+        public TextureData SpecularTexture { get; set; }
+        public TextureData DepthMap { get; set; }
+        public TextureData ShadowMap { get; set; }
+        public TextureData AlphaTexture { get; set; }
         
         public Vector4? Color { get; set; }
 

@@ -11,9 +11,8 @@ namespace Carbon.Engine.Rendering.RenderTarget
 {
     internal class DepthRenderTarget : RenderTargetBase
     {
-        private Texture2D texture;
+        private TextureData texture;
         private DepthStencilView targetView;
-        private ShaderResourceView textureView;
 
         private BlendState blendState;
 
@@ -27,11 +26,11 @@ namespace Carbon.Engine.Rendering.RenderTarget
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public ShaderResourceView View
+        public TextureData Data
         {
             get
             {
-                return this.textureView;
+                return this.texture;
             }
         }
 
@@ -40,6 +39,14 @@ namespace Carbon.Engine.Rendering.RenderTarget
             get
             {
                 return this.loadInformation;
+            }
+        }
+
+        public ShaderResourceViewDescription ViewDescription
+        {
+            get
+            {
+                return this.desiredShaderResourceView;
             }
         }
 
@@ -74,11 +81,11 @@ namespace Carbon.Engine.Rendering.RenderTarget
             base.Set(graphics);
         }
 
-        public void StoreData(Stream target, ImageFileFormat format = ImageFileFormat.Dds)
+        public void StoreData(DeviceContext context, Stream target, ImageFileFormat format = ImageFileFormat.Dds)
         {
             if (!this.isResizing && this.texture != null)
             {
-                Texture2D.ToStream(this.texture.Device.ImmediateContext, this.texture, format, target);
+                Texture2D.ToStream(context, this.texture.Texture2D, format, target);
             }
         }
         
@@ -132,9 +139,10 @@ namespace Carbon.Engine.Rendering.RenderTarget
                 MostDetailedMip = 0
             };
             
-            this.texture = graphics.StateManager.GetTexture(this.desiredTexture);
-            this.targetView = graphics.StateManager.GetDepthStencilView(this.desiredTargetView, this.texture);
-            this.textureView = new ShaderResourceView(graphics.ImmediateContext.Device, this.texture, this.desiredShaderResourceView);
+            Texture2D data = graphics.StateManager.GetTexture(this.desiredTexture);
+            ShaderResourceView view = new ShaderResourceView(graphics.ImmediateContext.Device, data, this.desiredShaderResourceView);
+            this.targetView = graphics.StateManager.GetDepthStencilView(this.desiredTargetView, data);
+            this.texture = new TextureData(data, view);
             
             this.isResizing = false;
         }
@@ -149,13 +157,7 @@ namespace Carbon.Engine.Rendering.RenderTarget
                 this.blendState.Dispose();
                 this.blendState = null;
             }
-
-            if (this.textureView != null)
-            {
-                this.textureView.Dispose();
-                this.textureView = null;
-            }
-
+            
             if (this.targetView != null)
             {
                 this.targetView.Dispose();

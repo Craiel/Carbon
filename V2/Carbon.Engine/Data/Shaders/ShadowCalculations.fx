@@ -9,8 +9,6 @@ static const float SHADOWBIAS = 0.00006f;
 // ---------------------------------
 // Functions
 // ---------------------------------
-#if SHADOWMAPPING
-
 // Calculates the shadow occlusion using bilinear PCF
 float CalcShadowTermPCF(float lightDepth, float2 shadowMapCoordinates, float2 shadowMapSize)
 {
@@ -76,5 +74,4 @@ float CalcShadowTermSoftPCF(float lightDepth, float2 shadowMapCoordinates, float
     return shadowTerm;
 }
 
-#endif
 #endif

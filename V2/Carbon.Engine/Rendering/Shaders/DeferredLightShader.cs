@@ -309,25 +309,45 @@ namespace Carbon.Engine.Rendering.Shaders
             bool texturesChanged = false;
             if (instruction.DiffuseTexture != null)
             {
-                this.resources[0] = instruction.DiffuseTexture;
+                if (instruction.DiffuseTexture.View == null)
+                {
+                    instruction.DiffuseTexture.InitializeView(this.graphics.ImmediateContext.Device);
+                }
+
+                this.resources[0] = instruction.DiffuseTexture.View;
                 texturesChanged = true;
             }
 
             if (instruction.NormalTexture != null)
             {
-                this.resources[1] = instruction.NormalTexture;
+                if (instruction.NormalTexture.View == null)
+                {
+                    instruction.NormalTexture.InitializeView(this.graphics.ImmediateContext.Device);
+                }
+
+                this.resources[1] = instruction.NormalTexture.View;
                 texturesChanged = true;
             }
 
             if (instruction.SpecularTexture != null)
             {
-                this.resources[2] = instruction.SpecularTexture;
+                if (instruction.SpecularTexture.View == null)
+                {
+                    instruction.SpecularTexture.InitializeView(this.graphics.ImmediateContext.Device);
+                }
+
+                this.resources[2] = instruction.SpecularTexture.View;
                 texturesChanged = true;
             }
 
             if (instruction.DepthMap != null)
             {
-                this.resources[3] = instruction.DepthMap;
+                if (instruction.DepthMap.View == null)
+                {
+                    instruction.DepthMap.InitializeView(this.graphics.ImmediateContext.Device);
+                }
+
+                this.resources[3] = instruction.DepthMap.View;
                 texturesChanged = true;
             }
 
@@ -338,7 +358,12 @@ namespace Carbon.Engine.Rendering.Shaders
                     throw new InvalidOperationException();
                 }
 
-                this.resources[4] = instruction.ShadowMap;
+                if (instruction.ShadowMap.View == null)
+                {
+                    instruction.ShadowMap.InitializeView(this.graphics.ImmediateContext.Device);
+                }
+
+                this.resources[4] = instruction.ShadowMap.View;
                 this.lightConstantBuffer.ShadowMapSize = (Vector2)instruction.ShadowMapSize;
                 texturesChanged = true;
             }

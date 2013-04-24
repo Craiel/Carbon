@@ -458,8 +458,6 @@ namespace Carbon.Engine.Rendering
 
             this.globalMacros[0].Value = instruction.InstanceCount <= 1 ? "0" : "1";
             this.globalMacros[1].Value = this.LightingEnabled ? "1" : "0";
-
-            this.SetMacros(null);
         }
     }
 }
