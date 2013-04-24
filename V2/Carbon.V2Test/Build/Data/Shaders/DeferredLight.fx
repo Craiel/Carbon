@@ -78,19 +78,19 @@ float4 PS(PS_INPUT input) : SV_Target
 #if SHADOWMAPPING
     // Bring the View Space position into world space and then back into clip space for our light
     float4 positionWorld = mul(float4(positionVS, 1.0), InvertedView);
-    float4 positionLightCS = mul(positionWorld, LightViewProjection);	
+    float4 positionLightCS = mul(positionWorld, LightViewProjection);
     positionLightCS = (positionLightCS / positionLightCS.w);
     
     // Todo: Inverted, for no reason?????
     float2 shadowMapCoordinates = (positionLightCS.xy * 0.5 + 0.5f);
     shadowMapCoordinates.y = 1.0f - shadowMapCoordinates.y; // Hack to invert it properly
     float shadowMapDepth = ShadowMap.Sample(ShadowMapSampler, shadowMapCoordinates).r;
-    
+
     /*if(positionLightCS.z > shadowMapDepth) // In shadow
     {
         return float4(0,0,0,1);
     }*/
-
+	
     //shadowTerm = CalcShadowTermPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize);
 	shadowTerm = CalcShadowTermSoftPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize, 4);
 #endif

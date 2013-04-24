@@ -13,9 +13,9 @@ namespace Carbon.Engine.Rendering.Shaders
     public interface IDeferredLightShader : ICarbonShader
     {
         void SetAmbient(Vector4 color);
-        void SetDirectional(Vector4 position, Vector3 direction, Vector4 color, Matrix lightViewProjection);
+        void SetDirectional(Vector4 position, Vector3 direction, Vector4 color);
         void SetPoint(Vector4 position, Vector4 color, float range, Matrix lightViewProjection);
-        void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles);
+        void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles, Matrix lightViewProjection);
     }
 
     public class DeferredLightShader : CarbonShader, IDeferredLightShader
@@ -136,16 +136,14 @@ namespace Carbon.Engine.Rendering.Shaders
             this.lightConstantBuffer.Color = color;
         }
 
-        public void SetDirectional(Vector4 position, Vector3 direction, Vector4 color, Matrix lightViewProjection)
+        public void SetDirectional(Vector4 position, Vector3 direction, Vector4 color)
         {
             this.ClearLight();
             this.isDirectional = true;
-            this.isShadowMapping = true;
-
             this.lightPosition = new Vector3(position.X, position.Y, position.Z);
             this.lightDirection = direction;
             this.lightConstantBuffer.Color = color;
-            this.lightConstantBuffer.LightViewProjection = lightViewProjection;
+            
             this.needLightPositionUpdate = true;
         }
 
@@ -153,8 +151,6 @@ namespace Carbon.Engine.Rendering.Shaders
         {
             this.ClearLight();
             this.isPoint = true;
-            this.isShadowMapping = true;
-
             this.lightPosition = new Vector3(position.X, position.Y, position.Z);
             this.lightConstantBuffer.Color = color;
             this.lightConstantBuffer.Range = range;
@@ -162,16 +158,17 @@ namespace Carbon.Engine.Rendering.Shaders
             this.needLightPositionUpdate = true;
         }
 
-        public void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles)
+        public void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles, Matrix lightViewProjection)
         {
             this.ClearLight();
             this.isSpot = true;
-
+            this.isShadowMapping = true;
             this.lightDirection = direction;
             this.lightPosition = new Vector3(position.X, position.Y, position.Z);
             this.lightConstantBuffer.Color = color;
             this.lightConstantBuffer.Range = range;
             this.lightConstantBuffer.SpotlightAngles = new Vector2((float)Math.Cos(angles.X / 2.0f), (float)Math.Cos(angles.Y / 2.0f));
+            this.lightConstantBuffer.LightViewProjection = lightViewProjection;
             this.needLightPositionUpdate = true;
         }
 
@@ -353,18 +350,15 @@ namespace Carbon.Engine.Rendering.Shaders
 
             if (instruction.ShadowMap != null)
             {
-                if (instruction.ShadowMapSize == null)
-                {
-                    throw new InvalidOperationException();
-                }
-
                 if (instruction.ShadowMap.View == null)
                 {
                     instruction.ShadowMap.InitializeView(this.graphics.ImmediateContext.Device);
                 }
 
                 this.resources[4] = instruction.ShadowMap.View;
-                this.lightConstantBuffer.ShadowMapSize = (Vector2)instruction.ShadowMapSize;
+                this.lightConstantBuffer.ShadowMapSize = new Vector2(
+                    instruction.ShadowMap.Texture2D.Description.Width,
+                    instruction.ShadowMap.Texture2D.Description.Height);
                 texturesChanged = true;
             }
 

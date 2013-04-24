@@ -193,6 +193,7 @@
     <Compile Include="Rendering\Structs.cs" />
     <Compile Include="Rendering\DataContainer.cs" />
     <Compile Include="Logic\CarbonBinaryFormatter.cs" />
+    <Compile Include="Rendering\TextureData.cs" />
     <Compile Include="Resource\CompiledShader.cs" />
     <Compile Include="Resource\ContentEntryAttributes.cs" />
     <Compile Include="Resource\ContentManager.cs" />

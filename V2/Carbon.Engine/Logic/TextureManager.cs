@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Rendering;
 using Carbon.Engine.Resource.Resources;
 
 using SlimDX.Direct3D11;
@@ -34,157 +35,6 @@ namespace Carbon.Engine.Logic
 
         DeferredLight = 15,
         ShadowMapTarget = 16,
-    }
-
-    public enum TextureDataType
-    {
-        Unknown,
-        Texture2D
-    }
-
-    public class TextureData : IDisposable
-    {
-        private readonly byte[] data;
-
-        private readonly ImageLoadInformation? loadInformation;
-        private readonly ShaderResourceViewDescription? viewDescription;
-
-        private readonly bool locked;
-
-        public TextureData(TextureDataType type, byte[] data, ImageLoadInformation loadInfo, ShaderResourceViewDescription viewDescription)
-            : this(type, data, loadInfo)
-        {
-            this.viewDescription = viewDescription;
-        }
-
-        public TextureData(TextureDataType type, byte[] data, ImageLoadInformation loadInfo)
-            : this(type, data)
-        {
-            this.loadInformation = loadInfo;
-        }
-
-        public TextureData(TextureDataType type, byte[] data)
-        {
-            this.Type = type;
-            this.data = data;
-        }
-
-        public TextureData(Texture2D data, ShaderResourceView view)
-        {
-            if (data == null)
-            {
-                throw new ArgumentException();
-            }
-
-            this.View = view;
-            this.Texture2D = data;
-            this.Type = TextureDataType.Texture2D;
-            this.locked = true;
-        }
-        
-        public TextureDataType Type { get; private set; }
-        public Texture2D Texture2D { get; private set; }
-        public ShaderResourceView View { get; private set; }
-
-        public void Dispose()
-        {
-            if (this.locked)
-            {
-                return;
-            }
-
-            this.ReleaseView();
-        }
-
-        public void ReleaseView()
-        {
-            if (this.locked)
-            {
-                throw new InvalidOperationException();
-            }
-
-            this.View.Dispose();
-            this.View = null;
-        }
-
-        public void ReleaseTexture()
-        {
-            if (this.locked)
-            {
-                throw new InvalidOperationException();
-            }
-
-            if (this.View != null)
-            {
-                this.ReleaseView();
-            }
-
-            switch (this.Type)
-            {
-                case TextureDataType.Texture2D:
-                    {
-                        if (this.Texture2D != null)
-                        {
-                            this.Texture2D.Dispose();
-                            this.Texture2D = null;
-                        }
-
-                        break;
-                    }
-
-                default:
-                    {
-                        throw new NotImplementedException();
-                    }
-            }
-        }
-
-        public void InitializeView(Device graphics)
-        {
-            switch (this.Type)
-            {
-                    case TextureDataType.Texture2D:
-                    {
-                        if (this.Texture2D == null)
-                        {
-                            this.InitializeTexture(graphics);
-                        }
-                 
-                        if (this.viewDescription != null)
-                        {
-                            this.View = new ShaderResourceView(graphics, this.Texture2D, (ShaderResourceViewDescription)this.viewDescription);
-                        }
-                        else
-                        {
-                            this.View = new ShaderResourceView(graphics, this.Texture2D);
-                        }
-                        
-                        break;
-                    }
-
-                default:
-                    {
-                        throw new NotImplementedException();
-                    }
-            }
-        }
-
-        public void InitializeTexture(Device graphics)
-        {
-            switch (this.Type)
-            {
-                    case TextureDataType.Texture2D:
-                    {
-                        this.Texture2D = this.loadInformation != null ? Texture2D.FromMemory(graphics, this.data, (ImageLoadInformation)this.loadInformation) : Texture2D.FromMemory(graphics, this.data);
-                        break;
-                    }
-
-                default:
-                    {
-                        throw new NotImplementedException();
-                    }
-            }
-        }
     }
 
     public class TextureReference
@@ -240,7 +90,6 @@ namespace Carbon.Engine.Logic
         private readonly Device device;
 
         private readonly IDictionary<string, TextureReference> managedReferenceCache;
-        private readonly IDictionary<int, TextureReference> managedKeyReferenceCache;
         private readonly IDictionary<TextureReference, TextureData> textureCache;
         private readonly IDictionary<int, TextureReference> textureRegister;
         private readonly IDictionary<TextureReference, int> referenceCount;
@@ -256,7 +105,6 @@ namespace Carbon.Engine.Logic
             this.device = device;
 
             this.managedReferenceCache = new Dictionary<string, TextureReference>();
-            this.managedKeyReferenceCache = new Dictionary<int, TextureReference>();
             this.textureCache = new Dictionary<TextureReference, TextureData>();
             this.textureRegister = new Dictionary<int, TextureReference>();
             this.referenceCount = new Dictionary<TextureReference, int>();
@@ -333,36 +181,12 @@ namespace Carbon.Engine.Logic
             this.referenceCount.Add(reference, 0);
             this.managedReferenceCache.Add(hash, reference);
         }
-
-        public void Register(int key, byte[] data, TypedVector2<int> size)
-        {
-            if (size.X == 0 || size.Y == 0 || data == null || data.Length == 0)
-            {
-                throw new ArgumentException();
-            }
-
-            var description = new TextureReferenceDescription
-            {
-                Register = this.nextRegister++,
-                Type = TextureReferenceType.Resource,
-                Size = size
-            };
-            var reference = new TextureReference(data, description);
-            this.textureRegister.Add(reference.Register, reference);
-            this.referenceCount.Add(reference, 0);
-            this.managedKeyReferenceCache.Add(key, reference);
-        }
-
+        
         public bool IsRegistered(string hash)
         {
             return this.managedReferenceCache.ContainsKey(hash);
         }
-
-        public bool IsRegistered(int key)
-        {
-            return this.managedKeyReferenceCache.ContainsKey(key);
-        }
-
+        
         public void Release(TextureReference reference)
         {
             if (!this.referenceCount.ContainsKey(reference))
@@ -412,18 +236,7 @@ namespace Carbon.Engine.Logic
             this.referenceCount[this.managedReferenceCache[hash]]++;
             return this.managedReferenceCache[hash];
         }
-
-        public TextureReference GetReference(int key)
-        {
-            if (!this.managedKeyReferenceCache.ContainsKey(key))
-            {
-                throw new ArgumentException("No texture registered for key " + key);
-            }
-
-            this.referenceCount[this.managedKeyReferenceCache[key]]++;
-            return this.managedKeyReferenceCache[key];
-        }
-
+        
         public TextureReference GetRegisterReference(int register)
         {
             if (register > StaticRegisterLimit)

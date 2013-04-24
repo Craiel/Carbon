@@ -36,7 +36,7 @@ namespace Carbon.Engine.Rendering
         private readonly TextureRenderTarget deferredLightTarget;
         private readonly DepthRenderTarget shadowMapTarget;
         private readonly IDictionary<int, TextureRenderTarget> textureTargets;
-        private readonly IDictionary<int, TextureReference> shadowMapCache;
+        private readonly IDictionary<int, TextureData> shadowMapCache;
         
         private bool targetTexturesRegistered;
         
@@ -57,7 +57,7 @@ namespace Carbon.Engine.Rendering
             this.deferredLightTarget = new TextureRenderTarget { BlendMode = RendertargetBlendMode.Additive};
             this.shadowMapTarget = new DepthRenderTarget();
             this.textureTargets = new Dictionary<int, TextureRenderTarget>();
-            this.shadowMapCache = new Dictionary<int, TextureReference>();
+            this.shadowMapCache = new Dictionary<int, TextureData>();
         }
 
         public override void Dispose()
@@ -71,7 +71,7 @@ namespace Carbon.Engine.Rendering
 
             foreach (int key in this.shadowMapCache.Keys)
             {
-                this.graphics.TextureManager.Release(this.shadowMapCache[key]);
+                this.shadowMapCache[key].Dispose();
             }
 
             this.shadowMapCache.Clear();
@@ -101,12 +101,12 @@ namespace Carbon.Engine.Rendering
         {
             if (this.targetTexturesRegistered)
             {
-                this.graphics.TextureManager.Unregister(11);
-                this.graphics.TextureManager.Unregister(12);
-                this.graphics.TextureManager.Unregister(13);
-                this.graphics.TextureManager.Unregister(14);
-                this.graphics.TextureManager.Unregister(15);
-                this.graphics.TextureManager.Unregister(16);
+                this.graphics.TextureManager.Unregister((int)StaticTextureRegister.GBufferNormal);
+                this.graphics.TextureManager.Unregister((int)StaticTextureRegister.GBufferDiffuse);
+                this.graphics.TextureManager.Unregister((int)StaticTextureRegister.GBufferSpecular);
+                this.graphics.TextureManager.Unregister((int)StaticTextureRegister.GBufferDepth);
+                this.graphics.TextureManager.Unregister((int)StaticTextureRegister.DeferredLight);
+                this.graphics.TextureManager.Unregister((int)StaticTextureRegister.ShadowMapTarget);
             }
 
             this.backBufferRenderTarget.Resize(this.graphics, size);
@@ -182,7 +182,15 @@ namespace Carbon.Engine.Rendering
             int key = instruction.GetShadowMapKey();
             if (this.shadowMapCache.ContainsKey(key))
             {
-                //return;
+                if (instruction.RegenerateShadowMap)
+                {
+                    this.shadowMapCache[key].Dispose();
+                    this.shadowMapCache.Remove(key);
+                }
+                else
+                {
+                    return;
+                }
             }
 
             var lightCameraParameters = new RenderParameters
@@ -202,16 +210,14 @@ namespace Carbon.Engine.Rendering
                 this.renderer.Render(lightCameraParameters, instructions[i]);
             }
             
-            /*using (var stream = new MemoryStream())
+            using (var stream = new MemoryStream())
             {
                 this.shadowMapTarget.StoreData(this.graphics.ImmediateContext, stream);
                 stream.Position = 0;
                 var data = new byte[stream.Length];
                 stream.Read(data, 0, data.Length);
-                //this.graphics.TextureManager.Unregister(key);
-                //this.graphics.TextureManager.Register(key, data, new TypedVector2<int>(1024, 1024));
-                //this.shadowMapCache.Add(key, this.graphics.TextureManager.GetReference(key));
-            }*/
+                this.shadowMapCache.Add(key, new TextureData(TextureDataType.Texture2D, data, this.shadowMapTarget.LoadInformation, this.shadowMapTarget.ViewDescription));
+            }
         }
 
         private void RenderSetDeferred(FrameInstructionSet set)
@@ -285,9 +291,7 @@ namespace Carbon.Engine.Rendering
                         int shadowMapKey = this.lightInstructionCache[i].GetShadowMapKey();
                         if (this.shadowMapCache.ContainsKey(shadowMapKey))
                         {
-                            instruction.ShadowMap = this.shadowMapTarget.Data;
-                            //instruction.ShadowMap = this.graphics.TextureManager.GetTexture(this.shadowMapCache[shadowMapKey], this.shadowMapTarget.LoadInformation, this.shadowMapTarget.ViewDescription);
-                            instruction.ShadowMapSize = new Vector2(1024, 768); // Todo: this is hack, use the load info instead
+                            instruction.ShadowMap = this.shadowMapCache[shadowMapKey];
                         }
                     }
 
@@ -583,6 +587,10 @@ namespace Carbon.Engine.Rendering
                             renderInstruction.View = instruction.Light.View;
                             renderInstruction.Projection = instruction.Light.Projection;
                             renderInstruction.IsCastingShadow = instruction.Light.IsCastingShadow;
+                            renderInstruction.RegenerateShadowMap = instruction.Light.NeedShadowUpdate;
+
+                            // Hack for lack of better judgement...
+                            instruction.Light.NeedShadowUpdate = false;
                             break;
                         }
 

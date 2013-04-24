@@ -138,13 +138,13 @@ namespace Carbon.V2Test.Scenes
             // Setup the hard textures for internals
             this.forwardDebugTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(1001) };
             this.normalDebugTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(1002) };
-            
-            this.gBufferNormalTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(11) };
-            this.gBufferDiffuseAlbedoTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(12) };
-            this.gBufferSpecularAlbedoTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(13) };
-            this.gBufferDepthTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(14) };
-            this.deferredLightTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(15) };
-            this.shadowMapTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(16) };
+
+            this.gBufferNormalTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference((int)StaticTextureRegister.GBufferNormal) };
+            this.gBufferDiffuseAlbedoTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference((int)StaticTextureRegister.GBufferDiffuse) };
+            this.gBufferSpecularAlbedoTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference((int)StaticTextureRegister.GBufferSpecular) };
+            this.gBufferDepthTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference((int)StaticTextureRegister.GBufferDepth) };
+            this.deferredLightTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference((int)StaticTextureRegister.DeferredLight) };
+            this.shadowMapTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference((int)StaticTextureRegister.ShadowMapTarget) };
 
             scriptData = this.gameState.ResourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene.lua"));
             script = new CarbonScript(scriptData);

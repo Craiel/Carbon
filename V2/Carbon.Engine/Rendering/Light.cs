@@ -1,4 +1,6 @@
-﻿using Carbon.Engine.Contracts.Rendering;
+﻿using System;
+
+using Carbon.Engine.Contracts.Rendering;
 using Carbon.Engine.Logic;
 using Carbon.Engine.Rendering.Camera;
 
@@ -43,6 +45,7 @@ namespace Carbon.Engine.Rendering
         // Public
         // -------------------------------------------------------------------
         public bool IsCastingShadow { get; set; }
+        public bool NeedShadowUpdate { get; set; }
 
         public LightType Type
         {
@@ -172,14 +175,18 @@ namespace Carbon.Engine.Rendering
             lock (ProjectionCamera.Camera)
             {
                 // Todo: calculate proper view / projection for the spot parameters
-                var viewPort = new TypedVector2<int>(1024, 1024);
-                ProjectionCamera.Camera.SetPerspective(viewPort, 0.05f, 20.0f, 1);
-                ProjectionCamera.Camera.Position = new Vector4(2, 5, 0, 1);
-                ProjectionCamera.Camera.LookAt(new Vector3(1, 0, 0)); // Todo: clean this up, confusing what lookat is in this context
+                ProjectionCamera.Camera.SetPerspective(new TypedVector2<int>(1), 0.05f, this.range, (float)Math.PI / 2.0f);
+                ProjectionCamera.Camera.Position = this.position;
+                // Todo: clean this up, confusing what lookat is in this context
+                //       also light direction and camera direction are not the same
+                ProjectionCamera.Camera.LookAt(-this.direction); 
                 ProjectionCamera.Camera.Update(null);
 
                 this.view = ProjectionCamera.Camera.View;
                 this.projection = ProjectionCamera.Camera.Projection;
+
+                // Todo: this is quite the hack but we have no better way of communicating with the frame manager at the moment from here
+                this.NeedShadowUpdate = true;
             }
         }
     }

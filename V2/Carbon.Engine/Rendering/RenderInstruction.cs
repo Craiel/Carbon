@@ -33,6 +33,7 @@ namespace Carbon.Engine.Rendering
     public sealed class RenderLightInstruction
     {
         public bool IsCastingShadow { get; set; }
+        public bool RegenerateShadowMap { get; set; }
 
         public LightType Type { get; set; }
 
@@ -82,8 +83,6 @@ namespace Carbon.Engine.Rendering
         public TextureData AlphaTexture { get; set; }
         
         public Vector4? Color { get; set; }
-
-        public Vector2? ShadowMapSize { get; set; }
         
         public Matrix?[] Instances
         {
