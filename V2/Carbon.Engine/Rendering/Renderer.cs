@@ -174,7 +174,7 @@ namespace Carbon.Engine.Rendering
 
                 case LightType.Spot:
                     {
-                        this.deferredLightShader.SetSpot(instruction.Position, instruction.Direction, instruction.Color, instruction.Range, instruction.SpotAngles, Matrix.Transpose(instruction.View * instruction.Projection));
+                        this.deferredLightShader.SetSpot(instruction.Position, instruction.Direction, instruction.Color, instruction.Range, instruction.SpotAngles, instruction.IsCastingShadow, Matrix.Transpose(instruction.View * instruction.Projection));
                         break;
                     }
 

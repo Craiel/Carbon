@@ -15,7 +15,7 @@ namespace Carbon.Engine.Rendering.Shaders
         void SetAmbient(Vector4 color);
         void SetDirectional(Vector4 position, Vector3 direction, Vector4 color);
         void SetPoint(Vector4 position, Vector4 color, float range, Matrix lightViewProjection);
-        void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles, Matrix lightViewProjection);
+        void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles, bool useShadowMapping, Matrix lightViewProjection);
     }
 
     public class DeferredLightShader : CarbonShader, IDeferredLightShader
@@ -158,11 +158,11 @@ namespace Carbon.Engine.Rendering.Shaders
             this.needLightPositionUpdate = true;
         }
 
-        public void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles, Matrix lightViewProjection)
+        public void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles, bool useShadowMapping, Matrix lightViewProjection)
         {
             this.ClearLight();
             this.isSpot = true;
-            this.isShadowMapping = true;
+            this.isShadowMapping = useShadowMapping;
             this.lightDirection = direction;
             this.lightPosition = new Vector3(position.X, position.Y, position.Z);
             this.lightConstantBuffer.Color = color;

@@ -46,8 +46,14 @@ for x = 1, 10 do
 		end
 	end
 
---node = AddSpotLight(Vector4(1, 0, 0, 1), Vector2(20, 40), Vector3(-1, 1, 0), 20, 1)
---node.Position = Vector4(5, 10, 0)
-
 node = AddSpotLight(Vector4(0, 1, 0, 1), Vector2(20, 40), Vector3(1, 0, 0), 30, 1)
 node.Position = Vector4(15, 2, 0)
+node.Light.IsCastingShadow = true;
+
+node = AddSpotLight(Vector4(1, 0, 0, 1), Vector2(20, 40), Vector3(-1, 1, 0), 20, 1)
+node.Position = Vector4(5, 10, 0)
+node.Light.IsCastingShadow = true;
+
+node = AddSpotLight(Vector4(1, 1, 1, 1), Vector2(20, 30), Vector3(0.1, 1, 0), 21, 1)
+node.Position = Vector4(0, 10, 0)
+node.Light.IsCastingShadow = true;

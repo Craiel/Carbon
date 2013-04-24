@@ -94,7 +94,6 @@ namespace Carbon.Engine.Rendering
             this.backBufferRenderTarget.Clear(this.graphics, Vector4.Zero);
             this.gBufferTarget.Clear(this.graphics, Vector4.Zero);
             this.deferredLightTarget.Clear(this.graphics, Vector4.Zero);
-            this.shadowMapTarget.Clear(this.graphics, Vector4.Zero);
         }
 
         public void Resize(TypedVector2<int> size)
@@ -110,10 +109,8 @@ namespace Carbon.Engine.Rendering
             }
 
             this.backBufferRenderTarget.Resize(this.graphics, size);
-
             this.gBufferTarget.Resize(this.graphics, size);
             this.deferredLightTarget.Resize(this.graphics, size);
-            this.shadowMapTarget.Resize(this.graphics, size);
 
             this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.NormalData, (int)StaticTextureRegister.GBufferNormal, size);
             this.graphics.TextureManager.RegisterStatic(this.gBufferTarget.DiffuseData, (int)StaticTextureRegister.GBufferDiffuse, size);
@@ -201,10 +198,12 @@ namespace Carbon.Engine.Rendering
                     Projection = instruction.Projection,
                     View = instruction.View
                 };
-            lightCameraParameters.Projection = ProjectionCamera.Camera.Projection;
-            lightCameraParameters.View = ProjectionCamera.Camera.View;
-            
+
+            // Setup the target with different quality according to the instruction
+            this.shadowMapTarget.Resize(this.graphics, new TypedVector2<int>(instruction.ShadowMapSize));
+            this.shadowMapTarget.Clear(this.graphics, Vector4.Zero);
             this.shadowMapTarget.Set(this.graphics);
+
             for (int i = 0; i < instructions.Count; i++)
             {
                 this.renderer.Render(lightCameraParameters, instructions[i]);
@@ -586,8 +585,11 @@ namespace Carbon.Engine.Rendering
                             renderInstruction.SpotAngles = instruction.Light.SpotAngles;
                             renderInstruction.View = instruction.Light.View;
                             renderInstruction.Projection = instruction.Light.Projection;
+
+                            // Shadow parameters
                             renderInstruction.IsCastingShadow = instruction.Light.IsCastingShadow;
                             renderInstruction.RegenerateShadowMap = instruction.Light.NeedShadowUpdate;
+                            renderInstruction.ShadowMapSize = 512; // Todo: find better place for this and adjust quality to light parameters
 
                             // Hack for lack of better judgement...
                             instruction.Light.NeedShadowUpdate = false;

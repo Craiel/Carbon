@@ -61,6 +61,7 @@ namespace Carbon.Engine.Logic
         private CarbonWindow window;
 
         private bool isClosing;
+        private bool isStarting;
 
         private float possibleFramesPerSecond;
         private int currentFrameDrop;
@@ -120,10 +121,11 @@ namespace Carbon.Engine.Logic
 
             this.gameTimer.Reset();
 
+            // Starting the render-thread is delayed until the first update cycle was finished
             this.log.Debug("Bringing up Render Thread");
             this.renderThread = new Thread(this.MainRenderLoop);
-            this.renderThread.Start();
-
+            this.isStarting = true;
+            
             Console.WriteLine("\n");
             this.log.Debug("------------------------------------------------------");
             this.log.Debug("Main Loop");
@@ -251,6 +253,12 @@ namespace Carbon.Engine.Logic
                 this.Update(this.gameTimer);
 
                 this.lastUpdateTime = this.gameTimer.ActualElapsedTime;
+
+                if (this.isStarting)
+                {
+                    this.renderThread.Start();
+                    this.isStarting = false;
+                }
             }
         }
 

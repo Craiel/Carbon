@@ -91,8 +91,8 @@ float4 PS(PS_INPUT input) : SV_Target
         return float4(0,0,0,1);
     }*/
 	
-    //shadowTerm = CalcShadowTermPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize);
-	shadowTerm = CalcShadowTermSoftPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize, 4);
+    shadowTerm = CalcShadowTermPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize);
+	//shadowTerm = CalcShadowTermSoftPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize, 4);
 #endif
     
 #if AMBIENTLIGHT

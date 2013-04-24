@@ -31,7 +31,9 @@ namespace Carbon.Engine.Rendering
         private Matrix projection;
 
         private Vector4 position;
-        
+
+        private bool isCastingShadow;
+
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -44,7 +46,23 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public bool IsCastingShadow { get; set; }
+        public bool IsCastingShadow
+        {
+            get
+            {
+                return this.isCastingShadow;
+            }
+
+            set
+            {
+                if (this.isCastingShadow != value)
+                {
+                    this.isCastingShadow = value;
+                    this.CheckLightViewProjectionUpdate();
+                }
+            }
+        }
+
         public bool NeedShadowUpdate { get; set; }
 
         public LightType Type
@@ -58,11 +76,6 @@ namespace Carbon.Engine.Rendering
             {
                 if (this.type != value)
                 {
-                    if (value == LightType.Spot)
-                    {
-                        this.IsCastingShadow = true;
-                    }
-
                     this.type = value;
                     this.CheckLightViewProjectionUpdate();
                 }
@@ -172,6 +185,11 @@ namespace Carbon.Engine.Rendering
 
         private void UpdateLightViewProjection()
         {
+            if (!this.IsCastingShadow)
+            {
+                return;
+            }
+
             lock (ProjectionCamera.Camera)
             {
                 // Todo: calculate proper view / projection for the spot parameters
@@ -179,7 +197,7 @@ namespace Carbon.Engine.Rendering
                 ProjectionCamera.Camera.Position = this.position;
                 // Todo: clean this up, confusing what lookat is in this context
                 //       also light direction and camera direction are not the same
-                ProjectionCamera.Camera.LookAt(-this.direction); 
+                ProjectionCamera.Camera.LookAt(-this.direction);
                 ProjectionCamera.Camera.Update(null);
 
                 this.view = ProjectionCamera.Camera.View;

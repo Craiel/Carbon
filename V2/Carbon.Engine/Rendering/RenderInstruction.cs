@@ -51,6 +51,8 @@ namespace Carbon.Engine.Rendering
 
         public Mesh Mesh { get; set; }
 
+        public int ShadowMapSize { get; set; }
+
         public int GetShadowMapKey()
         {
             return Tuple.Create(this.Position, this.Range, this.View, this.Projection).GetHashCode();
