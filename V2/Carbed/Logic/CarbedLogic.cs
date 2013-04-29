@@ -356,6 +356,11 @@ namespace Carbed.Logic
             return this.viewModelFactory.GetResourceRawViewModel(new ResourceEntry { Type = ResourceType.Raw });
         }
 
+        public IResourceStageViewModel AddResourceStage()
+        {
+            return this.viewModelFactory.GetResourceStageViewModel(new ResourceEntry { Type = ResourceType.Stage });
+        }
+
         public void Save(IResourceViewModel resource)
         {
             if (this.projectContent == null || this.projectResources == null)
@@ -439,6 +444,12 @@ namespace Carbed.Logic
                     case ResourceType.Raw:
                         {
                             results.Add(this.viewModelFactory.GetResourceRawViewModel(entry));
+                            break;
+                        }
+
+                    case ResourceType.Stage:
+                        {
+                            results.Add(this.viewModelFactory.GetResourceStageViewModel(entry));
                             break;
                         }
 

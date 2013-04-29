@@ -51,8 +51,6 @@ PS_INPUT VS(VS_INPUT input)
 // ---------------------------------
 // Pixel Shader
 // ---------------------------------
-
-
 float4 PS(PS_INPUT input) : SV_Target
 {	
     // Input position is in Screen Coordinates i.e 1024 x 768
@@ -85,14 +83,13 @@ float4 PS(PS_INPUT input) : SV_Target
     float2 shadowMapCoordinates = (positionLightCS.xy * 0.5 + 0.5f);
     shadowMapCoordinates.y = 1.0f - shadowMapCoordinates.y; // Hack to invert it properly
     float shadowMapDepth = ShadowMap.Sample(ShadowMapSampler, shadowMapCoordinates).r;
-
-    /*if(positionLightCS.z > shadowMapDepth) // In shadow
-    {
-        return float4(0,0,0,1);
-    }*/
-	
-    shadowTerm = CalcShadowTermPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize);
-	//shadowTerm = CalcShadowTermSoftPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize, 4);
+		
+	shadowTerm = 0;
+	if((saturate(shadowMapCoordinates.x) == shadowMapCoordinates.x) && (saturate(shadowMapCoordinates.y) == shadowMapCoordinates.y))
+	{
+		shadowTerm = CalcShadowTermPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize);
+		//shadowTerm = CalcShadowTermSoftPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize, 4);
+	}
 #endif
     
 #if AMBIENTLIGHT

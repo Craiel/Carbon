@@ -488,6 +488,11 @@ namespace Carbed.ViewModels
                         return this.logic.AddResourceModel();
                     }
 
+                case ".stage":
+                    {
+                        return this.logic.AddResourceStage();
+                    }
+
                 case ".lua":
                     {
                         return this.logic.AddResourceScript();

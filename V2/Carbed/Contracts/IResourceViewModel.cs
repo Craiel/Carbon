@@ -51,6 +51,10 @@ namespace Carbed.Contracts
         ICommand CommandSelectTextureFolder { get; }
     }
 
+    public interface IResourceStageViewModel : IResourceViewModel
+    {
+    }
+
     public interface IResourceScriptViewModel : IResourceViewModel
     {
         ITextSource ScriptDocument { get; }

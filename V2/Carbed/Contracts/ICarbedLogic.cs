@@ -45,6 +45,7 @@ namespace Carbed.Contracts
         IResourceScriptViewModel AddResourceScript();
         IResourceRawViewModel AddResourceRaw();
         IResourceFontViewModel AddResourceFont();
+        IResourceStageViewModel AddResourceStage();
 
         void Save(IResourceViewModel resource);
         void Delete(IResourceViewModel resource);

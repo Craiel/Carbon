@@ -8,6 +8,7 @@
         Texture = 12,
         Font = 13,
         Script = 14,
+        Stage = 15,
     }
 
     [ContentEntry("Resource")]
