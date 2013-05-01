@@ -23,6 +23,8 @@ using SlimDX;
 
 namespace Carbon.V2Test.Scenes
 {
+    using SlimDX.Direct3D11;
+
     public interface ITestScene : IScene
     {
     }
@@ -51,6 +53,7 @@ namespace Carbon.V2Test.Scenes
 
         private FontEntry consoleFont;
         private IModelNode consoleTestNode;
+        private INode testNode;
         private int lastConsoleUpdate;
 
         private Mesh screenQuad;
@@ -150,6 +153,21 @@ namespace Carbon.V2Test.Scenes
             script = new CarbonScript(scriptData);
             this.gameState.ScriptingEngine.Execute(script);
 
+            this.testNode = new Node();
+            //ModelResource resource = Cube.CreateVertexColoredLines(new Vector3(0), 1.0f, new Vector4(1, 0, 0, 1));
+            //this.gameState.NodeManager.AddModel(resource, this.testNode);
+            foreach (IEntity child in this.gameState.NodeManager.RootNode.Children)
+            {
+                float size = 1;
+                if (child.GetType() == typeof(IModelNode))
+                {
+                    size = ((IModelNode)child).Mesh.BoundingBox.Maximum.X * child.Scale.X;
+                }
+                ModelResource resource = Cube.CreateVertexColoredLines(new Vector3(0), size, new Vector4(1, 0, 0, 1));
+                var node = this.gameState.NodeManager.AddModel(resource, this.testNode);
+                node.Position = child.Position;
+            }
+
             this.consoleContext = this.gameState.ScriptingEngine.GetContext();
         }
 
@@ -239,6 +257,8 @@ namespace Carbon.V2Test.Scenes
             }*/
 
             this.gameState.NodeManager.RootNode.Update(gameTime);
+
+            this.testNode.Update(gameTime);
         }
 
         public override void Render(IFrameManager frameManager)
@@ -262,6 +282,13 @@ namespace Carbon.V2Test.Scenes
             set.Technique = FrameTechnique.DebugNormal;
             set.DesiredTarget = RenderTargetDescription.Texture(1002, windowSize);
             this.gameState.NodeManager.RootNode.Render(set);
+            frameManager.RenderSet(set);
+
+            // test stuff
+            set = frameManager.BeginSet(this.camera);
+            set.Technique = FrameTechnique.Plain;
+            set.Topology = PrimitiveTopology.LineList;
+            this.testNode.Render(set);
             frameManager.RenderSet(set);
 
             this.RenderDebugScreens(frameManager);

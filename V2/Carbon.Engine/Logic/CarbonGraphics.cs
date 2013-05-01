@@ -1,13 +1,11 @@
-﻿using System;
-
-using Carbon.Engine.Contracts;
+﻿using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Rendering;
-
-using SlimDX.DXGI;
-using SlimDX.Direct3D11;
 using Core.Utils.Contracts;
+using SlimDX.Direct3D11;
+using SlimDX.DXGI;
+using System;
 
 namespace Carbon.Engine.Logic
 {
@@ -88,6 +86,57 @@ namespace Carbon.Engine.Logic
             {
                 this.settings.CreationFlags = value;
                 this.ReleaseContext();
+            }
+        }
+
+        public CullMode CullMode
+        {
+            get
+            {
+                return this.desiredRasterizerState.CullMode;
+            }
+
+            set
+            {
+                if (this.desiredRasterizerState.CullMode != value)
+                {
+                    this.desiredRasterizerState.CullMode = value;
+                    this.needRasterizerStateUpdate = true;
+                }
+            }
+        }
+
+        public bool IsDepthEnabled
+        {
+            get
+            {
+                return this.desiredDepthStencilState.IsDepthEnabled;
+            }
+
+            set
+            {
+                if (this.desiredDepthStencilState.IsDepthEnabled != value)
+                {
+                    this.desiredDepthStencilState.IsDepthEnabled = value;
+                    this.needDepthStateUpdate = true;
+                }
+            }
+        }
+
+        public FillMode FillMode
+        {
+            get
+            {
+                return this.desiredRasterizerState.FillMode;
+            }
+
+            set
+            {
+                if (this.desiredRasterizerState.FillMode != value)
+                {
+                    this.desiredRasterizerState.FillMode = value;
+                    this.needRasterizerStateUpdate = true;
+                }
             }
         }
 
@@ -173,37 +222,7 @@ namespace Carbon.Engine.Logic
 
             this.isResizing = false;
         }
-
-        public void SetCulling(CullMode mode)
-        {
-            this.desiredRasterizerState.CullMode = mode;
-            this.needRasterizerStateUpdate = true;
-        }
         
-        public void EnableWireframe()
-        {
-            this.desiredRasterizerState = DeviceStateManager.WireFrameRasterDescription;
-            this.needRasterizerStateUpdate = true;
-        }
-
-        public void DisableWireframe()
-        {
-            this.desiredRasterizerState = DeviceStateManager.SolidRasterState;
-            this.needRasterizerStateUpdate = true;
-        }
-
-        public void EnableDepth()
-        {
-            this.desiredDepthStencilState.IsDepthEnabled = true;
-            this.needDepthStateUpdate = true;
-        }
-
-        public void DisableDepth()
-        {
-            this.desiredDepthStencilState.IsDepthEnabled = false;
-            this.needDepthStateUpdate = true;
-        }
-
         public void ResetDepthState()
         {
             this.desiredDepthStencilState = DeviceStateManager.DefaultDepthStencilState;

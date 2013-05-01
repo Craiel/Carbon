@@ -20,20 +20,17 @@ namespace Carbon.Engine.Contracts.Logic
 
         DeviceCreationFlags CreationFlags { get; set; }
 
+        CullMode CullMode { get; set; }
+        FillMode FillMode { get; set; }
+
+        bool IsDepthEnabled { get; set; }
+
         Viewport WindowViewport { get; }
         
         void Reset();
 
         void Resize(TypedVector2<int> size);
-
-        void SetCulling(CullMode mode);
-
-        void EnableWireframe();
-        void DisableWireframe();
-
-        void EnableDepth();
-        void DisableDepth();
-
+        
         void UpdateStates();
 
         void Present(PresentFlags flags);

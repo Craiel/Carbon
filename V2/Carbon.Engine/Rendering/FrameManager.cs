@@ -168,13 +168,19 @@ namespace Carbon.Engine.Rendering
                         this.RenderSetDebug(set, RenderMode.Depth);
                         break;
                     }
+
+                case FrameTechnique.Plain:
+                    {
+                        this.RenderSetPlain(set, RenderMode.Plain);
+                        break;
+                    }
             }
         }
 
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void UpdateShadowMap(RenderLightInstruction instruction, IList<RenderInstruction> instructions)
+        private void UpdateShadowMap(RenderParameters parameters, RenderLightInstruction instruction, IList<RenderInstruction> instructions)
         {
             int key = instruction.GetShadowMapKey();
             if (this.shadowMapCache.ContainsKey(key))
@@ -192,6 +198,10 @@ namespace Carbon.Engine.Rendering
 
             var lightCameraParameters = new RenderParameters
                 {
+                    DepthEnabled = true,
+                    RenderSolid = parameters.RenderSolid,
+                    CullMode = CullMode.Front,
+                    Topology = parameters.Topology,
                     CameraPosition = instruction.Position,
                     LightingEnabled = false,
                     Mode = RenderMode.ShadowMap,
@@ -222,12 +232,15 @@ namespace Carbon.Engine.Rendering
         private void RenderSetDeferred(FrameInstructionSet set)
         {
             // Set the state and prepare the target
-            this.SetGraphicState(set);
             this.gBufferTarget.Set(this.graphics);
 
             // Set the parameters for the rendering process (these don't change regardless of instruction)
             var parameters = new RenderParameters
             {
+                DepthEnabled = set.DepthEnabled,
+                RenderSolid = set.RenderSolid,
+                CullMode = set.CullMode,
+                Topology = set.Topology,
                 CameraPosition = set.Camera.Position,
                 View = set.Camera.View,
                 Projection = set.Camera.Projection,
@@ -258,7 +271,7 @@ namespace Carbon.Engine.Rendering
                     continue;
                 }
 
-                this.UpdateShadowMap(this.lightInstructionCache[i], solidInstructions);
+                this.UpdateShadowMap(parameters, this.lightInstructionCache[i], solidInstructions);
             }
 
             // get a quad to use for our operations
@@ -268,8 +281,7 @@ namespace Carbon.Engine.Rendering
             if (set.LightingEnabled && this.lightInstructionCache.Count > 0)
             {
                 // Turn off depth for the following parts, we dont want it
-                this.graphics.DisableDepth();
-                this.graphics.UpdateStates();
+                parameters.DepthEnabled = false;
                 
                 this.deferredLightTarget.Set(this.graphics);
                 parameters.Mode = RenderMode.Light;
@@ -346,9 +358,6 @@ namespace Carbon.Engine.Rendering
 
         private void RenderSetForward(FrameInstructionSet set)
         {
-            // Set the state and prepare the target
-            this.SetGraphicState(set);
-
             RenderTargetBase compositionTarget;
             if (set.DesiredTarget.Type == RenderTargetType.Texture)
             {
@@ -365,6 +374,10 @@ namespace Carbon.Engine.Rendering
             // Set the parameters for the rendering process (these don't change regardless of instruction)
             var parameters = new RenderParameters
             {
+                DepthEnabled = set.DepthEnabled,
+                RenderSolid = set.RenderSolid,
+                CullMode = set.CullMode,
+                Topology = set.Topology,
                 CameraPosition = set.Camera.Position,
                 View = set.Camera.View,
                 Projection = set.Camera.Projection,
@@ -381,7 +394,6 @@ namespace Carbon.Engine.Rendering
         private void RenderSetDebug(FrameInstructionSet set, RenderMode mode)
         {
             // Set the state and prepare the target
-            this.SetGraphicState(set);
             if (set.DesiredTarget.Type == RenderTargetType.Texture)
             {
                 this.PrepareTextureTarget(set.DesiredTarget);
@@ -394,10 +406,45 @@ namespace Carbon.Engine.Rendering
             // Set the parameters for the rendering process (these don't change regardless of instruction)
             var parameters = new RenderParameters
             {
+                DepthEnabled = set.DepthEnabled,
+                RenderSolid = set.RenderSolid,
+                CullMode = set.CullMode,
+                Topology = set.Topology,
                 View = set.Camera.View,
                 Projection = set.Camera.Projection,
                 Mode = mode,
                 LightingEnabled = set.LightingEnabled
+            };
+
+            for (int i = 0; i < this.instructionCache.Count; i++)
+            {
+                this.renderer.Render(parameters, this.instructionCache[i]);
+            }
+        }
+
+        private void RenderSetPlain(FrameInstructionSet set, RenderMode mode)
+        {
+            // Set the state and prepare the target
+            if (set.DesiredTarget.Type == RenderTargetType.Texture)
+            {
+                this.PrepareTextureTarget(set.DesiredTarget);
+            }
+            else
+            {
+                this.backBufferRenderTarget.Set(this.graphics);
+            }
+
+            // Set the parameters for the rendering process (these don't change regardless of instruction)
+            var parameters = new RenderParameters
+            {
+                DepthEnabled = set.DepthEnabled,
+                RenderSolid = set.RenderSolid,
+                CullMode = set.CullMode,
+                Topology = set.Topology,
+                View = set.Camera.View,
+                Projection = set.Camera.Projection,
+                Mode = mode,
+                LightingEnabled = false
             };
 
             for (int i = 0; i < this.instructionCache.Count; i++)
@@ -501,21 +548,7 @@ namespace Carbon.Engine.Rendering
 
             return instruction;
         }
-
-        private void SetGraphicState(FrameInstructionSet set)
-        {
-            if (set.DepthEnabled)
-            {
-                this.graphics.EnableDepth();
-            }
-            else
-            {
-                this.graphics.DisableDepth();
-            }
-
-            graphics.UpdateStates();
-        }
-
+        
         private TextureRenderTarget PrepareTextureTarget(RenderTargetDescription description)
         {
             bool needRegister = false;

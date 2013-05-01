@@ -5,8 +5,6 @@ using SlimDX.Direct3D11;
 
 namespace Carbon.Engine.Rendering
 {
-    using Carbon.Engine.Logic;
-
     public enum RenderMode
     {
         Default,
@@ -15,7 +13,8 @@ namespace Carbon.Engine.Rendering
         Normal,
         Depth,
         Blend,
-        ShadowMap
+        ShadowMap,
+        Plain,
     }
 
     public struct RenderParameters
@@ -25,7 +24,12 @@ namespace Carbon.Engine.Rendering
         public Matrix View;
         public Matrix Projection;
 
+        public bool DepthEnabled;
         public bool LightingEnabled;
+        public bool RenderSolid;
+        public CullMode CullMode;
+
+        public PrimitiveTopology Topology;
 
         public RenderMode Mode;
     }
@@ -64,18 +68,11 @@ namespace Carbon.Engine.Rendering
         private Matrix?[] instances;
         private int nextInstancePosition;
 
-        public RenderInstruction()
-        {
-            this.Topology = PrimitiveTopology.TriangleList;
-        }
-
         public const int MaxInstanceCount = 1000;
 
         public Matrix World { get; set; }
 
         public Mesh Mesh { get; set; }
-
-        public PrimitiveTopology Topology { get; set; }
 
         public TextureData DiffuseTexture { get; set; }
         public TextureData NormalTexture { get; set; }

@@ -8,26 +8,31 @@ using SlimDX.DXGI;
 
 namespace Carbon.Engine.Rendering
 {
-    public struct PositionVertex
+    public interface IMeshStructure
     {
-        public static int Size = Marshal.SizeOf(typeof(PositionVertex));
+    }
 
+    public struct PositionVertex : IMeshStructure
+    {
         public Vector3 Position;
     }
 
-    public struct PositionNormalVertex
+    public struct PositionColorVertex : IMeshStructure
     {
-        public static int Size = Marshal.SizeOf(typeof(PositionNormalVertex));
+        public Vector3 Position;
+        public Vector2 Texture;
+        public Vector4 Color;
+    }
 
+    public struct PositionNormalVertex : IMeshStructure
+    {
         public Vector3 Position;
         public Vector3 Normal;
         public Vector2 Texture;
     }
 
-    public struct PositionNormalTangentVertex
+    public struct PositionNormalTangentVertex : IMeshStructure
     {
-        public static int Size = Marshal.SizeOf(typeof(PositionNormalTangentVertex));
-
         public Vector3 Position;
         public Vector3 Normal;
         public Vector2 Texture;
@@ -36,6 +41,14 @@ namespace Carbon.Engine.Rendering
 
     public static class InputStructures
     {
+        public static IDictionary<Type, int> InputLayoutSizes = new Dictionary<Type, int>
+                                                                    {
+                                                                        { typeof(PositionVertex), Marshal.SizeOf(typeof(PositionVertex)) },
+                                                                        { typeof(PositionColorVertex), Marshal.SizeOf(typeof(PositionColorVertex)) },
+                                                                        { typeof(PositionNormalVertex), Marshal.SizeOf(typeof(PositionNormalVertex)) },
+                                                                        { typeof(PositionNormalTangentVertex), Marshal.SizeOf(typeof(PositionNormalTangentVertex)) },
+                                                                    };
+
         public static IDictionary<Type, InputElement[]> InputLayouts = new Dictionary<Type, InputElement[]>
             {
                 {
@@ -45,6 +58,15 @@ namespace Carbon.Engine.Rendering
                             new InputElement("POSITION", 0, Format.R32G32B32_Float, 0),
                             new InputElement("NORMAL", 0, Format.R32G32B32_Float, 0),
                             new InputElement("TEXCOORD", 0, Format.R32G32_Float, 0)
+                        }
+                },
+                {
+                    typeof(PositionColorVertex),
+                    new[]
+                        {
+                            new InputElement("POSITION", 0, Format.R32G32B32_Float, 0),
+                            new InputElement("TEXCOORD", 0, Format.R32G32_Float, 0),
+                            new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 0), 
                         }
                 },
                 {

@@ -5,6 +5,8 @@ namespace Carbon.Engine.Logic
 {
     using System;
 
+    using SlimDX.Direct3D11;
+
     public interface IDebugController : IBoundController
     {
     }
@@ -88,23 +90,8 @@ namespace Carbon.Engine.Logic
 
         private void UpdateStates()
         {
-            if (this.depthState)
-            {
-                this.graphics.EnableDepth();
-            }
-            else
-            {
-                this.graphics.DisableDepth();
-            }
-
-            if (this.wireframeState)
-            {
-                this.graphics.EnableWireframe();
-            }
-            else
-            {
-                this.graphics.DisableWireframe();
-            }
+            this.graphics.IsDepthEnabled = this.depthState;
+            this.graphics.FillMode = this.wireframeState ? FillMode.Wireframe : FillMode.Solid;
         }
     }
 }

@@ -110,10 +110,10 @@ namespace Carbon.Engine.Rendering
             this.pendingElements.Clear();
             this.elements.Clear();
         }
-
-        public void AddVertex(Vector3 position, Vector3 normal, Vector2 texture)
+        
+        public void AddVertex(Vector3 position, Vector3? normal = null, Vector2? texture = null, Vector4? color = null)
         {
-            this.pendingElements.Add(new MeshElement { Position = position, Normal = normal, Texture = texture });
+            this.pendingElements.Add(new MeshElement { Position = position, Normal = normal, Texture = texture, Color = color });
         }
 
         public void AddIndices(uint[] indices)

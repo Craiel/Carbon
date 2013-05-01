@@ -9,6 +9,8 @@ namespace Carbon.Engine.Rendering
 {
     using Carbon.Engine.Rendering.RenderTarget;
 
+    using SlimDX.Direct3D11;
+
     public struct FrameInstruction
     {
         public Mesh Mesh { get; set; }
@@ -21,6 +23,7 @@ namespace Carbon.Engine.Rendering
     {
         Forward,
         Deferred,
+        Plain,
 
         DebugNormal,
         DebugDepth,
@@ -37,6 +40,9 @@ namespace Carbon.Engine.Rendering
             this.Technique = FrameTechnique.Forward;
             this.LightingEnabled = true;
             this.DepthEnabled = true;
+            this.RenderSolid = true;
+            this.CullMode = CullMode.Back;
+            this.Topology = PrimitiveTopology.TriangleList;
         }
 
         public ICamera Camera { get; private set; }
@@ -44,6 +50,9 @@ namespace Carbon.Engine.Rendering
 
         public bool DepthEnabled { get; set; }
         public bool LightingEnabled { get; set; }
+        public bool RenderSolid { get; set; }
+        public CullMode CullMode { get; set; }
+        public PrimitiveTopology Topology { get; set; }
 
         public FrameTechnique Technique { get; set; }
 

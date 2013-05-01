@@ -189,6 +189,7 @@
     <Compile Include="Rendering\Shaders\DeferredLightShader.cs" />
     <Compile Include="Rendering\Shaders\GBufferShader.cs" />
     <Compile Include="Rendering\Shaders\DefaultShader.cs" />
+    <Compile Include="Rendering\Shaders\PlainShader.cs" />
     <Compile Include="Rendering\Shaders\ShadowMapShader.cs" />
     <Compile Include="Rendering\Structs.cs" />
     <Compile Include="Rendering\DataContainer.cs" />
@@ -261,6 +262,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\Shaders\Blend.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shaders\Plain.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Shaders\Debug.fx">

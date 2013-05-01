@@ -26,6 +26,7 @@ namespace Carbon.Engine.Rendering
         private readonly IDebugShader debugShader;
         private readonly IBlendShader blendShader;
         private readonly IShadowMapShader shadowMapShader;
+        private readonly IPlainShader plainShader;
 
         private DynamicBuffer vertexBuffer;
         private DynamicBuffer indexBuffer;
@@ -51,6 +52,7 @@ namespace Carbon.Engine.Rendering
             this.deferredLightShader = factory.Get<IDeferredLightShader>();
             this.blendShader = factory.Get<IBlendShader>();
             this.shadowMapShader = factory.Get<IShadowMapShader>();
+            this.plainShader = factory.Get<IPlainShader>();
         }
 
         public override void Dispose()
@@ -66,6 +68,7 @@ namespace Carbon.Engine.Rendering
             this.deferredLightShader.Dispose();
             this.blendShader.Dispose();
             this.shadowMapShader.Dispose();
+            this.plainShader.Dispose();
         }
 
         // -------------------------------------------------------------------
@@ -94,12 +97,12 @@ namespace Carbon.Engine.Rendering
             this.deferredLightShader.Initialize(graphics);
             this.blendShader.Initialize(graphics);
             this.shadowMapShader.Initialize(graphics);
+            this.plainShader.Initialize(graphics);
         }
 
         public void BeginFrame()
         {
             this.currentFrameStatistic = new FrameStatistics();
-            this.graphics.UpdateStates();
         }
 
         public void AddForwardLighting(IList<RenderLightInstruction> instructions)
@@ -189,6 +192,12 @@ namespace Carbon.Engine.Rendering
         {
             this.currentFrameStatistic.Instructions++;
 
+            // Set the state according to the instruction
+            this.graphics.IsDepthEnabled = parameters.DepthEnabled;
+            this.graphics.FillMode = parameters.RenderSolid ? FillMode.Solid : FillMode.Wireframe;
+            this.graphics.CullMode = parameters.CullMode;
+            this.graphics.UpdateStates();
+
             // Commence the rendering
             this.RenderInstruction(this.graphics.ImmediateContext, parameters, instruction);
 
@@ -214,6 +223,7 @@ namespace Carbon.Engine.Rendering
             this.debugShader.ForceReloadOnNextPass = true;
             this.blendShader.ForceReloadOnNextPass = true;
             this.shadowMapShader.ForceReloadOnNextPass = true;
+            this.plainShader.ForceReloadOnNextPass = true;
         }
         
         // -------------------------------------------------------------------
@@ -221,16 +231,16 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         private void RenderInstruction(DeviceContext context, RenderParameters parameters, RenderInstruction instruction)
         {
+                Type neededVertexBufferType = this.ApplyShader(context, parameters, instruction);
+
                 // Check if we have to update the mesh data
                 if (this.activeMesh != instruction.Mesh)
                 {
                     this.activeMesh = instruction.Mesh;
-                    this.UploadMesh(this.activeMesh);
+                    this.UploadMesh(neededVertexBufferType, this.activeMesh);
                 }
 
-                this.ApplyShader(context, parameters, instruction);
-
-                context.InputAssembler.PrimitiveTopology = instruction.Topology;
+                context.InputAssembler.PrimitiveTopology = parameters.Topology;
 
                 // Render the instruction
                 if (instruction.InstanceCount > 1)
@@ -250,7 +260,7 @@ namespace Carbon.Engine.Rendering
                 }
         }
 
-        private void ApplyShader(DeviceContext context, RenderParameters parameters, RenderInstruction instruction)
+        private Type ApplyShader(DeviceContext context, RenderParameters parameters, RenderInstruction instruction)
         {
             // Prepare the Shader
             switch (parameters.Mode)
@@ -260,21 +270,21 @@ namespace Carbon.Engine.Rendering
                         this.defaultShader.LightingEnabled = parameters.LightingEnabled;
                         this.ActivateShader(context, this.defaultShader);
                         this.defaultShader.Apply(context, typeof(PositionNormalVertex), parameters, instruction);
-                        break;
+                        return typeof(PositionNormalTangentVertex);
                     }
 
                 case RenderMode.GBuffer:
                     {
                         this.ActivateShader(context, this.gBufferShader);
                         this.gBufferShader.Apply(context, typeof(PositionNormalTangentVertex), parameters, instruction);
-                        break;
+                        return typeof(PositionNormalTangentVertex);
                     }
 
                 case RenderMode.Light:
                     {
                         this.ActivateShader(context, this.deferredLightShader);
                         this.deferredLightShader.Apply(context, typeof(PositionVertex), parameters, instruction);
-                        break;
+                        return typeof(PositionNormalTangentVertex);
                     }
 
                 case RenderMode.Normal:
@@ -282,7 +292,7 @@ namespace Carbon.Engine.Rendering
                         this.debugShader.Mode = DebugShaderMode.Normal;
                         this.ActivateShader(context, this.debugShader);
                         this.debugShader.Apply(context, typeof(PositionNormalVertex), parameters, instruction);
-                        break;
+                        return typeof(PositionNormalVertex);
                     }
 
                 case RenderMode.Depth:
@@ -290,21 +300,28 @@ namespace Carbon.Engine.Rendering
                         this.debugShader.Mode = DebugShaderMode.Depth;
                         this.ActivateShader(context, this.debugShader);
                         this.debugShader.Apply(context, typeof(PositionNormalVertex), parameters, instruction);
-                        break;
+                        return typeof(PositionVertex);
                     }
 
                 case RenderMode.Blend:
                     {
                         this.ActivateShader(context, this.blendShader);
                         this.blendShader.Apply(context, typeof(PositionVertex), parameters, instruction);
-                        break;
+                        return typeof(PositionNormalTangentVertex);
                     }
 
                 case RenderMode.ShadowMap:
                     {
                         this.ActivateShader(context, this.shadowMapShader);
                         this.shadowMapShader.Apply(context, typeof(PositionVertex), parameters, instruction);
-                        break;
+                        return typeof(PositionVertex);
+                    }
+
+                case RenderMode.Plain:
+                    {
+                        this.ActivateShader(context, this.plainShader);
+                        this.plainShader.Apply(context, typeof(PositionColorVertex), parameters, instruction);
+                        return typeof(PositionColorVertex);
                     }
 
                 default:
@@ -354,14 +371,14 @@ namespace Carbon.Engine.Rendering
             this.currentFrameStatistic.Triangles += (uint)(activeMesh.IndexCount / 3);
         }
 
-        private void UploadMesh(Mesh mesh)
+        private void UploadMesh(Type neededVertexBufferType, Mesh mesh)
         {
             this.currentFrameStatistic.MeshSwitches++;
-            this.vertexBufferStride = PositionNormalTangentVertex.Size;
+            this.vertexBufferStride = InputStructures.InputLayoutSizes[neededVertexBufferType];
 
             DataStream stream;
-            this.vertexBuffer.BeginUpdate(out stream, mesh.GetSizeAs<PositionNormalTangentVertex>());
-            mesh.WriteData<PositionNormalTangentVertex>(stream);
+            this.vertexBuffer.BeginUpdate(out stream, mesh.GetSizeAs(neededVertexBufferType));
+            mesh.WriteData(neededVertexBufferType, stream);
             this.vertexBuffer.EndUpdate();
 
             if (mesh.IndexCount > 0)

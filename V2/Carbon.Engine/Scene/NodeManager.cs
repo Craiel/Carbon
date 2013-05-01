@@ -36,6 +36,7 @@ namespace Carbon.Engine.Scene
         INode AddSpotLight(Vector4 color, Vector2 angles, Vector3 direction, float range = 1.0f, float specularPower = 1.0f, INode parent = null);
 
         INode AddNode(INode parent = null);
+        INode AddModel(ModelResource resource, INode parent = null);
         INode AddModel(string path, INode parent = null);
         INode AddSphere(int detailLevel, INode parent = null);
         INode AddPlane(INode parent = null);
@@ -164,6 +165,19 @@ namespace Carbon.Engine.Scene
             }
 
             var node = new Node();
+            parent.AddChild(node);
+            return node;
+        }
+
+        [ScriptingMethod]
+        public INode AddModel(ModelResource resource, INode parent = null)
+        {
+            if (parent == null)
+            {
+                parent = this.root;
+            }
+
+            ModelNode node = this.CreateModelNode(resource);
             parent.AddChild(node);
             return node;
         }

@@ -76,39 +76,35 @@ namespace Carbon.Engine.Rendering
         {
         }
         
-        public int GetSizeAs<T>()
+        public int GetSizeAs(Type type)
         {
-            if (typeof(T) == typeof(PositionVertex))
-            {
-                return PositionVertex.Size * this.ElementCount;
-            }
-
-            if (typeof(T) == typeof(PositionNormalVertex))
-            {
-                return PositionNormalVertex.Size * this.ElementCount;
-            }
-
-            if (typeof(T) == typeof(PositionNormalTangentVertex))
-            {
-                return PositionNormalTangentVertex.Size * this.ElementCount;
-            }
-
-            throw new NotImplementedException("Format not implemented yet for " + this.Name);
+            return InputStructures.InputLayoutSizes[type] * this.ElementCount;
         }
 
-        public void WriteData<T>(DataStream target)
+        public int GetSizeAs<T>()
+            where T : IMeshStructure
+        {
+            return this.GetSizeAs(typeof(T));
+        }
+
+        public void WriteData(Type type, DataStream target)
         {
             if (this.ElementCount == 0)
             {
                 throw new InvalidOperationException("WriteData called on empty Mesh part " + this.Name);
             }
-            
-            if (!this.uploadCache.ContainsKey(typeof(T)) || this.cacheInvalid)
+
+            if (!this.uploadCache.ContainsKey(type) || this.cacheInvalid)
             {
-                this.RefreshUploadCache(typeof(T));
+                this.RefreshUploadCache(type);
             }
 
-            this.uploadCache[typeof(T)].WriteData(target);
+            this.uploadCache[type].WriteData(target);
+        }
+
+        public void WriteData<T>(DataStream target)
+        {
+            this.WriteData(typeof(T), target);
         }
 
         public void WriteIndexData(DataStream target)
@@ -131,6 +127,10 @@ namespace Carbon.Engine.Rendering
                 if (type == typeof(PositionVertex))
                 {
                     container = new StaticDataContainer<PositionVertex>();
+                }
+                else if (type == typeof(PositionColorVertex))
+                {
+                    container = new StaticDataContainer<PositionColorVertex>();
                 }
                 else if (type == typeof(PositionNormalVertex))
                 {
@@ -169,6 +169,16 @@ namespace Carbon.Engine.Rendering
                 if (type == typeof(PositionVertex))
                 {
                     container.Add(new PositionVertex { Position = element.Position });
+                }
+                else if (type == typeof(PositionColorVertex))
+                {
+                    container.Add(
+                        new PositionColorVertex
+                            {
+                                Position = element.Position,
+                                Texture = element.Texture ?? Vector2.Zero,
+                                Color = element.Color ?? Vector4.Zero
+                            });
                 }
                 else if (type == typeof(PositionNormalVertex))
                 {
