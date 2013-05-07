@@ -4,7 +4,6 @@ using System.Linq;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
-using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Contracts.Scene;
 using Carbon.Engine.Contracts.UserInterface;
 using Carbon.Engine.Logic;
@@ -49,7 +48,7 @@ namespace Carbon.V2Test.Scenes
         private IUserInterfaceConsole console;
 
         private FontEntry consoleFont;
-        private IModelNode consoleTestNode;
+        private IModelEntity consoleTestNode;
         private int lastConsoleUpdate;
 
         private Mesh screenQuad;
@@ -107,8 +106,7 @@ namespace Carbon.V2Test.Scenes
 
             this.consoleFont =
                 this.gameState.ContentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 1)).UniqueResult<FontEntry>();
-            this.consoleTestNode = (IModelNode)this.gameState.NodeManager.AddStaticText(1, " ", new Vector2(1, 1.2f));
-            this.gameState.NodeManager.RootNode.RemoveChild(this.consoleTestNode);
+            this.consoleTestNode = (IModelEntity)this.gameState.SceneEntityFactory.AddStaticText(1, " ", new Vector2(1, 1.2f));
             this.consoleTestNode.Position = new Vector4(0, 20, 0, 1);
             this.console.Initialize(graphics);
             this.console.IsActive = true;
@@ -183,8 +181,13 @@ namespace Carbon.V2Test.Scenes
             this.screenQuad = new Mesh(Quad.CreateScreen(new Vector2(0), size));
         }
 
-        public override void Update(ITimer gameTime)
+        public override bool Update(ITimer gameTime)
         {
+            if (!base.Update(gameTime))
+            {
+                return false;
+            }
+
             // Update the controller first
             this.controller.Update(gameTime);
 
@@ -218,7 +221,7 @@ namespace Carbon.V2Test.Scenes
                 lightTesting.Position = new Vector4(5f, 7.0f, 0, 1);
             }*/
 
-            this.gameState.NodeManager.RootNode.Update(gameTime);
+            return false;
         }
 
         public override void Render(IFrameManager frameManager)
@@ -226,7 +229,7 @@ namespace Carbon.V2Test.Scenes
             // The scene to deferred
             FrameInstructionSet set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Deferred;
-            this.gameState.NodeManager.RootNode.Render(set);
+            //this.entityManager.Render(set);
             frameManager.RenderSet(set);
 
             // The scene to Forward
@@ -234,14 +237,14 @@ namespace Carbon.V2Test.Scenes
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Forward;
             set.DesiredTarget = RenderTargetDescription.Texture(1001, windowSize);
-            this.gameState.NodeManager.RootNode.Render(set);
+            //this.entityManager.Render(set);
             frameManager.RenderSet(set);
 
             // The scene to Debug Normal
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.DebugNormal;
             set.DesiredTarget = RenderTargetDescription.Texture(1002, windowSize);
-            this.gameState.NodeManager.RootNode.Render(set);
+            //this.entityManager.Render(set);
             frameManager.RenderSet(set);
             
             this.RenderDebugScreens(frameManager);

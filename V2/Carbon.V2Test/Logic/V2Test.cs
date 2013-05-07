@@ -125,7 +125,6 @@ namespace Carbon.V2Test.Logic
         {
             lock (this.RenderSynchronizationLock)
             {
-                this.gameState.NodeManager.Clear();
                 this.gameState.SceneManager.Activate((int)key);
                 this.gameState.SceneManager.Resize(new TypedVector2<int>(this.Window.Size.Width, this.Window.Size.Height));
             }
@@ -140,7 +139,6 @@ namespace Carbon.V2Test.Logic
                 this.gameState.ContentManager.ClearCache();
                 this.renderer.ClearCache();
 
-                this.gameState.NodeManager.Clear();
                 this.gameState.SceneManager.Reload();
             }
         }

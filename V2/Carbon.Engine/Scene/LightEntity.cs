@@ -1,13 +1,14 @@
 ﻿using Carbon.Engine.Contracts.Rendering;
+using Carbon.Engine.Contracts.Scene;
 using Carbon.Engine.Rendering;
 
 namespace Carbon.Engine.Scene
 {
-    public interface ILightNode : INode
+    public interface ILightNode : ISceneEntity
     {
     }
 
-    public class LightNode : Node, ILightNode
+    public class LightEntity : SceneEntity, ILightNode
     {
         public ILight Light { get; set; }
 
@@ -21,9 +22,12 @@ namespace Carbon.Engine.Scene
             base.Dispose();
         }
 
-        public override void Update(Core.Utils.Contracts.ITimer gameTime)
+        public override bool Update(Core.Utils.Contracts.ITimer gameTime)
         {
-            base.Update(gameTime);
+            if(!base.Update(gameTime))
+            {
+                return false;
+            }
 
             if (this.Light != null)
             {
@@ -31,6 +35,8 @@ namespace Carbon.Engine.Scene
                 this.Light.Position = this.Position;
                 this.Light.Update(gameTime);
             }
+
+            return true;
         }
 
         public override void Render(FrameInstructionSet frameSet)

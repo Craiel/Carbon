@@ -192,9 +192,12 @@ namespace Carbon.Engine.Scene
             }
         }
 
-        public override void Update(Core.Utils.Contracts.ITimer gameTime)
+        public override bool Update(Core.Utils.Contracts.ITimer gameTime)
         {
-            base.Update(gameTime);
+            if (!base.Update(gameTime))
+            {
+                return false;
+            }
 
             if (this.suspendedScene != null)
             {
@@ -205,6 +208,8 @@ namespace Carbon.Engine.Scene
             {
                 this.registeredScenes[(int)this.activeScene].Update(gameTime);
             }
+
+            return true;
         }
 
         public void Render(IFrameManager frameManager)

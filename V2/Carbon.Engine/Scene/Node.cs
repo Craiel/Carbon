@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Carbon.Engine.Rendering;
+using Carbon.Engine.Contracts.Logic;
+using Carbon.Engine.Contracts.Scene;
+using Carbon.Engine.Logic;
 
 namespace Carbon.Engine.Scene
 {
-    using Carbon.Engine.Contracts.Scene;
-
-    public interface INode : IEntity
+    public interface INode : IEngineComponent
     {
-        IReadOnlyCollection<IEntity> Children { get; }
+        INode Parent { get; set; }
 
-        void AddChild(IEntity entity);
-        void RemoveChild(IEntity entity);
+        ISceneEntity Entity { get; set; }
+
+        IReadOnlyCollection<INode> Children { get; }
+        
+        void AddChild(INode node);
+        void RemoveChild(INode node);
 
         void Clear();
     }
@@ -20,28 +24,32 @@ namespace Carbon.Engine.Scene
     /// <summary>
     /// Container class for entities, used by all kinds of system to "bag" entities
     /// </summary>
-    public class Node : Entity, INode
+    public class Node : EngineComponent, INode
     {
-        private readonly List<IEntity> children;
+        private readonly List<INode> children;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
         public Node()
         {
-            this.children = new List<IEntity>();
+            this.children = new List<INode>();
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public IReadOnlyCollection<IEntity> Children
+        public IReadOnlyCollection<INode> Children
         {
             get
             {
                 return this.children.AsReadOnly();
             }
         }
+
+        public INode Parent { get; set; }
+
+        public ISceneEntity Entity { get; set; }
 
         public override void Dispose()
         {
@@ -50,56 +58,36 @@ namespace Carbon.Engine.Scene
             base.Dispose();
         }
 
-        public override void Update(Core.Utils.Contracts.ITimer gameTime)
+        public void AddChild(INode node)
         {
-            base.Update(gameTime);
-
-            for (int i = 0; i < this.children.Count; i++)
+            if (node == null || node.Parent != null)
             {
-                this.children[i].Update(gameTime);
+                throw new ArgumentException("Entity was null or invalid");
             }
 
-            this.WasUpdated = false;
-        }
-
-        public override void Render(FrameInstructionSet frameSet)
-        {
-            for (int i = 0; i < this.children.Count; i++)
-            {
-                this.children[i].Render(frameSet);
-            }
-        }
-
-        public void AddChild(IEntity entity)
-        {
-            if (entity == null)
-            {
-                throw new ArgumentException("Entity was null");
-            }
-
-            if (this.children.Contains(entity))
+            if (this.children.Contains(node))
             {
                 throw new InvalidOperationException("Entity was already in child collection");
             }
 
-            this.children.Add(entity);
-            entity.Parent = this;
+            this.children.Add(node);
+            node.Parent = this;
         }
 
-        public void RemoveChild(IEntity entity)
+        public void RemoveChild(INode node)
         {
-            if (entity == null)
+            if (node == null)
             {
                 throw new ArgumentException("Entity was null");
             }
 
-            if (!this.children.Contains(entity))
+            if (!this.children.Contains(node))
             {
                 throw new InvalidOperationException("Entity was not in child collection");
             }
 
-            this.children.Remove(entity);
-            entity.Parent = null;
+            this.children.Remove(node);
+            node.Parent = null;
         }
 
         public void Clear()
@@ -113,6 +101,16 @@ namespace Carbon.Engine.Scene
 
                 this.children.Clear();
             }
+        }
+
+        public override bool Update(Core.Utils.Contracts.ITimer gameTime)
+        {
+            if (this.Entity != null)
+            {
+                this.Entity.World = this.Entity.Local * this.Parent.Entity.Local;
+            }
+            
+            return true;
         }
     }
 }

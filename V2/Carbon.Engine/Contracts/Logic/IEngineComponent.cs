@@ -7,7 +7,8 @@ namespace Carbon.Engine.Contracts.Logic
     public interface IEngineComponent : IDisposable
     {
         void Initialize(ICarbonGraphics graphics);
-        void Update(ITimer gameTime);
         void Unload();
+
+        bool Update(ITimer gameTime);
     }
 }

@@ -45,10 +45,6 @@ namespace Carbon.Engine.Rendering.Debug
         }
 
         public Quaternion WorldRotation { get; set; }
-
-        public override void Update(ITimer gameTime)
-        {
-        }
         
         /*public void Render(IRenderer renderer)
         {

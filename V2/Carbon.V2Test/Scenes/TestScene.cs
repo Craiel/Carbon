@@ -4,7 +4,6 @@ using System.Linq;
 using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
-using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Contracts.Scene;
 using Carbon.Engine.Contracts.UserInterface;
 using Carbon.Engine.Logic;
@@ -23,8 +22,6 @@ using SlimDX;
 
 namespace Carbon.V2Test.Scenes
 {
-    using SlimDX.Direct3D11;
-
     public interface ITestScene : IScene
     {
     }
@@ -52,7 +49,7 @@ namespace Carbon.V2Test.Scenes
         private IUserInterfaceConsole console;
 
         private FontEntry consoleFont;
-        private IModelNode consoleTestNode;
+        private IModelEntity consoleTestNode;
         private INode testNode;
         private int lastConsoleUpdate;
 
@@ -121,6 +118,8 @@ namespace Carbon.V2Test.Scenes
             this.controller.Position = new Vector4(0, 5, -10, 1.0f);
             this.controller.Speed = 0.1f;
 
+            this.gameState.ScriptingEngine.Register(this.gameState.SceneEntityFactory);
+
             var scriptData = this.gameState.ResourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
             var script = new CarbonScript(scriptData);
             this.gameState.ScriptingEngine.Execute(script);
@@ -129,8 +128,7 @@ namespace Carbon.V2Test.Scenes
 
             this.consoleFont =
                 this.gameState.ContentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 1)).UniqueResult<FontEntry>();
-            this.consoleTestNode = (IModelNode)this.gameState.NodeManager.AddStaticText(1, " ", new Vector2(1, 1.2f));
-            this.gameState.NodeManager.RootNode.RemoveChild(this.consoleTestNode);
+            this.consoleTestNode = (IModelEntity)this.gameState.SceneEntityFactory.AddStaticText(1, " ", new Vector2(1, 1.2f));
             this.consoleTestNode.Position = new Vector4(0, 20, 0, 1);
             this.console.Initialize(graphics);
             this.console.IsActive = true;
@@ -155,18 +153,16 @@ namespace Carbon.V2Test.Scenes
 
             this.testNode = new Node();
             //ModelResource resource = Cube.CreateVertexColoredLines(new Vector3(0), 1.0f, new Vector4(1, 0, 0, 1));
-            //this.gameState.NodeManager.AddModel(resource, this.testNode);
-            foreach (IEntity child in this.gameState.NodeManager.RootNode.Children)
+            //this.gameState.entityManager.AddModel(resource, this.testNode);
+            /*foreach (IEntity child in this.entityManager.RootNode.Children)
             {
-                float size = 1;
-                if (child.GetType() == typeof(IModelNode))
+                if (child.GetType() == typeof(ModelNode))
                 {
-                    size = ((IModelNode)child).Mesh.BoundingBox.Maximum.X * child.Scale.X;
+                    ModelResource resource = Cube.CreateBoundingBoxLines(child.BoundingBox, new Vector4(1, 0, 0, 1));
+                    var node = this.entityManager.AddModel(resource, this.testNode);
+                    node.Position = child.Position;
                 }
-                ModelResource resource = Cube.CreateVertexColoredLines(new Vector3(0), size, new Vector4(1, 0, 0, 1));
-                var node = this.gameState.NodeManager.AddModel(resource, this.testNode);
-                node.Position = child.Position;
-            }
+            }*/
 
             this.consoleContext = this.gameState.ScriptingEngine.GetContext();
         }
@@ -221,8 +217,13 @@ namespace Carbon.V2Test.Scenes
             this.screenQuad = new Mesh(Quad.CreateScreen(new Vector2(0), size));
         }
 
-        public override void Update(ITimer gameTime)
+        public override bool Update(ITimer gameTime)
         {
+            if (!base.Update(gameTime))
+            {
+                return false;
+            }
+
             // Update the controller first
             this.controller.Update(gameTime);
 
@@ -256,9 +257,8 @@ namespace Carbon.V2Test.Scenes
                 lightTesting.Position = new Vector4(5f, 7.0f, 0, 1);
             }*/
 
-            this.gameState.NodeManager.RootNode.Update(gameTime);
-
             this.testNode.Update(gameTime);
+            return true;
         }
 
         public override void Render(IFrameManager frameManager)
@@ -266,7 +266,7 @@ namespace Carbon.V2Test.Scenes
             // The scene to deferred
             FrameInstructionSet set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Deferred;
-            this.gameState.NodeManager.RootNode.Render(set);
+            //this.entityManager.Render(set);
             frameManager.RenderSet(set);
 
             // The scene to Forward
@@ -274,22 +274,22 @@ namespace Carbon.V2Test.Scenes
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Forward;
             set.DesiredTarget = RenderTargetDescription.Texture(1001, windowSize);
-            this.gameState.NodeManager.RootNode.Render(set);
+            //this.entityManager.Render(set);
             frameManager.RenderSet(set);
 
             // The scene to Debug Normal
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.DebugNormal;
             set.DesiredTarget = RenderTargetDescription.Texture(1002, windowSize);
-            this.gameState.NodeManager.RootNode.Render(set);
+            //this.entityManager.Render(set);
             frameManager.RenderSet(set);
 
             // test stuff
-            set = frameManager.BeginSet(this.camera);
+            /*set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Plain;
             set.Topology = PrimitiveTopology.LineList;
             this.testNode.Render(set);
-            frameManager.RenderSet(set);
+            frameManager.RenderSet(set);*/
 
             this.RenderDebugScreens(frameManager);
 

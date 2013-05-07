@@ -115,16 +115,20 @@ namespace Carbon.Engine.UserInterface
             }
         }
         
-        public override void Update(ITimer gameTime)
+        public override bool Update(ITimer gameTime)
         {
-            base.Update(gameTime);
+            if (!base.Update(gameTime))
+            {
+                return false;
+            }
 
             if (!this.IsActive)
             {
-                return;
+                return true;
             }
 
             this.controller.Update(gameTime);
+            return true;
         }
 
         public void SetInputBindings(string name)

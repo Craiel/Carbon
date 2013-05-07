@@ -71,22 +71,15 @@ namespace Carbon.Engine.Rendering.Primitives
             return builder.ToMesh();
         }
 
-        public static ModelResource CreateVertexColoredLines(Vector3 origin, float size, Vector4 color)
+        public static ModelResource CreateBoundingBoxLines(BoundingBox box, Vector4 color)
         {
             var builder = new MeshBuilder("Cube " + ++creationCount) { IsIndexed = true };
 
-            Vector3[] bottomVertices;
-            Vector3[] topVertices;
-            GetVertices(origin, size, out bottomVertices, out topVertices);
+            Vector3[] corners = box.GetCorners();
 
-            foreach (Vector3 vertex in bottomVertices)
+            foreach (Vector3 corner in corners)
             {
-                builder.AddVertex(vertex, color: color);
-            }
-
-            foreach (Vector3 vertex in topVertices)
-            {
-                builder.AddVertex(vertex, color: color);
+                builder.AddVertex(corner, color: color);
             }
 
             var indices = new uint[]

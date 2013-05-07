@@ -1,17 +1,12 @@
 ﻿using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Rendering;
-using Carbon.Engine.Scene;
 
 using SlimDX;
 
 namespace Carbon.Engine.Contracts.Scene
 {
-    public interface IEntity : IEngineComponent, IRenderable
+    public interface ISceneEntity : IEngineComponent, IRenderable
     {
-        INode Parent { get; set; }
-
-        bool WasUpdated { get; }
-
         string Name { get; set; }
 
         Vector4 Position { get; set; }
@@ -19,8 +14,10 @@ namespace Carbon.Engine.Contracts.Scene
         Quaternion Rotation { get; set; }
 
         Matrix Local { get; }
-        Matrix World { get; }
+
+        Matrix World { get; set; }
 
         BoundingSphere BoundingSphere { get; }
+        BoundingBox BoundingBox { get; }
     }
 }

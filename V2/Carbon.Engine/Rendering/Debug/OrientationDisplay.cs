@@ -37,10 +37,6 @@ namespace Carbon.Engine.Rendering.Debug
             this.materialZ = this.CreateMaterial();
             this.materialZ.Color = new SlimDX.Vector4(0, 0, 0.5f, 1.0f);*/
         }
-
-        public override void Update(ITimer gameTime)
-        {
-        }
         
         /*public void Render(IRenderer renderer, Vector3 position, Quaternion rotation)
         {

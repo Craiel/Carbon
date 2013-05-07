@@ -76,11 +76,16 @@ namespace Carbon.Engine.Logic
             }
         }
 
-        public override void Update(ITimer gameTimer)
+        public override bool Update(ITimer gameTimer)
         {
+            if (!base.Update(gameTimer))
+            {
+                return false;
+            }
+
             if ((gameTimer.ActualElapsedTime - this.lastUpdateTime) < updateCycle)
             {
-                return;
+                return true;
             }
 
             KeyboardState keyState = this.keyboard.GetCurrentState();
@@ -153,6 +158,7 @@ namespace Carbon.Engine.Logic
             }
 
             this.lastUpdateTime = gameTimer.ActualElapsedTime;
+            return true;
         }
 
         [ScriptingMethod]

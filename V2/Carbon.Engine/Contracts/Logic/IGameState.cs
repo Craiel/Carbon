@@ -9,5 +9,6 @@ namespace Carbon.Engine.Contracts.Logic
         ISceneManager SceneManager { get; }
         IContentManager ContentManager { get; }
         IResourceManager ResourceManager { get; }
+        ISceneEntityFactory SceneEntityFactory { get; }
     }
 }

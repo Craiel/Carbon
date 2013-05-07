@@ -67,11 +67,15 @@ namespace Carbon.Engine.Logic
             return values;
         }
 
-        public override void Update(Core.Utils.Contracts.ITimer gameTime)
+        public override bool Update(Core.Utils.Contracts.ITimer gameTime)
         {
-            base.Update(gameTime);
+            if (!base.Update(gameTime))
+            {
+                return false;
+            }
 
             this.lastUpdateTime = gameTime.ActualElapsedTime;
+            return true;
         }
 
         // -------------------------------------------------------------------

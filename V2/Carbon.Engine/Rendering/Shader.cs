@@ -212,10 +212,6 @@ namespace Carbon.Engine.Rendering
             }
         }
         
-        public override void Update(ITimer gameTime)
-        {
-        }
-
         public virtual void ResetConfigurationState(DeviceContext context)
         {
             context.VertexShader.Set(null);

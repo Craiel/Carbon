@@ -1,6 +1,7 @@
 ﻿using Carbon.Engine.Contracts;
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Contracts.Resource;
+using Carbon.Engine.Contracts.Scene;
 
 using Ninject;
 using Ninject.Parameters;
@@ -49,6 +50,13 @@ namespace Carbon.Engine.Ninject
         {
             return this.kernel.Get<IContentManager>(
                 new ConstructorArgument("resourceManager", resourceManager), new ConstructorArgument("root", root));
+        }
+
+        public ISceneEntityFactory GetEntityFactory(IResourceManager resourceManager, IContentManager contentManager)
+        {
+            return this.kernel.Get<ISceneEntityFactory>(
+                new ConstructorArgument("resourceManager", resourceManager),
+                new ConstructorArgument("contentManager", contentManager));
         }
     }
 }

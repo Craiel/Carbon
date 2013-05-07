@@ -2,7 +2,6 @@
 using System.Linq;
 
 using Carbon.Engine.Contracts.Logic;
-using Core.Utils.Contracts;
 
 namespace Carbon.Engine.Logic
 {
@@ -174,11 +173,7 @@ namespace Carbon.Engine.Logic
         public virtual void ReceiveAxisChange(string axis, float value)
         {
         }
-
-        public override void Update(ITimer gameTime)
-        {
-        }
-
+        
         public override void Dispose()
         {
             this.inputManager.UnregisterReceiver(this);

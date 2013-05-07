@@ -1,5 +1,4 @@
 ﻿using Carbon.Engine.Contracts;
-using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Logic;
 using Carbon.V2Test.Contracts;
 
@@ -12,21 +11,8 @@ namespace Carbon.V2Test.Logic
         {
             this.ResourceManager = factory.GetResourceManager("Data");
             this.ContentManager = factory.GetContentManager(this.ResourceManager, "Main.db");
-        }
 
-        public override void Initialize(ICarbonGraphics graphics)
-        {
-            base.Initialize(graphics);
-
-            this.NodeManager.InitializeContent(this.ContentManager, this.ResourceManager);
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            this.ResourceManager.Dispose();
-            this.ContentManager.Dispose();
+            this.SceneEntityFactory = factory.GetEntityFactory(this.ResourceManager, this.ContentManager);
         }
     }
 }

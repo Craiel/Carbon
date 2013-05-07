@@ -16,13 +16,14 @@ namespace Carbon.Engine.Logic
         public virtual void Initialize(ICarbonGraphics graphics)
         {
         }
-        
-        public virtual void Update(ITimer gameTime)
-        {
-        }
 
         public virtual void Unload()
         {
+        }
+
+        public virtual bool Update(ITimer gameTime)
+        {
+            return true;
         }
     }
 }

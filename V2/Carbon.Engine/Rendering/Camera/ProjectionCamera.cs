@@ -132,8 +132,13 @@ namespace Carbon.Engine.Rendering.Camera
             this.needUpdate = true;
         }
 
-        public override void Update(ITimer gameTime)
+        public override bool Update(ITimer gameTime)
         {
+            if (!base.Update(gameTime))
+            {
+                return false;
+            }
+
             if (this.needUpdate)
             {
                 // Get the rotation
@@ -153,6 +158,8 @@ namespace Carbon.Engine.Rendering.Camera
                 
                 this.needUpdate = false;
             }
+
+            return true;
         }
 
         public override void SetPerspective(TypedVector2<int> newViewPort, float newNear, float newFar, float fov = CameraConstants.DefaultFoV)
