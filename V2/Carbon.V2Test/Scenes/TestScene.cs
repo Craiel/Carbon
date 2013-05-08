@@ -53,6 +53,7 @@ namespace Carbon.V2Test.Scenes
         private INode testNode;
         private int lastConsoleUpdate;
 
+        private bool isLoaded;
         private Mesh screenQuad;
 
         private LuaInterface.Lua consoleContext;
@@ -84,6 +85,8 @@ namespace Carbon.V2Test.Scenes
         public override void Unload()
         {
             base.Unload();
+
+            this.isLoaded = false;
 
             this.console.IsActive = false;
             this.console.OnLineEntered -= this.OnConsoleLineEntered;
@@ -118,8 +121,6 @@ namespace Carbon.V2Test.Scenes
             this.controller.Position = new Vector4(0, 5, -10, 1.0f);
             this.controller.Speed = 0.1f;
 
-            this.gameState.ScriptingEngine.Register(this.gameState.SceneEntityFactory);
-
             var scriptData = this.gameState.ResourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\init.lua"));
             var script = new CarbonScript(scriptData);
             this.gameState.ScriptingEngine.Execute(script);
@@ -147,9 +148,7 @@ namespace Carbon.V2Test.Scenes
             this.deferredLightTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference((int)StaticTextureRegister.DeferredLight) };
             this.shadowMapTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference((int)StaticTextureRegister.ShadowMapTarget) };
 
-            scriptData = this.gameState.ResourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene.lua"));
-            script = new CarbonScript(scriptData);
-            this.gameState.ScriptingEngine.Execute(script);
+            
 
             this.testNode = new Node();
             //ModelResource resource = Cube.CreateVertexColoredLines(new Vector3(0), 1.0f, new Vector4(1, 0, 0, 1));
@@ -224,6 +223,14 @@ namespace Carbon.V2Test.Scenes
                 return false;
             }
 
+            if (!this.isLoaded)
+            {
+                var scriptData = this.gameState.ResourceManager.Load<RawResource>(HashUtils.BuildResourceHash(@"Scripts\TestScene.lua"));
+                var script = new CarbonScript(scriptData);
+                this.gameState.ScriptingEngine.Execute(script);
+                this.isLoaded = true;
+            }
+
             // Update the controller first
             this.controller.Update(gameTime);
 
@@ -266,7 +273,7 @@ namespace Carbon.V2Test.Scenes
             // The scene to deferred
             FrameInstructionSet set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Deferred;
-            //this.entityManager.Render(set);
+            this.RenderList(1, set);
             frameManager.RenderSet(set);
 
             // The scene to Forward
@@ -274,14 +281,14 @@ namespace Carbon.V2Test.Scenes
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.Forward;
             set.DesiredTarget = RenderTargetDescription.Texture(1001, windowSize);
-            //this.entityManager.Render(set);
+            this.RenderList(1, set);
             frameManager.RenderSet(set);
 
             // The scene to Debug Normal
             set = frameManager.BeginSet(this.camera);
             set.Technique = FrameTechnique.DebugNormal;
             set.DesiredTarget = RenderTargetDescription.Texture(1002, windowSize);
-            //this.entityManager.Render(set);
+            this.RenderList(1, set);
             frameManager.RenderSet(set);
 
             // test stuff

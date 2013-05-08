@@ -14,5 +14,7 @@ namespace Carbon.Engine.Contracts.Rendering
 
         void BeginFrame();
         void RenderSet(FrameInstructionSet set);
+
+        void ClearCache();
     }
 }

@@ -1,36 +1,51 @@
 Log:Debug("Initializing Scene", nil)
 
+function SetupEntity(entity)
+	RegisterEntity(entity)
+	InvalidateSceneEntity(node)
+	AddSceneEntityToRenderingList(node)
+end
+
 node = AddAmbientLight(Vector4(0.2, 0.2, 0.2, 0.2), 0)
+SetupEntity(node)
 
 node = AddDirectionalLight(Vector4(1, 1, 1, 0.2), Vector3(-1, -1, -1))
+SetupEntity(node)
 
 node = AddModel("Models\\WorldTest.dae")
 node.Scale = Vector3(10, 10, 10)
-RotateNode(node, Vector3(1, 0, 0), -90)
-ChangeMaterial(node, 2, true)
+RotateEntity(node, Vector3(1, 0, 0), -90)
+ChangeMaterial(node, 2)
+SetupEntity(node)
 
 node = AddModel("Models\\monkey.dae")
-node.Scale = Vector3(2, 2, 2)
+node.Scale = Vector3(1, 1, 1)
 node.Position = Vector4(0, 5, 0, 1)
-RotateNode(node, Vector3(1, 0, 0), -90)
-ChangeMaterial(node, 2, true)
+RotateEntity(node, Vector3(1, 0, 0), -90)
+ChangeMaterial(node, 2)
+SetupEntity(node)
 
 node = AddModel("Models\\House6.dae")
 node.Scale = Vector3(0.5, 0.5, 0.5)
 node.Position = Vector4(0, 0, -20, 1)
+SetupEntity(node)
 
 node = AddPlane()
 node.Scale = Vector3(1000, 1000, 1000)
-RotateNode(node, Vector3(1, 0, 0), 90)
-ChangeMaterial(node, 2, true)
+RotateEntity(node, Vector3(1, 0, 0), 90)
+ChangeMaterial(node, 2)
+SetupEntity(node)
 
 node = AddStaticText(2, "Final Fantasy Font\n1 2 3 4 5 - ABCDE", Vector2(1, 1))
 node.Position = Vector4(0, 12, 0, 1)
+SetupEntity(node)
 
 node = AddStaticText(1, "Arial Hi-Rez\n1 2 3 4 5 - ABCDE", Vector2(1, 1))
 node.Position = Vector4(0, 16, 0, 1)
+SetupEntity(node)
 
-parentNode = AddNode()
+-- Scene Graph test, currently disabled
+--[[parentNode = AddEntity()
 sphereCount = 0
 for x = 1, 10 do
 	for y = 1, 10 do
@@ -44,16 +59,19 @@ for x = 1, 10 do
 		node.Position = Vector4(x - 0.2, y, 9.5, 1)
 	
 		end
-	end
+	end]]
 
 node = AddSpotLight(Vector4(0, 1, 0, 1), Vector2(20, 40), Vector3(1, 0, 0), 30, 1)
 node.Position = Vector4(15, 2, 0)
 node.Light.IsCastingShadow = true;
+SetupEntity(node)
 
 node = AddSpotLight(Vector4(1, 0, 0, 1), Vector2(20, 40), Vector3(-1, 1, 0), 20, 1)
 node.Position = Vector4(5, 10, 0)
 node.Light.IsCastingShadow = true;
+SetupEntity(node)
 
 node = AddSpotLight(Vector4(1, 1, 1, 1), Vector2(20, 30), Vector3(0.1, 1, 0), 21, 1)
 node.Position = Vector4(0, 10, 0)
 node.Light.IsCastingShadow = true;
+SetupEntity(node)

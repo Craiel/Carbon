@@ -44,6 +44,8 @@ namespace Carbon.Engine.Scene
             this.Local = Matrix.Scaling(this.Scale) * Matrix.RotationQuaternion(this.Rotation)
                          * Matrix.Translation(new Vector3(this.Position.X, this.Position.Y, this.Position.Z));
 
+            // Todo: check if this is not obsolete
+            this.World = this.Local;
             return true;
         }
 

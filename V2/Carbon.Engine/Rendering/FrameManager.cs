@@ -14,13 +14,10 @@ using Carbon.Engine.Rendering.RenderTarget;
 using Core.Utils;
 
 using SlimDX;
-using SlimDX.DXGI;
 using SlimDX.Direct3D11;
 
 namespace Carbon.Engine.Rendering
 {
-    using Carbon.Engine.Rendering.Camera;
-
     public class FrameManager : EngineComponent, IFrameManager
     {
         private readonly ICarbonGraphics graphics;
@@ -69,19 +66,14 @@ namespace Carbon.Engine.Rendering
             this.deferredLightTarget.Dispose();
             this.shadowMapTarget.Dispose();
 
-            foreach (int key in this.shadowMapCache.Keys)
-            {
-                this.shadowMapCache[key].Dispose();
-            }
-
-            this.shadowMapCache.Clear();
-
             foreach (TextureRenderTarget target in this.textureTargets.Values)
             {
                 target.Dispose();
             }
 
             this.textureTargets.Clear();
+
+            this.ClearCache();
         }
 
         // -------------------------------------------------------------------
@@ -175,6 +167,16 @@ namespace Carbon.Engine.Rendering
                         break;
                     }
             }
+        }
+
+        public void ClearCache()
+        {
+            foreach (int key in this.shadowMapCache.Keys)
+            {
+                this.shadowMapCache[key].Dispose();
+            }
+
+            this.shadowMapCache.Clear();
         }
 
         // -------------------------------------------------------------------

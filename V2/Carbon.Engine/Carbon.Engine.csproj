@@ -173,6 +173,7 @@
     <Compile Include="Rendering\Primitives\Grid.cs" />
     <Compile Include="Rendering\Primitives\Quad.cs" />
     <Compile Include="Rendering\Primitives\Sphere.cs" />
+    <Compile Include="Rendering\RenderableList.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\FrameManager.cs" />
     <Compile Include="Rendering\FrameInstructionSet.cs" />
@@ -224,9 +225,10 @@
     <Compile Include="Scene\LightEntity.cs" />
     <Compile Include="Scene\ModelEntity.cs" />
     <Compile Include="Scene\Node.cs" />
+    <Compile Include="Scene\SceneEntityCollection.cs" />
     <Compile Include="Scene\SceneEntityFactory.cs" />
     <Compile Include="Scene\Scene.cs" />
-    <Compile Include="Logic\EngineComponentUpdateList.cs" />
+    <Compile Include="Logic\EngineComponentStack.cs" />
     <Compile Include="Scene\SceneGraph.cs" />
     <Compile Include="Scene\SceneManager.cs" />
     <Compile Include="UserInterface\UserInterfaceConsole.cs" />

@@ -19,6 +19,8 @@ using SlimDX;
 
 namespace Carbon.Engine.Scene
 {
+    using System.Collections.Generic;
+
     public class SceneEntityFactory : EngineComponent, ISceneEntityFactory
     {
         private readonly IContentManager contentManager;
@@ -47,7 +49,7 @@ namespace Carbon.Engine.Scene
         {
             entity.Rotation += Quaternion.RotationAxis(axis, MathExtension.DegreesToRadians(angle));
         }
-
+        
         [ScriptingMethod]
         public ISceneEntity AddAmbientLight(Vector4 color, float specularPower = 1.0f)
         {
@@ -79,6 +81,13 @@ namespace Carbon.Engine.Scene
         [ScriptingMethod]
         public ISceneEntity AddModel(ModelResource resource)
         {
+            if (resource.SubParts != null && resource.SubParts.Count > 0)
+            {
+                var entities = new SceneEntityCollection<IModelEntity>();
+                this.CreateModelEntities(resource, ref entities);
+                return entities;
+            }
+
             return this.CreateModelEntity(resource);
         }
 
@@ -89,6 +98,13 @@ namespace Carbon.Engine.Scene
             if (resource == null)
             {
                 return null;
+            }
+
+            if (resource.SubParts != null && resource.SubParts.Count > 0)
+            {
+                var entities = new SceneEntityCollection<IModelEntity>();
+                this.CreateModelEntities(resource, ref entities);
+                return entities;
             }
 
             return this.CreateModelEntity(resource);
@@ -154,28 +170,31 @@ namespace Carbon.Engine.Scene
         }
         
         [ScriptingMethod]
-        public void ChangeMaterial(INode node, int materialId, bool recursive = false)
+        public void ChangeMaterial(ISceneEntity node, int materialId)
         {
-            if (node.Entity == null || node.Entity as IModelEntity == null)
+            if (node == null)
             {
                 // Nothing to do for this node
                 return;
             }
 
-            var entity = node.Entity as IModelEntity;
             var materialData = this.contentManager.TypedLoad(new ContentQuery<MaterialEntry>().IsEqual("Id", materialId)).UniqueResult<MaterialEntry>();
             if (materialData == null)
             {
                 throw new InvalidDataException("No material with id " + materialId);
             }
-
+            
             var material = new Material(this.graphics, this.contentManager, materialData);
-            entity.Material = material;
-            if (recursive && node.Children != null)
+
+            if (node as IModelEntity != null)
             {
-                foreach (INode child in node.Children)
+                ((IModelEntity)node).Material = material;
+            } 
+            else if (node as SceneEntityCollection<IModelEntity> != null)
+            {
+                foreach (IModelEntity entry in ((SceneEntityCollection<IModelEntity>)node).Entries)
                 {
-                    this.ChangeMaterial(child, materialId, true);
+                    entry.Material = material;
                 }
             }
         }
@@ -185,6 +204,11 @@ namespace Carbon.Engine.Scene
         // -------------------------------------------------------------------
         private ModelEntity CreateModelEntity(ModelResource resource)
         {
+            if (resource.SubParts != null && resource.SubParts.Count > 0)
+            {
+                throw new ArgumentException("Use CreateModelEntities for resources with sub-parts!");
+            }
+
             var node = new ModelEntity
             {
                 Mesh = new Mesh(resource),
@@ -203,21 +227,38 @@ namespace Carbon.Engine.Scene
                 node.Material = new Material(this.graphics, resource.Materials[0]);
             }
 
-            if (resource.SubParts != null && resource.SubParts.Count > 0)
+            return node;
+        }
+
+        private void CreateModelEntities(ModelResource resource, ref SceneEntityCollection<IModelEntity> targetList)
+        {
+            var node = new ModelEntity
             {
-                // Todo: Figure out how to deal with this best with the entity revamp
-                throw new NotImplementedException();
-                /*foreach (ModelResource part in resource.SubParts)
+                Mesh = new Mesh(resource),
+                Position = new Vector4(resource.Offset, 1.0f),
+                Scale = resource.Scale,
+                Rotation = resource.Rotation
+            };
+
+            targetList.Add(node);
+
+            if (resource.Materials != null && resource.Materials.Count > 0)
+            {
+                if (resource.Materials.Count > 1)
                 {
-                    ModelEntity child = this.CreateModelNode(part);
-                    if (child != null)
-                    {
-                        node.AddChild(child);
-                    }
-                }*/
+                    throw new NotImplementedException();
+                }
+
+                node.Material = new Material(this.graphics, resource.Materials[0]);
             }
 
-            return node;
+            if (resource.SubParts != null && resource.SubParts.Count > 0)
+            {
+                foreach (ModelResource part in resource.SubParts)
+                {
+                    this.CreateModelEntities(part, ref targetList);
+                }
+            }
         }
     }
 }
