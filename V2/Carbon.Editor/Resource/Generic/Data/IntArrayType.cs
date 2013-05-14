@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Xml.Serialization;
 
-namespace Carbon.Editor.Resource.Collada.Data
+namespace Carbon.Editor.Resource.Generic.Data
 {
-    using System.Xml.Serialization;
-
     [Serializable]
-    public class ColladaIntArrayType
+    public class IntArrayType
     {
         [XmlText]
         public string RawData
@@ -20,7 +16,7 @@ namespace Carbon.Editor.Resource.Collada.Data
 
             set
             {
-                this.Data = ColladaDataConversion.ConvertInt(value);
+                this.Data = DataConversion.ConvertInt(value);
             }
         }
 

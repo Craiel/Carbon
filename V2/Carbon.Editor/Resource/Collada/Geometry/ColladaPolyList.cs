@@ -1,15 +1,14 @@
 ﻿using System;
+using System.Xml.Serialization;
+
+using Carbon.Editor.Resource.Generic.Data;
 
 namespace Carbon.Editor.Resource.Collada.Geometry
 {
-    using System.Xml.Serialization;
-
-    using Carbon.Editor.Resource.Collada.Data;
-
     [Serializable]
     public class ColladaPolyList : ColladaGeometryElement
     {
         [XmlElement(ElementName = "vcount")]
-        public ColladaIntArrayType VertexCount { get; set; }
+        public IntArrayType VertexCount { get; set; }
     }
 }

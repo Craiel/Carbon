@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Xml.Serialization;
 
+using Carbon.Editor.Resource.Generic.Data;
+
 using SlimDX;
 
 namespace Carbon.Editor.Resource.Collada.Data
@@ -21,7 +23,7 @@ namespace Carbon.Editor.Resource.Collada.Data
 
             set
             {
-                float[] data = ColladaDataConversion.ConvertFloat(value);
+                float[] data = DataConversion.ConvertFloat(value);
                 this.Color = new Vector4(data[0], data[1], data[2], data[3]);
             }
         }

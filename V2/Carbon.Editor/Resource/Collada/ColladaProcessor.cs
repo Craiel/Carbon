@@ -7,6 +7,7 @@ using System.Linq;
 using Carbon.Editor.Resource.Collada.Data;
 using Carbon.Editor.Resource.Collada.Geometry;
 using Carbon.Editor.Resource.Collada.Scene;
+using Carbon.Editor.Resource.Generic.Data;
 using Carbon.Engine.Rendering;
 using Carbon.Engine.Resource.Resources;
 
@@ -163,19 +164,19 @@ namespace Carbon.Editor.Resource.Collada
 
             // Process the Vertex Data
             ColladaSource positionSource = FindSource(geometry.Mesh.Vertices.Input.Source);
-            positionData = positionSource.FloatArray.ToVector3();
+            positionData = DataConversion.ToVector3(positionSource.FloatArray.Data);
 
             // Now load the Normals and UV's
             if (normalInput != null)
             {
                 ColladaSource source = FindSource(normalInput.Source);
-                normalData = source.FloatArray.ToVector3();
+                normalData = DataConversion.ToVector3(source.FloatArray.Data);
             }
 
             if (textureInput != null)
             {
                 ColladaSource source = FindSource(textureInput.Source);
-                textureData = source.FloatArray.ToVector2();
+                textureData = DataConversion.ToVector2(source.FloatArray.Data);
             }
 
             // Enable only if needed, causes massive slowness for larger meshes
@@ -366,10 +367,10 @@ namespace Carbon.Editor.Resource.Collada
 
                 if (sceneNode.Translation != null)
                 {
-                    meshLibrary[targetNode].Offset = sceneNode.Translation.ToVector3()[0];
+                    meshLibrary[targetNode].Offset = DataConversion.ToVector3(sceneNode.Translation.Data)[0];
                 }
 
-                meshLibrary[targetNode].Scale = sceneNode.Scale != null ? sceneNode.Scale.ToVector3()[0] : new Vector3(1);
+                meshLibrary[targetNode].Scale = sceneNode.Scale != null ? DataConversion.ToVector3(sceneNode.Scale.Data)[0] : new Vector3(1);
 
                 if (sceneNode.Rotations != null)
                 {
@@ -420,15 +421,15 @@ namespace Carbon.Editor.Resource.Collada
             {
                 if (rotation.Sid.EndsWith("X"))
                 {
-                    rotationX = MathExtension.DegreesToRadians(rotation.ToVector4()[0][3]);
+                    rotationX = MathExtension.DegreesToRadians(DataConversion.ToVector4(rotation.Data)[0][3]);
                 }
                 else if (rotation.Sid.EndsWith("Y"))
                 {
-                    rotationY = MathExtension.DegreesToRadians(rotation.ToVector4()[0][3]);
+                    rotationY = MathExtension.DegreesToRadians(DataConversion.ToVector4(rotation.Data)[0][3]);
                 }
                 else if (rotation.Sid.EndsWith("Z"))
                 {
-                    rotationZ = MathExtension.DegreesToRadians(rotation.ToVector4()[0][3]);
+                    rotationZ = MathExtension.DegreesToRadians(DataConversion.ToVector4(rotation.Data)[0][3]);
                 }
             }
 

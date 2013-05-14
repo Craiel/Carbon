@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Xml.Serialization;
+
+using Carbon.Editor.Resource.Generic.Data;
 
 namespace Carbon.Editor.Resource.Collada.Data
 {
-    using System.Xml.Serialization;
-    
     [Serializable]
-    public class ColladaFloatArray : ColladaFloatArrayType
+    public class ColladaFloatArray : FloatArrayType
     {
         [XmlAttribute("id")]
         public string Id { get; set; }
