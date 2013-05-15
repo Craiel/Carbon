@@ -167,13 +167,16 @@ namespace Carbon.Engine.Resource
 
         public ContentLink ResolveLink(int id)
         {
-            if (!this.contentLinkCache.ContainsKey(id))
+            lock (this.contentLinkCache)
             {
-                ContentQueryResult result = this.Load(new ContentQuery(typeof(ContentLink)).IsEqual("Id", id));
-                this.contentLinkCache.Add(id, (ContentLink)result.UniqueResult(typeof(ContentLink)));
-            }
+                if (!this.contentLinkCache.ContainsKey(id))
+                {
+                    ContentQueryResult result = this.Load(new ContentQuery(typeof(ContentLink)).IsEqual("Id", id));
+                    this.contentLinkCache.Add(id, (ContentLink)result.UniqueResult(typeof(ContentLink)));
+                }
 
-            return this.contentLinkCache[id];
+                return this.contentLinkCache[id];
+            }
         }
 
         public void ClearCache()

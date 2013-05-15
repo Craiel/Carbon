@@ -72,6 +72,8 @@
   <ItemGroup>
     <Compile Include="Contracts\IResourceProcessor.cs" />
     <Compile Include="Logic\ResourceProcessor.cs" />
+    <Compile Include="Resource\Xcd\Scene\XcdBoundingBox.cs" />
+    <Compile Include="Resource\Xcd\XcdProcessor.cs" />
     <Compile Include="Processors\FontProcessor.cs" />
     <Compile Include="Ninject\NinjectModuleManager.cs" />
     <Compile Include="Processors\TextureProcessor.cs" />
@@ -123,7 +125,6 @@
     <Compile Include="Resource\Collada\Scene\ColladaSceneNode.cs" />
     <Compile Include="Resource\Collada\Scene\ColladaVisualScene.cs" />
     <Compile Include="Resource\Collada\Scene\ColladaSceneLibrary.cs" />
-    <Compile Include="Resource\Generic\Data\FloatArrayAttribute.cs" />
     <Compile Include="Resource\Generic\Data\FloatArrayType.cs" />
     <Compile Include="Resource\Generic\Data\IntArrayType.cs" />
     <Compile Include="Resource\Generic\Data\DataConversion.cs" />
@@ -134,7 +135,6 @@
     <Compile Include="Resource\Xcd\Scene\XcdLight.cs" />
     <Compile Include="Resource\Xcd\Scene\XcdMesh.cs" />
     <Compile Include="Resource\Xcd\Scene\XcdProperty.cs" />
-    <Compile Include="Resource\Xcd\Scene\XcdTransform.cs" />
     <Compile Include="Resource\Xcd\Xcd.cs" />
     <Compile Include="Resource\Xcd\XcdHead.cs" />
     <Compile Include="Resource\Xcd\XcdScene.cs" />

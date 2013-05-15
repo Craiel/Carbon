@@ -10,6 +10,8 @@ using Carbon.Engine.Resource.Resources;
 
 namespace Carbon.Editor.Resource.Collada
 {
+    using Carbon.Engine.Resource.Resources.Model;
+
     public struct ColladaMeshInfo
     {
         public string Name;
@@ -20,7 +22,7 @@ namespace Carbon.Editor.Resource.Collada
     public class ColladaInfo
     {
         private readonly List<ColladaMeshInfo> meshInfos;
-        private readonly Dictionary<string, MaterialElement> materialInfo;
+        private readonly Dictionary<string, ModelMaterialElement> materialInfo;
         private readonly Dictionary<string, string> imageInfo;
         private readonly List<string> normalImages;
         private readonly Dictionary<string, string> colorToNormalImages;
@@ -36,7 +38,7 @@ namespace Carbon.Editor.Resource.Collada
             }
 
             this.meshInfos = new List<ColladaMeshInfo>();
-            this.materialInfo = new Dictionary<string, MaterialElement>();
+            this.materialInfo = new Dictionary<string, ModelMaterialElement>();
             this.imageInfo = new Dictionary<string, string>();
             this.normalImages = new List<string>();
             this.colorToNormalImages = new Dictionary<string, string>();
@@ -65,11 +67,11 @@ namespace Carbon.Editor.Resource.Collada
             }
         }
 
-        public IReadOnlyDictionary<string, MaterialElement> MaterialInfos
+        public IReadOnlyDictionary<string, ModelMaterialElement> MaterialInfos
         {
             get
             {
-                return new ReadOnlyDictionary<string, MaterialElement>(this.materialInfo);
+                return new ReadOnlyDictionary<string, ModelMaterialElement>(this.materialInfo);
             }
         }
 
@@ -263,7 +265,7 @@ namespace Carbon.Editor.Resource.Collada
                 // Todo:
                 if (diffuseTexture != null)
                 {
-                    var material = new MaterialElement
+                    var material = new ModelMaterialElement
                     {
                         Name = materialEffectLookup[effect.Id],
                         DiffuseTexture = diffuseTexture,

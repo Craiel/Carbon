@@ -8,195 +8,25 @@ using Core.Utils;
 
 using SlimDX;
 
-namespace Carbon.Engine.Resource.Resources
+namespace Carbon.Engine.Resource.Resources.Model
 {
-    public class MeshElement : ResourceBase
-    {
-        internal enum MeshFlags
-        {
-            None = 0,
-            HasNormal = 1,
-            HasTexture = 2,
-            HasTangent = 4,
-            HasColor = 8,
-        }
-
-        public Vector3 Position { get; set; }
-        public Vector3? Normal { get; set; }
-        public Vector2? Texture { get; set; }
-        public Vector4? Tangent { get; set; }
-        public Vector4? Color { get; set; }
-
-        protected override void DoLoad(CarbonBinaryFormatter source)
-        {
-            uint flags = source.ReadUInt();
-            bool hasNormal = (flags & (int)MeshFlags.HasNormal) == (int)MeshFlags.HasNormal;
-            bool hasTexture = (flags & (int)MeshFlags.HasTexture) == (int)MeshFlags.HasTexture;
-            bool hasTangent = (flags & (int)MeshFlags.HasTangent) == (int)MeshFlags.HasTangent;
-            bool hasColor = (flags & (int)MeshFlags.HasColor) == (int)MeshFlags.HasColor;
-
-            this.Position = new Vector3 { X = source.ReadSingle(), Y = source.ReadSingle(), Z = source.ReadSingle() };
-
-            if (hasNormal)
-            {
-                this.Normal = new Vector3 { X = source.ReadSingle(), Y = source.ReadSingle(), Z = source.ReadSingle() };
-            }
-
-            if (hasTexture)
-            {
-                this.Texture = new Vector2 { X = source.ReadSingle(), Y = source.ReadSingle() };
-            }
-
-            if (hasTangent)
-            {
-                this.Tangent = new Vector4
-                    {
-                        X = source.ReadSingle(),
-                        Y = source.ReadSingle(),
-                        Z = source.ReadSingle(),
-                        W = source.ReadSingle()
-                    };
-            }
-
-            if (hasColor)
-            {
-                this.Color = new Vector4
-                {
-                    X = source.ReadSingle(),
-                    Y = source.ReadSingle(),
-                    Z = source.ReadSingle(),
-                    W = source.ReadSingle()
-                };
-            }
-        }
-
-        private uint GetMeshFlags()
-        {
-            uint flags = 0;
-            if (this.Normal != null)
-            {
-                flags |= (uint)MeshFlags.HasNormal;
-            }
-
-            if (this.Texture != null)
-            {
-                flags |= (uint)MeshFlags.HasTexture;
-            }
-
-            if (this.Tangent != null)
-            {
-                flags |= (uint)MeshFlags.HasTangent;
-            }
-
-            if (this.Color != null)
-            {
-                flags |= (uint)MeshFlags.HasColor;
-            }
-
-            return flags;
-        }
-
-        protected override void DoSave(CarbonBinaryFormatter target)
-        {
-            target.Write(this.GetMeshFlags());
-
-            target.Write(Position.X);
-            target.Write(Position.Y);
-            target.Write(Position.Z);
-
-            if (Normal != null)
-            {
-                target.Write(Normal.Value.X);
-                target.Write(Normal.Value.Y);
-                target.Write(Normal.Value.Z);
-            }
-
-            if (Texture != null)
-            {
-                target.Write(Texture.Value.X);
-                target.Write(Texture.Value.Y);
-            }
-
-            if (Tangent != null)
-            {
-                target.Write(Tangent.Value.X);
-                target.Write(Tangent.Value.Y);
-                target.Write(Tangent.Value.Z);
-                target.Write(Tangent.Value.W);
-            }
-
-            if (Color != null)
-            {
-                target.Write(Color.Value.X);
-                target.Write(Color.Value.Y);
-                target.Write(Color.Value.Z);
-                target.Write(Color.Value.W);
-            }
-        }
-    }
-
-    public class MaterialElement : ResourceBase
-    {
-        // -------------------------------------------------------------------
-        // Public
-        // -------------------------------------------------------------------
-        public string Name { get; set; }
-        public string DiffuseTexture { get; set; }
-        public string NormalTexture { get; set; }
-        public string AlphaTexture { get; set; }
-        public string SpecularTexture { get; set; }
-
-        public MaterialElement Clone()
-        {
-            return new MaterialElement
-                       {
-                           Name = this.Name,
-                           DiffuseTexture = this.DiffuseTexture,
-                           NormalTexture = this.NormalTexture,
-                           AlphaTexture = this.AlphaTexture,
-                           SpecularTexture = this.SpecularTexture
-                       };
-        }
-
-        // -------------------------------------------------------------------
-        // Protected
-        // -------------------------------------------------------------------
-        protected override void DoLoad(CarbonBinaryFormatter source)
-        {
-            this.Name = source.ReadString();
-            this.DiffuseTexture = source.ReadString();
-            this.NormalTexture = source.ReadString();
-            this.AlphaTexture = source.ReadString();
-            this.SpecularTexture = source.ReadString();
-        }
-
-        protected override void DoSave(CarbonBinaryFormatter target)
-        {
-            target.Write(this.Name);
-            target.Write(this.DiffuseTexture);
-            target.Write(this.NormalTexture);
-            target.Write(this.AlphaTexture);
-            target.Write(this.SpecularTexture);
-        }
-    }
-
     public class ModelResource : ResourceBase
     {
         private const int Version = 1;
 
         private readonly List<ModelResource> subParts;
-        private readonly List<MeshElement> elements;
-        private readonly List<MaterialElement> materials;
+        private readonly List<ModelMeshElement> elements;
+        private readonly List<ModelMaterialElement> materials;
 
         private uint[] indices;
 
         private bool tangentsCalculated;
 
-        public ModelResource(IEnumerable<MeshElement> elements, uint[] indices)
+        public ModelResource(IEnumerable<ModelMeshElement> elements, uint[] indices)
         {
-            this.elements = new List<MeshElement>(elements);
+            this.elements = new List<ModelMeshElement>(elements);
             this.subParts = new List<ModelResource>();
-            this.materials = new List<MaterialElement>();
+            this.materials = new List<ModelMaterialElement>();
             this.indices = indices;
 
             this.ElementCount = this.elements.Count;
@@ -208,10 +38,10 @@ namespace Carbon.Engine.Resource.Resources
 
         public ModelResource(IEnumerable<ModelResource> parts)
         {
-            this.elements = new List<MeshElement>();
+            this.elements = new List<ModelMeshElement>();
             this.indices = new uint[0];
             this.subParts = new List<ModelResource>(parts);
-            this.materials = new List<MaterialElement>();
+            this.materials = new List<ModelMaterialElement>();
 
             this.Scale = new Vector3(1);
         }
@@ -219,8 +49,8 @@ namespace Carbon.Engine.Resource.Resources
         public ModelResource()
         {
             this.subParts = new List<ModelResource>();
-            this.elements = new List<MeshElement>();
-            this.materials = new List<MaterialElement>();
+            this.elements = new List<ModelMeshElement>();
+            this.materials = new List<ModelMaterialElement>();
 
             this.Scale = new Vector3(1);
         }
@@ -248,7 +78,7 @@ namespace Carbon.Engine.Resource.Resources
             }
         }
 
-        public ReadOnlyCollection<MeshElement> Elements
+        public ReadOnlyCollection<ModelMeshElement> Elements
         {
             get
             {
@@ -256,7 +86,7 @@ namespace Carbon.Engine.Resource.Resources
             }
         }
 
-        public ReadOnlyCollection<MaterialElement> Materials
+        public ReadOnlyCollection<ModelMaterialElement> Materials
         {
             get
             {
@@ -293,7 +123,7 @@ namespace Carbon.Engine.Resource.Resources
             this.subParts.Add(part);
         }
 
-        public void AddMaterial(MaterialElement material)
+        public void AddMaterial(ModelMaterialElement material)
         {
             this.materials.Add(material);
         }
@@ -411,7 +241,7 @@ namespace Carbon.Engine.Resource.Resources
             int entries = source.ReadInt();
             for (int i = 0; i < entries; i++)
             {
-                var element = new MeshElement();
+                var element = new ModelMeshElement();
                 element.Load(source);
                 this.elements.Add(element);
             }
@@ -426,7 +256,7 @@ namespace Carbon.Engine.Resource.Resources
             entries = source.ReadInt();
             for (int i = 0; i < entries; i++)
             {
-                var element = new MaterialElement();
+                var element = new ModelMaterialElement();
                 element.Load(source);
                 this.materials.Add(element);
             }
@@ -459,9 +289,9 @@ namespace Carbon.Engine.Resource.Resources
                 uint i2 = this.indices[i + 1];
                 uint i3 = this.indices[i + 2];
 
-                MeshElement e1 = this.elements[(int)i1];
-                MeshElement e2 = this.elements[(int)i2];
-                MeshElement e3 = this.elements[(int)i3];
+                ModelMeshElement e1 = this.elements[(int)i1];
+                ModelMeshElement e2 = this.elements[(int)i2];
+                ModelMeshElement e3 = this.elements[(int)i3];
 
                 float x1 = e2.Position.X - e1.Position.X;
                 float x2 = e3.Position.X - e1.Position.X;
@@ -499,7 +329,7 @@ namespace Carbon.Engine.Resource.Resources
                     continue;
                 }
 
-                MeshElement element = this.elements[i];
+                ModelMeshElement element = this.elements[i];
                 Vector3 n = element.Normal.Value;
                 Vector3 t = tan1[i];
 

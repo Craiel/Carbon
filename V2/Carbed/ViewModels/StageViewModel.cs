@@ -78,7 +78,7 @@ namespace Carbed.ViewModels
         {
             return false;
         }
-
+        
         private void UpdatePreview()
         {
             using (var stream = new MemoryStream())

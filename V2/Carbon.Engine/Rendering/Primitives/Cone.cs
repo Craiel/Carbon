@@ -10,6 +10,8 @@ using SlimDX;
 
 namespace Carbon.Engine.Rendering.Primitives
 {
+    using Carbon.Engine.Resource.Resources.Model;
+
     public static class Cone
     {
         private static uint creationCount;

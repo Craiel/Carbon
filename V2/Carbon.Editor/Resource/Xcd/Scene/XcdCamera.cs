@@ -8,14 +8,14 @@ namespace Carbon.Editor.Resource.Xcd.Scene
     [Serializable]
     public class XcdCamera
     {
-        [XmlAttribute("ID")]
+        [XmlAttribute("id")]
         public string Id { get; set; }
 
-        [XmlAttribute("position")]
-        public FloatArrayAttribute Position { get; set; }
+        [XmlElement("position")]
+        public FloatArrayType Position { get; set; }
 
-        [XmlAttribute("orientation")]
-        public FloatArrayAttribute Orientation { get; set; }
+        [XmlElement("orientation")]
+        public FloatArrayType Orientation { get; set; }
 
         [XmlAttribute("fov")]
         public float FieldOfView { get; set; }

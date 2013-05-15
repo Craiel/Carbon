@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 namespace Carbon.Editor.Resource.Xcd
 {
     [Serializable]
-    [XmlRoot(ElementName = "XCD", IsNullable = false)]
+    [XmlRoot(ElementName = "xcd", IsNullable = false)]
     public class Xcd
     {
         private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(Xcd));
@@ -13,10 +13,10 @@ namespace Carbon.Editor.Resource.Xcd
         [XmlAttribute("version")]
         public string Version { get; set; }
 
-        [XmlElement(ElementName = "Head")]
+        [XmlElement(ElementName = "head")]
         public XcdHead Head { get; set; }
 
-        [XmlElement(ElementName = "Scene")]
+        [XmlElement(ElementName = "scene")]
         public XcdScene Scene { get; set; }
 
         public static Xcd Load(byte[] data)

@@ -4,6 +4,8 @@ using SlimDX;
 
 namespace Carbon.Engine.Rendering.Primitives
 {
+    using Carbon.Engine.Resource.Resources.Model;
+
     public static class Cube
     {
         private static int creationCount;

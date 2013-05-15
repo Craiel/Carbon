@@ -8,7 +8,7 @@ namespace Carbon.Editor.Resource.Xcd.Scene
     [Serializable]
     public class XcdLight
     {
-        [XmlAttribute("ID")]
+        [XmlAttribute("id")]
         public string Id { get; set; }
 
         [XmlAttribute("type")]
@@ -20,28 +20,28 @@ namespace Carbon.Editor.Resource.Xcd.Scene
         [XmlAttribute("intensity")]
         public float Intensity { get; set; }
 
-        [XmlAttribute("ambientIntensity")]
+        [XmlAttribute("ambientintensity")]
         public float AmbientIntensity { get; set; }
 
-        [XmlAttribute("beamWidth")]
-        public float BeamWidth { get; set; }
+        [XmlAttribute("spotsize")]
+        public float SpotSize { get; set; }
 
-        [XmlAttribute("cutOffAngle")]
-        public float CutoffAngle { get; set; }
+        [XmlAttribute("angle")]
+        public float Angle { get; set; }
 
-        [XmlAttribute("location")]
-        public FloatArrayAttribute Location { get; set; }
+        [XmlElement("location")]
+        public FloatArrayType Location { get; set; }
 
-        [XmlAttribute("direction")]
-        public FloatArrayAttribute Direction { get; set; }
+        [XmlElement("direction")]
+        public FloatArrayType Direction { get; set; }
 
-        [XmlAttribute("color")]
-        public FloatArrayAttribute Color { get; set; }
+        [XmlElement("color")]
+        public FloatArrayType Color { get; set; }
 
-        [XmlElement(ElementName = "Layers")]
+        [XmlElement(ElementName = "layers")]
         public XcdLayerInfo LayerInfo { get; set; }
 
-        [XmlElement(ElementName = "CustomProperties")]
+        [XmlElement(ElementName = "customproperties")]
         public XcdCustomProperties CustomProperties { get; set; }
     }
 }

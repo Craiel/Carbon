@@ -42,18 +42,23 @@ namespace Carbon.Engine.Resource
         // -------------------------------------------------------------------
         public static string GetTableName(Type key)
         {
-            if (!tableNameCache.ContainsKey(key))
+            lock (tableNameCache)
             {
-                var attribute = key.GetCustomAttributes(typeof(ContentEntryAttribute), true).FirstOrDefault() as ContentEntryAttribute;
-                if (attribute == null)
+                if (!tableNameCache.ContainsKey(key))
                 {
-                    throw new InvalidOperationException("Unknown error finding table specification");
+                    var attribute =
+                        key.GetCustomAttributes(typeof(ContentEntryAttribute), true).FirstOrDefault() as
+                        ContentEntryAttribute;
+                    if (attribute == null)
+                    {
+                        throw new InvalidOperationException("Unknown error finding table specification");
+                    }
+
+                    tableNameCache.Add(key, attribute.Table);
                 }
 
-                tableNameCache.Add(key, attribute.Table);
+                return tableNameCache[key];
             }
-
-            return tableNameCache[key];
         }
 
         public static string GetTableName<T>() where T : ICarbonContent

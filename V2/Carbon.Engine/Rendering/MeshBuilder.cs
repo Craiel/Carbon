@@ -8,6 +8,8 @@ using SlimDX;
 
 namespace Carbon.Engine.Rendering
 {
+    using Carbon.Engine.Resource.Resources.Model;
+
     /// <summary>
     /// Helper class to construct Mesh Structures from Vectors and indices
     /// Todo: 
@@ -16,9 +18,9 @@ namespace Carbon.Engine.Rendering
     /// </summary>
     public class MeshBuilder
     {
-        private readonly IList<MeshElement> pendingElements;
+        private readonly IList<ModelMeshElement> pendingElements;
 
-        private readonly IList<MeshElement> elements;
+        private readonly IList<ModelMeshElement> elements;
         private readonly IList<uint> elementIndices;
 
         private readonly string name;
@@ -32,8 +34,8 @@ namespace Carbon.Engine.Rendering
 
             this.IsIndexed = false;
 
-            this.pendingElements = new List<MeshElement>();
-            this.elements = new List<MeshElement>();
+            this.pendingElements = new List<ModelMeshElement>();
+            this.elements = new List<ModelMeshElement>();
             this.elementIndices = new List<uint>();
         }
 
@@ -113,7 +115,7 @@ namespace Carbon.Engine.Rendering
         
         public void AddVertex(Vector3 position, Vector3? normal = null, Vector2? texture = null, Vector4? color = null)
         {
-            this.pendingElements.Add(new MeshElement { Position = position, Normal = normal, Texture = texture, Color = color });
+            this.pendingElements.Add(new ModelMeshElement { Position = position, Normal = normal, Texture = texture, Color = color });
         }
 
         public void AddIndices(uint[] indices)

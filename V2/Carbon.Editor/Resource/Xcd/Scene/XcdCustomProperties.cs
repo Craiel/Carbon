@@ -6,7 +6,7 @@ namespace Carbon.Editor.Resource.Xcd.Scene
     [Serializable]
     public class XcdCustomProperties
     {
-        [XmlElement(ElementName = "Property")]
+        [XmlElement(ElementName = "property")]
         public XcdProperty[] Properties { get; set; }
     }
 }

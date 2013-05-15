@@ -8,13 +8,13 @@ namespace Carbon.Editor.Resource.Xcd
     [Serializable]
     public class XcdScene
     {
-        [XmlElement(ElementName = "Camera")]
+        [XmlElement(ElementName = "camera")]
         public XcdCamera[] Cameras { get; set; }
 
-        [XmlElement(ElementName = "Light")]
+        [XmlElement(ElementName = "light")]
         public XcdLight[] Lights { get; set; }
 
-        [XmlElement(ElementName = "Mesh")]
+        [XmlElement(ElementName = "mesh")]
         public XcdMesh[] Meshes { get; set; }
     }
 }

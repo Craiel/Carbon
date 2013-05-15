@@ -9,6 +9,10 @@ using Carbon.Engine.Resource.Resources;
 
 namespace Carbon.Editor.Logic
 {
+    using Carbon.Editor.Resource.Xcd;
+    using Carbon.Engine.Resource.Resources.Model;
+    using Carbon.Engine.Resource.Resources.Stage;
+
     public class ResourceProcessor : IResourceProcessor
     {
         // -------------------------------------------------------------------
@@ -67,6 +71,11 @@ namespace Carbon.Editor.Logic
             }
 
             return ColladaProcessor.Process(info, element, texturePath);
+        }
+
+        public StageResource ProcessStage(string path, XcdProcessingOptions options)
+        {
+            return XcdProcessor.Process(path, options);
         }
     }
 }

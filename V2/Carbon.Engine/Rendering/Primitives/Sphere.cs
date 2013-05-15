@@ -7,6 +7,8 @@ using System.Collections.Generic;
 
 namespace Carbon.Engine.Rendering.Primitives
 {
+    using Carbon.Engine.Resource.Resources.Model;
+
     public static class Sphere
     {
         private static int creationCount;

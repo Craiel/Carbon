@@ -174,14 +174,14 @@ class XCDExporter:
     def _WriteHeader(self):
         blenderVersion = quoteattr('Blender %s' % bpy.app.version_string)
     
-        self._fileWriter('<?xml version="1.0" encoding="UTF-8"?><XCD version="1.0">')
+        self._fileWriter('<?xml version="1.0" encoding="UTF-8"?><xcd version="1.0">')
         self._fileWriter('<head>')
         self._fileWriter('<meta name="filename" content=%s />' % self._filePath)
         self._fileWriter('<meta name="generator" content=%s />' % blenderVersion)
-        self._fileWriter('</head><Scene>')
+        self._fileWriter('</head><scene>')
     
     def _WriteFooter(self):
-        self._fileWriter('</Scene></XCD>')
+        self._fileWriter('</scene></xcd>')
     
     def _WriteCamera(self, obj, matrix, scene):
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheView, clean_func=self._Clean, sep="_"))
@@ -190,28 +190,37 @@ class XCDExporter:
         rotation = rotation.to_axis_angle()
         rotation = rotation[0].normalized()[:] + (rotation[1], )
     
-        self._fileWriter('<Camera ID=%s' % id)
-        self._fileWriter(' position="%3.2f %3.2f %3.2f"' % location[:])
-        self._fileWriter(' orientation="%3.2f %3.2f %3.2f %3.2f"' % rotation)
+        self._fileWriter('<camera id=%s' % id)
         self._fileWriter(' fov="%.3f"' % obj.data.angle)
         self._fileWriter('>')
+        
+        self._fileWriter('<position>%3.2f %3.2f %3.2f</position>' % location[:])
+        self._fileWriter('<orientation>%3.2f %3.2f %3.2f %3.2f</orientation>' % rotation)
         
         self._WriteLayers(obj.layers)
         self._WriteCustomProperties(obj)
         
-        self._fileWriter('</Camera>')
+        self._fileWriter('</camera>')
         
     def _WriteMesh(self, obj, matrix, scene):
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheObjects, clean_func=self._Clean, sep="_"))
         
-        self._fileWriter('<Mesh ID=%s' % id)
+        location, rotation, scale = matrix.decompose()
+        rotation = rotation.to_axis_angle()
+        rotation = rotation[0][:] + (rotation[1], )
+        
+        self._fileWriter('<mesh id=%s' % id)
         self._fileWriter('>')
         
-        self._WriteTransform(matrix)
+        self._fileWriter('<translation>%.6f %.6f %.6f</translation>' % location[:])
+        self._fileWriter('<rotation>%.6f %.6f %.6f %.6f</rotation>' % rotation)
+        self._fileWriter('<scale>%.6f %.6f %.6f</scale>' % scale[:])
+        
+        self._WriteBoundingBox(obj.bounding)
         self._WriteLayers(obj.layers)
         self._WriteCustomProperties(obj)
         
-        self._fileWriter('</Mesh>')
+        self._fileWriter('</mesh>')
     
     def _WriteFog(self, world):
         if world:
@@ -221,24 +230,15 @@ class XCDExporter:
             return
     
         if mparam.use_mist:
-            self._fileWriter('<Fog type="%s"' % ('LINEAR' if (mtype == 'LINEAR') else 'EXPONENTIAL'))
-            self._fileWriter(' color="%.3f %.3f %.3f"' % self._ClampColor(world.horizon_color))
+            self._fileWriter('<fog type="%s"' % ('LINEAR' if (mtype == 'LINEAR') else 'EXPONENTIAL'))
             self._fileWriter(' depth="%.3f"' % mparam.depth)
-            self._fileWriter('/>')
+            self._fileWriter('>')
+            
+            self._fileWriter('<color>%.3f %.3f %.3f</color>' % self._ClampColor(world.horizon_color))
+            
+            self._fileWriter('</fog>')
         else:
             return
-    
-    def _WriteTransform(self, matrix):
-        
-        self._fileWriter('<Transform')    
-        location, rotation, scale = matrix.decompose()
-        rotation = rotation.to_axis_angle()
-        rotation = rotation[0][:] + (rotation[1], )
-    
-        self._fileWriter(' translation="%.6f %.6f %.6f"' % location[:])
-        self._fileWriter(' rotation="%.6f %.6f %.6f %.6f"' % rotation)
-        self._fileWriter(' scale="%.6f %.6f %.6f"' % scale[:])
-        self._fileWriter('/>')
     
     def _WriteSpotLight(self, obj, matrix, lamp, world):
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheLights, clean_func=self._Clean, sep="_"))
@@ -252,27 +252,28 @@ class XCDExporter:
     
         # compute cutoff and beam width
         intensity = min(lamp.energy / 1.75, 1.0)
-        beamWidth = lamp.spot_size * 0.37
-        cutOffAngle = beamWidth * 1.3
+        spotSize = lamp.spot_size * 0.37
+        angle = spotSize * 1.3
         orientation = self._MatrixNegateZ(matrix)
         location = matrix.to_translation()[:]
         radius = lamp.distance * math.cos(beamWidth)
     
-        self._fileWriter('<Light type="Spot" ID=%s' % id)
+        self._fileWriter('<light type="Spot" id=%s' % id)
         self._fileWriter(' radius="%.4f"' % radius)
-        self._fileWriter(' ambientIntensity="%.4f"' % ambientIntensity)
-        self._fileWriter(' intensity="%.4f"' % intensity)
-        self._fileWriter(' color="%.4f %.4f %.4f"' % self._ClampColor(lamp.color))
-        self._fileWriter(' beamWidth="%.4f"' % beamWidth)
-        self._fileWriter(' cutOffAngle="%.4f"' % cutOffAngle)
-        self._fileWriter(' direction="%.4f %.4f %.4f"' % orientation)
-        self._fileWriter(' location="%.4f %.4f %.4f"' % location)
+        self._fileWriter(' ambientintensity="%.4f"' % ambientIntensity)
+        self._fileWriter(' intensity="%.4f"' % intensity)        
+        self._fileWriter(' spotsize="%.4f"' % spotSize)
+        self._fileWriter(' angle="%.4f"' % angle)        
         self._fileWriter('>')
+        
+        self._fileWriter('<color>%.4f %.4f %.4f</color>' % self._ClampColor(lamp.color))
+        self._fileWriter('<direction>%.4f %.4f %.4f</direction>' % orientation)
+        self._fileWriter('<location>%.4f %.4f %.4f</location>' % location)
         
         self._WriteLayers(obj.layers)
         self._WriteCustomProperties(obj)
         
-        self._fileWriter('</Light>')
+        self._fileWriter('</light>')
         
     
     def _WriteDirectionalLight(self, obj, matrix, lamp, world):
@@ -288,17 +289,18 @@ class XCDExporter:
         intensity = min(lamp.energy / 1.75, 1.0)
         orientation = self._MatrixNegateZ(matrix)
     
-        self._fileWriter('<Light type="Direction" ID=%s' % id)
-        self._fileWriter(' ambientIntensity="%.4f"' % ambientIntensity)
-        self._fileWriter(' color="%.4f %.4f %.4f"' % self._ClampColor(lamp.color))
-        self._fileWriter(' intensity="%.4f"' % intensity)
-        self._fileWriter(' direction="%.4f %.4f %.4f"' % orientation)
+        self._fileWriter('<Light type="Direction" id=%s' % id)
+        self._fileWriter(' ambientintensity="%.4f"' % ambientIntensity)
+        self._fileWriter(' intensity="%.4f"' % intensity)        
         self._fileWriter('>')
+        
+        self._fileWriter('<color>%.4f %.4f %.4f</color>' % self._ClampColor(lamp.color))
+        self._fileWriter('<direction>%.4f %.4f %.4f</direction>' % orientation)
         
         self._WriteLayers(obj.layers)
         self._WriteCustomProperties(obj)
         
-        self._fileWriter('</Light>')
+        self._fileWriter('</light>')
     
     def _WritePointLight(self, obj, matrix, lamp, world):
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheLights, clean_func=self._Clean, sep="_"))
@@ -313,18 +315,19 @@ class XCDExporter:
         intensity = min(lamp.energy / 1.75, 1.0)
         location = matrix.to_translation()[:]
     
-        self._fileWriter('<Light type="Point" ID=%s' % id)
-        self._fileWriter(' ambientIntensity="%.4f"' % ambientIntensity)
-        self._fileWriter(' color="%.4f %.4f %.4f"' % self._ClampColor(lamp.color))
+        self._fileWriter('<Light type="Point" id=%s' % id)
+        self._fileWriter(' ambientintensity="%.4f"' % ambientIntensity)        
         self._fileWriter(' intensity="%.4f"' % intensity)
-        self._fileWriter(' radius="%.4f"' % lamp.distance)
-        self._fileWriter(' location="%.4f %.4f %.4f"' % location)
+        self._fileWriter(' radius="%.4f"' % lamp.distance)        
         self._fileWriter('>')
+        
+        self._fileWriter('<color>%.4f %.4f %.4f</color>' % self._ClampColor(lamp.color))
+        self._fileWriter('<location="%.4f %.4f %.4f</location>' % location)
         
         self._WriteLayers(obj.layers)
         self._WriteCustomProperties(obj)
         
-        self._fileWriter('</Light>')
+        self._fileWriter('</light>')
         
     def _WriteValueArray(self, values):
         needSpace = False
@@ -346,20 +349,20 @@ class XCDExporter:
             needSpace = True
             
     def _WriteBoundingBox(self, boundingBox):
-        self._fileWriter('<BoundingBox>')
+        self._fileWriter('<boundingBox>')
         for element in boundingBox:
-            self._fileWriter('<Point>')
+            self._fileWriter('<point>')
             self._WriteValueArray(element)
-            self._fileWriter('</Point>')
-        self._fileWriter('</BoundingBox>')
+            self._fileWriter('</point>')
+        self._fileWriter('</boundingBox>')
             
     def _WriteLayers(self, layerInfo):
-        self._fileWriter('<Layers>')
+        self._fileWriter('<layers>')
         self._WriteBoolValueArray(layerInfo)
-        self._fileWriter('</Layers>')
+        self._fileWriter('</layers>')
         
     def _WriteCustomProperty(self, name, property):
-        self._fileWriter('<Property ID="%s"' % name)
+        self._fileWriter('<property id="%s"' % name)
         if isinstance(property, float):
             self._fileWriter(' type="Float" Value="%s"' % property.real)
         elif isinstance(property, int):
@@ -371,12 +374,12 @@ class XCDExporter:
         self._fileWriter('/>')
         
     def _WriteCustomProperties(self, hash):
-        self._fileWriter('<CustomProperties>')
+        self._fileWriter('<customproperties>')
         for key in hash.keys():
             if key[0] == "_":
                 continue
             self._WriteCustomProperty(key, hash[key])
-        self._fileWriter('</CustomProperties>')
+        self._fileWriter('</customproperties>')
         
     # -------------------------------------------------------------------------
     # Export Object Hierarchy (recursively called)

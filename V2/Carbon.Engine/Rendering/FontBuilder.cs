@@ -9,6 +9,7 @@ using SlimDX;
 namespace Carbon.Engine.Rendering
 {
     using Carbon.Engine.Resource.Content;
+    using Carbon.Engine.Resource.Resources.Model;
 
     internal struct FontBuilderLine
     {

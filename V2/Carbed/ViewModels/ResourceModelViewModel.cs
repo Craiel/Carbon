@@ -191,12 +191,9 @@ namespace Carbed.ViewModels
             this.OnClose(null);
             this.logic.Delete(this);
 
-            if (this.Type == ResourceType.Model)
+            if (this.AutoUpdateTextures && this.TextureFolder != null)
             {
-                if (this.AutoUpdateTextures && this.TextureFolder != null)
-                {
-                    this.logic.Delete(this.TextureFolder);
-                }
+                this.logic.Delete(this.TextureFolder);
             }
         }
 

@@ -5,6 +5,8 @@ using SlimDX;
 
 namespace Carbon.Engine.Rendering.Primitives
 {
+    using Carbon.Engine.Resource.Resources.Model;
+
     public static class Quad
     {
         private static int creationCount;

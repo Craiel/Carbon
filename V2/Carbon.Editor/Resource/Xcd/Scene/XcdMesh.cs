@@ -3,19 +3,30 @@ using System.Xml.Serialization;
 
 namespace Carbon.Editor.Resource.Xcd.Scene
 {
+    using Carbon.Editor.Resource.Generic.Data;
+
     [Serializable]
     public class XcdMesh
     {
-        [XmlAttribute("ID")]
+        [XmlAttribute("id")]
         public string Id { get; set; }
 
-        [XmlElement(ElementName = "Transform")]
-        public XcdTransform Transform { get; set; }
+        [XmlElement("translation")]
+        public FloatArrayType Translation { get; set; }
 
-        [XmlElement(ElementName = "Layers")]
+        [XmlElement("rotation")]
+        public FloatArrayType Rotation { get; set; }
+
+        [XmlElement("scale")]
+        public FloatArrayType Scale { get; set; }
+
+        [XmlElement(ElementName = "boundingbox")]
+        public XcdBoundingBox BoundingBox { get; set; }
+
+        [XmlElement(ElementName = "layers")]
         public XcdLayerInfo LayerInfo { get; set; }
 
-        [XmlElement(ElementName = "CustomProperties")]
+        [XmlElement(ElementName = "customproperties")]
         public XcdCustomProperties CustomProperties { get; set; }
     }
 }

@@ -21,6 +21,8 @@ namespace Carbon.Engine.Scene
 {
     using System.Collections.Generic;
 
+    using Carbon.Engine.Resource.Resources.Model;
+
     public class SceneEntityFactory : EngineComponent, ISceneEntityFactory
     {
         private readonly IContentManager contentManager;

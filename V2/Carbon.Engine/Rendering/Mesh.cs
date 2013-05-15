@@ -7,6 +7,8 @@ using SlimDX;
 
 namespace Carbon.Engine.Rendering
 {
+    using Carbon.Engine.Resource.Resources.Model;
+
     public class Mesh : IDisposable
     {
         private readonly ModelResource resource;
@@ -165,7 +167,7 @@ namespace Carbon.Engine.Rendering
 
             for (int i = 0; i < this.resource.Elements.Count; i++)
             {
-                MeshElement element = this.resource.Elements[i];
+                ModelMeshElement element = this.resource.Elements[i];
                 if (type == typeof(PositionVertex))
                 {
                     container.Add(new PositionVertex { Position = element.Position });

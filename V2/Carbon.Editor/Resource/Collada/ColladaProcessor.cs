@@ -9,7 +9,6 @@ using Carbon.Editor.Resource.Collada.Geometry;
 using Carbon.Editor.Resource.Collada.Scene;
 using Carbon.Editor.Resource.Generic.Data;
 using Carbon.Engine.Rendering;
-using Carbon.Engine.Resource.Resources;
 
 using Core.Utils;
 
@@ -17,6 +16,8 @@ using SlimDX;
 
 namespace Carbon.Editor.Resource.Collada
 {
+    using Carbon.Engine.Resource.Resources.Model;
+
     public static class ColladaProcessor
     {
         private readonly static IDictionary<string, ModelResource> meshLibrary = new Dictionary<string, ModelResource>();
@@ -103,7 +104,7 @@ namespace Carbon.Editor.Resource.Collada
                     ModelResource part = TranslateGeometry(i, colladaGeometry.Name);
                     if (polyList.Material != null && info.MaterialInfos.ContainsKey(polyList.Material))
                     {
-                        MaterialElement material = info.MaterialInfos[polyList.Material].Clone();
+                        ModelMaterialElement material = info.MaterialInfos[polyList.Material].Clone();
                         if (material.DiffuseTexture != null && texturePath != null)
                         {
                             material.DiffuseTexture = HashUtils.BuildResourceHash(Path.Combine(texturePath, Uri.UnescapeDataString(material.DiffuseTexture)));

@@ -488,7 +488,7 @@ namespace Carbed.ViewModels
                         return this.logic.AddResourceModel();
                     }
 
-                case ".stage":
+                case ".xcd":
                     {
                         return this.logic.AddResourceStage();
                     }

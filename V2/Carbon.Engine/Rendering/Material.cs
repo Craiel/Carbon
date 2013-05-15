@@ -3,13 +3,13 @@
 using Carbon.Engine.Contracts.Logic;
 using Carbon.Engine.Logic;
 using Carbon.Engine.Resource.Content;
-using Carbon.Engine.Resource.Resources;
 
 using SlimDX;
 
 namespace Carbon.Engine.Rendering
 {
     using Carbon.Engine.Contracts.Resource;
+    using Carbon.Engine.Resource.Resources.Model;
 
     public class Material : IDisposable
     {
@@ -53,7 +53,7 @@ namespace Carbon.Engine.Rendering
             }
         }
 
-        public Material(ICarbonGraphics graphics, MaterialElement content)
+        public Material(ICarbonGraphics graphics, ModelMaterialElement content)
         {
             this.graphics = graphics;
 

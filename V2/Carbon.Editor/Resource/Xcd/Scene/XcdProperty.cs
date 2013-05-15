@@ -6,7 +6,7 @@ namespace Carbon.Editor.Resource.Xcd.Scene
     [Serializable]
     public class XcdProperty
     {
-        [XmlAttribute("ID")]
+        [XmlAttribute("id")]
         public string Id { get; set; }
 
         [XmlAttribute("type")]

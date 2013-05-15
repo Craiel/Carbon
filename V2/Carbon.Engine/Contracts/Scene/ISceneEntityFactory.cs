@@ -5,6 +5,8 @@ using SlimDX;
 
 namespace Carbon.Engine.Contracts.Scene
 {
+    using Carbon.Engine.Resource.Resources.Model;
+
     public interface ISceneEntityFactory : IScriptingProvider, IEngineComponent
     {
         void RotateEntity(ISceneEntity entity, Vector3 axis, float angle);
