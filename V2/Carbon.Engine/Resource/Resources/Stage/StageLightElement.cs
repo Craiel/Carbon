@@ -14,6 +14,14 @@
 
     public class StageLightElement : StageElement
     {
+        internal enum LightFlags
+        {
+            None = 0,
+            HasLocation = 1,
+            HasDirection = 2,
+            HasColor = 4,
+        }
+
         public StageLightType Type { get; set; }
 
         public Vector3? Location { get; set; }
@@ -29,9 +37,36 @@
         protected override void DoLoad(CarbonBinaryFormatter source)
         {
             this.Type = (StageLightType)source.ReadShort();
-            this.Location = new Vector3 { X = source.ReadSingle(), Y = source.ReadSingle(), Z = source.ReadSingle() };
-            this.Direction = new Vector3 { X = source.ReadSingle(), Y = source.ReadSingle(), Z = source.ReadSingle() };
-            this.Color = new Vector3 { X = source.ReadSingle(), Y = source.ReadSingle(), Z = source.ReadSingle() };
+
+            uint flags = source.ReadUInt();
+            bool hasLocation = (flags & (int)LightFlags.HasLocation) == (int)LightFlags.HasLocation;
+            bool hasDirection = (flags & (int)LightFlags.HasDirection) == (int)LightFlags.HasDirection;
+            bool hasColor = (flags & (int)LightFlags.HasColor) == (int)LightFlags.HasColor;
+
+            if (hasLocation)
+            {
+                this.Location = new Vector3
+                                    {
+                                        X = source.ReadSingle(),
+                                        Y = source.ReadSingle(),
+                                        Z = source.ReadSingle()
+                                    };
+            }
+
+            if (hasDirection)
+            {
+                this.Direction = new Vector3
+                                     {
+                                         X = source.ReadSingle(),
+                                         Y = source.ReadSingle(),
+                                         Z = source.ReadSingle()
+                                     };
+            }
+
+            if (hasColor)
+            {
+                this.Color = new Vector3 { X = source.ReadSingle(), Y = source.ReadSingle(), Z = source.ReadSingle() };
+            }
 
             this.Radius = source.ReadSingle();
             this.Intensity = source.ReadSingle();
@@ -45,25 +80,58 @@
         protected override void DoSave(CarbonBinaryFormatter target)
         {
             target.Write((short)this.Type);
-            target.Write(this.Location.X);
-            target.Write(this.Location.Y);
-            target.Write(this.Location.Z);
 
-            target.Write(this.Direction.X);
-            target.Write(this.Direction.Y);
-            target.Write(this.Direction.Z);
+            target.Write(this.GetLightFlags());
 
-            target.Write(this.Color.X);
-            target.Write(this.Color.Y);
-            target.Write(this.Color.Z);
+            if (this.Location != null)
+            {
+                target.Write(this.Location.Value.X);
+                target.Write(this.Location.Value.Y);
+                target.Write(this.Location.Value.Z);
+            }
+
+            if (this.Direction != null)
+            {
+                target.Write(this.Direction.Value.X);
+                target.Write(this.Direction.Value.Y);
+                target.Write(this.Direction.Value.Z);
+            }
+
+            if (this.Color != null)
+            {
+                target.Write(this.Color.Value.X);
+                target.Write(this.Color.Value.Y);
+                target.Write(this.Color.Value.Z);
+            }
 
             target.Write(this.Radius);
             target.Write(this.Intensity);
             target.Write(this.AmbientIntensity);
-            target.Write(this.BeamWidth);
-            target.Write(this.CutoffAngle);
+            target.Write(this.SpotSize);
+            target.Write(this.Angle);
 
             base.DoSave(target);
+        }
+
+        private uint GetLightFlags()
+        {
+            uint flags = 0;
+            if (this.Location != null)
+            {
+                flags |= (uint)LightFlags.HasLocation;
+            }
+
+            if (this.Direction != null)
+            {
+                flags |= (uint)LightFlags.HasDirection;
+            }
+
+            if (this.Color != null)
+            {
+                flags |= (uint)LightFlags.HasColor;
+            }
+
+            return flags;
         }
     }
 }

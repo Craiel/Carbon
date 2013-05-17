@@ -54,7 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ninject">
-      <HintPath>..\..\..\CarbonExt\Ninject 2.2.1.0\Ninject.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\Ninject\3.0.0.15\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>

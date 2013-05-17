@@ -61,19 +61,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AvalonDock">
-      <HintPath>..\..\..\CarbonExt\AvalonDock 2.0.1746\AvalonDock.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\AvalonDock\2.0.1746\AvalonDock.dll</HintPath>
     </Reference>
     <Reference Include="Fluent">
-      <HintPath>..\..\..\CarbonExt\FluentRibbon c2848bed6826\Fluent.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\FluentRibbon\c2848bed6826\Fluent.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit">
-      <HintPath>..\..\..\CarbonExt\AvalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\AvalonEdit\4.3.0.9409\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\..\..\CarbonExt\log4net 1.2.10\log4net.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\log4net\1.2.10\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Ninject">
-      <HintPath>..\..\..\CarbonExt\Ninject 2.2.1.0\Ninject.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\Ninject\3.0.0.15\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero">
       <Private>True</Private>
@@ -83,9 +83,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.SQLite, Version=1.0.84.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\CarbonExt\sqllite 1.0.84.0\x64\System.Data.SQLite.dll</HintPath>
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\..\..\CarbonExt\sqllite\1.0.84.0\x64\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
@@ -100,7 +99,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\..\..\CarbonExt\Extended WPF Toolkit 1.9.0\Xceed.Wpf.Toolkit.dll</HintPath>
+      <HintPath>..\..\..\CarbonExt\Extended WPF Toolkit\1.9.0\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -476,7 +475,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)..\CarbonExt\sqllite 1.0.84.0\x64\Deploy.bat" $(TargetDir) &amp;&amp; "$(SolutionDir)..\CarbonExt\nvidia-texture-tools 2.0.8-1\bin\Deploy.bat" $(TargetDir)\TexTools\</PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)..\CarbonExt\sqllite\1.0.84.0\x64\Deploy.bat" $(TargetDir) &amp;&amp; "$(SolutionDir)..\CarbonExt\nvidia-texture-tools\2.0.8-1\bin\Deploy.bat" $(TargetDir)\TexTools\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

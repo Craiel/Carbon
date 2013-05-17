@@ -74,6 +74,45 @@
             }
         }
 
+        protected override void DoSave(CarbonBinaryFormatter target)
+        {
+            target.Write(Version);
+            target.Write(this.GetMeshFlags());
+
+            target.Write(this.Position.X);
+            target.Write(this.Position.Y);
+            target.Write(this.Position.Z);
+
+            if (this.Normal != null)
+            {
+                target.Write(this.Normal.Value.X);
+                target.Write(this.Normal.Value.Y);
+                target.Write(this.Normal.Value.Z);
+            }
+
+            if (this.Texture != null)
+            {
+                target.Write(this.Texture.Value.X);
+                target.Write(this.Texture.Value.Y);
+            }
+
+            if (this.Tangent != null)
+            {
+                target.Write(this.Tangent.Value.X);
+                target.Write(this.Tangent.Value.Y);
+                target.Write(this.Tangent.Value.Z);
+                target.Write(this.Tangent.Value.W);
+            }
+
+            if (this.Color != null)
+            {
+                target.Write(this.Color.Value.X);
+                target.Write(this.Color.Value.Y);
+                target.Write(this.Color.Value.Z);
+                target.Write(this.Color.Value.W);
+            }
+        }
+
         private uint GetMeshFlags()
         {
             uint flags = 0;
@@ -98,45 +137,6 @@
             }
 
             return flags;
-        }
-
-        protected override void DoSave(CarbonBinaryFormatter target)
-        {
-            target.Write(Version);
-            target.Write(this.GetMeshFlags());
-
-            target.Write(Position.X);
-            target.Write(Position.Y);
-            target.Write(Position.Z);
-
-            if (Normal != null)
-            {
-                target.Write(Normal.Value.X);
-                target.Write(Normal.Value.Y);
-                target.Write(Normal.Value.Z);
-            }
-
-            if (Texture != null)
-            {
-                target.Write(Texture.Value.X);
-                target.Write(Texture.Value.Y);
-            }
-
-            if (Tangent != null)
-            {
-                target.Write(Tangent.Value.X);
-                target.Write(Tangent.Value.Y);
-                target.Write(Tangent.Value.Z);
-                target.Write(Tangent.Value.W);
-            }
-
-            if (Color != null)
-            {
-                target.Write(Color.Value.X);
-                target.Write(Color.Value.Y);
-                target.Write(Color.Value.Z);
-                target.Write(Color.Value.W);
-            }
         }
     }
 }
