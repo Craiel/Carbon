@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using Carbon.Engine.Resource;
-using Carbon.Engine.Resource.Resources;
 
 using Core.Utils;
 
@@ -22,7 +21,7 @@ namespace Carbon.Engine.Rendering.Primitives
             float segmentLength = 1.0f / segments;
             float normalY = (90.0f - MathExtension.RadiansToDegrees((float)Math.Atan(height / radius))) / 90.0f;
 
-            var builder = new MeshBuilder("Cone " + ++creationCount) { IsIndexed = true };
+            var builder = new ModelBuilder("Cone " + ++creationCount) { IsIndexed = true };
 
             // Top Vertex
             builder.AddVertex(new Vector3(0, height / 2.0f, 0), new Vector3(0, normalY, 0), new Vector2(1.0f - segmentLength, 0));
@@ -43,7 +42,7 @@ namespace Carbon.Engine.Rendering.Primitives
             }
 
             builder.AddIndices(BuildIndices(segments));
-            return builder.ToMesh();
+            return builder.ToResource();
         }
         
         private static uint[] BuildIndices(int segments)

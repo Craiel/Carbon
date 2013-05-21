@@ -1,128 +1,86 @@
-﻿using System.IO;
-
-using Carbon.Engine.Logic;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Carbon.Engine.Resource.Resources.Stage
 {
-    public class StageResource : ResourceBase
+    public class StageResource : ProtocolResource
     {
-        internal enum MeshFlags
-        {
-            None = 0,
-            HasCameras = 1,
-            HasLights = 2,
-            HasModels = 4
-        }
-
         internal const int Version = 1;
+        
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
+        public IList<StageCameraElement> Cameras { get; set; }
+        public IList<StageLightElement> Lights { get; set; }
+        public IList<StageModelElement> Models { get; set; }
 
-        public StageCameraElement[] Cameras { get; set; }
-        public StageLightElement[] Lights { get; set; }
-        public StageModelElement[] Models { get; set; }
-
-        protected override void DoLoad(CarbonBinaryFormatter source)
+        public override void Load(Stream source)
         {
-            int version = source.ReadInt();
-            if (version != Version)
+            Protocol.Resource.Stage entry = Protocol.Resource.Stage.ParseFrom(source);
+
+            if (entry.Version != Version)
             {
-                throw new InvalidDataException("Stage version is not correct: " + version);
+                throw new InvalidDataException("Stage version is not correct: " + entry.Version);
             }
 
-            uint flags = source.ReadUInt();
-            bool hasCameras = (flags & (int)MeshFlags.HasCameras) == (int)MeshFlags.HasCameras;
-            bool hasLights = (flags & (int)MeshFlags.HasLights) == (int)MeshFlags.HasLights;
-            bool hasModels = (flags & (int)MeshFlags.HasModels) == (int)MeshFlags.HasModels;
-
-            if (hasCameras)
+            if (entry.CamerasCount > 0)
             {
-                short count = source.ReadShort();
-                this.Cameras = new StageCameraElement[count];
-                for (int i = 0; i < count; i++)
+                this.Cameras = new List<StageCameraElement>(entry.CamerasCount);
+                foreach (Protocol.Resource.StageCamera cameraEntry in entry.CamerasList)
                 {
-                    this.Cameras[i] = new StageCameraElement();
-                    this.Cameras[i].Load(source);
+                    this.Cameras.Add(new StageCameraElement(cameraEntry));
                 }
             }
 
-            if (hasLights)
+            if (entry.LightsCount > 0)
             {
-                short count = source.ReadShort();
-                this.Lights = new StageLightElement[count];
-                for (int i = 0; i < count; i++)
+                this.Lights = new List<StageLightElement>(entry.LightsCount);
+                foreach (Protocol.Resource.StageLight lightEntry in entry.LightsList)
                 {
-                    this.Lights[i] = new StageLightElement();
-                    this.Lights[i].Load(source);
+                    this.Lights.Add(new StageLightElement(lightEntry));
                 }
             }
 
-            if (hasModels)
+            if (entry.ModelsCount > 0)
             {
-                int count = source.ReadInt();
-                this.Models = new StageModelElement[count];
-                for (int i = 0; i < count; i++)
+                this.Models = new List<StageModelElement>(entry.ModelsCount);
+                foreach (Protocol.Resource.StageModel modelEntry in entry.ModelsList)
                 {
-                    this.Models[i] = new StageModelElement();
-                    this.Models[i].Load(source);
+                    this.Models.Add(new StageModelElement(modelEntry));
                 }
             }
         }
 
-        private uint GetStageFlags()
+        public override long Save(Stream target)
         {
-            uint flags = 0;
-            if (this.Cameras != null && this.Cameras.Length > 0)
+            var builder = new Protocol.Resource.Stage.Builder { Version = Version };
+            if (this.Cameras != null)
             {
-                flags |= (uint)MeshFlags.HasCameras;
-            }
-
-            if (this.Lights != null && this.Lights.Length > 0)
-            {
-                flags |= (uint)MeshFlags.HasLights;
-            }
-
-            if (this.Models != null && this.Models.Length > 0)
-            {
-                flags |= (uint)MeshFlags.HasModels;
-            }
-
-            return flags;
-        }
-
-        protected override void DoSave(CarbonBinaryFormatter target)
-        {
-            target.Write(Version);
-            uint flags = this.GetStageFlags();
-            bool hasCameras = (flags & (int)MeshFlags.HasCameras) == (int)MeshFlags.HasCameras;
-            bool hasLights = (flags & (int)MeshFlags.HasLights) == (int)MeshFlags.HasLights;
-            bool hasModels = (flags & (int)MeshFlags.HasModels) == (int)MeshFlags.HasModels;
-            target.Write(flags);
-            
-            if (hasCameras != null)
-            {
-                target.Write((short)this.Cameras.Length);
-                for (int i = 0; i < this.Cameras.Length; i++)
+                foreach (StageCameraElement camera in this.Cameras)
                 {
-                    this.Cameras[i].Save(target);
+                    builder.AddCameras(camera.GetBuilder());
                 }
             }
 
-            if (hasLights != null)
+            if (this.Lights != null)
             {
-                target.Write((short)this.Lights.Length);
-                for (int i = 0; i < this.Lights.Length; i++)
+                foreach (StageLightElement light in this.Lights)
                 {
-                    this.Lights[i].Save(target);
+                    builder.AddLights(light.GetBuilder());
                 }
             }
 
-            if (hasModels != null)
+            if (this.Models != null)
             {
-                target.Write(this.Models.Length);
-                for (int i = 0; i < this.Models.Length; i++)
+                foreach (StageModelElement model in this.Models)
                 {
-                    this.Models[i].Save(target);
+                    builder.AddModels(model.GetBuilder());
                 }
             }
+
+            Protocol.Resource.Stage entry = builder.Build();
+            entry.WriteTo(target);
+            return entry.SerializedSize;
         }
     }
 }

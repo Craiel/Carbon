@@ -1,5 +1,5 @@
 ﻿using Carbon.Engine.Logic;
-using Carbon.Engine.Resource.Resources;
+using Carbon.Engine.Resource;
 
 using SlimDX;
 
@@ -14,7 +14,7 @@ namespace Carbon.Engine.Rendering.Primitives
 
         public static ModelResource Create(Vector3 origin, Vector3 normal, Vector3 up, TypedVector2<int> size)
         {
-            var builder = new MeshBuilder("Quad " + ++creationCount) { IsIndexed = true };
+            var builder = new ModelBuilder("Quad " + ++creationCount) { IsIndexed = true };
             
             Vector3 left = Vector3.Cross(normal, up);
             Vector3 upperCenter = (up * size.Y / 2) + origin;
@@ -31,12 +31,12 @@ namespace Carbon.Engine.Rendering.Primitives
             builder.AddIndices(new uint[] { 0, 2, 1 });
             builder.AddIndices(new uint[] { 2, 3, 1 });
             
-            return builder.ToMesh();
+            return builder.ToResource();
         }
 
         public static ModelResource CreateScreen(Vector2 position, TypedVector2<int> size)
         {
-            var builder = new MeshBuilder("Screen Quad " + ++screenCreationCount) { IsIndexed = true };
+            var builder = new ModelBuilder("Screen Quad " + ++screenCreationCount) { IsIndexed = true };
 
             // Calculate the screen coordinates
             float left = position.X;
@@ -53,7 +53,7 @@ namespace Carbon.Engine.Rendering.Primitives
             builder.AddIndices(new uint[] { 0, 2, 1 });
             builder.AddIndices(new uint[] { 2, 3, 1 });
 
-            return builder.ToMesh();
+            return builder.ToResource();
         }
     }
 }

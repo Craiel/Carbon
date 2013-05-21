@@ -1,28 +1,17 @@
-﻿namespace Carbon.Engine.Resource.Resources.Stage
-{
-    using Carbon.Engine.Logic;
-    public enum StagePropertyType
-    {
-        Unknown = 0,
-        String = 1,
-        Float = 2,
-        Int = 3
-    }
+﻿using System;
+using System.Text;
 
-    public abstract class StagePropertyElement : ResourceBase
+using Google.ProtocolBuffers;
+
+namespace Carbon.Engine.Resource.Resources.Stage
+{
+    public abstract class StagePropertyElement
     {
         public string Id { get; set; }
-
-        public StagePropertyType Type { get; protected set; }
-
-        protected override void DoLoad(CarbonBinaryFormatter source)
+        
+        protected virtual Protocol.Resource.StageProperty.Builder GetBuilder()
         {
-            this.Id = source.ReadString();
-        }
-
-        protected override void DoSave(CarbonBinaryFormatter target)
-        {
-            target.Write(this.Id);
+            return new Protocol.Resource.StageProperty.Builder { Id = this.Id };
         }
     }
 
@@ -30,21 +19,21 @@
     {
         public StagePropertyElementString()
         {
-            this.Type = StagePropertyType.String;
+        }
+
+        public StagePropertyElementString(Protocol.Resource.StageProperty source)
+            : this()
+        {
+            this.Value = source.Data.ToStringUtf8();
         }
 
         public string Value { get; set; }
-        
-        protected override void DoLoad(CarbonBinaryFormatter source)
-        {
-            base.DoLoad(source);
-            this.Value = source.ReadString();
-        }
 
-        protected override void DoSave(CarbonBinaryFormatter target)
+        protected override Protocol.Resource.StageProperty.Builder GetBuilder()
         {
-            base.DoSave(target);
-            target.Write(this.Value);
+            Protocol.Resource.StageProperty.Builder builder = base.GetBuilder();
+            builder.Data = ByteString.CopyFrom(this.Value, Encoding.UTF8);
+            return builder;
         }
     }
 
@@ -52,21 +41,21 @@
     {
         public StagePropertyElementFloat()
         {
-            this.Type = StagePropertyType.Float;
+        }
+
+        public StagePropertyElementFloat(Protocol.Resource.StageProperty source)
+            : this()
+        {
+            this.Value = BitConverter.ToSingle(source.Data.ToByteArray(), 0);
         }
 
         public float Value { get; set; }
-        
-        protected override void DoLoad(CarbonBinaryFormatter source)
-        {
-            base.DoLoad(source);
-            this.Value = source.ReadSingle();
-        }
 
-        protected override void DoSave(CarbonBinaryFormatter target)
+        protected override Protocol.Resource.StageProperty.Builder GetBuilder()
         {
-            base.DoSave(target);
-            target.Write(this.Value);
+            Protocol.Resource.StageProperty.Builder builder = base.GetBuilder();
+            builder.Data = ByteString.CopyFrom(BitConverter.GetBytes(this.Value));
+            return builder;
         }
     }
 
@@ -74,21 +63,21 @@
     {
         public StagePropertyElementInt()
         {
-            this.Type = StagePropertyType.Int;
+        }
+
+        public StagePropertyElementInt(Protocol.Resource.StageProperty source)
+            : this()
+        {
+            this.Value = BitConverter.ToInt32(source.Data.ToByteArray(), 0);
         }
 
         public int Value { get; set; }
-        
-        protected override void DoLoad(CarbonBinaryFormatter source)
-        {
-            base.DoLoad(source);
-            this.Value = source.ReadInt();
-        }
 
-        protected override void DoSave(CarbonBinaryFormatter target)
+        protected override Protocol.Resource.StageProperty.Builder GetBuilder()
         {
-            base.DoSave(target);
-            target.Write(this.Value);
+            Protocol.Resource.StageProperty.Builder builder = base.GetBuilder();
+            builder.Data = ByteString.CopyFrom(BitConverter.GetBytes(this.Value));
+            return builder;
         }
     }
 }

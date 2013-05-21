@@ -1,5 +1,6 @@
 ﻿using System;
 
+using Carbon.Engine.Resource;
 using Carbon.Engine.Resource.Resources;
 
 using SlimDX;
@@ -148,7 +149,7 @@ namespace Carbon.Engine.Rendering.Primitives
                 faces = faces2;
             }
 
-            var builder = new MeshBuilder("Sphere " + ++creationCount) { IsIndexed = true };
+            var builder = new ModelBuilder("Sphere " + ++creationCount) { IsIndexed = true };
             for (int i = 0; i < pointList.Count; i++)
             {
                 // Calculate the UV
@@ -174,7 +175,7 @@ namespace Carbon.Engine.Rendering.Primitives
                 index += 3;
             }
 
-            return builder.ToMesh();
+            return builder.ToResource();
         }
     }
 }

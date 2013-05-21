@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-using Carbon.Engine.Network;
+using Carbon.Protocol.Network;
 
 namespace Carbon.Engine.Contracts.Network
 {

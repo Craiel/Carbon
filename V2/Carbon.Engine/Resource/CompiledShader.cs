@@ -1,63 +1,48 @@
-﻿using Carbon.Engine.Logic;
+﻿using System.IO;
+
 using Carbon.Engine.Resource.Resources;
 
-using SlimDX.D3DCompiler;
+using Google.ProtocolBuffers;
 
 namespace Carbon.Engine.Resource
 {
-    internal class CompiledShader : ResourceBase
+    internal class CompiledShader : ProtocolResource
     {
-        internal const int CurrentVersion = 1;
+        internal const int Version = 1;
 
-        private byte[] sourceMd5;
-        private byte[] shaderData;
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
+        public byte[] SourceMd5 { get; set; }
+        public byte[] ShaderData { get; set; }
 
-        public CompiledShader()
+        public override void Load(Stream source)
         {
-        }
-
-        public CompiledShader(byte[] md5, ShaderBytecode shaderBytecode)
-        {
-            this.sourceMd5 = md5;
-            this.shaderData = new byte[shaderBytecode.Data.Length];
-            shaderBytecode.Data.Position = 0;
-            shaderBytecode.Data.Read(this.ShaderData, 0, this.ShaderData.Length);
-
-            this.Version = CurrentVersion;
-        }
-
-        public byte[] SourceMd5
-        {
-            get
+            Protocol.Resource.CompiledShader entry = Protocol.Resource.CompiledShader.ParseFrom(source);
+            if (entry.Version != Version)
             {
-                return this.sourceMd5;
+                throw new InvalidDataException("Compiled shader version is not correct: " + entry.Version);
             }
-        }
 
-        public byte[] ShaderData
-        {
-            get
+            if (!entry.HasData || !entry.HasMD5)
             {
-                return this.shaderData;
+                throw new InvalidDataException("Compiled shader resource was missing either md5 or data");
             }
+
+            this.SourceMd5 = entry.MD5.ToByteArray();
+            this.ShaderData = entry.Data.ToByteArray();
         }
 
-        public int Version { get; private set; }
-
-        protected override void DoLoad(CarbonBinaryFormatter source)
+        public override long Save(Stream target)
         {
-            this.Version = source.ReadInt();
-            byte md5Length = source.ReadByte();
-            source.Read(out this.sourceMd5, md5Length);
-            source.Read(out this.shaderData);
-        }
+            var builder = new Protocol.Resource.CompiledShader.Builder() { Version = Version };
 
-        protected override void DoSave(CarbonBinaryFormatter target)
-        {
-            target.Write(this.Version);
-            target.Write((byte)this.SourceMd5.Length);
-            target.Write(this.SourceMd5);
-            target.Write(this.ShaderData);
+            builder.SetData(ByteString.CopyFrom(this.ShaderData));
+            builder.SetMD5(ByteString.CopyFrom(this.SourceMd5));
+
+            Protocol.Resource.CompiledShader entry = builder.Build();
+            entry.WriteTo(target);
+            return entry.SerializedSize;
         }
     }
 }

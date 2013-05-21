@@ -8,7 +8,7 @@ using Carbon.Editor.Resource.Collada.Data;
 using Carbon.Editor.Resource.Collada.Geometry;
 using Carbon.Editor.Resource.Collada.Scene;
 using Carbon.Editor.Resource.Generic.Data;
-using Carbon.Engine.Rendering;
+using Carbon.Engine.Resource;
 
 using Core.Utils;
 
@@ -124,14 +124,19 @@ namespace Carbon.Editor.Resource.Collada
                         {
                             material.AlphaTexture = HashUtils.BuildResourceHash(Path.Combine(texturePath, Uri.UnescapeDataString(material.AlphaTexture)));    
                         }
-                        
-                        part.AddMaterial(material);
+
+                        if (part.Materials == null)
+                        {
+                            part.Materials = new List<ModelMaterialElement>();
+                        }
+
+                        part.Materials.Add(material);
                     }
 
                     parts.Add(part);
                 }
 
-                meshLibrary.Add(colladaGeometry.Id, new ModelResource(parts) { Name = colladaGeometry.Id });
+                meshLibrary.Add(colladaGeometry.Id, new ModelResource { SubParts = parts, Name = colladaGeometry.Id });
             }
         }
 
@@ -203,7 +208,7 @@ namespace Carbon.Editor.Resource.Collada
 
         private static ModelResource TranslateGeometry(int polyIndex, string name)
         {
-            var builder = new MeshBuilder(name);
+            var builder = new ModelBuilder(name);
 
             // All data is set now, Build the polygons into our mesh
             int indexPosition = 0;
@@ -234,7 +239,7 @@ namespace Carbon.Editor.Resource.Collada
                 builder.EndPolygon();
             }
 
-            return builder.ToMesh();
+            return builder.ToResource();
         }
 
         private static ColladaInput FindInput(string semantic)
@@ -310,7 +315,7 @@ namespace Carbon.Editor.Resource.Collada
                 return parts[0];
             }
 
-            return new ModelResource(parts);
+            return new ModelResource { SubParts = parts, Name = library.VisualScene.Name };
         }
 
         private static bool SceneNodeContainsElement(ColladaSceneNode node, string elementName)
@@ -388,7 +393,7 @@ namespace Carbon.Editor.Resource.Collada
                             continue;
                         }
 
-                        meshLibrary[targetNode].AddPart(subPart);
+                        meshLibrary[targetNode].SubParts.Add(subPart);
                     }
                 }
 

@@ -216,7 +216,7 @@ class XCDExporter:
         self._fileWriter('<rotation>%.6f %.6f %.6f %.6f</rotation>' % rotation)
         self._fileWriter('<scale>%.6f %.6f %.6f</scale>' % scale[:])
         
-        self._WriteBoundingBox(obj.bounding)
+        self._WriteBoundingBox(obj.bound_box)
         self._WriteLayers(obj.layers)
         self._WriteCustomProperties(obj)
         
@@ -256,7 +256,7 @@ class XCDExporter:
         angle = spotSize * 1.3
         orientation = self._MatrixNegateZ(matrix)
         location = matrix.to_translation()[:]
-        radius = lamp.distance * math.cos(beamWidth)
+        radius = lamp.distance * math.cos(spotSize)
     
         self._fileWriter('<light type="Spot" id=%s' % id)
         self._fileWriter(' radius="%.4f"' % radius)
@@ -289,7 +289,7 @@ class XCDExporter:
         intensity = min(lamp.energy / 1.75, 1.0)
         orientation = self._MatrixNegateZ(matrix)
     
-        self._fileWriter('<Light type="Direction" id=%s' % id)
+        self._fileWriter('<light type="Directional" id=%s' % id)
         self._fileWriter(' ambientintensity="%.4f"' % ambientIntensity)
         self._fileWriter(' intensity="%.4f"' % intensity)        
         self._fileWriter('>')
@@ -315,14 +315,14 @@ class XCDExporter:
         intensity = min(lamp.energy / 1.75, 1.0)
         location = matrix.to_translation()[:]
     
-        self._fileWriter('<Light type="Point" id=%s' % id)
+        self._fileWriter('<light type="Point" id=%s' % id)
         self._fileWriter(' ambientintensity="%.4f"' % ambientIntensity)        
         self._fileWriter(' intensity="%.4f"' % intensity)
         self._fileWriter(' radius="%.4f"' % lamp.distance)        
         self._fileWriter('>')
         
         self._fileWriter('<color>%.4f %.4f %.4f</color>' % self._ClampColor(lamp.color))
-        self._fileWriter('<location="%.4f %.4f %.4f</location>' % location)
+        self._fileWriter('<location>%.4f %.4f %.4f</location>' % location)
         
         self._WriteLayers(obj.layers)
         self._WriteCustomProperties(obj)

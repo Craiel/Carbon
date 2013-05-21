@@ -65,8 +65,9 @@
                         {
                             image.Save(stream, ImageFormat.Png);
                             stream.Position = 0;
-                            var resource = new RawResource();
-                            resource.Load(stream);
+                            var data = new byte[stream.Length];
+                            stream.Read(data, 0, (int)stream.Length);
+                            var resource = new RawResource { Data = data };
                             return resource;
                         }
                     }

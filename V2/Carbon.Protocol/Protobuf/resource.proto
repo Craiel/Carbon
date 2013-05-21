@@ -2,13 +2,13 @@ package resource;
  
 import "google/protobuf/csharp_options.proto";
 
-option (google.protobuf.csharp_file_options).namespace = "Carbon.Engine.Resource";
+option (google.protobuf.csharp_file_options).namespace = "Carbon.Protocol.Resource";
 option (google.protobuf.csharp_file_options).umbrella_classname = "ResourceProtocol";
 option (google.protobuf.csharp_file_options).file_extension = ".pb.cs";
 
 option optimize_for = SPEED;
 
-message RawResource {
+message Raw {
 	required bytes Data = 1;
 }
 
@@ -28,17 +28,15 @@ message ModelElement {
 
 message ModelMaterial {
 	required string Name = 1;
-	required string DiffuseTexture = 2;
-	required string NormalTexture = 3;
-	required string AlphaTexture = 4;
-	required string SpecularTexture = 5;
+	optional string DiffuseTexture = 2;
+	optional string NormalTexture = 3;
+	optional string AlphaTexture = 4;
+	optional string SpecularTexture = 5;
 }
 
 message Model {
 	required int32 Version = 1 [default = 1];
 	required string Name = 2;
-	required int32 IndexCount = 3;
-	required int32 ElementCount = 4;
 	required bool TangentsCalculated = 5;
 	
 	repeated float Offset = 10 [packed=true];
@@ -68,9 +66,11 @@ message StageProperty {
 }
 
 message StageCamera {
-	required float FieldOfView = 1;
+	required string Id = 1;
+	
+	required float FieldOfView = 2;
 
-	repeated int32 LayerFlags = 10 [packed=true];
+	required int32 LayerFlags = 10;
 	repeated StageProperty Properties = 11;
 	
 	repeated float Position = 20 [packed=true];
@@ -78,13 +78,25 @@ message StageCamera {
 }
 
 message StageLight {
-	required float Radius = 1;
-	required float Intensity = 2;
-	required float AmbientIntensity = 3;
-	required float SpotSize = 4;
-	required float Angle = 5;
+	enum StageLightType
+	{
+		Unknown = 0;
+        Spot = 1;
+        Directional = 2;
+        Point = 3;
+	}
+	
+	required string Id = 1;
+	
+	required StageLightType Type = 2;
+	
+	required float Radius = 3;
+	required float Intensity = 4;
+	required float AmbientIntensity = 5;
+	required float SpotSize = 6;
+	required float Angle = 7;
 
-	repeated int32 LayerFlags = 10 [packed=true];
+	required int32 LayerFlags = 10;
 	repeated StageProperty Properties = 11;
 	
 	repeated float Location = 20 [packed=true];
@@ -93,7 +105,9 @@ message StageLight {
 }
 
 message StageModel {
-	repeated int32 LayerFlags = 10 [packed=true];
+	required string Id = 1;
+	
+	required int32 LayerFlags = 10;
 	repeated StageProperty Properties = 11;
 	
 	repeated float Translation = 20 [packed=true];

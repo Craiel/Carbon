@@ -1,48 +1,53 @@
-﻿namespace Carbon.Engine.Resource.Resources.Stage
+﻿using Core.Utils;
+
+using SlimDX;
+
+namespace Carbon.Engine.Resource.Resources.Stage
 {
-    using Carbon.Engine.Logic;
-
-    using SlimDX;
-
     public class StageModelElement : StageElement
     {
+        // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
+        public StageModelElement()
+        {
+        }
+
+        public StageModelElement(Protocol.Resource.StageModel data)
+            : this()
+        {
+            System.Diagnostics.Debug.Assert(data.TranslationCount == 3, "Translation data has invalid count");
+            System.Diagnostics.Debug.Assert(data.RotationCount == 4, "Rotation data has invalid count");
+            System.Diagnostics.Debug.Assert(data.ScaleCount == 3, "Scale data has invalid count");
+
+            this.Id = data.Id;
+
+            this.Translation = VectorExtension.Vector3FromList(data.TranslationList);
+            this.Rotation = VectorExtension.Vector4FromList(data.RotationList);
+            this.Scale = VectorExtension.Vector3FromList(data.ScaleList);
+
+            this.LoadLayerData(data.LayerFlags);
+            this.LoadProperties(data.PropertiesList);
+        }
+
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
         public Vector3 Translation { get; set; }
         public Vector4 Rotation { get; set; }
         public Vector3 Scale { get; set; }
 
-        protected override void DoLoad(CarbonBinaryFormatter source)
+        public Protocol.Resource.StageModel.Builder GetBuilder()
         {
-            this.Translation = new Vector3 { X = source.ReadSingle(), Y = source.ReadSingle(), Z = source.ReadSingle() };
+            var builder = new Protocol.Resource.StageModel.Builder { Id = this.Id };
 
-            this.Rotation = new Vector4
-            {
-                X = source.ReadSingle(),
-                Y = source.ReadSingle(),
-                Z = source.ReadSingle(),
-                W = source.ReadSingle()
-            };
+            builder.AddRangeTranslation(this.Translation.ToList());
+            builder.AddRangeRotation(this.Rotation.ToList());
+            builder.AddRangeScale(this.Scale.ToList());
 
-            this.Scale = new Vector3 { X = source.ReadSingle(), Y = source.ReadSingle(), Z = source.ReadSingle() };
-            
-            base.DoLoad(source);
-        }
-
-        protected override void DoSave(CarbonBinaryFormatter target)
-        {
-            target.Write(this.Translation.X);
-            target.Write(this.Translation.Y);
-            target.Write(this.Translation.Z);
-
-            target.Write(this.Rotation.X);
-            target.Write(this.Rotation.Y);
-            target.Write(this.Rotation.Z);
-            target.Write(this.Rotation.W);
-
-            target.Write(this.Scale.X);
-            target.Write(this.Scale.Y);
-            target.Write(this.Scale.Z);
-
-            base.DoSave(target);
+            builder.SetLayerFlags(this.SaveLayerData());
+            builder.AddRangeProperties(this.SaveProperties());
+            return builder;
         }
     }
 }

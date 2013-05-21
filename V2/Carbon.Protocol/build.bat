@@ -1,6 +1,6 @@
 set OLDDIR=%CD%
-
-SET VERSIONROOT=..\..\..\CarbonExt\protobuf-csharp-port\2.4.1.521\tools
+echo %CD%
+SET VERSIONROOT=%1\..\..\..\CarbonExt\protobuf-csharp-port\2.4.1.521\tools
 chdir /d %VERSIONROOT%
 
 protoc.exe --cpp_out=%1\CPP -I ../protos ../protos/google/protobuf/descriptor.proto

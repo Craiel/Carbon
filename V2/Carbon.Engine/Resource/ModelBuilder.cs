@@ -2,25 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 
-using Carbon.Engine.Resource.Resources;
+using Carbon.Engine.Resource.Resources.Model;
 
 using SlimDX;
 
-namespace Carbon.Engine.Rendering
+namespace Carbon.Engine.Resource
 {
-    using Carbon.Engine.Resource.Resources.Model;
-
     /// <summary>
     /// Helper class to construct Mesh Structures from Vectors and indices
     /// Todo: 
     ///  - Check vertex duplication
     ///  - Generate Normals with MathExtension.CalculateSurfaceNormal()
     /// </summary>
-    public class MeshBuilder
+    public class ModelBuilder
     {
-        private readonly IList<ModelMeshElement> pendingElements;
-
-        private readonly IList<ModelMeshElement> elements;
+        private readonly IList<ModelResourceElement> pendingElements;
+        private readonly IList<ModelResourceElement> elements;
         private readonly IList<uint> elementIndices;
 
         private readonly string name;
@@ -28,14 +25,14 @@ namespace Carbon.Engine.Rendering
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public MeshBuilder(string name)
+        public ModelBuilder(string name)
         {
             this.name = name;
 
             this.IsIndexed = false;
 
-            this.pendingElements = new List<ModelMeshElement>();
-            this.elements = new List<ModelMeshElement>();
+            this.pendingElements = new List<ModelResourceElement>();
+            this.elements = new List<ModelResourceElement>();
             this.elementIndices = new List<uint>();
         }
 
@@ -115,7 +112,7 @@ namespace Carbon.Engine.Rendering
         
         public void AddVertex(Vector3 position, Vector3? normal = null, Vector2? texture = null, Vector4? color = null)
         {
-            this.pendingElements.Add(new ModelMeshElement { Position = position, Normal = normal, Texture = texture, Color = color });
+            this.pendingElements.Add(new ModelResourceElement { Position = position, Normal = normal, Texture = texture, Color = color });
         }
 
         public void AddIndices(uint[] indices)
@@ -136,7 +133,7 @@ namespace Carbon.Engine.Rendering
             }
         }
 
-        public ModelResource ToMesh()
+        public ModelResource ToResource()
         {
             uint[] indexData;
 
@@ -153,7 +150,7 @@ namespace Carbon.Engine.Rendering
                     indexData[i] = this.elementIndices[i];
                 }
 
-                return new ModelResource(this.elements, indexData) { Name = this.name };
+                return new ModelResource { Elements = this.elements, Indices = indexData, Name = this.name };
             }
 
             if (this.pendingElements.Count > 0)
@@ -167,7 +164,7 @@ namespace Carbon.Engine.Rendering
                 indexData[i] = i;
             }
 
-            return new ModelResource(this.elements, indexData) { Name = this.name };
+            return new ModelResource { Elements = this.elements, Indices = indexData, Name = this.name };
         }
     }
 }

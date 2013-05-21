@@ -88,8 +88,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="C#\CSharpOptions.cs" />
-    <Compile Include="C#\DescriptorProtoFile.cs" />
     <Compile Include="C#\NetworkProtocol.pb.cs" />
     <Compile Include="C#\ResourceProtocol.pb.cs" />
   </ItemGroup>

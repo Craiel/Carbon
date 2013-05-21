@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Carbon.Engine.Resource.Resources;
-using Carbon.Engine.Scene;
+using Carbon.Engine.Resource;
 
 using SlimDX;
 
@@ -52,7 +51,7 @@ namespace Carbon.Engine.Rendering
 
             int rowCount = byte.MaxValue / font.CharactersPerRow;
             Vector2 characterUVSize = new Vector2(1.0f / font.CharactersPerRow, 1.0f / rowCount);
-            var builder = new MeshBuilder("Font");
+            var builder = new ModelBuilder("Font");
 
             string[] lines = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
             
@@ -92,9 +91,7 @@ namespace Carbon.Engine.Rendering
                 y += characterSize.Y;
             }
 
-            return builder.ToMesh();
-
-            return null;
+            return builder.ToResource();
         }
 
         // -------------------------------------------------------------------

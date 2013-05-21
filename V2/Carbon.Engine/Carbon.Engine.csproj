@@ -163,7 +163,7 @@
     <Compile Include="Rendering\Light.cs" />
     <Compile Include="Rendering\Material.cs" />
     <Compile Include="Rendering\Mesh.cs" />
-    <Compile Include="Rendering\MeshBuilder.cs" />
+    <Compile Include="Resource\ModelBuilder.cs" />
     <Compile Include="Rendering\Primitives\Cone.cs" />
     <Compile Include="Rendering\Primitives\Cube.cs" />
     <Compile Include="Rendering\Primitives\Grid.cs" />
@@ -211,14 +211,14 @@
     <Compile Include="Resource\Content\ResourceEntry.cs" />
     <Compile Include="Resource\Content\ScriptEntry.cs" />
     <Compile Include="Resource\Resources\Model\ModelMaterialElement.cs" />
-    <Compile Include="Resource\Resources\Model\ModelMeshElement.cs" />
+    <Compile Include="Resource\Resources\Model\ModelResourceElement.cs" />
     <Compile Include="Resource\Resources\Model\ModelResource.cs" />
     <Compile Include="Resource\FolderContent.cs" />
+    <Compile Include="Resource\Resources\ProtocolResource.cs" />
     <Compile Include="Resource\Resources\RawResource.cs" />
     <Compile Include="Resource\ResourceManager.cs" />
     <Compile Include="Logic\CarbonShaderDescription.cs" />
     <Compile Include="Logic\ShaderManager.cs" />
-    <Compile Include="Resource\Resources\ResourceBase.cs" />
     <Compile Include="Resource\Resources\Stage\StageCameraElement.cs" />
     <Compile Include="Resource\Resources\Stage\StageElement.cs" />
     <Compile Include="Resource\Resources\Stage\StageLightElement.cs" />

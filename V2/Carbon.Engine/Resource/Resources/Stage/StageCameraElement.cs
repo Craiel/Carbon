@@ -1,47 +1,51 @@
-﻿namespace Carbon.Engine.Resource.Resources.Stage
-{
-    using Carbon.Engine.Logic;
+﻿using Core.Utils;
 
-    using SlimDX;
-    
+using SlimDX;
+
+namespace Carbon.Engine.Resource.Resources.Stage
+{
     public class StageCameraElement : StageElement
     {
+        // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
+        public StageCameraElement()
+        {
+        }
+
+        public StageCameraElement(Protocol.Resource.StageCamera data)
+            : this()
+        {
+            System.Diagnostics.Debug.Assert(data.PositionCount == 3, "Position data has invalid count");
+            System.Diagnostics.Debug.Assert(data.OrientationCount == 4, "Orientation data has invalid count");
+
+            this.Id = data.Id;
+
+            this.Position = VectorExtension.Vector3FromList(data.PositionList);
+            this.Orientation = VectorExtension.Vector4FromList(data.OrientationList);
+
+            this.LoadLayerData(data.LayerFlags);
+            this.LoadProperties(data.PropertiesList);
+        }
+
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
         public Vector3 Position { get; set; }
         public Vector4 Orientation { get; set; }
 
         public float FieldOfView { get; set; }
 
-        protected override void DoLoad(CarbonBinaryFormatter source)
+        public Protocol.Resource.StageCamera.Builder GetBuilder()
         {
-            this.Position = new Vector3 { X = source.ReadSingle(), Y = source.ReadSingle(), Z = source.ReadSingle() };
+            var builder = new Protocol.Resource.StageCamera.Builder { Id = this.Id };
 
-            this.Orientation = new Vector4
-                                   {
-                                       X = source.ReadSingle(),
-                                       Y = source.ReadSingle(),
-                                       Z = source.ReadSingle(),
-                                       W = source.ReadSingle()
-                                   };
+            builder.AddRangePosition(this.Position.ToList());
+            builder.AddRangeOrientation(this.Orientation.ToList());
 
-            this.FieldOfView = source.ReadSingle();
-
-            base.DoLoad(source);
-        }
-
-        protected override void DoSave(CarbonBinaryFormatter target)
-        {
-            target.Write(this.Position.X);
-            target.Write(this.Position.Y);
-            target.Write(this.Position.Z);
-
-            target.Write(this.Orientation.X);
-            target.Write(this.Orientation.Y);
-            target.Write(this.Orientation.Z);
-            target.Write(this.Orientation.W);
-
-            target.Write(this.FieldOfView);
-
-            base.DoSave(target);
+            builder.SetLayerFlags(this.SaveLayerData());
+            builder.AddRangeProperties(this.SaveProperties());
+            return builder;
         }
     }
 }

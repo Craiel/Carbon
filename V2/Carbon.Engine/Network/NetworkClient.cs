@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Threading;
 
 using Carbon.Engine.Logic;
+using Carbon.Protocol.Network;
 
 using Google.ProtocolBuffers;
 

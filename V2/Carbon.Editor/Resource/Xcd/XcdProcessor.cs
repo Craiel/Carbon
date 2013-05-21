@@ -114,9 +114,13 @@
                            FieldOfView = camera.FieldOfView,
                            Orientation = orientation,
                            Position = position,
-                           LayerFlags = TranslateLayerFlags(camera.LayerInfo.Data),
                            Properties = TranslateProperties(camera.CustomProperties)
                        };
+
+            if (camera.LayerInfo != null)
+            {
+                element.LayerFlags = new List<bool>(camera.LayerInfo.Data);
+            }
 
             CameraElements.Add(element);
         }
@@ -142,7 +146,7 @@
                 color = DataConversion.ToVector3(light.Color.Data)[0];
             }
 
-            StageLightType type = (StageLightType)Enum.Parse(typeof(StageLightType), light.Type);
+            var type = (Protocol.Resource.StageLight.Types.StageLightType)Enum.Parse(typeof(Protocol.Resource.StageLight.Types.StageLightType), light.Type);
             var element = new StageLightElement
             {
                 Id = light.Id,
@@ -155,9 +159,13 @@
                 SpotSize = light.SpotSize,
                 Angle = light.Angle,
                 Radius = light.Radius,
-                LayerFlags = TranslateLayerFlags(light.LayerInfo.Data),
                 Properties = TranslateProperties(light.CustomProperties)
             };
+
+            if (light.LayerInfo != null)
+            {
+                element.LayerFlags = new List<bool>(light.LayerInfo.Data);
+            }
 
             LightElements.Add(element);
         }
@@ -173,27 +181,31 @@
                 Translation = translation,
                 Rotation = rotation,
                 Scale = scale,
-                LayerFlags = TranslateLayerFlags(mesh.LayerInfo.Data),
                 Properties = TranslateProperties(mesh.CustomProperties)
             };
+
+            if (mesh.LayerInfo != null)
+            {
+                element.LayerFlags = new List<bool>(mesh.LayerInfo.Data);
+            }
 
             ModelElements.Add(element);
         }
 
         private static StagePropertyElement[] TranslateProperties(XcdCustomProperties customProperties)
         {
-            if (customProperties.Properties == null || customProperties.Properties.Length <= 0)
+            if (customProperties == null || customProperties.Properties == null || customProperties.Properties.Length <= 0)
             {
                 return null;
             }
 
-            StagePropertyElement[] elements = new StagePropertyElement[customProperties.Properties.Length];
+            var elements = new StagePropertyElement[customProperties.Properties.Length];
             for (int i = 0; i < customProperties.Properties.Length; i++)
             {
-                StagePropertyType type = (StagePropertyType)Enum.Parse(typeof(StagePropertyType), customProperties.Properties[i].Type);
+                var type = (Protocol.Resource.StageProperty.Types.StagePropertyType)Enum.Parse(typeof(Protocol.Resource.StageProperty.Types.StagePropertyType), customProperties.Properties[i].Type);
                 switch (type)
                 {
-                    case StagePropertyType.String:
+                    case Protocol.Resource.StageProperty.Types.StagePropertyType.String:
                         {
                             elements[i] = new StagePropertyElementString
                                               {
@@ -203,7 +215,7 @@
                             break;
                         }
 
-                    case StagePropertyType.Float:
+                    case Protocol.Resource.StageProperty.Types.StagePropertyType.Float:
                         {
                             elements[i] = new StagePropertyElementFloat
                                               {
@@ -213,7 +225,7 @@
                             break;
                         }
 
-                    case StagePropertyType.Int:
+                    case Protocol.Resource.StageProperty.Types.StagePropertyType.Int:
                         {
                             elements[i] = new StagePropertyElementInt
                                               {
@@ -231,20 +243,6 @@
             }
 
             return elements;
-        }
-
-        private static int TranslateLayerFlags(int[] data)
-        {
-            int flags = 0;
-            for (int i = 0; i < data.Length; i++)
-            {
-                if (data[i] == 1)
-                {
-                    flags = flags & 1 << i;
-                }
-            }
-
-            return flags;
         }
     }
 }

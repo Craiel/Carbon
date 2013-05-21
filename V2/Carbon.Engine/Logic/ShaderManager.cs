@@ -1,16 +1,13 @@
-﻿using System.IO.Compression;
-
+﻿using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Carbon.Engine.Contracts.Resource;
 using Carbon.Engine.Resource;
 using Core.Utils;
 using SlimDX;
 using SlimDX.D3DCompiler;
 using SlimDX.Direct3D11;
-using System.Collections;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Carbon.Engine.Logic
 {
@@ -175,7 +172,7 @@ namespace Carbon.Engine.Logic
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Re-Compiling shader {0} -> {1}", sourceFile, cachedKey);
-                using (ShaderBytecode shaderData = ShaderBytecode.Compile(
+                using (ShaderBytecode shaderBytecode = ShaderBytecode.Compile(
                         sourceData,
                         description.Entry,
                         description.Profile,
@@ -184,14 +181,18 @@ namespace Carbon.Engine.Logic
                         description.Macros,
                         this.includeHandler))
                 {
-                    shader = new CompiledShader(md5, shaderData);
+                    var data = new byte[shaderBytecode.Data.Length];
+                    shaderBytecode.Data.Position = 0;
+                    shaderBytecode.Data.Read(data, 0, data.Length);
+
+                    shader = new CompiledShader { SourceMd5 = md5, ShaderData = data };
                     this.resourceManager.Replace(hash, shader);
                 }
             }
             else
             {
                 System.Diagnostics.Trace.TraceInformation("Compiling shader {0} -> {1}", sourceFile, cachedKey);
-                using (ShaderBytecode shaderData = ShaderBytecode.Compile(
+                using (ShaderBytecode shaderBytecode = ShaderBytecode.Compile(
                         sourceData,
                         description.Entry,
                         description.Profile,
@@ -200,7 +201,11 @@ namespace Carbon.Engine.Logic
                         description.Macros,
                         this.includeHandler))
                 {
-                    shader = new CompiledShader(md5, shaderData);
+                    var data = new byte[shaderBytecode.Data.Length];
+                    shaderBytecode.Data.Position = 0;
+                    shaderBytecode.Data.Read(data, 0, data.Length);
+
+                    shader = new CompiledShader { SourceMd5 = md5, ShaderData = data };
                     this.resourceManager.Store(hash, shader);
                 }
             }

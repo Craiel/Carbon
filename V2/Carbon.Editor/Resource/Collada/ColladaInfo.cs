@@ -6,7 +6,6 @@ using System.IO;
 using Carbon.Editor.Resource.Collada.Effect;
 using Carbon.Editor.Resource.Collada.General;
 using Carbon.Editor.Resource.Collada.Geometry;
-using Carbon.Engine.Resource.Resources;
 
 namespace Carbon.Editor.Resource.Collada
 {
@@ -272,6 +271,7 @@ namespace Carbon.Editor.Resource.Collada
                         NormalTexture = normalTexture,
                         AlphaTexture = alphaTexture
                     };
+
                     materialInfo.Add(material.Name, material);
                 }
             }

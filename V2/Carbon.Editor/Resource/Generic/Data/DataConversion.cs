@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 
 using SlimDX;
 
@@ -9,7 +10,7 @@ namespace Carbon.Editor.Resource.Generic.Data
     {
         public static float[] ConvertFloat(string rawData)
         {
-            if (rawData == null)
+            if (string.IsNullOrEmpty(rawData))
             {
                 throw new InvalidOperationException("Can not convert Float Array, Null RawData given");
             }
@@ -26,7 +27,7 @@ namespace Carbon.Editor.Resource.Generic.Data
 
         public static int[] ConvertInt(string rawData)
         {
-            if (rawData == null)
+            if (string.IsNullOrEmpty(rawData))
             {
                 throw new InvalidOperationException("Can not convert Int Array, Null RawData given");
             }
@@ -36,6 +37,24 @@ namespace Carbon.Editor.Resource.Generic.Data
             for (int i = 0; i < rawValues.Length; i++)
             {
                 values[i] = int.Parse(rawValues[i]);
+            }
+
+            return values;
+        }
+
+        public static bool[] ConvertBool(string rawData)
+        {
+            if (string.IsNullOrEmpty(rawData))
+            {
+                throw new InvalidOperationException("Can not convert Bool Array, Null RawData given");
+            }
+
+            string[] rawValues = rawData.Trim().Split(' ');
+            var values = new bool[rawValues.Length];
+            string comparison = 1.ToString(CultureInfo.InvariantCulture);
+            for (int i = 0; i < rawValues.Length; i++)
+            {
+                values[i] = rawValues[i].Equals(comparison);
             }
 
             return values;

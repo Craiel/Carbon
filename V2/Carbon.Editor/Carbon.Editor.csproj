@@ -53,6 +53,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Google.ProtocolBuffers">
+      <HintPath>..\..\..\CarbonExt\protobuf-csharp-port\2.4.1.521\Google.ProtocolBuffers.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject">
       <HintPath>..\..\..\CarbonExt\Ninject\3.0.0.15\Ninject.dll</HintPath>
     </Reference>
@@ -72,6 +75,7 @@
   <ItemGroup>
     <Compile Include="Contracts\IResourceProcessor.cs" />
     <Compile Include="Logic\ResourceProcessor.cs" />
+    <Compile Include="Resource\Generic\Data\BoolArrayType.cs" />
     <Compile Include="Resource\Xcd\Scene\XcdBoundingBox.cs" />
     <Compile Include="Resource\Xcd\XcdProcessor.cs" />
     <Compile Include="Processors\FontProcessor.cs" />
@@ -147,6 +151,10 @@
     <ProjectReference Include="..\Carbon.Engine\Carbon.Engine.csproj">
       <Project>{a724db75-b032-4ae5-b901-063a165f7e71}</Project>
       <Name>Carbon.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Carbon.Protocol\Carbon.Protocol.Sharp.csproj">
+      <Project>{9fde20aa-a982-4ca0-9ffc-fd57faf82088}</Project>
+      <Name>Carbon.Protocol.Sharp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

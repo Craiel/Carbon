@@ -2,6 +2,7 @@
 using System.IO;
 
 using Carbon.Engine.Contracts.Network;
+using Carbon.Protocol.Network;
 
 using Google.ProtocolBuffers;
 

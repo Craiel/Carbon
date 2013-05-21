@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-
-using Carbon.Engine.Logic;
 
 using Core.Utils;
 
@@ -10,49 +7,22 @@ using SlimDX;
 
 namespace Carbon.Engine.Resource.Resources.Model
 {
-    public class ModelResource : ResourceBase
+    public class ModelResource : ProtocolResource
     {
         private const int Version = 1;
-
-        private readonly List<ModelResource> subParts;
-        private readonly List<ModelMeshElement> elements;
-        private readonly List<ModelMaterialElement> materials;
-
-        private uint[] indices;
-
-        private bool tangentsCalculated;
-
-        public ModelResource(IEnumerable<ModelMeshElement> elements, uint[] indices)
-        {
-            this.elements = new List<ModelMeshElement>(elements);
-            this.subParts = new List<ModelResource>();
-            this.materials = new List<ModelMaterialElement>();
-            this.indices = indices;
-
-            this.ElementCount = this.elements.Count;
-            this.IndexCount = this.indices.Length;
-            this.IndexSize = this.IndexCount * 4;
-
-            this.Scale = new Vector3(1);
-        }
-
-        public ModelResource(IEnumerable<ModelResource> parts)
-        {
-            this.elements = new List<ModelMeshElement>();
-            this.indices = new uint[0];
-            this.subParts = new List<ModelResource>(parts);
-            this.materials = new List<ModelMaterialElement>();
-
-            this.Scale = new Vector3(1);
-        }
-
+        
+        // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
         public ModelResource()
         {
-            this.subParts = new List<ModelResource>();
-            this.elements = new List<ModelMeshElement>();
-            this.materials = new List<ModelMaterialElement>();
-
             this.Scale = new Vector3(1);
+        }
+
+        public ModelResource(Protocol.Resource.Model data)
+            : this()
+        {
+            this.DoLoad(data);
         }
 
         // -------------------------------------------------------------------
@@ -60,238 +30,153 @@ namespace Carbon.Engine.Resource.Resources.Model
         // -------------------------------------------------------------------
         public string Name { get; set; }
 
+        public bool HasTangents { get; private set; }
+
         public Vector3 Offset { get; set; }
         public Vector3 Scale { get; set; }
         public Quaternion Rotation { get; set; }
 
-        public int ElementCount { get; private set; }
-        public int IndexCount { get; private set; }
-        public int IndexSize { get; private set; }
+        public IList<ModelResource> SubParts { get; set; }
+        public IList<ModelResourceElement> Elements { get; set; }
+        public IList<ModelMaterialElement> Materials { get; set; }
 
-        public BoundingBox BoundingBox { get; private set; }
+        public IList<uint> Indices { get; set; }
 
-        public ReadOnlyCollection<ModelResource> SubParts
+        public override void Load(Stream source)
         {
-            get
-            {
-                return this.subParts.AsReadOnly();
-            }
+            Protocol.Resource.Model entry = Protocol.Resource.Model.ParseFrom(source);
+            this.DoLoad(entry);
         }
 
-        public ReadOnlyCollection<ModelMeshElement> Elements
+        public override long Save(Stream target)
         {
-            get
-            {
-                return this.elements.AsReadOnly();
-            }
+            Protocol.Resource.Model.Builder builder = this.GetBuilder();
+            Protocol.Resource.Model entry = builder.Build();
+            entry.WriteTo(target);
+            return entry.SerializedSize;
         }
 
-        public ReadOnlyCollection<ModelMaterialElement> Materials
+        public Protocol.Resource.Model.Builder GetBuilder()
         {
-            get
-            {
-                return this.materials.AsReadOnly();
-            }
-        }
+            var builder = new Protocol.Resource.Model.Builder
+                              {
+                                  Name = this.Name,
+                                  Version = Version,
+                                  TangentsCalculated = this.HasTangents
+                              };
 
-        public uint[] Indices
-        {
-            get
+            builder.AddRangeOffset(this.Offset.ToList());
+            builder.AddRangeScale(this.Scale.ToList());
+            builder.AddRangeRotation(this.Rotation.ToList());
+
+            if (this.SubParts != null)
             {
-                return this.indices;
+                foreach (ModelResource part in this.SubParts)
+                {
+                    builder.AddSubParts(part.GetBuilder());
+                }
             }
+
+            if (this.Elements != null)
+            {
+                foreach (ModelResourceElement element in this.Elements)
+                {
+                    builder.AddElements(element.GetBuilder());
+                }
+            }
+
+            if (this.Materials != null)
+            {
+                foreach (ModelMaterialElement material in this.Materials)
+                {
+                    builder.AddMaterials(material.GetBuilder());
+                }
+            }
+
+            return builder;
         }
 
         public void CalculateTangents()
         {
-            if (this.tangentsCalculated)
-            {
-                return;
-            }
+            this.HasTangents = true;
 
-            this.DoCalculateTangents();
-            foreach (ModelResource part in SubParts)
-            {
-                part.DoCalculateTangents();
-            }
-
-            this.tangentsCalculated = true;
-        }
-
-        public void AddPart(ModelResource part)
-        {
-            this.subParts.Add(part);
-        }
-
-        public void AddMaterial(ModelMaterialElement material)
-        {
-            this.materials.Add(material);
-        }
-
-        // -------------------------------------------------------------------
-        // Protected
-        // -------------------------------------------------------------------
-        protected override void DoSave(CarbonBinaryFormatter target)
-        {
-            target.Write(Version);
-            target.Write(this.Name);
-
-            target.Write(this.IndexCount);
-            target.Write(this.ElementCount);
-            target.Write(this.tangentsCalculated);
-
-            target.Write(this.Offset.X);
-            target.Write(this.Offset.Y);
-            target.Write(this.Offset.Z);
-
-            target.Write(this.Scale.X);
-            target.Write(this.Scale.Y);
-            target.Write(this.Scale.Z);
-
-            target.Write(this.Rotation.X);
-            target.Write(this.Rotation.Y);
-            target.Write(this.Rotation.Z);
-            target.Write(this.Rotation.W);
-
-            target.Write(this.BoundingBox.Minimum.X);
-            target.Write(this.BoundingBox.Minimum.Y);
-            target.Write(this.BoundingBox.Minimum.Z);
-
-            target.Write(this.BoundingBox.Maximum.X);
-            target.Write(this.BoundingBox.Maximum.Y);
-            target.Write(this.BoundingBox.Maximum.Z);
-
-            target.Write(this.elements.Count);
-            for (int i = 0; i < this.elements.Count; i++)
-            {
-                this.elements[i].Save(target);
-            }
-
-            target.Write(this.indices.Length);
-            for (int i = 0; i < this.indices.Length; i++)
-            {
-                target.Write(this.indices[i]);
-            }
-
-            target.Write(this.materials.Count);
-            for (int i = 0; i < this.materials.Count; i++)
-            {
-                this.materials[i].Save(target);
-            }
-
-            target.Write(this.subParts.Count);
-            for (int i = 0; i < this.subParts.Count; i++)
-            {
-                this.subParts[i].Save(target);
-            }
-        }
-
-        protected override void DoLoad(CarbonBinaryFormatter source)
-        {
-            this.indices = null;
-            this.elements.Clear();
-            this.subParts.Clear();
-            this.materials.Clear();
-            
-            int version = source.ReadInt();
-            if (version != Version)
-            {
-                throw new InvalidDataException("Mesh version is not supported: " + version);
-            }
-
-            this.Name = source.ReadString();
-            this.IndexCount = source.ReadInt();
-            this.IndexSize = this.IndexCount * 4;
-            this.ElementCount = source.ReadInt();
-            this.tangentsCalculated = source.ReadBoolean();
-
-            this.Offset = new Vector3
-            {
-                X = source.ReadSingle(),
-                Y = source.ReadSingle(),
-                Z = source.ReadSingle()
-            };
-
-            this.Scale = new Vector3
-            {
-                X = source.ReadSingle(),
-                Y = source.ReadSingle(),
-                Z = source.ReadSingle()
-            };
-
-            this.Rotation = new Quaternion(
-                source.ReadSingle(), source.ReadSingle(), source.ReadSingle(), source.ReadSingle());
-
-            Vector3 boundingMin = new Vector3
-                {
-                    X = source.ReadSingle(),
-                    Y = source.ReadSingle(),
-                    Z = source.ReadSingle()
-                };
-
-            Vector3 boundingMax = new Vector3
-                {
-                    X = source.ReadSingle(),
-                    Y = source.ReadSingle(),
-                    Z = source.ReadSingle()
-                };
-
-            this.BoundingBox = new BoundingBox(boundingMin, boundingMax);
-
-            int entries = source.ReadInt();
-            for (int i = 0; i < entries; i++)
-            {
-                var element = new ModelMeshElement();
-                element.Load(source);
-                this.elements.Add(element);
-            }
-
-            entries = source.ReadInt();
-            this.indices = new uint[entries];
-            for (int i = 0; i < entries; i++)
-            {
-                this.indices[i] = source.ReadUInt();
-            }
-
-            entries = source.ReadInt();
-            for (int i = 0; i < entries; i++)
-            {
-                var element = new ModelMaterialElement();
-                element.Load(source);
-                this.materials.Add(element);
-            }
-
-            entries = source.ReadInt();
-            for (int i = 0; i < entries; i++)
-            {
-                var element = new ModelResource();
-                element.Load(source);
-                this.subParts.Add(element);
-            }
+            var elements = this.Elements;
+            var indices = this.Indices;
+            CalculateTangents(ref elements, ref indices);
         }
 
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void DoCalculateTangents()
+        private void DoLoad(Protocol.Resource.Model entry)
         {
-            if (this.indices == null || this.indices.Length <= 0)
+            if (entry.Version != Version)
+            {
+                throw new InvalidDataException("Model version is not correct: " + entry.Version);
+            }
+
+            System.Diagnostics.Debug.Assert(entry.OffsetCount == 3, "Offset data has invalid count");
+            System.Diagnostics.Debug.Assert(entry.ScaleCount == 3, "Scale data has invalid count");
+            System.Diagnostics.Debug.Assert(entry.RotationCount == 4, "Rotation data has invalid count");
+
+            this.Name = entry.Name;
+            this.HasTangents = entry.TangentsCalculated;
+            this.Offset = VectorExtension.Vector3FromList(entry.OffsetList);
+            this.Scale = VectorExtension.Vector3FromList(entry.ScaleList);
+            this.Rotation = QuaternionExtension.QuaterionFromList(entry.RotationList);
+
+            if (entry.SubPartsCount > 0)
+            {
+                this.SubParts = new List<ModelResource>(entry.SubPartsCount);
+                foreach (Protocol.Resource.Model part in entry.SubPartsList)
+                {
+                    this.SubParts.Add(new ModelResource(part));
+                }
+            }
+
+            if (entry.ElementsCount > 0)
+            {
+                this.Elements = new List<ModelResourceElement>(entry.ElementsCount);
+                foreach (Protocol.Resource.ModelElement element in entry.ElementsList)
+                {
+                    this.Elements.Add(new ModelResourceElement(element));
+                }
+            }
+
+            if (entry.MaterialsCount > 0)
+            {
+                this.Materials = new List<ModelMaterialElement>(entry.MaterialsCount);
+                foreach (Protocol.Resource.ModelMaterial material in entry.MaterialsList)
+                {
+                    this.Materials.Add(new ModelMaterialElement(material));
+                }
+            }
+
+            this.Indices = entry.IndicesList;
+        }
+        
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private static void CalculateTangents(ref IList<ModelResourceElement> elements, ref IList<uint> indices)
+        {
+            if (indices == null || indices.Count <= 0)
             {
                 return;
             }
 
-            var tan1 = new Vector3[this.elements.Count];
-            var tan2 = new Vector3[this.elements.Count];
-            int triangleCount = this.IndexCount;
+            var tan1 = new Vector3[elements.Count];
+            var tan2 = new Vector3[elements.Count];
+            int triangleCount = indices.Count;
             for (int i = 0; i < triangleCount; i += 3)
             {
-                uint i1 = this.indices[i];
-                uint i2 = this.indices[i + 1];
-                uint i3 = this.indices[i + 2];
+                uint i1 = indices[i];
+                uint i2 = indices[i + 1];
+                uint i3 = indices[i + 2];
 
-                ModelMeshElement e1 = this.elements[(int)i1];
-                ModelMeshElement e2 = this.elements[(int)i2];
-                ModelMeshElement e3 = this.elements[(int)i3];
+                ModelResourceElement e1 = elements[(int)i1];
+                ModelResourceElement e2 = elements[(int)i2];
+                ModelResourceElement e3 = elements[(int)i3];
 
                 float x1 = e2.Position.X - e1.Position.X;
                 float x2 = e3.Position.X - e1.Position.X;
@@ -321,7 +206,7 @@ namespace Carbon.Engine.Resource.Resources.Model
                 tan2[i3] += tdir;
             }
 
-            for (int i = 0; i < this.elements.Count; ++i)
+            for (int i = 0; i < elements.Count; ++i)
             {
                 if (elements[i].Normal == null)
                 {
@@ -329,14 +214,14 @@ namespace Carbon.Engine.Resource.Resources.Model
                     continue;
                 }
 
-                ModelMeshElement element = this.elements[i];
+                ModelResourceElement element = elements[i];
                 Vector3 n = element.Normal.Value;
                 Vector3 t = tan1[i];
 
                 MathExtension.OrthoNormalize(ref n, ref t);
 
                 float w = (Vector3.Dot(Vector3.Cross(n, t), tan2[i]) < 0.0f) ? -1.0f : 1.0f;
-                this.elements[i].Tangent = new Vector4(tan1[i], w);
+                elements[i].Tangent = new Vector4(tan1[i], w);
             }
         }
     }

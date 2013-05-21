@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Carbon.Engine.Resource.Resources;
-
 using SlimDX;
 
 namespace Carbon.Engine.Rendering
@@ -42,19 +40,11 @@ namespace Carbon.Engine.Rendering
 
         public bool AllowInstancing { get; set; }
 
-        public int ElementCount
-        {
-            get
-            {
-                return this.resource.ElementCount;
-            }
-        }
-
         public int IndexCount
         {
             get
             {
-                return this.resource.IndexCount;
+                return this.resource.Indices.Count;
             }
         }
 
@@ -62,15 +52,15 @@ namespace Carbon.Engine.Rendering
         {
             get
             {
-                return this.resource.IndexSize;
+                return this.resource.Indices.Count * sizeof(int);
             }
         }
 
-        public BoundingBox BoundingBox
+        public int ElementCount
         {
             get
             {
-                return this.resource.BoundingBox;
+                return this.resource.Elements.Count;
             }
         }
 
@@ -80,7 +70,7 @@ namespace Carbon.Engine.Rendering
         
         public int GetSizeAs(Type type)
         {
-            return InputStructures.InputLayoutSizes[type] * this.ElementCount;
+            return InputStructures.InputLayoutSizes[type] * this.resource.Elements.Count;
         }
 
         public int GetSizeAs<T>()
@@ -91,7 +81,7 @@ namespace Carbon.Engine.Rendering
 
         public void WriteData(Type type, DataStream target)
         {
-            if (this.ElementCount == 0)
+            if (this.resource.Elements.Count == 0)
             {
                 throw new InvalidOperationException("WriteData called on empty Mesh part " + this.Name);
             }
@@ -160,14 +150,14 @@ namespace Carbon.Engine.Rendering
             container.Clear();
 
             bool generateTangents = type == typeof(PositionNormalTangentVertex);
-            if (generateTangents)
+            if (generateTangents && !this.resource.HasTangents)
             {
                 this.resource.CalculateTangents();
             }
 
             for (int i = 0; i < this.resource.Elements.Count; i++)
             {
-                ModelMeshElement element = this.resource.Elements[i];
+                ModelResourceElement element = this.resource.Elements[i];
                 if (type == typeof(PositionVertex))
                 {
                     container.Add(new PositionVertex { Position = element.Position });
@@ -210,7 +200,7 @@ namespace Carbon.Engine.Rendering
 
         private void RefreshIndexUploadCache(ref uint offset)
         {
-            for (int i = 0; i < this.resource.Indices.Length; i++)
+            for (int i = 0; i < this.resource.Indices.Count; i++)
             {
                 this.indexUploadCache.Add(this.resource.Indices[i] + offset);
             }

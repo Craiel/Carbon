@@ -163,7 +163,7 @@ namespace Carbon.Engine.Resource
                 }
             }
 
-            throw new InvalidDataException("Resource could not be deleted, no existing resource was found");
+            System.Diagnostics.Trace.TraceWarning("Resource could not be deleted, no existing resource was found");
         }
 
         public ResourceInfo GetInfo(string hash)

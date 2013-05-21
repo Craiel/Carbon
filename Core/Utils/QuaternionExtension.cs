@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 using SlimDX;
 
 namespace Core.Utils
@@ -31,6 +33,16 @@ namespace Core.Utils
             Vector3 axis = Vector3.Cross(source, dest);
             axis = Vector3.Normalize(axis);
             return Quaternion.RotationAxis(axis, angle);
+        }
+
+        public static Quaternion QuaterionFromList(IList<float> floats)
+        {
+            return new Quaternion(floats[0], floats[1], floats[2], floats[3]);
+        }
+
+        public static IList<float> ToList(this Quaternion quaternion)
+        {
+            return new List<float> { quaternion.X, quaternion.Y, quaternion.Z, quaternion.W };
         }
     }
 }

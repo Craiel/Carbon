@@ -1,16 +1,48 @@
-﻿namespace Carbon.Engine.Resource.Resources.Stage
-{
-    using Carbon.Engine.Logic;
+﻿using System.Collections.Generic;
 
-    public class StageElement : ResourceBase
+namespace Carbon.Engine.Resource.Resources.Stage
+{
+    public abstract class StageElement
     {
         public string Id { get; set; }
 
-        public int LayerFlags { get; set; }
+        public IList<bool> LayerFlags { get; set; }
+        public IList<StagePropertyElement> Properties { get; set; }
 
-        public StagePropertyElement[] Properties { get; set; }
+        protected void LoadProperties(IList<Protocol.Resource.StageProperty> propertiesList)
+        {
+        }
 
-        protected override void DoLoad(CarbonBinaryFormatter source)
+        protected void LoadLayerData(int layerFlags)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected IEnumerable<Protocol.Resource.StageProperty> SaveProperties()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected int SaveLayerData()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private static int TranslateLayerFlags(int[] data)
+        {
+            int flags = 0;
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (data[i] == 1)
+                {
+                    flags = flags & 1 << i;
+                }
+            }
+
+            return flags;
+        }
+
+        /*protected override void DoLoad(CarbonBinaryFormatter source)
         {
             this.LayerFlags = source.ReadInt();
 
@@ -69,6 +101,8 @@
             }
 
             target.Write(this.Id);
-        }
+        }*/
+
+        
     }
 }

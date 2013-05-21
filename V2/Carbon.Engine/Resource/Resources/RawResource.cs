@@ -1,27 +1,28 @@
-﻿using Carbon.Engine.Logic;
+﻿using System.IO;
+
+using Google.ProtocolBuffers;
 
 namespace Carbon.Engine.Resource.Resources
 {
-    public class RawResource : ResourceBase
+    public class RawResource : ProtocolResource
     {
-        private byte[] data;
-        
-        public byte[] Data
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
+        public byte[] Data { get; set; }
+
+        public override void Load(Stream source)
         {
-            get
-            {
-                return this.data;
-            }
+            this.Data = Protocol.Resource.Raw.ParseFrom(source).Data.ToByteArray();
         }
 
-        protected override void DoLoad(CarbonBinaryFormatter source)
+        public override long Save(Stream target)
         {
-            source.Read(out this.data);
-        }
-
-        protected override void DoSave(CarbonBinaryFormatter target)
-        {
-            target.Write(this.Data);
+            var builder = new Protocol.Resource.Raw.Builder();
+            builder.SetData(ByteString.CopyFrom(this.Data));
+            Protocol.Resource.Raw entry = builder.Build();
+            entry.WriteTo(target);
+            return entry.SerializedSize;
         }
     }
 }

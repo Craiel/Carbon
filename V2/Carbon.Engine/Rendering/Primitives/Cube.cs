@@ -1,18 +1,17 @@
-﻿using Carbon.Engine.Resource.Resources;
+﻿using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Resources.Model;
 
 using SlimDX;
 
 namespace Carbon.Engine.Rendering.Primitives
 {
-    using Carbon.Engine.Resource.Resources.Model;
-
     public static class Cube
     {
         private static int creationCount;
 
         public static ModelResource Create(Vector3 origin, float size)
         {
-            var builder = new MeshBuilder("Cube " + ++creationCount) { IsIndexed = true };
+            var builder = new ModelBuilder("Cube " + ++creationCount) { IsIndexed = true };
 
             Vector3[] bottomVertices;
             Vector3[] topVertices;
@@ -70,12 +69,12 @@ namespace Carbon.Engine.Rendering.Primitives
                 };
 
             builder.AddIndices(indices);
-            return builder.ToMesh();
+            return builder.ToResource();
         }
 
         public static ModelResource CreateBoundingBoxLines(BoundingBox box, Vector4 color)
         {
-            var builder = new MeshBuilder("Cube " + ++creationCount) { IsIndexed = true };
+            var builder = new ModelBuilder("Cube " + ++creationCount) { IsIndexed = true };
 
             Vector3[] corners = box.GetCorners();
 
@@ -97,7 +96,7 @@ namespace Carbon.Engine.Rendering.Primitives
                 };
 
             builder.AddIndices(indices);
-            return builder.ToMesh();
+            return builder.ToResource();
         }
 
         private static void GetVertices(Vector3 origin, float size, out Vector3[] bottomVertices, out Vector3[] topVertices)

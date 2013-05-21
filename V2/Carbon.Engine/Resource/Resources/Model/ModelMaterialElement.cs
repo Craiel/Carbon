@@ -1,9 +1,24 @@
 ﻿namespace Carbon.Engine.Resource.Resources.Model
 {
-    using Carbon.Engine.Logic;
-
-    public class ModelMaterialElement : ResourceBase
+    public class ModelMaterialElement
     {
+        // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
+        public ModelMaterialElement()
+        {
+        }
+
+        public ModelMaterialElement(Protocol.Resource.ModelMaterial data)
+            : this()
+        {
+            this.Name = data.Name;
+            this.DiffuseTexture = data.DiffuseTexture;
+            this.NormalTexture = data.NormalTexture;
+            this.AlphaTexture = data.AlphaTexture;
+            this.SpecularTexture = data.SpecularTexture;
+        }
+
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
@@ -12,6 +27,32 @@
         public string NormalTexture { get; set; }
         public string AlphaTexture { get; set; }
         public string SpecularTexture { get; set; }
+
+        public Protocol.Resource.ModelMaterial.Builder GetBuilder()
+        {
+            var builder = new Protocol.Resource.ModelMaterial.Builder { Name = this.Name };
+            if (!string.IsNullOrEmpty(this.DiffuseTexture))
+            {
+                builder.DiffuseTexture = this.DiffuseTexture;
+            }
+
+            if (!string.IsNullOrEmpty(this.NormalTexture))
+            {
+                builder.NormalTexture = this.NormalTexture;
+            }
+
+            if (!string.IsNullOrEmpty(this.AlphaTexture))
+            {
+                builder.AlphaTexture = this.AlphaTexture;
+            }
+
+            if (!string.IsNullOrEmpty(this.SpecularTexture))
+            {
+                builder.SpecularTexture = this.SpecularTexture;
+            }
+
+            return builder;
+        }
 
         public ModelMaterialElement Clone()
         {
@@ -23,27 +64,6 @@
                 AlphaTexture = this.AlphaTexture,
                 SpecularTexture = this.SpecularTexture
             };
-        }
-
-        // -------------------------------------------------------------------
-        // Protected
-        // -------------------------------------------------------------------
-        protected override void DoLoad(CarbonBinaryFormatter source)
-        {
-            this.Name = source.ReadString();
-            this.DiffuseTexture = source.ReadString();
-            this.NormalTexture = source.ReadString();
-            this.AlphaTexture = source.ReadString();
-            this.SpecularTexture = source.ReadString();
-        }
-
-        protected override void DoSave(CarbonBinaryFormatter target)
-        {
-            target.Write(this.Name);
-            target.Write(this.DiffuseTexture);
-            target.Write(this.NormalTexture);
-            target.Write(this.AlphaTexture);
-            target.Write(this.SpecularTexture);
         }
     }
 }
