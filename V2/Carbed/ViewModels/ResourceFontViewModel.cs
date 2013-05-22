@@ -44,7 +44,7 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.FontStyle, (int)value);
-                    this.NeedReExport = true;
+                    this.NeedSave = true;
                     this.PreviewImage = null;
                     this.NotifyPropertyChanged();
                 }
@@ -64,7 +64,7 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.FontSize, value);
-                    this.NeedReExport = true;
+                    this.NeedSave = true;
                     this.PreviewImage = null;
                     this.NotifyPropertyChanged();
                 }
@@ -84,7 +84,7 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.FontCharactersPerRow, value);
-                    this.NeedReExport = true;
+                    this.NeedSave = true;
                     this.PreviewImage = null;
                     this.NotifyPropertyChanged();
                 }
@@ -110,7 +110,7 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        protected override void DoExport(IContentManager target, IResourceManager resourceTarget)
+        protected override void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
             var options = new FontProcessingOptions
             {
@@ -126,7 +126,7 @@ namespace Carbed.ViewModels
 
                 // Todo: Create the actual font entry..
 
-                this.NeedReExport = false;
+                this.NeedSave = false;
             }
             else
             {

@@ -24,7 +24,7 @@ namespace Carbon.Engine.Resource.Resources.Model
 
             if (data.NormalCount > 0)
             {
-                System.Diagnostics.Debug.Assert(data.NormalCount == 4, "Normal data has invalid count");
+                System.Diagnostics.Debug.Assert(data.NormalCount == 3, "Normal data has invalid count");
                 this.Normal = VectorExtension.Vector3FromList(data.NormalList);
             }
 

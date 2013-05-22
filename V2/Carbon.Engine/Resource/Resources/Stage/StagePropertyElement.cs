@@ -9,7 +9,7 @@ namespace Carbon.Engine.Resource.Resources.Stage
     {
         public string Id { get; set; }
         
-        protected virtual Protocol.Resource.StageProperty.Builder GetBuilder()
+        public virtual Protocol.Resource.StageProperty.Builder GetBuilder()
         {
             return new Protocol.Resource.StageProperty.Builder { Id = this.Id };
         }
@@ -29,10 +29,11 @@ namespace Carbon.Engine.Resource.Resources.Stage
 
         public string Value { get; set; }
 
-        protected override Protocol.Resource.StageProperty.Builder GetBuilder()
+        public override Protocol.Resource.StageProperty.Builder GetBuilder()
         {
             Protocol.Resource.StageProperty.Builder builder = base.GetBuilder();
             builder.Data = ByteString.CopyFrom(this.Value, Encoding.UTF8);
+            builder.Type = Protocol.Resource.StageProperty.Types.StagePropertyType.String;
             return builder;
         }
     }
@@ -51,10 +52,11 @@ namespace Carbon.Engine.Resource.Resources.Stage
 
         public float Value { get; set; }
 
-        protected override Protocol.Resource.StageProperty.Builder GetBuilder()
+        public override Protocol.Resource.StageProperty.Builder GetBuilder()
         {
             Protocol.Resource.StageProperty.Builder builder = base.GetBuilder();
             builder.Data = ByteString.CopyFrom(BitConverter.GetBytes(this.Value));
+            builder.Type = Protocol.Resource.StageProperty.Types.StagePropertyType.Float;
             return builder;
         }
     }
@@ -73,10 +75,11 @@ namespace Carbon.Engine.Resource.Resources.Stage
 
         public int Value { get; set; }
 
-        protected override Protocol.Resource.StageProperty.Builder GetBuilder()
+        public override Protocol.Resource.StageProperty.Builder GetBuilder()
         {
             Protocol.Resource.StageProperty.Builder builder = base.GetBuilder();
             builder.Data = ByteString.CopyFrom(BitConverter.GetBytes(this.Value));
+            builder.Type = Protocol.Resource.StageProperty.Types.StagePropertyType.Int;
             return builder;
         }
     }

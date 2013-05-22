@@ -302,14 +302,14 @@ namespace Carbed.Logic
             return vm;
         }
 
-        public void Save(IFolderViewModel folder)
+        public void Save(IFolderViewModel folder, bool force = false)
         {
             if (this.projectContent == null || this.projectResources == null)
             {
                 throw new InvalidOperationException();
             }
 
-            folder.Save(this.projectContent, this.projectResources);
+            folder.Save(this.projectContent, this.projectResources, force);
         }
 
         public void Delete(IFolderViewModel folder)
@@ -368,7 +368,7 @@ namespace Carbed.Logic
                 throw new InvalidOperationException();
             }
 
-            resource.Save(this.projectContent, this.projectResources);
+            resource.Save(this.projectContent, this.projectResources, false);
         }
 
         public void Delete(IResourceViewModel resource)

@@ -77,9 +77,9 @@ namespace Carbon.Editor.Processors
 
                 using (FileStream stream = new FileStream(tempFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    var resource = new RawResource();
-                    resource.Load(stream);
-                    return resource;
+                    byte[] data = new byte[stream.Length];
+                    stream.Read(data, 0, (int)stream.Length);
+                    return new RawResource { Data = data };
                 }
             }
             finally

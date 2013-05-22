@@ -7,10 +7,16 @@ namespace Carbon.Engine.Rendering
 {
     using Carbon.Engine.Resource.Resources.Model;
 
+    /// <summary> 
+    /// Todo:
+    /// - this will only deal with a single resource
+    /// - sub parts will be evaluated before and put into a container mesh holder which will deal with transformations and rendering
+    /// - Merge meshes with same material together
+    /// </summary>
     public class Mesh : IDisposable
     {
-        private readonly ModelResource resource;
-
+        private readonly WeakReference<ModelResource> resourceReference; 
+ 
         private readonly IDictionary<Type, DataContainer> uploadCache;
         private readonly StaticDataContainer<uint> indexUploadCache;
 
@@ -18,51 +24,35 @@ namespace Carbon.Engine.Rendering
         
         public Mesh(ModelResource resource)
         {
-            this.resource = resource;
+            this.resourceReference = new WeakReference<ModelResource>(resource);
+
+            this.Name = resource.Name;
 
             this.uploadCache = new Dictionary<Type, DataContainer>();
             this.indexUploadCache = new StaticDataContainer<uint>();
 
-            uint offset = 0;
-            this.RefreshIndexUploadCache(ref offset);
+            this.IndexCount = resource.Indices.Count;
+            this.IndexSize = this.IndexCount * sizeof(int);
+            this.ElementCount = resource.Elements.Count;
+
+            for (int i = 0; i < resource.Indices.Count; i++)
+            {
+                this.indexUploadCache.Add(resource.Indices[i]);
+            }
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public string Name
-        {
-            get
-            {
-                return this.resource.Name;
-            }
-        }
+        public string Name { get; private set; }
 
         public bool AllowInstancing { get; set; }
 
-        public int IndexCount
-        {
-            get
-            {
-                return this.resource.Indices.Count;
-            }
-        }
+        public int IndexCount { get; private set; }
 
-        public int IndexSize
-        {
-            get
-            {
-                return this.resource.Indices.Count * sizeof(int);
-            }
-        }
+        public int IndexSize { get; private set; }
 
-        public int ElementCount
-        {
-            get
-            {
-                return this.resource.Elements.Count;
-            }
-        }
+        public int ElementCount { get; private set; }
 
         public void Dispose()
         {
@@ -70,7 +60,7 @@ namespace Carbon.Engine.Rendering
         
         public int GetSizeAs(Type type)
         {
-            return InputStructures.InputLayoutSizes[type] * this.resource.Elements.Count;
+            return InputStructures.InputLayoutSizes[type] * this.ElementCount;
         }
 
         public int GetSizeAs<T>()
@@ -81,9 +71,9 @@ namespace Carbon.Engine.Rendering
 
         public void WriteData(Type type, DataStream target)
         {
-            if (this.resource.Elements.Count == 0)
+            if (this.ElementCount == 0)
             {
-                throw new InvalidOperationException("WriteData called on empty Mesh part " + this.Name);
+                throw new InvalidOperationException("WriteData called on empty Mesh " + this.Name);
             }
 
             if (!this.uploadCache.ContainsKey(type) || this.cacheInvalid)
@@ -145,19 +135,25 @@ namespace Carbon.Engine.Rendering
 
         private void RefreshUploadCache(Type type)
         {
+            ModelResource resource;
+            if (!this.resourceReference.TryGetTarget(out resource))
+            {
+                throw new InvalidOperationException("Model resource is no longer valid");
+            }
+
             DataContainer container = this.SelectCacheContainer(type);
 
             container.Clear();
 
             bool generateTangents = type == typeof(PositionNormalTangentVertex);
-            if (generateTangents && !this.resource.HasTangents)
+            if (generateTangents && !resource.HasTangents)
             {
-                this.resource.CalculateTangents();
+                resource.CalculateTangents();
             }
 
-            for (int i = 0; i < this.resource.Elements.Count; i++)
+            for (int i = 0; i < this.ElementCount; i++)
             {
-                ModelResourceElement element = this.resource.Elements[i];
+                ModelResourceElement element = resource.Elements[i];
                 if (type == typeof(PositionVertex))
                 {
                     container.Add(new PositionVertex { Position = element.Position });
@@ -196,14 +192,6 @@ namespace Carbon.Engine.Rendering
             }
 
             this.cacheInvalid = false;
-        }
-
-        private void RefreshIndexUploadCache(ref uint offset)
-        {
-            for (int i = 0; i < this.resource.Indices.Count; i++)
-            {
-                this.indexUploadCache.Add(this.resource.Indices[i] + offset);
-            }
         }
     }
 }

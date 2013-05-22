@@ -50,14 +50,14 @@ namespace Carbed.ViewModels
             this.logic.Delete(this);
         }
         
-        protected override void DoExport(IContentManager target, IResourceManager resourceTarget)
+        protected override void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
             var options = new XcdProcessingOptions();
             ICarbonResource resource = this.resourceProcessor.ProcessStage(this.SourcePath, options);
             if (resource != null)
             {
                 resourceTarget.StoreOrReplace(this.Data.Hash, resource);
-                this.NeedReExport = false;
+                this.NeedSave = false;
             }
             else
             {

@@ -18,6 +18,8 @@ using Microsoft.Win32;
 
 namespace Carbed.ViewModels
 {
+    using System.Threading.Tasks;
+
     using global::Carbed.Views;
 
     public class FolderViewModel : ContentViewModel, IFolderViewModel
@@ -340,7 +342,7 @@ namespace Carbed.ViewModels
             }
         }
 
-        public void Save(IContentManager target, IResourceManager resourceTarget)
+        public void Save(IContentManager target, IResourceManager resourceTarget, bool force = false)
         {
             // Update our parent id information before saving
             if (this.parent != null && this.data.Parent != this.parent.Id)
@@ -359,14 +361,14 @@ namespace Carbed.ViewModels
                 if (entry as IFolderViewModel != null)
                 {
                     TaskProgress.CurrentMessage = ((IFolderViewModel)entry).FullPath;
-                    ((IFolderViewModel)entry).Save(target, resourceTarget);
+                    ((IFolderViewModel)entry).Save(target, resourceTarget, force);
                     continue;
                 }
 
                 if (entry as IResourceViewModel != null)
                 {
                     TaskProgress.CurrentMessage = string.Format("{0} Resource: {1}", ((IResourceViewModel)entry).Type, entry.Name);
-                    ((IResourceViewModel)entry).Save(target, resourceTarget);
+                    ((IResourceViewModel)entry).Save(target, resourceTarget, force);
                 }
             }
 
@@ -421,8 +423,24 @@ namespace Carbed.ViewModels
             this.NotifyPropertyChanged(string.Empty);
         }
 
+        protected override bool CanSave(object obj)
+        {
+            return this.content.Count > 0;
+        }
+
         protected override void OnSave(object obj)
         {
+            if (obj is string && obj.Equals(bool.TrueString))
+            {
+                new TaskProgress(new[] { new Task(() => this.logic.Save(this, true)) }, 1);
+                return;
+            }
+
+            if (obj != null)
+            {
+                new TaskProgress(new[] { new Task(() => this.logic.Save(this)) }, 1);
+            }
+            
             this.logic.Save(this);
         }
 

@@ -75,7 +75,7 @@ namespace Carbed.Contracts
 
         bool IsValidSource { get; }
         
-        bool ForceExport { get; set; }
+        bool ForceSave { get; set; }
 
         string SourcePath { get; }
 
@@ -88,7 +88,7 @@ namespace Carbed.Contracts
         // Functions and Commands
         ICommand CommandSelectFile { get; }
         
-        void Save(IContentManager target, IResourceManager resourceTarget);
+        void Save(IContentManager target, IResourceManager resourceTarget, bool force);
         void Delete(IContentManager target, IResourceManager resourceTarget);
 
         void SelectFile(string path);

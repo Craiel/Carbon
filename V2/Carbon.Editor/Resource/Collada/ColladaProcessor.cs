@@ -20,7 +20,7 @@ namespace Carbon.Editor.Resource.Collada
 
     public static class ColladaProcessor
     {
-        private readonly static IDictionary<string, ModelResource> meshLibrary = new Dictionary<string, ModelResource>();
+        private readonly static IDictionary<string, ModelResourceGroup> meshLibrary = new Dictionary<string, ModelResourceGroup>();
 
         private static string targetElement;
         private static string texturePath;
@@ -136,7 +136,7 @@ namespace Carbon.Editor.Resource.Collada
                     parts.Add(part);
                 }
 
-                meshLibrary.Add(colladaGeometry.Id, new ModelResource { SubParts = parts, Name = colladaGeometry.Id });
+                meshLibrary.Add(colladaGeometry.Id, new ModelResourceGroup { Models = parts, Name = colladaGeometry.Id });
             }
         }
 
@@ -293,7 +293,7 @@ namespace Carbon.Editor.Resource.Collada
             }
         }
 
-        private static ModelResource BuildModel(ColladaSceneLibrary library)
+        private static ModelResourceGroup BuildModel(ColladaSceneLibrary library)
         {
             IList<ModelResource> parts = new List<ModelResource>();
             foreach (ColladaSceneNode sceneNode in library.VisualScene.Nodes)
@@ -315,7 +315,7 @@ namespace Carbon.Editor.Resource.Collada
                 return parts[0];
             }
 
-            return new ModelResource { SubParts = parts, Name = library.VisualScene.Name };
+            return new ModelResourceGroup { Models = parts, Name = library.VisualScene.Name };
         }
 
         private static bool SceneNodeContainsElement(ColladaSceneNode node, string elementName)
@@ -345,7 +345,7 @@ namespace Carbon.Editor.Resource.Collada
             return false;
         }
 
-        private static ModelResource BuildModel(ColladaSceneNode sceneNode, bool isChildOfTarget = false)
+        private static ModelResourceGroup BuildModel(ColladaSceneNode sceneNode, bool isChildOfTarget = false)
         {
             bool isTarget = string.IsNullOrEmpty(targetElement);
             if (!isChildOfTarget && !string.IsNullOrEmpty(targetElement))
@@ -393,7 +393,7 @@ namespace Carbon.Editor.Resource.Collada
                             continue;
                         }
 
-                        meshLibrary[targetNode].SubParts.Add(subPart);
+                        meshLibrary[targetNode].Models.Add(subPart);
                     }
                 }
 

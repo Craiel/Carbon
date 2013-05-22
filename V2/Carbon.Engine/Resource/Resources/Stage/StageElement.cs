@@ -2,6 +2,9 @@
 
 namespace Carbon.Engine.Resource.Resources.Stage
 {
+    using System;
+    using System.Linq;
+
     public abstract class StageElement
     {
         public string Id { get; set; }
@@ -11,21 +14,69 @@ namespace Carbon.Engine.Resource.Resources.Stage
 
         protected void LoadProperties(IList<Protocol.Resource.StageProperty> propertiesList)
         {
+            foreach (Protocol.Resource.StageProperty property in propertiesList)
+            {
+                switch (property.Type)
+                {
+                    case Protocol.Resource.StageProperty.Types.StagePropertyType.String:
+                        {
+                            this.Properties.Add(new StagePropertyElementString(property));
+                            break;   
+                        }
+
+                    case Protocol.Resource.StageProperty.Types.StagePropertyType.Float:
+                        {
+                            this.Properties.Add(new StagePropertyElementFloat(property));
+                            break;
+                        }
+
+                    case Protocol.Resource.StageProperty.Types.StagePropertyType.Int:
+                        {
+                            this.Properties.Add(new StagePropertyElementInt(property));
+                            break;
+                        }
+
+                    default:
+                        {
+                            throw new NotImplementedException("Unsupported property type: " + property.Type);
+                        }
+                }
+            }
         }
 
         protected void LoadLayerData(int layerFlags)
         {
-            throw new System.NotImplementedException();
+            this.LayerFlags = new List<bool>();
+            for (int i = 1; i <= 32; i++)
+            {
+                int flagValue = 1 << i;
+                this.LayerFlags.Add((layerFlags & flagValue) == flagValue);
+            }
         }
 
         protected IEnumerable<Protocol.Resource.StageProperty> SaveProperties()
         {
-            throw new System.NotImplementedException();
+            return this.Properties.Select(propertyElement => propertyElement.GetBuilder().Build()).ToList();
         }
 
         protected int SaveLayerData()
         {
-            throw new System.NotImplementedException();
+            System.Diagnostics.Debug.Assert(this.LayerFlags != null && this.LayerFlags.Count <= 32, "Layer flags are not in valid state");
+            int value = 0;
+            for (int i = 0; i < 32; i++)
+            {
+                if (this.LayerFlags.Count <= i)
+                {
+                    break;
+                }
+
+                if (this.LayerFlags[i])
+                {
+                    value = value | (1 << i);
+                }
+            }
+
+            return value;
         }
 
         private static int TranslateLayerFlags(int[] data)

@@ -33,7 +33,7 @@ namespace Carbed.Contracts
         IFolderViewModel AddFolder();
         void RemoveFolder(IFolderViewModel folder);
 
-        void Save(IContentManager target, IResourceManager resourceTarget);
+        void Save(IContentManager target, IResourceManager resourceTarget, bool force);
         void Delete(IContentManager target, IResourceManager resourceTarget);
     }
 }

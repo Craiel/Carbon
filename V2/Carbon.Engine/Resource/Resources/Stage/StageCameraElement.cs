@@ -24,8 +24,15 @@ namespace Carbon.Engine.Resource.Resources.Stage
             this.Position = VectorExtension.Vector3FromList(data.PositionList);
             this.Orientation = VectorExtension.Vector4FromList(data.OrientationList);
 
-            this.LoadLayerData(data.LayerFlags);
-            this.LoadProperties(data.PropertiesList);
+            if (data.HasLayerFlags)
+            {
+                this.LoadLayerData(data.LayerFlags);
+            }
+
+            if (data.PropertiesCount > 0)
+            {
+                this.LoadProperties(data.PropertiesList);
+            }
         }
 
         // -------------------------------------------------------------------
@@ -38,13 +45,21 @@ namespace Carbon.Engine.Resource.Resources.Stage
 
         public Protocol.Resource.StageCamera.Builder GetBuilder()
         {
-            var builder = new Protocol.Resource.StageCamera.Builder { Id = this.Id };
+            var builder = new Protocol.Resource.StageCamera.Builder { Id = this.Id, FieldOfView = this.FieldOfView };
 
             builder.AddRangePosition(this.Position.ToList());
             builder.AddRangeOrientation(this.Orientation.ToList());
 
-            builder.SetLayerFlags(this.SaveLayerData());
-            builder.AddRangeProperties(this.SaveProperties());
+            if (this.LayerFlags != null)
+            {
+                builder.SetLayerFlags(this.SaveLayerData());
+            }
+
+            if (this.Properties != null)
+            {
+                builder.AddRangeProperties(this.SaveProperties());
+            }
+
             return builder;
         }
     }

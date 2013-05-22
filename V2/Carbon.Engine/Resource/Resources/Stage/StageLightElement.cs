@@ -43,8 +43,15 @@ namespace Carbon.Engine.Resource.Resources.Stage
             this.SpotSize = data.SpotSize;
             this.Angle = data.Angle;
 
-            this.LoadLayerData(data.LayerFlags);
-            this.LoadProperties(data.PropertiesList);
+            if (data.HasLayerFlags)
+            {
+                this.LoadLayerData(data.LayerFlags);
+            }
+
+            if (data.PropertiesCount > 0)
+            {
+                this.LoadProperties(data.PropertiesList);
+            }
         }
 
         // -------------------------------------------------------------------
@@ -71,7 +78,8 @@ namespace Carbon.Engine.Resource.Resources.Stage
                                   Intensity = this.Intensity,
                                   AmbientIntensity = this.AmbientIntensity,
                                   SpotSize = this.SpotSize,
-                                  Angle = this.Angle
+                                  Angle = this.Angle,
+                                  Type = this.Type
                               };
 
             if (this.Location != null)
@@ -89,8 +97,16 @@ namespace Carbon.Engine.Resource.Resources.Stage
                 builder.AddRangeColor(this.Color.Value.ToList());
             }
 
-            builder.SetLayerFlags(this.SaveLayerData());
-            builder.AddRangeProperties(this.SaveProperties());
+            if (this.LayerFlags != null)
+            {
+                builder.SetLayerFlags(this.SaveLayerData());
+            }
+
+            if (this.Properties != null)
+            {
+                builder.AddRangeProperties(this.SaveProperties());
+            }
+
             return builder;
         }
     }

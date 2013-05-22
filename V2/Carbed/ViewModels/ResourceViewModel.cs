@@ -30,7 +30,7 @@ namespace Carbed.ViewModels
     {
         private enum CoreFlags
         {
-            AlwaysForceExport = 0,
+            AlwaysForceSave = 0,
         }
 
         private readonly ICarbedLogic logic;
@@ -62,7 +62,7 @@ namespace Carbed.ViewModels
             this.resourceProcessor = factory.Get<IResourceProcessor>();
             this.data = data;
             
-            this.NeedReExport = data.IsNew;
+            this.NeedSave = data.IsNew;
         }
 
         // -------------------------------------------------------------------
@@ -156,19 +156,19 @@ namespace Carbed.ViewModels
             }
         }
 
-        public bool ForceExport
+        public bool ForceSave
         {
             get
             {
-                return this.GetMetaValueBit(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceExport) ?? false;
+                return this.GetMetaValueBit(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceSave) ?? false;
             }
 
             set
             {
-                if (this.GetMetaValueBit(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceExport) != value)
+                if (this.GetMetaValueBit(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceSave) != value)
                 {
                     this.CreateUndoState();
-                    this.SetMetaBitValue(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceExport, value);
+                    this.SetMetaBitValue(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceSave, value);
                     this.NotifyPropertyChanged();
                 }
             }
@@ -278,7 +278,7 @@ namespace Carbed.ViewModels
             }
         }
 
-        public void Save(IContentManager target, IResourceManager resourceTarget)
+        public void Save(IContentManager target, IResourceManager resourceTarget, bool force)
         {
             // Update our parent id information before saving
             if (this.parent == null || this.parent.Id == null)
@@ -307,10 +307,10 @@ namespace Carbed.ViewModels
             this.data.TreeNode = this.parent.Id;
             this.data.Hash = HashUtils.BuildResourceHash(Path.Combine(this.parent.FullPath, this.Name));
 
-            bool force = this.GetMetaValueBit(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceExport) ?? false;
-            if (this.NeedReExport || force)
+            bool forceSave = this.GetMetaValueBit(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceSave) ?? false;
+            if (this.NeedSave || force || forceSave)
             {
-                this.DoExport(target, resourceTarget);
+                this.DoSave(target, resourceTarget);
             }
 
             // Get the info of the saved resource to store some meta data about it
@@ -367,20 +367,20 @@ namespace Carbed.ViewModels
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
             {
                 this.sourceSize = null;
-                this.NeedReExport = true;
+                this.NeedSave = true;
                 return;
             }
             
             DateTime changeTime = File.GetLastWriteTime(path);
             if (this.LastChangeDate != changeTime)
             {
-                this.NeedReExport = true;
+                this.NeedSave = true;
                 this.LastChangeDate = changeTime;
             }
 
             if (string.IsNullOrEmpty(this.GetMetaValue(MetaDataKey.TargetMd5)))
             {
-                this.NeedReExport = true;
+                this.NeedSave = true;
             }
 
             var info = new FileInfo(path);
@@ -402,7 +402,7 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected bool NeedReExport { get; set; }
+        protected bool NeedSave { get; set; }
 
         protected ResourceEntry Data
         {
@@ -455,13 +455,13 @@ namespace Carbed.ViewModels
         {
         }
 
-        protected virtual void DoExport(IContentManager target, IResourceManager resourceTarget)
+        protected virtual void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
             ICarbonResource resource = this.resourceProcessor.ProcessRaw(this.SourcePath);
             if (resource != null)
             {
                 resourceTarget.StoreOrReplace(this.data.Hash, resource);
-                this.NeedReExport = false;
+                this.NeedSave = false;
             }
             else
             {
@@ -492,7 +492,7 @@ namespace Carbed.ViewModels
 
             this.oldHash = this.data.Hash;
             this.data.Hash = null;
-            this.NeedReExport = true;
+            this.NeedSave = true;
         }
 
         private void OnSelectFile(object obj)

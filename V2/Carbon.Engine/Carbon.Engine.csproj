@@ -210,6 +210,7 @@
     <Compile Include="Resource\Content\StageRegionEntry.cs" />
     <Compile Include="Resource\Content\ResourceEntry.cs" />
     <Compile Include="Resource\Content\ScriptEntry.cs" />
+    <Compile Include="Resource\Resources\Model\ModelResourceGroup.cs" />
     <Compile Include="Resource\Resources\Model\ModelMaterialElement.cs" />
     <Compile Include="Resource\Resources\Model\ModelResourceElement.cs" />
     <Compile Include="Resource\Resources\Model\ModelResource.cs" />

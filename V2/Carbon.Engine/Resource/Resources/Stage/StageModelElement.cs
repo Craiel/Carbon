@@ -26,8 +26,15 @@ namespace Carbon.Engine.Resource.Resources.Stage
             this.Rotation = VectorExtension.Vector4FromList(data.RotationList);
             this.Scale = VectorExtension.Vector3FromList(data.ScaleList);
 
-            this.LoadLayerData(data.LayerFlags);
-            this.LoadProperties(data.PropertiesList);
+            if (data.HasLayerFlags)
+            {
+                this.LoadLayerData(data.LayerFlags);
+            }
+
+            if (data.PropertiesCount > 0)
+            {
+                this.LoadProperties(data.PropertiesList);
+            }
         }
 
         // -------------------------------------------------------------------
@@ -45,8 +52,16 @@ namespace Carbon.Engine.Resource.Resources.Stage
             builder.AddRangeRotation(this.Rotation.ToList());
             builder.AddRangeScale(this.Scale.ToList());
 
-            builder.SetLayerFlags(this.SaveLayerData());
-            builder.AddRangeProperties(this.SaveProperties());
+            if (this.LayerFlags != null)
+            {
+                builder.SetLayerFlags(this.SaveLayerData());
+            }
+
+            if (this.Properties != null)
+            {
+                builder.AddRangeProperties(this.SaveProperties());
+            }
+
             return builder;
         }
     }

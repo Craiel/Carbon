@@ -124,7 +124,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(ProjectDir)\..\Carbon.Protocol\build.bat $(ProjectDir)\..\Carbon.Protocol\</PreBuildEvent>
+    <PreBuildEvent>$(ProjectDir)\build.bat $(ProjectDir)</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>

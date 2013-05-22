@@ -48,7 +48,7 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.SetMetaBitValue(MetaDataKey.ResourceFlags, (int)Flags.CompressTexture, value);
-                    this.NeedReExport = true;
+                    this.NeedSave = true;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -67,7 +67,7 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.SetMetaBitValue(MetaDataKey.ResourceFlags, (int)Flags.IsNormalMap, value);
-                    this.NeedReExport = true;
+                    this.NeedSave = true;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -86,7 +86,7 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.SetMetaBitValue(MetaDataKey.ResourceFlags, (int)Flags.ConvertToNormalMap, value);
-                    this.NeedReExport = true;
+                    this.NeedSave = true;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -106,7 +106,7 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.TextureTargetFormat, (int)value);
-                    this.NeedReExport = true;
+                    this.NeedSave = true;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -115,7 +115,7 @@ namespace Carbed.ViewModels
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected override void DoExport(IContentManager target, IResourceManager resourceTarget)
+        protected override void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
             ICarbonResource resource;
             if (!this.CompressTexture)
@@ -136,7 +136,7 @@ namespace Carbed.ViewModels
             if (resource != null)
             {
                 resourceTarget.StoreOrReplace(this.Data.Hash, resource);
-                this.NeedReExport = false;
+                this.NeedSave = false;
             }
             else
             {

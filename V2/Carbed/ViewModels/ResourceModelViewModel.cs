@@ -68,7 +68,7 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.SetMetaBitValue(MetaDataKey.ResourceFlags, (int)Flags.AutoUpdateTextures, value);
-                    this.NeedReExport = true;
+                    this.NeedSave = true;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -103,7 +103,7 @@ namespace Carbed.ViewModels
                 {
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.SourceElement, value);
-                    this.NeedReExport = true;
+                    this.NeedSave = true;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -216,7 +216,7 @@ namespace Carbed.ViewModels
             }
         }
 
-        protected override void DoExport(IContentManager target, IResourceManager resourceTarget)
+        protected override void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
             if (this.colladaSourceInfo == null)
             {
@@ -228,7 +228,7 @@ namespace Carbed.ViewModels
             if (resource != null)
             {
                 resourceTarget.StoreOrReplace(this.Data.Hash, resource);
-                this.NeedReExport = false;
+                this.NeedSave = false;
             }
             else
             {

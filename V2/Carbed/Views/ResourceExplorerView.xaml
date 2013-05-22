@@ -1,7 +1,8 @@
 ﻿<UserControl x:Class="Carbed.Views.ResourceExplorerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:carbed="clr-namespace:Carbed"
-             xmlns:mvvm="clr-namespace:Carbed.Logic.MVVM" xmlns:logic="clr-namespace:Carbed.Logic">
+             xmlns:mvvm="clr-namespace:Carbed.Logic.MVVM" xmlns:logic="clr-namespace:Carbed.Logic"
+             xmlns:system="clr-namespace:System;assembly=mscorlib">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -19,6 +20,8 @@
                     <MenuItem Header="Existing Resource .." Icon="{StaticResource IconNewResource}" IsEnabled="{Binding Converter={StaticResource NullToBooleanConverter}}" Command="{Binding Path=CommandAddExistingResources}"/>
                     <MenuItem Header="Folder" Icon="{StaticResource IconNewFolder}" IsEnabled="{Binding Converter={StaticResource NullToBooleanConverter}}" Command="{Binding Path=CommandAddFolder}"/>
                 </MenuItem>
+                <MenuItem Header="Save" Command="{Binding Path=CommandSave}" CommandParameter="{x:Static system:Boolean.FalseString}" Icon="{StaticResource IconSave}"/>
+                <MenuItem Header="Force Save" Command="{Binding Path=CommandSave}" CommandParameter="{x:Static system:Boolean.TrueString}" Icon="{StaticResource IconSave}"/>
                 <MenuItem Header="Delete" Command="{Binding Path=CommandDelete}" Icon="{StaticResource IconDelete}"/>
                 <Separator/>
                 <MenuItem Header="Copy Path" Command="{Binding Path=CommandCopyPath}" Icon="{StaticResource IconCopy}"/>

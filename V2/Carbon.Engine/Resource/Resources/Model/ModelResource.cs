@@ -16,7 +16,6 @@ namespace Carbon.Engine.Resource.Resources.Model
         // -------------------------------------------------------------------
         public ModelResource()
         {
-            this.Scale = new Vector3(1);
         }
 
         public ModelResource(Protocol.Resource.Model data)
@@ -31,12 +30,7 @@ namespace Carbon.Engine.Resource.Resources.Model
         public string Name { get; set; }
 
         public bool HasTangents { get; private set; }
-
-        public Vector3 Offset { get; set; }
-        public Vector3 Scale { get; set; }
-        public Quaternion Rotation { get; set; }
-
-        public IList<ModelResource> SubParts { get; set; }
+        
         public IList<ModelResourceElement> Elements { get; set; }
         public IList<ModelMaterialElement> Materials { get; set; }
 
@@ -64,19 +58,7 @@ namespace Carbon.Engine.Resource.Resources.Model
                                   Version = Version,
                                   TangentsCalculated = this.HasTangents
                               };
-
-            builder.AddRangeOffset(this.Offset.ToList());
-            builder.AddRangeScale(this.Scale.ToList());
-            builder.AddRangeRotation(this.Rotation.ToList());
-
-            if (this.SubParts != null)
-            {
-                foreach (ModelResource part in this.SubParts)
-                {
-                    builder.AddSubParts(part.GetBuilder());
-                }
-            }
-
+            
             if (this.Elements != null)
             {
                 foreach (ModelResourceElement element in this.Elements)
@@ -115,25 +97,9 @@ namespace Carbon.Engine.Resource.Resources.Model
                 throw new InvalidDataException("Model version is not correct: " + entry.Version);
             }
 
-            System.Diagnostics.Debug.Assert(entry.OffsetCount == 3, "Offset data has invalid count");
-            System.Diagnostics.Debug.Assert(entry.ScaleCount == 3, "Scale data has invalid count");
-            System.Diagnostics.Debug.Assert(entry.RotationCount == 4, "Rotation data has invalid count");
-
             this.Name = entry.Name;
             this.HasTangents = entry.TangentsCalculated;
-            this.Offset = VectorExtension.Vector3FromList(entry.OffsetList);
-            this.Scale = VectorExtension.Vector3FromList(entry.ScaleList);
-            this.Rotation = QuaternionExtension.QuaterionFromList(entry.RotationList);
-
-            if (entry.SubPartsCount > 0)
-            {
-                this.SubParts = new List<ModelResource>(entry.SubPartsCount);
-                foreach (Protocol.Resource.Model part in entry.SubPartsList)
-                {
-                    this.SubParts.Add(new ModelResource(part));
-                }
-            }
-
+            
             if (entry.ElementsCount > 0)
             {
                 this.Elements = new List<ModelResourceElement>(entry.ElementsCount);

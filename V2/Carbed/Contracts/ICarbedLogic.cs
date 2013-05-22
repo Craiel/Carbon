@@ -36,7 +36,7 @@ namespace Carbed.Contracts
         IFontViewModel Clone(IFontViewModel source);
 
         IFolderViewModel AddFolder();
-        void Save(IFolderViewModel folder);
+        void Save(IFolderViewModel folder, bool force = false);
         void Delete(IFolderViewModel folder);
         IFolderViewModel Clone(IFolderViewModel source);
 
