@@ -15,6 +15,5 @@ namespace Carbon.Engine.Contracts
         ICarbonGraphics GetGraphics(IResourceManager resourceManager);
         IResourceManager GetResourceManager(string path);
         IContentManager GetContentManager(IResourceManager resourceManager, string root);
-        ISceneEntityFactory GetEntityFactory(IResourceManager resourceManager, IContentManager contentManager);
     }
 }

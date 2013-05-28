@@ -111,7 +111,6 @@
     <Compile Include="Contracts\Resource\IResourceManager.cs" />
     <Compile Include="Contracts\Scene\ISceneEntity.cs" />
     <Compile Include="Contracts\Scene\IScene.cs" />
-    <Compile Include="Contracts\Scene\ISceneEntityFactory.cs" />
     <Compile Include="Contracts\Scene\ISceneManager.cs" />
     <Compile Include="Contracts\UserInterface\IUserInterfaceConsole.cs" />
     <Compile Include="Contracts\UserInterface\IUserInterfaceControl.cs" />

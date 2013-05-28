@@ -63,7 +63,7 @@ namespace Carbon.Editor.Logic
             return FontProcessor.Process(path, options);
         }
 
-        public ModelResource ProcessModel(ColladaInfo info, string element, string texturePath)
+        public ModelResourceGroup ProcessModel(ColladaInfo info, string element, string texturePath)
         {
             if (info == null || string.IsNullOrEmpty(info.Source) || !File.Exists(info.Source))
             {

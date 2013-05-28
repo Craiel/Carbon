@@ -16,6 +16,6 @@ namespace Carbon.Editor.Contracts
         RawResource ProcessTexture(string path, TextureProcessingOptions options);
         RawResource ProcessFont(string path, FontProcessingOptions options);
         StageResource ProcessStage(string path, XcdProcessingOptions options);
-        ModelResource ProcessModel(ColladaInfo info, string element, string texturePath);
+        ModelResourceGroup ProcessModel(ColladaInfo info, string element, string texturePath);
     }
 }

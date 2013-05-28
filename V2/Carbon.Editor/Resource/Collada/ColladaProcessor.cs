@@ -9,6 +9,7 @@ using Carbon.Editor.Resource.Collada.Geometry;
 using Carbon.Editor.Resource.Collada.Scene;
 using Carbon.Editor.Resource.Generic.Data;
 using Carbon.Engine.Resource;
+using Carbon.Engine.Resource.Resources.Model;
 
 using Core.Utils;
 
@@ -16,11 +17,16 @@ using SlimDX;
 
 namespace Carbon.Editor.Resource.Collada
 {
-    using Carbon.Engine.Resource.Resources.Model;
-
+    /// <summary>
+    /// Todo:
+    /// - Clean up the general process
+    /// - First we get all the Model groups out of the collada since that is really all we care for here
+    /// - then either group them all together if nothing specific was requested, otherwise return the one that was asked for
+    /// - !! Get rid of the offset and scaling entirely here, we will do that at the actual scene definition !!
+    /// </summary>
     public static class ColladaProcessor
     {
-        private readonly static IDictionary<string, ModelResourceGroup> meshLibrary = new Dictionary<string, ModelResourceGroup>();
+        private static readonly IDictionary<string, ModelResourceGroup> MeshLibrary = new Dictionary<string, ModelResourceGroup>();
 
         private static string targetElement;
         private static string texturePath;
@@ -41,7 +47,7 @@ namespace Carbon.Editor.Resource.Collada
         private static Vector3[] normalData;
         private static Vector2[] textureData;
         
-        public static ModelResource Process(ColladaInfo info, string element, string texPath)
+        public static ModelResourceGroup Process(ColladaInfo info, string element, string texPath)
         {
             ClearCache();
 
@@ -53,12 +59,26 @@ namespace Carbon.Editor.Resource.Collada
                 var model = ColladaModel.Load(stream);
 
                 BuildGeometryLibrary(info, model.GeometryLibrary);
-                return BuildModel(model.SceneLibrary);
+
+                foreach (ColladaSceneNode sceneNode in model.SceneLibrary.VisualScene.Nodes)
+                {
+                    ApplyNodeTranslations(sceneNode);
+                }
+
+                if (string.IsNullOrEmpty(element))
+                {
+                    Debug.Assert(MeshLibrary.Count == 1, "Mesh library was expected to have only single element");
+                    return MeshLibrary.First().Value;
+                }
+                    
+                return MeshLibrary[element];
             }
         }
 
         private static void ClearCache()
         {
+            MeshLibrary.Clear();
+
             currentInputs = null;
             currentSources = null;
             polygonData = null;
@@ -77,8 +97,6 @@ namespace Carbon.Editor.Resource.Collada
 
         private static void BuildGeometryLibrary(ColladaInfo info, ColladaGeometryLibrary library)
         {
-            meshLibrary.Clear();
-
             foreach (ColladaGeometry colladaGeometry in library.Geometries)
             {
                 ClearCache();
@@ -136,7 +154,7 @@ namespace Carbon.Editor.Resource.Collada
                     parts.Add(part);
                 }
 
-                meshLibrary.Add(colladaGeometry.Id, new ModelResourceGroup { Models = parts, Name = colladaGeometry.Id });
+                MeshLibrary.Add(colladaGeometry.Id, new ModelResourceGroup { Models = parts, Name = colladaGeometry.Id });
             }
         }
 
@@ -293,128 +311,30 @@ namespace Carbon.Editor.Resource.Collada
             }
         }
 
-        private static ModelResourceGroup BuildModel(ColladaSceneLibrary library)
+        private static void ApplyNodeTranslations(ColladaSceneNode sceneNode)
         {
-            IList<ModelResource> parts = new List<ModelResource>();
-            foreach (ColladaSceneNode sceneNode in library.VisualScene.Nodes)
+            if (sceneNode.InstanceGeometry == null)
             {
-                ModelResource part = BuildModel(sceneNode);
-                if (part != null)
-                {
-                    parts.Add(part);
-                }
+                return;
             }
 
-            if (parts.Count == 0)
+            string targetNode = ColladaInfo.GetUrlValue(sceneNode.InstanceGeometry.Url);
+            if (!MeshLibrary.ContainsKey(targetNode))
             {
-                return null;
-            } 
-            
-            if (parts.Count == 1)
-            {
-                return parts[0];
+                return;
             }
 
-            return new ModelResourceGroup { Models = parts, Name = library.VisualScene.Name };
-        }
-
-        private static bool SceneNodeContainsElement(ColladaSceneNode node, string elementName)
-        {
-            if (node.InstanceGeometry == null)
+            if (sceneNode.Translation != null)
             {
-                return false;
+                MeshLibrary[targetNode].Offset = DataConversion.ToVector3(sceneNode.Translation.Data)[0];
             }
 
-            string targetNode = ColladaInfo.GetUrlValue(node.InstanceGeometry.Url);
-            if (targetNode.Equals(elementName, StringComparison.OrdinalIgnoreCase))
+            MeshLibrary[targetNode].Scale = sceneNode.Scale != null ? DataConversion.ToVector3(sceneNode.Scale.Data)[0] : new Vector3(1);
+
+            if (sceneNode.Rotations != null)
             {
-                return true;
+                MeshLibrary[targetNode].Rotation = GetNodeRotation(sceneNode);
             }
-
-            if (node.Children != null && node.Children.Length > 0)
-            {
-                foreach (ColladaSceneNode child in node.Children)
-                {
-                    if (child.Name.Equals(targetElement) || SceneNodeContainsElement(child, targetElement))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private static ModelResourceGroup BuildModel(ColladaSceneNode sceneNode, bool isChildOfTarget = false)
-        {
-            bool isTarget = string.IsNullOrEmpty(targetElement);
-            if (!isChildOfTarget && !string.IsNullOrEmpty(targetElement))
-            {
-                isTarget = targetElement.Equals(sceneNode.Id, StringComparison.OrdinalIgnoreCase)
-                           || (sceneNode.InstanceGeometry != null && ColladaInfo.GetUrlValue(sceneNode.InstanceGeometry.Url).Equals(targetElement, StringComparison.OrdinalIgnoreCase));
-                if (!isTarget && !SceneNodeContainsElement(sceneNode, targetElement))
-                {
-                    return null;
-                }
-            }
-
-            if (isTarget || isChildOfTarget)
-            {
-                if (sceneNode.InstanceGeometry == null)
-                {
-                    return null;
-                }
-
-                string targetNode = ColladaInfo.GetUrlValue(sceneNode.InstanceGeometry.Url);
-                if (!meshLibrary.ContainsKey(targetNode))
-                {
-                    return null;
-                }
-
-                if (sceneNode.Translation != null)
-                {
-                    meshLibrary[targetNode].Offset = DataConversion.ToVector3(sceneNode.Translation.Data)[0];
-                }
-
-                meshLibrary[targetNode].Scale = sceneNode.Scale != null ? DataConversion.ToVector3(sceneNode.Scale.Data)[0] : new Vector3(1);
-
-                if (sceneNode.Rotations != null)
-                {
-                    meshLibrary[targetNode].Rotation = GetNodeRotation(sceneNode);
-                }
-
-                if (sceneNode.Children != null && sceneNode.Children.Length > 0)
-                {
-                    foreach (ColladaSceneNode child in sceneNode.Children)
-                    {
-                        ModelResource subPart = BuildModel(child, isChildOfTarget:true);
-                        if (subPart == null)
-                        {
-                            continue;
-                        }
-
-                        meshLibrary[targetNode].Models.Add(subPart);
-                    }
-                }
-
-                return meshLibrary[targetNode];
-            }
-
-            if (sceneNode.Children == null)
-            {
-                return null;
-            }
-
-            foreach (ColladaSceneNode child in sceneNode.Children)
-            {
-                ModelResource element = BuildModel(child);
-                if (element != null)
-                {
-                    return element;
-                }
-            }
-
-            return null;
         }
 
         private static Quaternion GetNodeRotation(ColladaSceneNode node)
@@ -441,293 +361,5 @@ namespace Carbon.Editor.Resource.Collada
 
             return Quaternion.RotationYawPitchRoll(rotationX, rotationY, rotationZ);
         }
-
-        /*private readonly static IDictionary<string, int> materialLookup = new Dictionary<string, int>();
-        private readonly static IList<MaterialEntry> materialLibrary = new List<MaterialEntry>();
-
-        private readonly static IDictionary<string, int> meshLookup = new Dictionary<string, int>();
-        private readonly static IList<ModelResource> meshLibrary = new List<ModelResource>();
-
-        private readonly static IDictionary<string, string> meshMaterialLibrary = new Dictionary<string, string>();
-
-        private static ColladaInput[] currentInputs;
-        private static ColladaSource[] currentSources;
-        private static IDictionary<uint, uint[]>[] polygonData;
-
-        private static int[] vertexCount;
-        private static int[] indexData;
-
-        private static ColladaInput vertexInput;
-        private static ColladaInput normalInput;
-        private static ColladaInput textureInput;
-
-        private static Vector3[] positionData;
-        private static Vector3[] normalData;
-        private static Vector2[] textureData;
-
-        private static string sourceFolder;*/
-        
-        /*public static void Convert(string sourceFile, string targetFolder)
-        {
-            sourceFolder = Path.GetDirectoryName(sourceFile);
-
-            var model = ColladaModel.Load(sourceFile);
-            BuildMaterialLibrary(model.MaterialLibrary, model.EffectLibrary);
-            BuildGeometryLibrary(model.GeometryLibrary);
-
-            string name = Path.GetFileNameWithoutExtension(sourceFile);
-            SceneResource root = new SceneResource { Name = name };
-            int index = 0;
-            foreach (MeshResource mesh in meshLibrary)
-            {
-                root.Meshes.Add(index++, mesh.Name);
-                meshLookup.Add(mesh.Name, index);
-            }
-
-            index = 0;
-            foreach (MaterialResource material in materialLibrary)
-            {
-                root.Materials.Add(index++, material.Name);
-                materialLookup.Add(material.Name, index);
-            }
-
-            IEnumerable<SceneResourceNode> contents = BuildScene(model.SceneLibrary);
-            foreach (SceneResourceNode content in contents)
-            {
-                root.Nodes.Add(content);
-            }
-        }
-
-        private static IEnumerable<SceneResourceNode> BuildScene(ColladaSceneLibrary library)
-        {
-            IList<SceneResourceNode> sceneModels = new List<SceneResourceNode>();
-            foreach (ColladaSceneNode sceneNode in library.VisualScene.Nodes)
-            {
-                IEnumerable<SceneResourceNode> models = BuildSceneNode(sceneNode);
-                foreach (SceneResourceNode nodeModel in models)
-                {
-                    sceneModels.Add(nodeModel);
-                }
-            }
-
-            return sceneModels;
-        }
-
-        private static IEnumerable<SceneResourceNode> BuildSceneNode(ColladaSceneNode sceneNode)
-        {
-            if (sceneNode.InstanceGeometry == null)
-            {
-                return null;
-            }
-
-            IList<SceneResourceNode> models = new List<SceneResourceNode>();
-
-            string targetNode = GetUrlValue(sceneNode.InstanceGeometry.Url);
-            if (meshLookup.ContainsKey(targetNode))
-            {
-                float rotationX = 0;
-                float rotationY = 0;
-                float rotationZ = 0;
-
-                foreach (ColladaRotate rotation in sceneNode.Rotations)
-                {
-                    if (rotation.Sid.EndsWith("X"))
-                    {
-                        rotationX = MathExtension.DegreesToRadians(rotation.ToVector4()[0][3]);
-                    }
-                    else if (rotation.Sid.EndsWith("Y"))
-                    {
-                        rotationY = MathExtension.DegreesToRadians(rotation.ToVector4()[0][3]);
-                    }
-                    else if (rotation.Sid.EndsWith("Z"))
-                    {
-                        rotationZ = MathExtension.DegreesToRadians(rotation.ToVector4()[0][3]);
-                    }
-                }
-
-                var node = new SceneResourceNode
-                                      {
-                                          MeshId = meshLookup[targetNode],
-                                          Position = sceneNode.Translation.ToVector3()[0],
-                                          Rotation = new Vector3(rotationX, rotationY, rotationZ),
-                                          Scale = sceneNode.Scale.ToVector3()[0],
-                                      };
-
-                if (materialLookup.ContainsKey(targetNode))
-                {
-                    node.MaterialId = materialLookup[targetNode];
-                }
-
-                if (sceneNode.Children != null && sceneNode.Children.Length > 0)
-                {
-                    foreach (ColladaSceneNode child in sceneNode.Children)
-                    {
-                        IEnumerable<SceneResourceNode> nodeChildren = BuildSceneNode(child);
-                        if (nodeChildren == null)
-                        {
-                            continue;
-                        }
-
-                        foreach (SceneResourceNode nodeChild in nodeChildren)
-                        {
-                            node.Children.Add(nodeChild);
-                        }
-                    }
-                }
-
-                models.Add(node);
-            }
-
-            return models;
-        }
-
-        private static void ClearCache()
-        {
-            currentInputs = null;
-            currentSources = null;
-            polygonData = null;
-
-            vertexCount = null;
-            indexData = null;
-
-            vertexInput = null;
-            normalInput = null;
-            textureInput = null;
-
-            positionData = null;
-            normalData = null;
-            textureData = null;
-        }
-
-        private static string GetUrlValue(string url)
-        {
-            return url.Substring(1, url.Length - 1);
-        }
-
-        private static void BuildMaterialLibrary(ColladaMaterialLibrary materials, ColladaEffectLibrary effectLibrary)
-        {
-            materialLookup.Clear();
-            materialLibrary.Clear();
-
-            IDictionary<string, string> materialEffectLookup = new Dictionary<string, string>();
-            foreach (ColladaMaterial material in materials.Materials)
-            {
-                materialEffectLookup.Add(GetUrlValue(material.Effect.Url), material.Id);
-            }
-
-            foreach (ColladaEffect effect in effectLibrary.Effects)
-            {
-                EffectTechnique localTechnique = effect.ProfileCommon.Technique;
-                string diffuseTexture = null;
-                string normalTexture = null;
-                string alphaTexture = null;
-
-                if (localTechnique.Phong != null)
-                {
-                    if (localTechnique.Phong.Diffuse.Texture != null)
-                    {
-                        diffuseTexture = GetLibraryTextureName(localTechnique.Phong.Diffuse.Texture.Texture);
-                    }
-
-                    if (localTechnique.Phong.Transparent != null)
-                    {
-                        alphaTexture = GetLibraryTextureName(localTechnique.Phong.Transparent.Texture.Texture);
-                    }
-                }
-                else if (localTechnique.Lambert != null)
-                {
-                    if (localTechnique.Lambert.Diffuse.Texture != null)
-                    {
-                        diffuseTexture = GetLibraryTextureName(localTechnique.Lambert.Diffuse.Texture.Texture);
-                    }
-                }
-                else if (localTechnique.Blinn != null)
-                {
-                    if (localTechnique.Blinn.Diffuse.Texture != null)
-                    {
-                        diffuseTexture = GetLibraryTextureName(localTechnique.Blinn.Diffuse.Texture.Texture);
-                    }
-                }
-
-                if (localTechnique.Extra != null && localTechnique.Extra.Technique != null &&
-                        localTechnique.Extra.Technique.Profile == "FCOLLADA")
-                {
-                    normalTexture = GetLibraryTextureName(localTechnique.Extra.Technique.Bump.Texture.Texture);
-                    if (normalTexture == diffuseTexture)
-                    {
-                        normalTexture = null;
-                    }
-                }
-
-                // Todo:
-                if (diffuseTexture != null)
-                {
-                    var material = new MaterialResource
-                                                  {
-                                                      Name = materialEffectLookup[effect.Id],
-                                                      DiffuseTexture = diffuseTexture,
-                                                      NormalTexture = normalTexture,
-                                                      AlphaTexture = alphaTexture
-                                                  };
-                    materialLibrary.Add(material);
-                }
-            }
-        }
-
-        private static void BuildGeometryLibrary(ColladaGeometryLibrary library)
-        {
-            meshLookup.Clear();
-            meshLibrary.Clear();
-
-            foreach (ColladaGeometry colladaGeometry in library.Geometries)
-            {
-                ClearCache();
-
-                if (colladaGeometry.Mesh.PolyLists == null)
-                {
-                    // Todo: Check this
-                    continue;
-                }
-
-                polygonData = new IDictionary<uint, uint[]>[colladaGeometry.Mesh.PolyLists.Length];
-                IList<MeshResource> parts = new List<MeshResource>();
-                for (int i = 0; i < colladaGeometry.Mesh.PolyLists.Length; i++)
-                {
-                    string id = string.Format("{0}_{1}", colladaGeometry.Id, i);
-                    ColladaPolyList polyList = colladaGeometry.Mesh.PolyLists[i];
-
-                    ParseGeometry(i, colladaGeometry);
-                    parts.Add(TranslateGeometry(i, colladaGeometry.Name));
-
-                    if (polyList.Material != null)
-                    {
-                        meshMaterialLibrary.Add(id, polyList.Material);
-                    }
-                }
-
-                meshLibrary.Add(new MeshResource(parts) { Name = colladaGeometry.Id });
-            }
-        }
-
-        private static string GetLibraryTextureName(string textureReference)
-        {
-            int index = textureReference.IndexOf("_tga");
-            if (index < 0)
-            {
-                index = textureReference.IndexOf("_png");
-            }
-            if (index < 0)
-            {
-                index = textureReference.IndexOf("_jpg");
-            }
-            if (index < 0)
-            {
-                index = textureReference.IndexOf("-sampler");
-            }
-
-            return string.Format(@"Textures\{0}_textures\{1}.dds", textureReference.Substring(0, index));
-        }
-
-        */
     }
 }

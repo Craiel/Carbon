@@ -51,12 +51,5 @@ namespace Carbon.Engine.Ninject
             return this.kernel.Get<IContentManager>(
                 new ConstructorArgument("resourceManager", resourceManager), new ConstructorArgument("root", root));
         }
-
-        public ISceneEntityFactory GetEntityFactory(IResourceManager resourceManager, IContentManager contentManager)
-        {
-            return this.kernel.Get<ISceneEntityFactory>(
-                new ConstructorArgument("resourceManager", resourceManager),
-                new ConstructorArgument("contentManager", contentManager));
-        }
     }
 }

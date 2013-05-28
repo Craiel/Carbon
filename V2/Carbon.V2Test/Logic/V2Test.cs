@@ -56,7 +56,6 @@ namespace Carbon.V2Test.Logic
             this.gameState.Initialize(this.Graphics);
 
             this.gameState.ScriptingEngine.Register(new V2GameScriptingProvider(this));
-            this.gameState.ScriptingEngine.Register(this.gameState.SceneEntityFactory);
 
             this.gameState.SceneManager.Register((int)SceneKeys.Test, factory.Get<ITestScene>());
             this.gameState.SceneManager.Register((int)SceneKeys.Test2, factory.Get<ITestScene2>());

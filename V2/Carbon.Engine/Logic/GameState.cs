@@ -28,7 +28,6 @@ namespace Carbon.Engine.Logic
         public ISceneManager SceneManager { get; protected set; }
         public IContentManager ContentManager { get; protected set; }
         public IResourceManager ResourceManager { get; protected set; }
-        public ISceneEntityFactory SceneEntityFactory { get; protected set; }
 
         public override void Initialize(ICarbonGraphics graphics)
         {
@@ -37,11 +36,6 @@ namespace Carbon.Engine.Logic
             if (this.SceneManager != null)
             {
                 this.SceneManager.Initialize(graphics);
-            }
-
-            if (this.SceneEntityFactory != null)
-            {
-                this.SceneEntityFactory.Initialize(graphics);
             }
         }
 
@@ -56,11 +50,6 @@ namespace Carbon.Engine.Logic
             {
                 this.SceneManager.Update(gameTime);
             }
-
-            if (this.SceneEntityFactory != null)
-            {
-                this.SceneEntityFactory.Update(gameTime);
-            }
             
             return true;
         }
@@ -73,12 +62,7 @@ namespace Carbon.Engine.Logic
             {
                 this.SceneManager.Dispose();
             }
-
-            if (this.SceneEntityFactory != null)
-            {
-                this.SceneEntityFactory.Dispose();
-            }
-
+            
             if (this.ContentManager != null)
             {
                 this.ContentManager.Dispose();

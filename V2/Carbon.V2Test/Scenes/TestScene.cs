@@ -127,7 +127,7 @@ namespace Carbon.V2Test.Scenes
             this.controller.SetInputBindings("worldmap_controls");
             this.controller.IsActive = true;
 
-            this.consoleFont =
+            /*this.consoleFont =
                 this.gameState.ContentManager.TypedLoad(new ContentQuery<FontEntry>().IsEqual("Id", 1)).UniqueResult<FontEntry>();
             this.consoleTestNode = (IModelEntity)this.gameState.SceneEntityFactory.AddStaticText(1, " ", new Vector2(1, 1.2f));
             this.consoleTestNode.Position = new Vector4(0, 20, 0, 1);
@@ -135,7 +135,7 @@ namespace Carbon.V2Test.Scenes
             this.console.IsActive = true;
             this.console.IsVisible = true;
             this.console.OnLineEntered += this.OnConsoleLineEntered;
-            this.console.OnRequestCompletion += this.OnConsoleCompletionRequested;
+            this.console.OnRequestCompletion += this.OnConsoleCompletionRequested;*/
 
             // Setup the hard textures for internals
             this.forwardDebugTexture = new Material { DiffuseTexture = this.graphics.TextureManager.GetRegisterReference(1001) };

@@ -11,8 +11,6 @@ namespace Carbon.V2Test.Logic
         {
             this.ResourceManager = factory.GetResourceManager("Data");
             this.ContentManager = factory.GetContentManager(this.ResourceManager, "Main.db");
-
-            this.SceneEntityFactory = factory.GetEntityFactory(this.ResourceManager, this.ContentManager);
         }
     }
 }
