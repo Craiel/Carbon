@@ -1,0 +1,60 @@
+﻿<Window x:Class="GrandSeal.Editor.Views.ResourceBrowser"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="GrandSeal.Editor Resource Browser" Height="400" Width="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <DockPanel>
+            <TextBlock Text="Filter: " DockPanel.Dock="Left" VerticalAlignment="Center"/>
+            <Button Content="Filter" Command="{Binding Path=CommandRefresh}" DockPanel.Dock="Right"/>
+            
+            <TextBox Text="{Binding Path=FilterText}" Margin="4"/>
+        </DockPanel>
+        
+        <ListView Grid.Row="1" ItemsSource="{Binding Path=FilteredList}" SelectedItem="{Binding Path=SelectedResource}" Margin="4">
+            <ListView.Style>
+                <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource {x:Type ListBox}}">
+                    <Setter Property="BorderBrush" Value="Black"/>
+                    <Setter Property="BorderThickness" Value="0.5"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <Border Name="bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Margin="{TemplateBinding Margin}">
+                                    <ScrollViewer Margin="{TemplateBinding Padding}">
+                                        <WrapPanel ItemWidth="150" IsItemsHost="True" MinWidth="100" Width="{Binding ActualWidth,RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.Style>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel Width="160" Height="160">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="{Binding Path=Parent.FullPath}" Margin="4" DockPanel.Dock="Bottom">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{} [{0}] {1}">
+                                    <Binding Path="Id"/>
+                                    <Binding Path="Name"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <Image Source="{Binding Path=PreviewImage}" Margin="4" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </DockPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button Content="Select" Click="OnSelectClick" Width="80" Margin="4"/>
+            <Button Content="Cancel" Click="OnCancelClick" Width="80" Margin="4"/>
+        </StackPanel>
+    </Grid>
+</Window>

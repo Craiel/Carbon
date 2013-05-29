@@ -1,0 +1,18 @@
+﻿using System;
+using System.Xml.Serialization;
+
+namespace Core.Editor.Resource.Xcd.Scene
+{
+    [Serializable]
+    public class XcdProperty
+    {
+        [XmlAttribute("id")]
+        public string Id { get; set; }
+
+        [XmlAttribute("type")]
+        public string Type { get; set; }
+
+        [XmlAttribute("Value")]
+        public string Value { get; set; }
+    }
+}

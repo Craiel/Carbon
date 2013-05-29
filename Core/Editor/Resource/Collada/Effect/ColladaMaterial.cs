@@ -1,0 +1,18 @@
+﻿using System;
+using System.Xml.Serialization;
+
+namespace Core.Editor.Resource.Collada.Effect
+{
+    [Serializable]
+    public class ColladaMaterial
+    {
+        [XmlAttribute("id")]
+        public string Id { get; set; }
+
+        [XmlAttribute("name")]
+        public string Name { get; set; }
+
+        [XmlElement("instance_effect")]
+        public InstanceEffect Effect { get; set; }
+    }
+}

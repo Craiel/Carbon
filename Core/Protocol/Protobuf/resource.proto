@@ -1,0 +1,130 @@
+package resource;
+ 
+import "google/protobuf/csharp_options.proto";
+
+option (google.protobuf.csharp_file_options).namespace = "Core.Protocol.Resource";
+option (google.protobuf.csharp_file_options).umbrella_classname = "ResourceProtocol";
+option (google.protobuf.csharp_file_options).file_extension = ".pb.cs";
+
+option optimize_for = SPEED;
+
+message Raw {
+	required bytes Data = 1;
+}
+
+message CompiledShader {
+	required int32 Version = 1 [default = 1];
+	required bytes MD5 = 2;
+	required bytes Data = 3;
+}
+
+message ModelElement {
+	repeated float Position = 1 [packed=true];
+	repeated float Normal = 2 [packed=true];
+	repeated float Texture = 3 [packed=true];
+	repeated float Tangent = 4 [packed=true];
+	repeated float Color = 5 [packed=true];
+}
+
+message ModelMaterial {
+	required string Name = 1;
+	optional string DiffuseTexture = 2;
+	optional string NormalTexture = 3;
+	optional string AlphaTexture = 4;
+	optional string SpecularTexture = 5;
+}
+
+message Model {
+	required int32 Version = 1 [default = 1];
+	required string Name = 2;
+	required bool TangentsCalculated = 5;
+		
+	repeated ModelElement Elements = 20;
+	repeated ModelMaterial Materials = 21;
+	repeated uint32 Indices = 22;
+}
+
+message ModelGroup {
+	required int32 Version = 1 [default = 1];
+	required string Name = 2;
+	
+	repeated float Offset = 10 [packed=true];
+	repeated float Rotation = 11 [packed=true];
+	repeated float Scale = 12 [packed=true];
+	
+	repeated Model Models = 20;
+}
+
+message StageProperty {
+	enum StagePropertyType
+	{
+		Unknown = 0;
+		String = 1;
+		Float = 2;
+		Int = 3;
+	}
+	
+	required string Id = 1;
+	
+	required StagePropertyType Type = 2;
+
+	required bytes Data = 3;
+}
+
+message StageCamera {
+	required string Id = 1;
+	
+	required float FieldOfView = 2;
+
+	optional int32 LayerFlags = 10;
+	repeated StageProperty Properties = 11;
+	
+	repeated float Position = 20 [packed=true];
+	repeated float Orientation = 21 [packed=true];
+}
+
+message StageLight {
+	enum StageLightType
+	{
+		Unknown = 0;
+        Spot = 1;
+        Directional = 2;
+        Point = 3;
+	}
+	
+	required string Id = 1;
+	
+	required StageLightType Type = 2;
+	
+	required float Radius = 3;
+	required float Intensity = 4;
+	required float AmbientIntensity = 5;
+	required float SpotSize = 6;
+	required float Angle = 7;
+
+	optional int32 LayerFlags = 10;
+	repeated StageProperty Properties = 11;
+	
+	repeated float Location = 20 [packed=true];
+	repeated float Direction = 21 [packed=true];
+	repeated float Color = 22 [packed=true];
+}
+
+message StageModel {
+	required string Id = 1;
+	
+	optional int32 LayerFlags = 10;
+	repeated StageProperty Properties = 11;
+	
+	repeated float Translation = 20 [packed=true];
+	repeated float Rotation = 21 [packed=true];
+	repeated float Scale = 22 [packed=true];
+}
+
+message Stage {
+	required int32 Version = 1 [default = 1];
+	
+	repeated StageCamera Cameras = 10;
+	repeated StageLight Lights = 11;
+	repeated StageModel Models = 12;
+}

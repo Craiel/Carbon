@@ -1,0 +1,12 @@
+﻿using Core.Engine.Contracts.Logic;
+
+namespace Core.Engine.Contracts.Scene
+{
+    using Core.Engine.Contracts.Rendering;
+
+    public interface IScene : IEngineComponent, IRenderableComponent, IScriptingProvider
+    {
+        bool IsActive { get; set; }
+        bool IsVisible { get; set; }
+    }
+}

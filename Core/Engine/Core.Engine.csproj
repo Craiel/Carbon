@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A724DB75-B032-4AE5-B901-063A165F7E71}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Core.Engine</RootNamespace>
+    <AssemblyName>Carbon.Core.Engine</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>..\..\bin\</OutputPath>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>..\..\bin\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Google.ProtocolBuffers">
+      <HintPath>..\..\..\CarbonExt\protobuf-csharp-port\2.4.1.521\Google.ProtocolBuffers.dll</HintPath>
+    </Reference>
+    <Reference Include="LuaInterface">
+      <HintPath>..\..\..\CarbonExt\LuaInterface\2.0.4\x64\LuaInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\..\..\CarbonExt\Ninject\3.0.0.15\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\CarbonExt\SlimDX Jan 2012\x64\SlimDX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\..\..\CarbonExt\sqllite\1.0.84.0\x64\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Contracts\Logic\IGameState.cs" />
+    <Compile Include="Contracts\Logic\IScriptingEngine.cs" />
+    <Compile Include="Contracts\Logic\IScriptingProvider.cs" />
+    <Compile Include="Contracts\Network\INetworkClient.cs" />
+    <Compile Include="Contracts\IEngineFactory.cs" />
+    <Compile Include="Contracts\Logic\ICarbonGraphics.cs" />
+    <Compile Include="Contracts\Logic\IEngineComponent.cs" />
+    <Compile Include="Contracts\Logic\IEngineLog.cs" />
+    <Compile Include="Contracts\Logic\IInputManager.cs" />
+    <Compile Include="Contracts\Network\INetworkMessage.cs" />
+    <Compile Include="Contracts\Network\INetworkTarget.cs" />
+    <Compile Include="Contracts\Rendering\ICamera.cs" />
+    <Compile Include="Contracts\Rendering\ILight.cs" />
+    <Compile Include="Contracts\Rendering\IRenderable.cs" />
+    <Compile Include="Contracts\Rendering\IRenderer.cs" />
+    <Compile Include="Contracts\Rendering\IFrameManager.cs" />
+    <Compile Include="Contracts\Rendering\IRenderTarget.cs" />
+    <Compile Include="Contracts\Resource\ICarbonContent.cs" />
+    <Compile Include="Contracts\Resource\ICarbonResource.cs" />
+    <Compile Include="Contracts\Resource\IContentManager.cs" />
+    <Compile Include="Contracts\Resource\IResourceManager.cs" />
+    <Compile Include="Contracts\Scene\ISceneEntity.cs" />
+    <Compile Include="Contracts\Scene\IScene.cs" />
+    <Compile Include="Contracts\Scene\ISceneManager.cs" />
+    <Compile Include="Contracts\UserInterface\IUserInterfaceConsole.cs" />
+    <Compile Include="Contracts\UserInterface\IUserInterfaceControl.cs" />
+    <Compile Include="Logic\CarbonConsole.cs" />
+    <Compile Include="Logic\CarbonGraphics.cs" />
+    <Compile Include="Logic\CarbonWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Logic\BoundController.cs" />
+    <Compile Include="Logic\GameState.cs" />
+    <Compile Include="Logic\InputBindings.cs" />
+    <Compile Include="Logic\TypedVectors.cs" />
+    <Compile Include="Logic\Scripting\ScriptingGameProvider.cs" />
+    <Compile Include="Logic\TypingController.cs" />
+    <Compile Include="Logic\DebugController.cs" />
+    <Compile Include="Logic\EngineComponent.cs" />
+    <Compile Include="Contracts\Logic\ICarbonGame.cs" />
+    <Compile Include="Logic\CarbonGame.cs" />
+    <Compile Include="Logic\EngineLog.cs" />
+    <Compile Include="Logic\FirstPersonController.cs" />
+    <Compile Include="Logic\InputManager.cs" />
+    <Compile Include="Logic\Scripting\CarbonScript.cs" />
+    <Compile Include="Logic\Scripting\ScriptingCoreProvider.cs" />
+    <Compile Include="Logic\Scripting\ScriptingEngine.cs" />
+    <Compile Include="Logic\Scripting\ScriptingMethodInfo.cs" />
+    <Compile Include="Logic\Scripting\ScriptingPropertyInfo.cs" />
+    <Compile Include="Logic\Scripting\ScriptingProviderAttributes.cs" />
+    <Compile Include="Logic\Scripting\ScriptingProviderReflection.cs" />
+    <Compile Include="Logic\TextureManager.cs" />
+    <Compile Include="Network\NetworkClient.cs" />
+    <Compile Include="Network\NetworkMessages.cs" />
+    <Compile Include="Ninject\EngineFactory.cs" />
+    <Compile Include="Ninject\NinjectModule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rendering\BoundingFrustum.cs" />
+    <Compile Include="Rendering\Camera\Camera.cs" />
+    <Compile Include="Logic\DeviceStateManager.cs" />
+    <Compile Include="Rendering\Camera\OrthographicCamera.cs" />
+    <Compile Include="Rendering\Camera\ProjectionCamera.cs" />
+    <Compile Include="Rendering\Debug\CoordinateDisplay.cs" />
+    <Compile Include="Rendering\Debug\DebugOverlay.cs" />
+    <Compile Include="Rendering\Debug\OrientationDisplay.cs" />
+    <Compile Include="Rendering\DeviceContext.cs" />
+    <Compile Include="Rendering\DeviceSettings.cs" />
+    <Compile Include="Rendering\DynamicBuffer.cs" />
+    <Compile Include="Rendering\FontBuilder.cs" />
+    <Compile Include="Rendering\FrameStatistics.cs" />
+    <Compile Include="Logic\ShaderInputLayoutDescription.cs" />
+    <Compile Include="Rendering\Light.cs" />
+    <Compile Include="Rendering\Material.cs" />
+    <Compile Include="Rendering\Mesh.cs" />
+    <Compile Include="Resource\ModelBuilder.cs" />
+    <Compile Include="Rendering\Primitives\Cone.cs" />
+    <Compile Include="Rendering\Primitives\Cube.cs" />
+    <Compile Include="Rendering\Primitives\Grid.cs" />
+    <Compile Include="Rendering\Primitives\Quad.cs" />
+    <Compile Include="Rendering\Primitives\Sphere.cs" />
+    <Compile Include="Rendering\RenderableList.cs" />
+    <Compile Include="Rendering\Renderer.cs" />
+    <Compile Include="Rendering\FrameManager.cs" />
+    <Compile Include="Rendering\FrameInstructionSet.cs" />
+    <Compile Include="Rendering\RenderInstruction.cs" />
+    <Compile Include="Rendering\LightInstruction.cs" />
+    <Compile Include="Rendering\RenderTarget\BackBufferRenderTarget.cs" />
+    <Compile Include="Rendering\RenderTarget\DepthRenderTarget.cs" />
+    <Compile Include="Rendering\RenderTarget\GBufferRenderTarget.cs" />
+    <Compile Include="Rendering\RenderTarget\RenderTargetBase.cs" />
+    <Compile Include="Rendering\RenderTarget\RenderTargetDescription.cs" />
+    <Compile Include="Rendering\RenderTarget\TextureRenderTarget.cs" />
+    <Compile Include="Rendering\Shader.cs" />
+    <Compile Include="Rendering\Shaders\BlendShader.cs" />
+    <Compile Include="Rendering\Shaders\DebugShader.cs" />
+    <Compile Include="Rendering\Shaders\DeferredLightShader.cs" />
+    <Compile Include="Rendering\Shaders\GBufferShader.cs" />
+    <Compile Include="Rendering\Shaders\DefaultShader.cs" />
+    <Compile Include="Rendering\Shaders\PlainShader.cs" />
+    <Compile Include="Rendering\Shaders\ShadowMapShader.cs" />
+    <Compile Include="Rendering\Structs.cs" />
+    <Compile Include="Rendering\DataContainer.cs" />
+    <Compile Include="Logic\CarbonBinaryFormatter.cs" />
+    <Compile Include="Rendering\TextureData.cs" />
+    <Compile Include="Resource\CompiledShader.cs" />
+    <Compile Include="Resource\ContentEntryAttributes.cs" />
+    <Compile Include="Resource\ContentManager.cs" />
+    <Compile Include="Resource\ContentQuery.cs" />
+    <Compile Include="Resource\ContentQueryResult.cs" />
+    <Compile Include="Resource\ContentReflection.cs" />
+    <Compile Include="Resource\Content\ContentEntry.cs" />
+    <Compile Include="Resource\Content\ContentLink.cs" />
+    <Compile Include="Resource\Content\FontEntry.cs" />
+    <Compile Include="Resource\Content\MaterialEntry.cs" />
+    <Compile Include="Resource\Content\MetaDataEntry.cs" />
+    <Compile Include="Resource\Content\ProjectEntry.cs" />
+    <Compile Include="Resource\Content\ResourceTree.cs" />
+    <Compile Include="Resource\Content\StageEntry.cs" />
+    <Compile Include="Resource\Content\StageRegionEntry.cs" />
+    <Compile Include="Resource\Content\ResourceEntry.cs" />
+    <Compile Include="Resource\Content\ScriptEntry.cs" />
+    <Compile Include="Resource\Resources\Model\ModelResourceGroup.cs" />
+    <Compile Include="Resource\Resources\Model\ModelMaterialElement.cs" />
+    <Compile Include="Resource\Resources\Model\ModelResourceElement.cs" />
+    <Compile Include="Resource\Resources\Model\ModelResource.cs" />
+    <Compile Include="Resource\FolderContent.cs" />
+    <Compile Include="Resource\Resources\ProtocolResource.cs" />
+    <Compile Include="Resource\Resources\RawResource.cs" />
+    <Compile Include="Resource\ResourceManager.cs" />
+    <Compile Include="Logic\CarbonShaderDescription.cs" />
+    <Compile Include="Logic\ShaderManager.cs" />
+    <Compile Include="Resource\Resources\Stage\StageCameraElement.cs" />
+    <Compile Include="Resource\Resources\Stage\StageElement.cs" />
+    <Compile Include="Resource\Resources\Stage\StageLightElement.cs" />
+    <Compile Include="Resource\Resources\Stage\StageModelElement.cs" />
+    <Compile Include="Resource\Resources\Stage\StagePropertyElement.cs" />
+    <Compile Include="Resource\Resources\Stage\StageResource.cs" />
+    <Compile Include="Scene\SceneEntity.cs" />
+    <Compile Include="Scene\LightEntity.cs" />
+    <Compile Include="Scene\ModelEntity.cs" />
+    <Compile Include="Scene\Node.cs" />
+    <Compile Include="Scene\SceneEntityCollection.cs" />
+    <Compile Include="Scene\SceneEntityFactory.cs" />
+    <Compile Include="Scene\Scene.cs" />
+    <Compile Include="Logic\EngineComponentStack.cs" />
+    <Compile Include="Scene\SceneGraph.cs" />
+    <Compile Include="Scene\SceneManager.cs" />
+    <Compile Include="UserInterface\UserInterfaceConsole.cs" />
+    <Compile Include="UserInterface\UserInterfaceControl.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Utils\Core.Utils.csproj">
+      <Project>{E05836D9-0BB3-4BFA-89E6-F5ED40A9D93C}</Project>
+      <Name>Core.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Protocol\Core.Protocol.Sharp.csproj">
+      <Project>{9fde20aa-a982-4ca0-9ffc-fd57faf82088}</Project>
+      <Name>Core.Protocol.Sharp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Data\Shaders\Blend.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shaders\Plain.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shaders\Debug.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shaders\default.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shaders\DeferredLight.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shaders\GBufferShader.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shaders\globals.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shaders\ShadowCalculations.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shaders\ShadowMap.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

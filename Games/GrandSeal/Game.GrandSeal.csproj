@@ -2,15 +2,17 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E05836D9-0BB3-4BFA-89E6-F5ED40A9D93C}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{B7C2C25C-C2A1-40B4-955C-EED2C235346F}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Core.Utils</RootNamespace>
-    <AssemblyName>Core.Utils</AssemblyName>
+    <RootNamespace>GrandSeal</RootNamespace>
+    <AssemblyName>GrandSeal</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
@@ -27,26 +29,9 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+  <PropertyGroup>
+    <StartupObject>GrandSeal.Entry</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -60,7 +45,27 @@
     <OutputPath>..\..\bin\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LuaInterface">
+      <HintPath>..\..\..\CarbonExt\LuaInterface\2.0.4\x64\LuaInterface.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject">
       <HintPath>..\..\..\CarbonExt\Ninject\3.0.0.15\Ninject.dll</HintPath>
     </Reference>
@@ -70,6 +75,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -77,33 +84,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contracts\IEventRelay.cs" />
-    <Compile Include="Contracts\IFormatter.cs" />
-    <Compile Include="Contracts\ILog.cs" />
-    <Compile Include="Contracts\ILogEvent.cs" />
-    <Compile Include="Contracts\ITextFile.cs" />
-    <Compile Include="Contracts\ITimer.cs" />
-    <Compile Include="Diagnostics\ConsoleTraceListener.cs" />
-    <Compile Include="Diagnostics\FileTraceListener.cs" />
-    <Compile Include="Diagnostics\LogBase.cs" />
-    <Compile Include="Diagnostics\LogEvent.cs" />
-    <Compile Include="Diagnostics\ProfileStatistics.cs" />
-    <Compile Include="EventRelay.cs" />
-    <Compile Include="FNV.cs" />
-    <Compile Include="Formatter.cs" />
-    <Compile Include="Diagnostics\Profiler.cs" />
-    <Compile Include="Diagnostics\ProfileRegion.cs" />
-    <Compile Include="HashUtils.cs" />
-    <Compile Include="LimitedList.cs" />
-    <Compile Include="MathExtension.cs" />
+    <Compile Include="Contracts\IApplicationLog.cs" />
+    <Compile Include="Contracts\IGrandSeal.cs" />
+    <Compile Include="Contracts\IGrandSealGameState.cs" />
+    <Compile Include="Contracts\IGrandSealScriptingProvider.cs" />
+    <Compile Include="Logic\ApplicationLog.cs" />
+    <Compile Include="Logic\GrandSealScriptingProvider.cs" />
+    <Compile Include="Logic\GrandSeal.cs" />
+    <Compile Include="Entry.cs" />
+    <Compile Include="Logic\GrandSealGameState.cs" />
+    <Compile Include="Ninject\FactoryExtension.cs" />
     <Compile Include="Ninject\NinjectModuleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuaternionExtension.cs" />
-    <Compile Include="RuntimeInfo.cs" />
-    <Compile Include="TextFile.cs" />
-    <Compile Include="Timer.cs" />
-    <Compile Include="TypeExtension.cs" />
-    <Compile Include="VectorExtension.cs" />
+    <Compile Include="Scenes\TestScene.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Utils\Core.Utils.csproj">
+      <Project>{E05836D9-0BB3-4BFA-89E6-F5ED40A9D93C}</Project>
+      <Name>Core.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Editor\Core.Editor.csproj">
+      <Project>{819ff5d0-4498-48f2-9f7d-81a322b9b082}</Project>
+      <Name>Core.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Engine\Core.Engine.csproj">
+      <Project>{A724DB75-B032-4AE5-B901-063A165F7E71}</Project>
+      <Name>Core.Engine</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
@@ -127,7 +139,11 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>"$(SolutionDir)..\CarbonExt\sqllite\1.0.84.0\x64\Deploy.bat" $(TargetDir)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
