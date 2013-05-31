@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Server.h"
-#include "network.pb.h"
 #include "Log.h"
 
 namespace Carbon {
