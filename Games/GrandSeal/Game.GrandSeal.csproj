@@ -90,7 +90,7 @@
     <Compile Include="Contracts\IGrandSealScriptingProvider.cs" />
     <Compile Include="Logic\ApplicationLog.cs" />
     <Compile Include="Logic\GrandSealScriptingProvider.cs" />
-    <Compile Include="Logic\GrandSeal.cs" />
+    <Compile Include="GrandSeal.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="Logic\GrandSealGameState.cs" />
     <Compile Include="Ninject\FactoryExtension.cs" />

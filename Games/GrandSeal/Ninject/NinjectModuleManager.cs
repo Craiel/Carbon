@@ -22,7 +22,7 @@ namespace GrandSeal.Ninject
         {
             public override void Load()
             {
-                this.Bind<IGrandSeal>().To<Logic.GrandSeal>().InSingletonScope();
+                this.Bind<IGrandSeal>().To<GrandSeal>().InSingletonScope();
 
                 this.Bind<IApplicationLog>().To<ApplicationLog>();
                 this.Bind<IGrandSealScriptingProvider>().To<GrandSealScriptingProvider>().InSingletonScope();

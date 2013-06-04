@@ -8,10 +8,10 @@ using GrandSeal.Contracts;
 using Core.Utils;
 using Core.Utils.Contracts;
 
-namespace GrandSeal.Logic
-{
-    using Ninject;
+using GrandSeal.Ninject;
 
+namespace GrandSeal
+{
     public enum SceneKeys
     {
         Menu = 1,
