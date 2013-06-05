@@ -27,6 +27,9 @@
     <ClCompile Include="CPP\google\protobuf\csharp_options.pb.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CPP\Protobuf\userinterface.pb.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPP\Protobuf\network.pb.h">
@@ -39,6 +42,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CPP\google\protobuf\csharp_options.pb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CPP\Protobuf\userinterface.pb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

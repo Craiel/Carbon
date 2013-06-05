@@ -1,0 +1,105 @@
+package userinterface;
+ 
+import "google/protobuf/csharp_options.proto";
+
+option (google.protobuf.csharp_file_options).namespace = "Core.Protocol.UserInterface";
+option (google.protobuf.csharp_file_options).umbrella_classname = "UserInterfaceProtocol";
+option (google.protobuf.csharp_file_options).file_extension = ".pb.cs";
+
+option optimize_for = SPEED;
+
+enum AlignmentEnum
+{
+	Left = 0;
+	Center = 1;
+	Right = 2;
+}
+
+enum FontStyleEnum
+{
+	Normal = 0;
+	Bold = 1;
+	Italic = 2;
+}
+
+enum ControlTypeEnum {
+	Unknown = 0;
+	Frame = 1;
+	Image = 2;
+	Text = 3;
+}
+
+message ControlPage {
+	required int32 Version = 1 [default = 1];
+	required bytes Script = 2;
+	
+	repeated ChildCollection Children = 3;
+}
+
+message ChildCollection {
+	required ControlTypeEnum Type = 1;
+	required bytes Data = 2;
+}
+
+message Control {
+	enum LayoutModeEnum
+	{
+		Absolute = 0;
+		Relative = 1;
+	}
+	
+	required int32 Id = 1;
+	required LayoutModeEnum LayoutMode = 2 [default = Absolute];
+	
+	optional string Name = 3;
+	
+	optional AlignmentEnum HorizontalAlignment = 8;
+	optional AlignmentEnum VerticalAlignment = 9;
+	
+	optional int32 Left = 10;
+	optional int32 Top = 11;
+	optional int32 Width = 12;
+	optional int32 Height = 13;
+	
+	optional string Background = 14;
+}
+
+message ControlFrame {
+	required Control Base = 1;
+	
+	required string Left = 2;
+	required string TopLeft = 3;
+	required string Top = 4;
+	required string TopRight = 5;
+	required string Right = 6;
+	required string BottomRight = 7;
+	required string Bottom = 8;
+	required string BottomLeft = 9;
+	
+	repeated ChildCollection Children = 10;
+}
+
+message ControlImage {
+	enum ImageMode
+	{
+		Direct = 0;
+		Stretch = 1;
+		Fit = 2;
+	}
+	
+	required Control Base = 1;
+	
+	required string Source = 2;
+	
+	required ImageMode Mode = 3 [default = Direct];
+}
+
+message ControlText {
+	required Control Base = 1;
+	required string Font = 3;
+	
+	required int32 Size = 4 [default = 10];
+	required FontStyleEnum Style = 5 [default = Normal];
+	
+	optional string Text = 6;
+}

@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="C#\NetworkProtocol.pb.cs" />
     <Compile Include="C#\ResourceProtocol.pb.cs" />
+    <Compile Include="C#\UserInterfaceProtocol.pb.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
