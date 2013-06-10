@@ -71,5 +71,10 @@ namespace GrandSeal.Editor.Ninject
         {
             return this.kernel.Get<IResourceStageViewModel>(new ConstructorArgument("data", data));
         }
+
+        public IResourceUserInterfaceViewModel GetResourceUserInterfaceViewModel(ResourceEntry data)
+        {
+            return this.kernel.Get<IResourceUserInterfaceViewModel>(new ConstructorArgument("data", data));
+        }
     }
 }

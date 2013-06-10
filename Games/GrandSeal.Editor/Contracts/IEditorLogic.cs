@@ -46,6 +46,7 @@ namespace GrandSeal.Editor.Contracts
         IResourceRawViewModel AddResourceRaw();
         IResourceFontViewModel AddResourceFont();
         IResourceStageViewModel AddResourceStage();
+        IResourceUserInterfaceViewModel AddResourceUserInterface();
 
         void Save(IResourceViewModel resource);
         void Delete(IResourceViewModel resource);

@@ -521,6 +521,11 @@ namespace GrandSeal.Editor.ViewModels
                         return this.logic.AddResourceFont();
                     }
 
+                case ".csaml":
+                    {
+                        return this.logic.AddResourceUserInterface();
+                    }
+
                 default:
                     {
                         return this.logic.AddResourceRaw();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 
@@ -9,44 +10,56 @@ using Core.Engine.Resource.Content;
 
 using GrandSeal.Editor.Contracts;
 
+using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 
 namespace GrandSeal.Editor.ViewModels
 {
-    public class ResourceScriptViewModel : ResourceViewModel, IResourceScriptViewModel
+    public class ResourceUserInterfaceViewModel : ResourceViewModel, IResourceUserInterfaceViewModel
     {
         private readonly IResourceProcessor resourceProcessor;
 
-        private bool scriptWasChanged;
+        private bool interfaceWasChanged;
 
-        private ITextSource scriptDocument;
+        private IResourceScriptViewModel scriptViewModel;
+        private ITextSource interfaceDocument;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ResourceScriptViewModel(IEngineFactory factory, ResourceEntry data)
+        public ResourceUserInterfaceViewModel(IEngineFactory factory, ResourceEntry data)
             : base(factory, data)
         {
-            this.resourceProcessor = factory.Get<IResourceProcessor>();
-
-            this.ForceSave = true;
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public ITextSource CsamlDocument
+        {
+            get
+            {
+                if (this.interfaceDocument == null)
+                {
+                    this.interfaceDocument = this.GetInterfaceSource();
+                    this.interfaceDocument.TextChanged += this.OnInterfaceDocumentChanged;
+                }
+
+                return this.interfaceDocument;
+            }
+        }
+
         public ITextSource ScriptDocument
         {
             get
             {
-                if (this.scriptDocument == null)
-                {
-                    this.scriptDocument = this.GetScriptingSource();
-                    this.scriptDocument.TextChanged += this.OnScriptDocumentChanged;
-                }
-
-                return this.scriptDocument;
+                return this.scriptViewModel.ScriptDocument;
             }
+        }
+
+        public void UpdateScriptAutoCompletion(IList<ICompletionData> completionList, string context = null)
+        {
+            this.scriptViewModel.UpdateAutoCompletion(completionList, context);
         }
 
         // -------------------------------------------------------------------
@@ -54,16 +67,18 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         protected override void PrepareSave()
         {
+            base.PrepareSave();
+
             // See if we have changes in the script that need to be saved before export
-            if (this.scriptWasChanged && this.scriptDocument != null)
+            if (this.interfaceWasChanged && this.interfaceDocument != null)
             {
-                Application.Current.Dispatcher.Invoke(this.SaveScript);
+                Application.Current.Dispatcher.Invoke(this.SaveInterface);
             }
         }
 
         protected override void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
-            ICarbonResource resource = this.resourceProcessor.ProcessScript(this.SourcePath);
+            ICarbonResource resource = this.resourceProcessor.ProcessUserInterface(this.SourcePath);
 
             if (resource != null)
             {
@@ -72,19 +87,19 @@ namespace GrandSeal.Editor.ViewModels
             }
             else
             {
-                this.Log.Error("Failed to export Script resource {0}", null, this.SourcePath);
+                this.Log.Error("Failed to export User Interface resource {0}", null, this.SourcePath);
             }
         }
 
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void OnScriptDocumentChanged(object sender, EventArgs e)
+        private void OnInterfaceDocumentChanged(object sender, EventArgs e)
         {
-            this.scriptWasChanged = true;
+            this.interfaceWasChanged = true;
         }
 
-        private ITextSource GetScriptingSource()
+        private ITextSource GetInterfaceSource()
         {
             if (!File.Exists(this.SourcePath))
             {
@@ -97,14 +112,14 @@ namespace GrandSeal.Editor.ViewModels
             }
         }
 
-        private void SaveScript()
+        private void SaveInterface()
         {
             using (var writer = new StreamWriter(this.SourcePath, false))
             {
-                writer.Write(this.scriptDocument.Text);
+                writer.Write(this.interfaceDocument.Text);
             }
 
-            this.scriptWasChanged = false;
+            this.interfaceWasChanged = false;
         }
     }
 }

@@ -504,41 +504,6 @@ namespace GrandSeal.Editor.ViewModels
             }
         }
 
-        /*private void UpdateTypeStatus()
-        {
-            // Clear out some type specific editor data that will be re-done dynamically if needed
-            this.UnloadScript();
-            this.previewImage = null;
-
-            switch (this.data.Type)
-            {
-                case ResourceType.Model:
-                    {
-                        if (this.settings.ModelTextureAutoCreateFolder && this.settings.ModelTextureParentFolder != null && this.TextureFolder == null)
-                        {
-                            var textureParent = this.logic.LocateFolder(this.settings.ModelTextureParentFolder);
-                            if (textureParent == null)
-                            {
-                                break;
-                            }
-
-                            var folder = textureParent.AddFolder();
-                            folder.Name = string.Concat(this.Name, "_textures");
-                            this.AutoUpdateTextures = true;
-                            this.TextureFolder = folder;
-                        }
-
-                        break;
-                    }
-
-                case ResourceType.Script:
-                    {
-                        this.ForceExport = true;
-                        break;
-                    }
-            }
-        }*/
-
         private void DoUpdatePreview()
         {
             ImageSource source = this.GetPreviewImage();

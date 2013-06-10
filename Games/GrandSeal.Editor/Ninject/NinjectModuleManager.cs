@@ -48,6 +48,7 @@ namespace GrandSeal.Editor.Ninject
                 this.Bind<IResourceFontViewModel>().To<ResourceFontViewModel>();
                 this.Bind<IResourceRawViewModel>().To<ResourceRawViewModel>();
                 this.Bind<IResourceStageViewModel>().To<ResourceStageViewModel>();
+                this.Bind<IResourceUserInterfaceViewModel>().To<ResourceUserInterfaceViewModel>();
                 this.Bind<IMaterialViewModel>().To<MaterialViewModel>();
                 this.Bind<IFontViewModel>().To<FontViewModel>();
 

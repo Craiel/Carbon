@@ -128,3 +128,9 @@ message Stage {
 	repeated StageLight Lights = 11;
 	repeated StageModel Models = 12;
 }
+
+message UserInterface {
+	required int32 Version = 1 [default = 1];
+	required bytes Csaml = 2;
+	required bytes Script = 3;
+}

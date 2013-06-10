@@ -9,6 +9,7 @@
         Font = 13,
         Script = 14,
         Stage = 15,
+        UserInterface = 16,
     }
 
     [ContentEntry("Resource")]

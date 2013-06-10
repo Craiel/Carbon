@@ -132,6 +132,7 @@
     <Compile Include="Contracts\ITextureSynchronizer.cs" />
     <Compile Include="Contracts\IUndoRedoGroup.cs" />
     <Compile Include="Contracts\IUndoRedoManager.cs" />
+    <Compile Include="Contracts\IUserInterfaceViewModel.cs" />
     <Compile Include="Contracts\IViewModelFactory.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="Events\LayoutEvents.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="ViewModels\ResourceScriptViewModel.cs" />
     <Compile Include="ViewModels\ResourceStageViewModel.cs" />
     <Compile Include="ViewModels\ResourceTextureViewModel.cs" />
+    <Compile Include="ViewModels\ResourceUserInterfaceViewModel.cs" />
     <Compile Include="ViewModels\StageViewModel.cs" />
     <Compile Include="ViewModels\DocumentViewModel.cs" />
     <Compile Include="ViewModels\ResourceViewModel.cs" />

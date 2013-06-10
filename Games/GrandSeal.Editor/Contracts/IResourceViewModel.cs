@@ -63,6 +63,15 @@ namespace GrandSeal.Editor.Contracts
         void UpdateAutoCompletion(IList<ICompletionData> completionList, string context = null);
     }
 
+    // This is a combination view of a csaml and a lua file
+    public interface IResourceUserInterfaceViewModel : IResourceViewModel
+    {
+        ITextSource CsamlDocument { get; }
+        ITextSource ScriptDocument { get; }
+
+        void UpdateScriptAutoCompletion(IList<ICompletionData> completionList, string context = null);
+    }
+
     public interface IResourceViewModel : IEditorDocument
     {
         int? Id { get; }

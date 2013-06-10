@@ -16,5 +16,6 @@
         IResourceRawViewModel GetResourceRawViewModel(ResourceEntry data);
         IResourceFontViewModel GetResourceFontViewModel(ResourceEntry data);
         IResourceStageViewModel GetResourceStageViewModel(ResourceEntry data);
+        IResourceUserInterfaceViewModel GetResourceUserInterfaceViewModel(ResourceEntry data);
     }
 }
