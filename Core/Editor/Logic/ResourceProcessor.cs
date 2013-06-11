@@ -78,5 +78,15 @@ namespace Core.Editor.Logic
         {
             return XcdProcessor.Process(path, options);
         }
+
+        public ScriptResource ProcessScript(string path, ScriptProcessingOptions options)
+        {
+            return ScriptProcessor.Process(path, options);
+        }
+
+        public UserInterfaceResource ProcessUserInterface(string path, UserInterfaceProcessingOptions options)
+        {
+            return UserInterfaceProcessor.Process(path, options);
+        }
     }
 }

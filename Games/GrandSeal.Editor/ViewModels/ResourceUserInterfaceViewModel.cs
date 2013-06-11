@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 
 using Core.Editor.Contracts;
+using Core.Editor.Processors;
 using Core.Engine.Contracts;
 using Core.Engine.Contracts.Resource;
 using Core.Engine.Resource.Content;
@@ -30,6 +31,7 @@ namespace GrandSeal.Editor.ViewModels
         public ResourceUserInterfaceViewModel(IEngineFactory factory, ResourceEntry data)
             : base(factory, data)
         {
+            this.resourceProcessor = factory.Get<IResourceProcessor>();
         }
 
         // -------------------------------------------------------------------
@@ -78,7 +80,7 @@ namespace GrandSeal.Editor.ViewModels
 
         protected override void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
-            ICarbonResource resource = this.resourceProcessor.ProcessUserInterface(this.SourcePath);
+            ICarbonResource resource = this.resourceProcessor.ProcessUserInterface(this.SourcePath, new UserInterfaceProcessingOptions());
 
             if (resource != null)
             {

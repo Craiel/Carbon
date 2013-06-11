@@ -129,8 +129,14 @@ message Stage {
 	repeated StageModel Models = 12;
 }
 
+message Script {
+	required int32 Version = 1 [default = 1];
+	
+	required bytes ScriptData = 2;
+}
+
 message UserInterface {
 	required int32 Version = 1 [default = 1];
 	required bytes Csaml = 2;
-	required bytes Script = 3;
+	required Script Script = 3;
 }

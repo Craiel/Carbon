@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 
 using Core.Editor.Contracts;
+using Core.Editor.Processors;
 using Core.Engine.Contracts;
 using Core.Engine.Contracts.Resource;
 using Core.Engine.Resource.Content;
@@ -63,7 +64,7 @@ namespace GrandSeal.Editor.ViewModels
 
         protected override void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
-            ICarbonResource resource = this.resourceProcessor.ProcessScript(this.SourcePath);
+            ICarbonResource resource = this.resourceProcessor.ProcessScript(this.SourcePath, new ScriptProcessingOptions());
 
             if (resource != null)
             {
