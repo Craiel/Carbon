@@ -1,0 +1,54 @@
+Non Magical Swords
+-------------------------
+
+	Wooden Sword	AT+3
+	Bronze Sword	AT+5
+	Short Sword	AT+7
+	Middle Sword	AT+10
+	Iron Sword	AT+12
+	Long Sword	AT+14
+	Power Sword	AT+17
+	Steel Sword	AT+22
+	Heavy Sword	AT+24
+	Broad Sword	AT+26
+	Large Sword	AT+29
+	Buster Sword	AT+30
+	Great Sword	AT+35
+	Battle Sword	AT+39
+	Rune Crusher	AT+46
+	Orichalcon Sw.	AT+56
+
+Non Magical Ninja Swords
+-------------------------
+
+	Sakaba Sword	AT+20
+	Katana		AT+33
+
+Magical Swords
+-------------------------
+
+	Heat Blade	AT+52	+2 Heat,	Lvl3 Blaze at use
+	Cold Blade	AT+52	+2 Cold,	Lvl3 Freeze at use
+	Wind Blade	AT+52	+2 Wind,	Lvl3 Tornado at use
+	Lightning Blade	AT+52	+2 Light,	Lvl2 Bolt at use
+	Ground Blade	AT+52	+2 Earth,	Lvl3 Rock Attack at use
+	Holy Sword	AT+48	+2 Holy,	Lvl2 Aura at use
+	Doom Blade	AT+60	+2 Dark,	Lvl2 Desoul at use		'Cursed
+
+Magical Ninja Swords
+-------------------------
+
+	Guisarme		AT+51			Chance of Cutting Monster in Half
+
+Mithril Swords
+-------------------------
+
+	Levanter	AT+51
+	Critical Sword	AT+47			Higher Chance of Critical Attacks
+	Counter Sword	AT+36			Higher Chance of Counter Attacks
+
+Tech Swords
+-------------------------
+
+	Gunblade		AT+19			Chance to cause lvl1 Explosion at attack
+	Laser Sword	AT+48

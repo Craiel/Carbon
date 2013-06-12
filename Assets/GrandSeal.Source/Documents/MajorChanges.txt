@@ -1,0 +1,35 @@
+- 2 Exp Systems, switchable through ingame options
+	1: Default system, each charachter gains his own exp
+	2: Group system, the exp is shared among all members of the Force,
+	   enabling members that do not take part in combat to raise in level
+	   (for those who want to see all guys getting promoted)
+
+- Weapons increase the Value by use, ex: a rod will not increase Attack very much
+  but will increase the power of spells
+
+- More Different Classes
+
+- More Charachters, Weapons, Items etc...
+
+- Weapons only usable by specific classes and even only specific persons
+
+- Much more Magic, many different Types
+
+- Charachters can have more than 4 different spells at max
+
+- Charachters have magical resistences defined by they're race or other stuff
+
+- Charachters can equip up to 2 weapons if possible (ex: 2 swords)
+
+- Charachters can equip armor if possible
+
+- Charachters can equip up to 2 rings if possible
+
+- Charachters have 6 Inventory Slots, Equipped weapons and rings do no longer need place
+  in Storage Slots
+
+- Charachters can now be promoted up to 3 times, always at level 20
+  For many Charachter Types also exist special classes that can be achived by Special items
+  and only be fulfilled by high Priests
+
+- Multiplayer support (implemented after finish of main game)

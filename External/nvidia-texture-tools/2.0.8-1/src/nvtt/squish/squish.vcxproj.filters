@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="fastclusterfit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="weightedclusterfit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="colourblock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="colourfit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="colourset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="maths.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="fastclusterfit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="weightedclusterfit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="colourblock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="colourfit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="colourset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="maths.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simd_sse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simd_ve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{64419D4E-AAE2-4854-B115-0F856D403833}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{D324FA2A-A767-4A42-92FE-1836E0A7D183}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

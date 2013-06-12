@@ -1,0 +1,66 @@
+
+Main Class inheritance, if possible the basic main classes should be seperate threads
+
+- Graphics
+- Sound
+- Input
+- Game
+- Space	-> Planet	-> Field	-> Battle
+					-> Cutscene
+
+	-> Mothership	-> Arcade
+
+	// Possible additions (just thoughts)
+	-> Orion style build-em up and mining posts etc etc
+	-> RTS Style space combat thing etc etc
+	nearly endless possibilities
+
+
+
+
+Main Class Description:
+Space
+	Space is the Hub for all Player action, from here the player either visits planets and enters FF-Mode
+	or goes into arcade style space combat action.
+
+Planet
+	This is FF-Mode planet like travel as in FF8/9
+	Try and make these as random as possible except story related maps/planets.
+	Monsters are randomly encountered and spread by planetary level zones and area-types
+
+Field
+	FF-Style Scenes like citys and story related areas, more detailed than the map
+	maybe some of them can be random generated to an extend like cities or something
+
+Battle
+	FF-Style Battle in the classical Console type
+
+Cutscene
+	Either ingame or FMV
+
+Mothership
+	This is the space operation central of the squad and where all the ships are kept
+	this has to be quite large
+	From here all the Arcade missions are launched
+
+Arcade
+	Tyrian style space shoot-em-up in some nice 3d graphics
+
+
+
+Multiplayer Ideas
+	- Form Teams of max 4 people, each member can than bring in as much members as players in team to a max of 4 players
+		ex:
+			2 Players = 2 Player/ships each
+			4 Players = 1 Player/ship each
+
+	     Which character is selected is done at the same places you can do it normally and during team formation
+	- Teams can engage missions together and explore planets
+
+Misc Ideas
+	- Switch characters/ships during combat/arcade
+	- inactive ships are shown under the current ship, only one ship can be active at a time
+	  in arcade you can only switch with ships in your active ship squad
+	- Self expanding Randomized/constant universe with build in constants for story and fixed points
+	- Enemys have items you can steal to craft with or whatever
+	- Exp goes into pool for non-active player characters, can redeem pool while played

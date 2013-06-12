@@ -1,0 +1,61 @@
+# CMake generation dependency list for this directory.
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/CMakeLists.txt
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindOpenGL.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/cmake/FindGLUT.cmake
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/cmake/FindDirectX.cmake
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/cmake/FindGLEW.cmake
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/cmake/FindCg.cmake
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/cmake/FindCUDA.cmake
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/cmake/FindMaya.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindJPEG.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPNG.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindZLIB.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindTIFF.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/cmake/FindOpenEXR.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindZLIB.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindQt4.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CheckCXXSymbolExists.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CheckSymbolExists.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeExpandImportedTargets.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/MacroAddFileDependencies.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindThreads.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CheckIncludeFiles.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CheckLibraryExists.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeExpandImportedTargets.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CheckSymbolExists.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeExpandImportedTargets.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeConfigurableFile.in
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/FindPackageMessage.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeParseArguments.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CheckIncludeFiles.cmake
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeConfigurableFile.in
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeConfigurableFile.in
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeConfigurableFile.in
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeConfigurableFile.in
+C:/Program Files (x86)/CMake 2.8/share/cmake-2.8/Modules/CMakeConfigurableFile.in
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvconfig.h.in

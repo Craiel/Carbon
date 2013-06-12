@@ -1,0 +1,11 @@
+
+[WORLDMAP]
+- Final Fantasy Styled Worldmap
+- Different map's for different planets
+- Traveling from planet to planet
+- Events triggered on Worldmap
+- Some kind of minigame, like chocob's in FF9
+
+[COMBAT]
+- enemys categorized in classes
+- points in certain ability's or ability categories for fighting certain enemys or for using certain skills (based on mana/damage or amount used)

@@ -1,0 +1,15 @@
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/squish/CMakeFiles/ALL_BUILD.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeFiles/ZERO_CHECK.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/CMakeFiles/filtertest.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/CMakeFiles/nvassemble.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/CMakeFiles/nvcompress.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvcore/CMakeFiles/nvcore.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/CMakeFiles/nvddsinfo.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/CMakeFiles/nvdecompress.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvimage/CMakeFiles/nvimage.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/CMakeFiles/nvimgdiff.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvmath/CMakeFiles/nvmath.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/CMakeFiles/nvtt.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/CMakeFiles/nvzoom.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvcore/poshlib/CMakeFiles/posh.dir
+C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/squish/CMakeFiles/squish.dir

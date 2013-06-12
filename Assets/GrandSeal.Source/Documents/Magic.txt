@@ -1,0 +1,86 @@
+Earth
+-----------------------------------
+	Earthquake		Earth		O-G
+	Rock Attack		Earth		O-GA
+	Stoneskin		Earth		D
+	Hells Gate		Earth		O-GA
+
+Wind
+-----------------------------------
+	Tornado			Air		O-GA
+	Blow			Air		O-GA
+	Thunder			Air		O-GA
+	Storm			Air		O-A
+
+Fire
+-----------------------------------
+	Blaze			Fire		O-GA
+	Fire Arrow		Fire		O-GA
+	Fire Ball		Fire		O-GA
+	Burn			Fire		O-GA
+	Dragon Breath		Fire		O-GA
+
+Water
+-----------------------------------
+	Wave			Water		O-G
+	Ice Arrow		Water		O-GA
+	Freeze			Water		O-GA
+	Hail Storm		Water		O-GA
+
+Element Combinations
+-----------------------------------
+	Explosion		Fire,Wind	O-GA
+	Explosion Array		Fire,Wind	O-GA
+	Flare			Fire,Water,Wind	O-GA
+
+Light
+-----------------------------------
+	Bolt			Lightning	O-GA
+	Heavens Rage		Light		O-GA
+	Egress			Light		D
+	Holy			Light		D
+
+Dark
+-----------------------------------
+	Bolt			Lightning	O-GA
+	Hells Rage		Darkness	O-GA
+	Desoul			Darkness	O-GA
+	Shadow			Darkness	D
+
+Cleric
+-----------------------------------
+	Resurect		Life		D
+	Heal			Life		D
+	Aura			Life		D
+	Cure			Life		D
+	Boost			Life		D
+	Fog			Life		D
+
+God Summon
+-----------------------------------
+	God of Earth		Earth		O-GA
+	God of Water		Water		O-GA
+	God of Fire		Fire		O-GA
+	God of Wind		Air		O-GA
+	God of Healing		Life		O-GA
+	God of War				O-GA
+
+Mystic
+-----------------------------------
+	Rajin			Fire		O-GA
+	Kill Undead		Light		O-GA
+	Ban Evil		Light		D
+	Remove Curse		Life		D
+	Krajin			Lightning	O-GA
+
+Wolf Summon
+-----------------------------------
+
+Cat Summon
+-----------------------------------
+
+Sword Special
+-----------------------------------
+	Lightning Call		Lightning	O-GA
+	Sword Wave				O-G
+	Lance			Lightning	O-GA

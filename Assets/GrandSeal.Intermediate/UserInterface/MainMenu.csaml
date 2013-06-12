@@ -1,0 +1,38 @@
+<!--
+
+- Convert csaml to protob entities by evaluating the hirarchy
+- Set order of controls and discard the visual tree, we will not be bothering with that in the engine
+- Evaluate resources to hashes and store only those
+- !! Generate Lua Script for hooks to the UI !!
+  
+  Or maybe not?
+  What do we need to be able to do with the UI:
+  
+- Display list of entries and move between them
+- Dive in and out of pages
+- Hide / Show elements
+- Change Text
+- Change Images
+
+Ideally we want a view model pattern so we dont need to care how the UI looks like, so we will make a class in the game that holds the actual info and provide hooks to the outside
+Similar to Ww we can make a class called MainMenu.cs which is a thin holder for info related to that and hooks
+How can we connect the csaml protobuf control ontop of that, what do we need...
+  
+- To Make this work:
+ -> Convert the csaml and the csaml.lua into something loadable by our engine
+ -> replace all #RESOURCE blocks, parse number attributes and check fields
+    -->
+
+<Page LayoutMode="Relative" Width="100" Height="100">
+  <Image Source="{Resource Textures\UI\MainMenuBackground.png}" Mode="Stretch" LayoutMode="Relative" Width="100" Height="100"/>
+  <Text Text="GrandSeal Version " Left="5" Top="5"/>
+  <Text Name="TextVersion" Left="90" Top="5"/>
+  <Text Text="FPS: " Left="5" Top="40"/>
+  <Text Name="TextFPS" Left ="30" Top="40"/>
+  <Frame HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="200" Height="400">
+    <Image Name="MenuStart" Top="10" HorizontalAlignment="Center" Width="180" Height="20"/>
+    <Image Name="MenuLoad" Top="40" HorizontalAlignment="Center" Width="180" Height="20"/>
+    <Image Name="MenuOptions" Top="80" HorizontalAlignment="Center" Width="180" Height="20"/>
+    <Image Name="MenuExit" Top="120" HorizontalAlignment="Center" Width="180" Height="20"/>
+  </Frame>
+</Page>

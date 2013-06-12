@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|Win32">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|Win32">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{FF46530A-E58D-41FA-A095-AE3CB4116572}</ProjectGUID>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+    <PropertyGroup>
+      <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+      <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Building Custom Rule C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" "-HC:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1" "-BC:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1" --check-stamp-file "C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeLists.txt;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeLists.txt;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeVS11FindMake.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeSystem.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeCCompiler.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeCXXCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeRCCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\cmake\OptimalOptions.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\cmake\DetermineProcessor.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Building Custom Rule C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" "-HC:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1" "-BC:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1" --check-stamp-file "C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeLists.txt;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeLists.txt;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeVS11FindMake.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeSystem.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeCCompiler.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeCXXCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeRCCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\cmake\OptimalOptions.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\cmake\DetermineProcessor.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Building Custom Rule C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" "-HC:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1" "-BC:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1" --check-stamp-file "C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeLists.txt;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeLists.txt;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeVS11FindMake.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeSystem.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeCCompiler.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeCXXCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeRCCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\cmake\OptimalOptions.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\cmake\DetermineProcessor.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\generate.stamp</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Building Custom Rule C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+"C:\Program Files (x86)\CMake 2.8\bin\cmake.exe" "-HC:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1" "-BC:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1" --check-stamp-file "C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\generate.stamp"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeLists.txt;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeLists.txt;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeVS11FindMake.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeSystem.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeCCompiler.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeCXXCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeGenericSystem.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\WindowsPaths.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\2.8.10.2\CMakeRCCompiler.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeRCInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCXXInformation.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\Platform\Windows-MSVC.cmake;C:\Program Files (x86)\CMake 2.8\share\cmake-2.8\Modules\CMakeCommonLanguageInclude.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\cmake\OptimalOptions.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\cmake\DetermineProcessor.cmake;C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\generate.stamp</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="CMakeFiles\35d01039d6366cfd43466f088e161bb3\ALL_BUILD.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Build all projects</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeFiles/35d01039d6366cfd43466f088e161bb3/ALL_BUILD.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\ALL_BUILD</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Build all projects</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeFiles/35d01039d6366cfd43466f088e161bb3/ALL_BUILD.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\ALL_BUILD</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">Build all projects</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeFiles/35d01039d6366cfd43466f088e161bb3/ALL_BUILD.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|Win32'">C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\ALL_BUILD</Outputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">Build all projects</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">setlocal
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/CMakeFiles/35d01039d6366cfd43466f088e161bb3/ALL_BUILD.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|Win32'">C:\_dev\CarbonExt\nvidia-texture-tools 2.0.8-1\CMakeFiles\ALL_BUILD</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CMakeFiles\ALL_BUILD" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/ZERO_CHECK.vcxproj">
+      <Project>B57B3DD8-030D-4C39-B88C-6EBCB445044D</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/filtertest.vcxproj">
+      <Project>5B8C370E-BFC7-42DC-BFDF-B50FF95261C0</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/nvassemble.vcxproj">
+      <Project>FAE5E5F7-06AF-405D-8872-545F3C0BBD48</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/nvcompress.vcxproj">
+      <Project>3ED87CC7-69E7-40C3-B83D-FD40439D53CA</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvcore/nvcore.vcxproj">
+      <Project>6D0762DE-EF0B-4F9C-BB46-41F1047DF593</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/nvddsinfo.vcxproj">
+      <Project>E6B045C9-89DA-4015-970C-B4EFEFDFC8ED</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/nvdecompress.vcxproj">
+      <Project>0F262D14-102D-44EA-8DCC-164F97AC2EED</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvimage/nvimage.vcxproj">
+      <Project>758C3BBA-5827-4D97-9D58-77954B0F99E1</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/nvimgdiff.vcxproj">
+      <Project>7282BCFE-F144-4B52-9330-FF824690840D</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvmath/nvmath.vcxproj">
+      <Project>A8F47EEC-A99E-434D-B5A9-3A36E6AA0A50</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/nvtt.vcxproj">
+      <Project>86835B14-4DE2-4D02-8DA7-A7CAC56A3D00</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/nvzoom.vcxproj">
+      <Project>422AD2E3-41D2-4422-AF2C-998ACCA16B47</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvcore/poshlib/posh.vcxproj">
+      <Project>54C45AEC-32E9-4AB2-BB1A-180E3BA57C75</Project>
+    </ProjectReference>
+    <ProjectReference Include="C:/_dev/CarbonExt/nvidia-texture-tools 2.0.8-1/src/nvtt/squish/squish.vcxproj">
+      <Project>5B62E45E-EF46-466E-8922-AF6EB7D03DEC</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
