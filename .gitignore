@@ -1,0 +1,19 @@
+*.suo
+*.DotSettings.user
+*.pb.cc
+*.pb.h
+*.pb.cs
+*.sdf
+*.opensdf
+bin
+obj
+Build
+x64
+x86
+ipch
+tmp
+
+# Network specific excludes from protogen
+CSharpOptions.cs
+DescriptorProtoFile.cs
+network.bin

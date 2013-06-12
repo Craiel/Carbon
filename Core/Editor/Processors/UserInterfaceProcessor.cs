@@ -5,6 +5,10 @@ using Core.Engine.Resource.Resources;
 
 namespace Core.Editor.Processors
 {
+    using System.Text.RegularExpressions;
+
+    using Core.Utils;
+
     public struct UserInterfaceProcessingOptions
     {
         public ScriptProcessingOptions ScriptOptions;
@@ -12,6 +16,8 @@ namespace Core.Editor.Processors
 
     public class UserInterfaceProcessor
     {
+        private static readonly Regex CsamlFieldRegex = new Regex("{([a-z]+)[\\s]*([^\"]*)}", RegexOptions.IgnoreCase);
+
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
@@ -35,7 +41,9 @@ namespace Core.Editor.Processors
             {
                 using (var reader = new StreamReader(stream))
                 {
-                    resource.CsamlData = reader.ReadToEnd();
+                    string data = reader.ReadToEnd();
+                    data = CsamlFieldRegex.Replace(data, CsamlFieldEvaluator);
+                    resource.CsamlData = data;
                 }
             }
 
@@ -43,6 +51,34 @@ namespace Core.Editor.Processors
             resource.Script = ScriptProcessor.Process(scriptPath, options.ScriptOptions);
 
             return resource;
+        }
+
+        private static string CsamlFieldEvaluator(Match match)
+        {
+            if (match.Captures.Count <= 0 || match.Groups.Count < 2)
+            {
+                System.Diagnostics.Trace.TraceWarning("Could not evaluate Resource, no capture data");
+                return "ERROR";
+            }
+
+            string fieldId = match.Groups[1].Value.ToLower();
+            string fieldValue = match.Groups.Count > 2 ? match.Groups[2].Value : null;
+            switch (fieldId)
+            {
+                case "resource":
+                    {
+                        if (string.IsNullOrEmpty(fieldValue))
+                        {
+                            System.Diagnostics.Trace.TraceWarning("Argument missing in resource Field");
+                            return "ERROR";
+                        }
+
+                        return HashUtils.BuildResourceHash(fieldValue);
+                    }
+            }
+
+            System.Diagnostics.Trace.TraceWarning("Unknown Field in Script: " + match.Captures[0].Value);
+            return "ERROR";
         }
     }
 }
