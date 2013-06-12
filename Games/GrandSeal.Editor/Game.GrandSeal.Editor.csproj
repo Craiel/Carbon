@@ -433,7 +433,9 @@
   <ItemGroup>
     <Resource Include="Resources\no_preview.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Logic\Docking\Theme\Images\DockAnchorableBottom.png" />
     <Resource Include="Logic\Docking\Theme\Images\DockAnchorableLeft.png" />

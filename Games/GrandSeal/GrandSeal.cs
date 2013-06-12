@@ -12,21 +12,12 @@ using GrandSeal.Ninject;
 
 namespace GrandSeal
 {
-    public enum SceneKeys
-    {
-        Menu = 1,
-        WorldMap = 100,
-        Town = 200,
-        Battle = 300
-    }
-
     public class GrandSeal : CarbonGame, IGrandSeal
     {
         private readonly IEngineFactory factory;
         private readonly ILog log;
         private readonly IGrandSealGameState gameState;
         private readonly IGrandSealScriptingProvider scriptingProvider;
-        private readonly IRenderer renderer;
 
         private bool clearCacheOnNextPass;
         
@@ -38,7 +29,6 @@ namespace GrandSeal
         {
             this.factory = factory;
             this.log = factory.Get<IApplicationLog>().AquireContextLog("GrandSeal");
-            this.renderer = factory.Get<IRenderer>();
 
             this.gameState = factory.Get<IGrandSealGameState>();
             this.scriptingProvider = factory.GetScriptingProvider(this);
@@ -61,9 +51,7 @@ namespace GrandSeal
             this.gameState.Initialize(this.Graphics);
 
             this.gameState.ScriptingEngine.Register(this.scriptingProvider);
-
-            // this.gameState.SceneManager.Register((int)SceneKeys.Test, factory.Get<ITestScene>());
-
+            
             var content = new EngineContent { FallbackTexture = HashUtils.BuildResourceHash(@"Textures\default.dds") };
             this.SetEngineContent(content);
 
@@ -71,7 +59,8 @@ namespace GrandSeal
             var size = new TypedVector2<int>(1024, 768);
             this.Window.Size = new Size(size.X, size.Y);
            
-            this.gameState.SceneManager.Activate((int)SceneKeys.Menu);
+            // Activate the entry scene, has to be at key 0
+            this.gameState.SceneManager.Activate(0);
             this.gameState.SceneManager.Resize(size);
             this.gameState.ScriptingEngine.Register(this.gameState.SceneManager.ActiveScene);
         }
@@ -135,12 +124,12 @@ namespace GrandSeal
             base.OnClose(sender, e);
         }
 
-        public void SwitchScene(SceneKeys key)
+        public void SwitchScene(int key)
         {
             lock (this.RenderSynchronizationLock)
             {
                 this.gameState.ScriptingEngine.Unregister(this.gameState.SceneManager.ActiveScene);
-                this.gameState.SceneManager.Activate((int)key);
+                this.gameState.SceneManager.Activate(key);
                 this.gameState.SceneManager.Resize(new TypedVector2<int>(this.Window.Size.Width, this.Window.Size.Height));
                 this.gameState.ScriptingEngine.Register(this.gameState.SceneManager.ActiveScene);
             }
