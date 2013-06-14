@@ -20,11 +20,11 @@ namespace GrandSeal.Logic
         [ScriptingMethod]
         public void SwitchScene(string scene)
         {
-            SceneKeys key;
+            /*SceneKeys key;
             if (Enum.TryParse(scene, out key))
             {
                 this.game.SwitchScene(key);
-            }
+            }*/
         }
 
         [ScriptingMethod]

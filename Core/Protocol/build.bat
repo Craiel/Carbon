@@ -1,6 +1,6 @@
 set OLDDIR=%CD%
 
-SET VERSIONROOT=%1\..\..\..\CarbonExt\protobuf-csharp-port\2.4.1.521\tools
+SET VERSIONROOT=%1\..\..\External\protobuf-csharp-port\2.4.1.521\tools
 SET CPPTARGET=%1\CPP
 SET SHARPTARGET=%1\C#
 

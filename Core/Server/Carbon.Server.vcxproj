@@ -57,12 +57,12 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\..\CarbonExt\boost\1.52;$(ProjectDir)\..\..\..\CarbonExt\leveldb\1.9.0\include;$(ProjectDir)\..\..\..\CarbonExt\protobuf\2.4.1\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\..\..\External\boost\1.52;$(ProjectDir)\..\..\External\leveldb\1.9.0\include;$(ProjectDir)\..\..\External\protobuf\2.4.1\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(ProjectDir)\..\..\..\CarbonExt\boost\1.52\lib\x86_64;$(ProjectDir)\..\..\..\CarbonExt\leveldb\1.9.0\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\..\..\External\boost\1.52\lib\x86_64;$(ProjectDir)\..\..\External\leveldb\1.9.0\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libboost_date_time-vc110-mt-gd-1_52.lib;libboost_system-vc110-mt-gd-1_52.lib;libboost_thread-vc110-mt-gd-1_52.lib;libboost_filesystem-vc110-mt-gd-1_52.lib;LevelDB.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>

@@ -1,19 +1,38 @@
+# git ls-files --others --exclude-from=.git/info/exclude
+# Lines that start with '#' are comments.
+# For a project mostly in C, the following would be a good set of
+# exclude patterns (uncomment them if you want to use them):
+# *.[oa]
+# *~
+
+# Windows stuff
+Thumbs.db
+
+# Visual studio stuff
 *.suo
 *.DotSettings.user
+*.sdf
+*.opensdf
+*.obj
+*.pch
+*.ipch
+*.pdb
+*.user
+*.vspscc
+*_i.c
+*_p.c
+*.o
+tmp
+obj
+
+# Misc
+*.log
+
+# Project Specific ignores
+# Network specific excludes from protogen
 *.pb.cc
 *.pb.h
 *.pb.cs
-*.sdf
-*.opensdf
-bin
-obj
-Build
-x64
-x86
-ipch
-tmp
-
-# Network specific excludes from protogen
 CSharpOptions.cs
 DescriptorProtoFile.cs
 network.bin

@@ -64,14 +64,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LuaInterface">
-      <HintPath>..\..\..\CarbonExt\LuaInterface\2.0.4\x64\LuaInterface.dll</HintPath>
+      <HintPath>..\..\External\LuaInterface\2.0.4\x64\LuaInterface.dll</HintPath>
     </Reference>
     <Reference Include="Ninject">
-      <HintPath>..\..\..\CarbonExt\Ninject\3.0.0.15\Ninject.dll</HintPath>
+      <HintPath>..\..\External\Ninject\3.0.0.15\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\CarbonExt\SlimDX Jan 2012\x64\SlimDX.dll</HintPath>
+      <HintPath>..\..\External\SlimDX Jan 2012\x64\SlimDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -139,7 +139,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)..\CarbonExt\sqllite\1.0.84.0\x64\Deploy.bat" $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)External\sqllite\1.0.84.0\x64\Deploy.bat" $(TargetDir)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
