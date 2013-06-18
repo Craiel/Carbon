@@ -112,8 +112,11 @@
     <Compile Include="Contracts\Scene\ISceneEntity.cs" />
     <Compile Include="Contracts\Scene\IScene.cs" />
     <Compile Include="Contracts\Scene\ISceneManager.cs" />
+    <Compile Include="Contracts\UserInterface\IUserInterface.cs" />
     <Compile Include="Contracts\UserInterface\IUserInterfaceConsole.cs" />
     <Compile Include="Contracts\UserInterface\IUserInterfaceControl.cs" />
+    <Compile Include="Contracts\UserInterface\IUserInterfaceFrame.cs" />
+    <Compile Include="Contracts\UserInterface\IUserInterfaceImage.cs" />
     <Compile Include="Logic\CarbonConsole.cs" />
     <Compile Include="Logic\CarbonGraphics.cs" />
     <Compile Include="Logic\CarbonWindow.cs">
@@ -237,6 +240,7 @@
     <Compile Include="Logic\EngineComponentStack.cs" />
     <Compile Include="Scene\SceneGraph.cs" />
     <Compile Include="Scene\SceneManager.cs" />
+    <Compile Include="UserInterface\UserInterface.cs" />
     <Compile Include="UserInterface\UserInterfaceConsole.cs" />
     <Compile Include="UserInterface\UserInterfaceControl.cs" />
   </ItemGroup>
