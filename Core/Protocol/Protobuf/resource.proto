@@ -129,14 +129,95 @@ message Stage {
 	repeated StageModel Models = 12;
 }
 
-message Script {
+message Script {	
 	required int32 Version = 1 [default = 1];
 	
 	required bytes ScriptData = 2;
 }
 
+message CsamlAttribute {
+	enum CsamlAttributeType
+	{
+		Unknown = 0;
+		Name = 1;
+		Width = 2;
+		Height = 3;
+		LayoutMode = 4;
+		Mode = 5;
+		Text = 6;
+		Source = 7;
+		TypeAttribute = 8;
+		Left = 9;
+		Top = 10;
+		Right = 11;
+		Bottom = 12;
+		HorizontalAlignment = 13;
+		VerticalAlignment = 14;
+	}
+	
+	enum CsamlAttributeValueType
+	{
+		String = 0;
+		Int = 1;
+		Float = 2;
+	}
+	
+	enum CsamlLayoutMode
+	{
+		LayoutAbsolute = 0;
+		LayoutRelative = 1;
+	}
+	
+	enum CsamlControlSizingMode
+	{
+		SizeNormal = 0;
+		SizeStretch = 1;
+	}
+	
+	enum CsamlHorizontalAlignmentEnum
+	{
+		AlignLeft = 0;
+		AlignCenterH = 1;
+		AlignRight = 2;
+	}
+	
+	enum CsamlVerticalAlignmentEnum
+	{
+		AlignTop = 0;
+		AlignCenterV = 1;
+		AlignBottom = 2;
+	}
+	
+	required CsamlAttributeType Type = 1;
+	required CsamlAttributeValueType ValueType = 2 [default = String];
+	optional string ValueString = 3;
+	optional int32 ValueInt = 4;
+	optional float ValueFloat = 5;
+}
+
+message CsamlNode {
+	enum CsamlNodeType
+	{
+		Unknown = 0;
+		Frame = 1;
+		Image = 2;
+		SolidText = 3;
+		DynamicText = 4;
+		Console = 5;
+		Page = 6;
+	}
+	
+	required CsamlNodeType Type = 1;
+	repeated CsamlAttribute Attributes = 2;
+	repeated CsamlNode Children = 3;
+}
+
+message Csaml {
+	repeated CsamlNode Nodes = 1;
+}
+
 message UserInterface {
 	required int32 Version = 1 [default = 1];
-	required bytes Csaml = 2;
+	required Csaml Csaml = 2;
 	required Script Script = 3;
 }

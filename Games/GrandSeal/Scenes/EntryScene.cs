@@ -1,9 +1,61 @@
-﻿namespace GrandSeal.Scenes
+﻿using Core.Engine.Contracts;
+using Core.Engine.Contracts.Rendering;
+using Core.Engine.Logic;
+using Core.Engine.Scene;
+using Core.Utils.Contracts;
+
+namespace GrandSeal.Scenes
 {
-    /*public interface ITestScene : IScene
+    using Contracts;
+
+    using Core.Engine.Contracts.UserInterface;
+    using Core.Engine.Resource.Resources;
+    using Core.Engine.UserInterface;
+    using Core.Utils;
+
+    /// <summary>
+    /// Entry Point scene for GrandSeal
+    /// </summary>
+    public class EntryScene : Scene, IEntryScene
     {
+        private readonly IEngineFactory factory;
+        private readonly ILog log;
+        private readonly IGrandSealGameState gameState;
+
+        private IUserInterface testInterface;
+
+        // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
+        public EntryScene(IEngineFactory factory)
+        {
+            this.factory = factory;
+            this.log = factory.Get<IApplicationLog>().AquireContextLog("EntryScene");
+            this.gameState = factory.Get<IGrandSealGameState>();
+        }
+
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
+        public override void Initialize(Core.Engine.Contracts.Logic.ICarbonGraphics graphics)
+        {
+            base.Initialize(graphics);
+
+            var resource = this.gameState.ResourceManager.Load<UserInterfaceResource>(HashUtils.BuildResourceHash(@"UserInterface\MainMenu.csaml"));
+            this.testInterface = new UserInterface(this.factory, resource);
+            this.testInterface.Initialize(graphics);
+        }
+
+        public override void Render(IFrameManager frameManager)
+        {
+        }
+
+        public override void Resize(TypedVector2<int> size)
+        {
+        }
     }
 
+    /*
     public class TestScene : Scene, ITestScene
     {
         private readonly ILog log;

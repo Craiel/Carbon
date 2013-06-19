@@ -58,6 +58,10 @@ namespace GrandSeal
             // Set our initial size
             var size = new TypedVector2<int>(1024, 768);
             this.Window.Size = new Size(size.X, size.Y);
+
+            // Setup the entry scene
+            var entryScene = this.factory.Get<IEntryScene>();
+            this.gameState.SceneManager.Register(0, entryScene);
            
             // Activate the entry scene, has to be at key 0
             this.gameState.SceneManager.Activate(0);

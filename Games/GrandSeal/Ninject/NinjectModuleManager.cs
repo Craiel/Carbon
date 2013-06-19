@@ -6,6 +6,8 @@ using GrandSeal.Logic;
 
 namespace GrandSeal.Ninject
 {
+    using Scenes;
+
     public static class NinjectModuleManager
     {
         public static NinjectModule[] GetModules()
@@ -27,6 +29,8 @@ namespace GrandSeal.Ninject
                 this.Bind<IApplicationLog>().To<ApplicationLog>();
                 this.Bind<IGrandSealScriptingProvider>().To<GrandSealScriptingProvider>().InSingletonScope();
                 this.Bind<IGrandSealGameState>().To<GrandSealGameState>().InSingletonScope();
+
+                this.Bind<IEntryScene>().To<EntryScene>().InSingletonScope();
             }
         }
     }

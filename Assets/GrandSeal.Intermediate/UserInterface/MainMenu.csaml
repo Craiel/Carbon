@@ -23,16 +23,16 @@ How can we connect the csaml protobuf control ontop of that, what do we need...
  -> replace all #RESOURCE blocks, parse number attributes and check fields
     -->
 
-<Page LayoutMode="Relative" Width="100" Height="100">
-  <Image Source="{Resource Textures\UI\MainMenuBackground.png}" Mode="Stretch" LayoutMode="Relative" Width="100" Height="100"/>
-  <Text Text="GrandSeal Version " Left="5" Top="5"/>
-  <Text Name="TextVersion" Left="90" Top="5"/>
-  <Text Text="FPS: " Left="5" Top="40"/>
-  <Text Name="TextFPS" Left ="30" Top="40"/>
-  <Frame HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="200" Height="400">
-    <Image Name="MenuStart" Top="10" HorizontalAlignment="Center" Width="180" Height="20"/>
-    <Image Name="MenuLoad" Top="40" HorizontalAlignment="Center" Width="180" Height="20"/>
-    <Image Name="MenuOptions" Top="80" HorizontalAlignment="Center" Width="180" Height="20"/>
-    <Image Name="MenuExit" Top="120" HorizontalAlignment="Center" Width="180" Height="20"/>
+<Page LayoutMode="LayoutRelative" Width="100" Height="100">
+  <Image Source="{Resource Textures\UI\MainMenuBackground.png}" Mode="SizeStretch" LayoutMode="LayoutRelative" Width="100" Height="100"/>
+  <SolidText Text="GrandSeal Version " Left="5" Top="5"/>
+  <DynamicText Name="TextVersion" Left="90" Top="5"/>
+  <SolidText Text="FPS: " Left="5" Top="40"/>
+  <DynamicText Name="TextFPS" Left ="30" Top="40"/>
+  <Frame HorizontalAlignment="AlignCenterH" VerticalAlignment="AlignBottom" Width="200" Height="400">
+    <Image Name="MenuStart" Top="10" HorizontalAlignment="AlignCenterH" Width="180" Height="20"/>
+    <Image Name="MenuLoad" Top="40" HorizontalAlignment="AlignCenterH" Width="180" Height="20"/>
+    <Image Name="MenuOptions" Top="80" HorizontalAlignment="AlignCenterH" Width="180" Height="20"/>
+    <Image Name="MenuExit" Top="120" HorizontalAlignment="AlignCenterH" Width="180" Height="20"/>
   </Frame>
 </Page>

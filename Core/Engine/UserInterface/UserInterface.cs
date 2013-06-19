@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Xml;
 
 using Core.Engine.Contracts;
 using Core.Engine.Contracts.UserInterface;
@@ -9,13 +8,10 @@ using Core.Engine.Resource.Resources;
 
 namespace Core.Engine.UserInterface
 {
+    using Core.Protocol.Resource;
+
     public class UserInterface : EngineComponent, IUserInterface
     {
-        private const string NodeImage = "image";
-        private const string NodeFrame = "frame";
-
-        private const string AttributeName = "name";
-
         private readonly IEngineFactory factory;
         private readonly UserInterfaceResource data;
 
@@ -49,48 +45,55 @@ namespace Core.Engine.UserInterface
         // -------------------------------------------------------------------
         private void ReloadCsaml()
         {
-            var document = new XmlDocument();
-            document.LoadXml(this.data.CsamlData);
+            // Clear out the old data
+            this.controls.Clear();
+            this.namedControls.Clear();
+            this.parentDictionary.Clear();
 
-            this.BuildControls(document.ChildNodes, null);
+            this.BuildControls(this.data.CsamlData.NodesList, null);
         }
 
-        private void BuildControls(XmlNodeList nodes, IUserInterfaceControl parent)
+        private void BuildControls(IEnumerable<CsamlNode> nodes, IUserInterfaceControl parent)
         {
-            foreach (XmlNode node in nodes)
+            foreach (CsamlNode node in nodes)
             {
                 // Create the control for this node
                 IUserInterfaceControl currentControl;
-                string key = node.Name.ToLower();
-                switch (key)
+                switch (node.Type)
                 {
-                    case NodeImage:
+                    case CsamlNode.Types.CsamlNodeType.Image:
                         {
                             currentControl = this.BuildImageControl(node);
                             break;
                         }
 
-                    case NodeFrame:
+                    case CsamlNode.Types.CsamlNodeType.Frame:
                         {
                             currentControl = this.BuildFrameControl(node);
                             break;
                         }
 
+                    case CsamlNode.Types.CsamlNodeType.Console:
+                        {
+                            currentControl = this.BuildConsoleControl(node);
+                            break;
+                        }
+
                     default:
                         {
-                            throw new InvalidDataException("Unknown Node Type: " + key);
+                            throw new InvalidDataException("Unknown Node Type: " + node.Type);
                         }
                 }
 
                 // See if this node is named, if so add it to our dictionary
-                if (!string.IsNullOrEmpty(node.Name))
+                if (!string.IsNullOrEmpty(currentControl.Name))
                 {
-                    if (this.namedControls.ContainsKey(node.Name))
+                    if (this.namedControls.ContainsKey(currentControl.Name))
                     {
-                        throw new InvalidDataException("Node with the same name was already present: " + node.Name);
+                        throw new InvalidDataException("Node with the same name was already present: " + currentControl.Name);
                     }
 
-                    this.namedControls.Add(node.Name, currentControl);
+                    this.namedControls.Add(currentControl.Name, currentControl);
                 }
 
                 // Add the node to the hierarchy check
@@ -98,37 +101,51 @@ namespace Core.Engine.UserInterface
                 {
                     this.parentDictionary.Add(currentControl, parent);
                 }
+                
+                // Add the control to the general list
+                this.controls.Add(currentControl);
 
                 // Process the children
-                if (node.ChildNodes.Count > 0)
+                if (node.ChildrenCount > 0)
                 {
-                    this.BuildControls(node.ChildNodes, currentControl);
+                    this.BuildControls(node.ChildrenList, currentControl);
                 }
             }
         }
 
-        private IUserInterfaceImage BuildImageControl(XmlNode source)
+        private IUserInterfaceImage BuildImageControl(CsamlNode source)
         {
+            var control = this.factory.Get<IUserInterfaceImage>();
+            this.SetBasicAttributes(control, source.AttributesList);
+
+            return control;
         }
 
-        private IUserInterfaceFrame BuildFrameControl(XmlNode source)
+        private IUserInterfaceFrame BuildFrameControl(CsamlNode source)
         {
+            var control = this.factory.Get<IUserInterfaceFrame>();
+            this.SetBasicAttributes(control, source.AttributesList);
+
+            return control;
         }
 
-        private IUserInterfaceConsole BuildConsoleControl(XmlNode source)
+        private IUserInterfaceConsole BuildConsoleControl(CsamlNode source)
         {
+            var control = this.factory.Get<IUserInterfaceConsole>();
+            this.SetBasicAttributes(control, source.AttributesList);
+
+            return control;
         }
 
-        private void SetBasicAttributes(IUserInterfaceControl control, XmlAttributeCollection source)
+        private void SetBasicAttributes(IUserInterfaceControl control, IEnumerable<CsamlAttribute> source)
         {
-            foreach (XmlAttribute attribute in source)
+            foreach (CsamlAttribute attribute in source)
             {
-                string key = attribute.Name.ToLower();
-                switch (key)
+                switch (attribute.Type)
                 {
-                    case AttributeName:
+                    case CsamlAttribute.Types.CsamlAttributeType.Name:
                         {
-                            control.Name = attribute.Value;
+                            control.Name = attribute.ValueString;
                             continue;
                         }
                 }

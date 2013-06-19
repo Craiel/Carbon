@@ -7,6 +7,8 @@ namespace Core.Engine.UserInterface
 {
     public class UserInterfaceControl : EngineComponent, IUserInterfaceControl
     {
+        public string Name { get; set; }
+
         public virtual bool IsActive { get; set; }
 
         public virtual bool IsVisible { get; set; }

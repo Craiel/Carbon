@@ -6,6 +6,8 @@ namespace Core.Engine.Contracts.UserInterface
 {
     public interface IUserInterfaceControl : IEngineComponent
     {
+        string Name { get; set; }
+
         bool IsActive { get; set; }
         bool IsVisible { get; set; }
 
