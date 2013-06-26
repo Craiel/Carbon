@@ -8,6 +8,9 @@ using Core.Engine.Resource.Resources;
 
 namespace Core.Engine.UserInterface
 {
+    using System.Collections.ObjectModel;
+
+    using Core.Engine.Contracts.Scene;
     using Core.Protocol.Resource;
 
     public class UserInterface : EngineComponent, IUserInterface
@@ -19,6 +22,8 @@ namespace Core.Engine.UserInterface
         private readonly IDictionary<string, IUserInterfaceControl> namedControls;
         private readonly IDictionary<IUserInterfaceControl, IUserInterfaceControl> parentDictionary;
 
+        private readonly List<ISceneEntity> entities;
+
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -27,6 +32,7 @@ namespace Core.Engine.UserInterface
             this.factory = factory;
             this.data = data;
 
+            this.entities = new List<ISceneEntity>();
             this.controls = new List<IUserInterfaceControl>();
             this.namedControls = new Dictionary<string, IUserInterfaceControl>();
             this.parentDictionary = new Dictionary<IUserInterfaceControl, IUserInterfaceControl>();
@@ -35,6 +41,14 @@ namespace Core.Engine.UserInterface
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public ReadOnlyCollection<ISceneEntity> Entities
+        {
+            get
+            {
+                return this.entities.AsReadOnly();
+            }
+        }
+
         public void Initialize()
         {
             this.ReloadCsaml();

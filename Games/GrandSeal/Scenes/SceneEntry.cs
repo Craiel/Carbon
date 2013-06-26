@@ -6,28 +6,35 @@ using Core.Utils.Contracts;
 
 namespace GrandSeal.Scenes
 {
+    using System.Collections.Generic;
+
     using Contracts;
 
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Scene;
     using Core.Engine.Contracts.UserInterface;
+    using Core.Engine.Logic.Scripting;
+    using Core.Engine.Rendering;
     using Core.Engine.Resource.Resources;
+    using Core.Engine.Resource.Resources.Stage;
     using Core.Engine.UserInterface;
     using Core.Utils;
 
     /// <summary>
     /// Entry Point scene for GrandSeal
     /// </summary>
-    public class EntryScene : Scene, IEntryScene
+    public class SceneEntry : Scene, ISceneEntry
     {
         private readonly IEngineFactory factory;
         private readonly ILog log;
         private readonly IGrandSealGameState gameState;
 
-        private IUserInterface testInterface;
-
-        // -------------------------------------------------------------------
+        private ICarbonGraphics graphics;
+        
+        // --------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public EntryScene(IEngineFactory factory)
+        public SceneEntry(IEngineFactory factory)
         {
             this.factory = factory;
             this.log = factory.Get<IApplicationLog>().AquireContextLog("EntryScene");
@@ -37,13 +44,20 @@ namespace GrandSeal.Scenes
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override void Initialize(Core.Engine.Contracts.Logic.ICarbonGraphics graphics)
+        public override void Initialize(ICarbonGraphics graphic)
         {
-            base.Initialize(graphics);
+            base.Initialize(graphic);
 
-            var resource = this.gameState.ResourceManager.Load<UserInterfaceResource>(HashUtils.BuildResourceHash(@"UserInterface\MainMenu.csaml"));
-            this.testInterface = new UserInterface(this.factory, resource);
-            this.testInterface.Initialize(graphics);
+            this.log.Info("Entry scene initializing...");
+
+            this.graphics = graphic;
+
+            // Load the init script for the scene, we only register the scene in the script environment temporary for this
+            this.gameState.ScriptingEngine.Register(this);
+            var resource = this.gameState.ResourceManager.Load<ScriptResource>(HashUtils.BuildResourceHash(@"Scripts\SceneEntry.lua"));
+            var script = new CarbonScript(resource);
+            this.gameState.ScriptingEngine.Execute(script);
+            this.gameState.ScriptingEngine.Unregister(this);
         }
 
         public override void Render(IFrameManager frameManager)
@@ -52,6 +66,48 @@ namespace GrandSeal.Scenes
 
         public override void Resize(TypedVector2<int> size)
         {
+        }
+        
+        [ScriptingMethod]
+        public void SceneTransition(string target, string initializeScriptHash)
+        {
+            string key = target.ToLower();
+            switch (key)
+            {
+                case "mainmenu":
+                    {
+                        this.log.Info("Transition into MainMenu Scene...");
+                        var scene = this.factory.Get<ISceneMainMenu>();
+                        scene.SceneScriptHash = initializeScriptHash;
+                        this.gameState.SceneManager.Register((int)SceneKey.MainMenu, scene);
+                        this.gameState.SceneManager.Prepare((int)SceneKey.MainMenu);
+                        this.gameState.SceneManager.Activate((int)SceneKey.MainMenu, suspendCurrent: true);
+                        break;
+                    }
+
+                default:
+                    {
+                        this.log.Error("Unknown scene for transition: " + key);
+                        break;
+                    }
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected override void Activate()
+        {
+            base.Activate();
+
+            this.gameState.ScriptingEngine.Register(this);
+        }
+
+        protected override void Deactivate()
+        {
+            this.gameState.ScriptingEngine.Unregister(this);
+
+            base.Deactivate();
         }
     }
 

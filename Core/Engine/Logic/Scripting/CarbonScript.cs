@@ -11,9 +11,9 @@ namespace Core.Engine.Logic.Scripting
         {
         }
 
-        public CarbonScript(RawResource resource)
+        public CarbonScript(ScriptResource resource)
         {
-            this.Script = System.Text.Encoding.ASCII.GetString(resource.Data);
+            this.Script = resource.Script;
         }
 
         // -------------------------------------------------------------------

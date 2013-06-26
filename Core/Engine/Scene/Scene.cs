@@ -17,6 +17,8 @@ namespace Core.Engine.Scene
         private readonly IDictionary<int, EngineComponentStack<ISceneEntity>> entityStacks;
         private readonly IDictionary<int, RenderableList<ISceneEntity>> entityRenderLists;
 
+        private bool isActive;
+
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
@@ -30,8 +32,33 @@ namespace Core.Engine.Scene
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public bool IsActive { get; set; }
+        public bool IsActive
+        {
+            get
+            {
+                return this.isActive;
+            }
+
+            set
+            {
+                if (this.isActive != value)
+                {
+                    this.isActive = value;
+                    if (value)
+                    {
+                        this.Activate();
+                    }
+                    else
+                    {
+                        this.Deactivate();
+                    }
+                }
+            }
+        }
+
         public bool IsVisible { get; set; }
+
+        public string SceneScriptHash { get; set; }
 
         public abstract void Render(IFrameManager frameManager);
         public abstract void Resize(TypedVector2<int> size);
@@ -116,6 +143,14 @@ namespace Core.Engine.Scene
             }
 
             this.entityRenderLists[list].Render(activeSet);
+        }
+
+        protected virtual void Activate()
+        {
+        }
+
+        protected virtual void Deactivate()
+        {
         }
 
         // Invalidate a node in all update lists

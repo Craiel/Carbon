@@ -12,6 +12,12 @@ using GrandSeal.Ninject;
 
 namespace GrandSeal
 {
+    public enum SceneKey
+    {
+        Entry = 0,
+        MainMenu = 1,
+    }
+
     public class GrandSeal : CarbonGame, IGrandSeal
     {
         private readonly IEngineFactory factory;
@@ -60,13 +66,13 @@ namespace GrandSeal
             this.Window.Size = new Size(size.X, size.Y);
 
             // Setup the entry scene
-            var entryScene = this.factory.Get<IEntryScene>();
-            this.gameState.SceneManager.Register(0, entryScene);
+            var entryScene = this.factory.Get<ISceneEntry>();
+            entryScene.SceneScriptHash = HashUtils.BuildResourceHash(@"Scripts\SceneEntry.lua");
+            this.gameState.SceneManager.Register((int)SceneKey.Entry, entryScene);
            
-            // Activate the entry scene, has to be at key 0
-            this.gameState.SceneManager.Activate(0);
+            // Activate the entry scene
+            this.gameState.SceneManager.Activate((int)SceneKey.Entry);
             this.gameState.SceneManager.Resize(size);
-            this.gameState.ScriptingEngine.Register(this.gameState.SceneManager.ActiveScene);
         }
 
         protected override void OnWindowResize(object sender, EventArgs eventArgs)

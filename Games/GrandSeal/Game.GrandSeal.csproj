@@ -82,10 +82,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\IApplicationLog.cs" />
-    <Compile Include="Contracts\IEntryScene.cs" />
+    <Compile Include="Contracts\ISceneEntry.cs" />
     <Compile Include="Contracts\IGrandSeal.cs" />
     <Compile Include="Contracts\IGrandSealGameState.cs" />
     <Compile Include="Contracts\IGrandSealScriptingProvider.cs" />
+    <Compile Include="Contracts\ISceneMainMenu.cs" />
     <Compile Include="Logic\ApplicationLog.cs" />
     <Compile Include="Logic\GrandSealScriptingProvider.cs" />
     <Compile Include="GrandSeal.cs" />
@@ -94,7 +95,8 @@
     <Compile Include="Ninject\FactoryExtension.cs" />
     <Compile Include="Ninject\NinjectModuleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scenes\EntryScene.cs" />
+    <Compile Include="Scenes\SceneMainMenu.cs" />
+    <Compile Include="Scenes\SceneEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

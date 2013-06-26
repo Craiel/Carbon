@@ -8,5 +8,7 @@ namespace Core.Engine.Contracts.Scene
     {
         bool IsActive { get; set; }
         bool IsVisible { get; set; }
+
+        string SceneScriptHash { get; set; }
     }
 }

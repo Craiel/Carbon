@@ -5,16 +5,6 @@
 # *.[oa]
 # *~
 
-# For now we ignore anything in here
-*.dll
-*.exe
-*.xml
-*.config
-*.fx
-*.lib
-*.ilk
-*.db
-*.manifest
-Data
-
-# To specifically include use the ! to negate
+# Ignore Blender backups for commits
+*.blend1
+*.blend2

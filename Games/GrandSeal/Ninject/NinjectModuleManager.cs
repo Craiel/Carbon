@@ -30,7 +30,8 @@ namespace GrandSeal.Ninject
                 this.Bind<IGrandSealScriptingProvider>().To<GrandSealScriptingProvider>().InSingletonScope();
                 this.Bind<IGrandSealGameState>().To<GrandSealGameState>().InSingletonScope();
 
-                this.Bind<IEntryScene>().To<EntryScene>().InSingletonScope();
+                this.Bind<ISceneEntry>().To<SceneEntry>().InSingletonScope();
+                this.Bind<ISceneMainMenu>().To<SceneMainMenu>().InSingletonScope();
             }
         }
     }
