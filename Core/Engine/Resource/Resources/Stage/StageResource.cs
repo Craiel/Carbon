@@ -6,13 +6,23 @@ namespace Core.Engine.Resource.Resources.Stage
     public class StageResource : ProtocolResource
     {
         internal const int Version = 1;
-        
+
+        // -------------------------------------------------------------------
+        // Constructor
+        // -------------------------------------------------------------------
+        public StageResource()
+        {
+            this.ResourceDictionary = new List<string>();
+        }
+
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
         public IList<StageCameraElement> Cameras { get; set; }
         public IList<StageLightElement> Lights { get; set; }
         public IList<StageModelElement> Models { get; set; }
+
+        public IList<string> ResourceDictionary { get; private set; } 
 
         public override void Load(Stream source)
         {

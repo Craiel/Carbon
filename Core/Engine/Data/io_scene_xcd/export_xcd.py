@@ -179,6 +179,8 @@ class XCDExporter:
         self._fileWriter('<meta name="filename" content=%s />' % self._filePath)
         self._fileWriter('<meta name="generator" content=%s />' % blenderVersion)
         self._fileWriter('</head><scene>')
+        
+        self._dump(self)
     
     def _WriteFooter(self):
         self._fileWriter('</scene></xcd>')
@@ -221,6 +223,27 @@ class XCDExporter:
         self._WriteCustomProperties(obj)
         
         self._fileWriter('</mesh>')
+        
+    def _WriteStageElement(self, obj, matrix, scene):
+        id = quoteattr(unique_name(obj, obj.name, self._uuidCacheObjects, clean_func=self._Clean, sep="_"))
+        
+        location, rotation, scale = matrix.decompose()
+        rotation = rotation.to_axis_angle()
+        rotation = rotation[0][:] + (rotation[1], )
+        
+        link = obj.library.filepath.replace("//", "").replace(".blend", ".dae");
+        self._fileWriter('<element id=%s mesh="%s"' % (id, link))
+        self._fileWriter('>')
+        
+        self._fileWriter('<translation>%.6f %.6f %.6f</translation>' % location[:])
+        self._fileWriter('<rotation>%.6f %.6f %.6f %.6f</rotation>' % rotation)
+        self._fileWriter('<scale>%.6f %.6f %.6f</scale>' % scale[:])
+        
+        self._WriteBoundingBox(obj.bound_box)
+        self._WriteLayers(obj.layers)
+        self._WriteCustomProperties(obj)
+        
+        self._fileWriter('</element>')
     
     def _WriteFog(self, world):
         if world:
@@ -381,6 +404,12 @@ class XCDExporter:
             self._WriteCustomProperty(key, hash[key])
         self._fileWriter('</customproperties>')
         
+    def _GetCustomPropertyValue(self, hash, property):
+        for key in hash.keys():
+            if key[0] == "_" or key[0] != property:
+                continue
+            return hash[key]
+        
     # -------------------------------------------------------------------------
     # Export Object Hierarchy (recursively called)
     # -------------------------------------------------------------------------
@@ -412,7 +441,8 @@ class XCDExporter:
                 self._WriteCamera(obj, objectMainMatrix, scene)
                 
             elif objectType == 'MESH':
-                self._WriteMesh(obj, objectMainMatrix, scene)
+                continue # skip meshes for now, dont think we need em here until later
+                #    self._WriteMesh(obj, objectMainMatrix, scene)
     
             elif objectType == 'LAMP':
                 data = obj.data
@@ -424,7 +454,9 @@ class XCDExporter:
                 elif type == 'SUN':
                     self._WriteDirectionalLight(object, objectMainMatrix, data, world)
                 else:
-                    self._WriteDirectionalLight(object, objectMainMatrix, data, world)
+                    self._WriteDirectionalLight(object, objectMainMatrix, data, world)                    
+            elif obj.library:
+                self._WriteStageElement(obj, objectMainMatrix, scene)
             else:
                 print("Info: Not exporting Extended info for [%s], object type [%s] has no explicit handling." % (object.name, objectType))
                 pass
