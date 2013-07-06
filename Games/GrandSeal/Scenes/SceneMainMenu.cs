@@ -1,24 +1,23 @@
-﻿using Core.Engine.Contracts;
+﻿using System;
+
+using Core.Engine.Contracts;
+using Core.Engine.Contracts.Logic;
 using Core.Engine.Contracts.Rendering;
+using Core.Engine.Contracts.Scene;
+using Core.Engine.Contracts.UserInterface;
 using Core.Engine.Logic;
+using Core.Engine.Logic.Scripting;
+using Core.Engine.Rendering;
+using Core.Engine.Resource.Resources;
+using Core.Engine.Resource.Resources.Stage;
 using Core.Engine.Scene;
+using Core.Engine.UserInterface;
 using Core.Utils.Contracts;
+
+using GrandSeal.Contracts;
 
 namespace GrandSeal.Scenes
 {
-    using System;
-    using Contracts;
-
-    using Core.Engine.Contracts.Logic;
-    using Core.Engine.Contracts.Scene;
-    using Core.Engine.Contracts.UserInterface;
-    using Core.Engine.Logic.Scripting;
-    using Core.Engine.Rendering;
-    using Core.Engine.Resource.Resources;
-    using Core.Engine.Resource.Resources.Stage;
-    using Core.Engine.UserInterface;
-    using Core.Utils;
-
     /// <summary>
     /// Entry Point scene for GrandSeal
     /// </summary>
@@ -101,7 +100,7 @@ namespace GrandSeal.Scenes
                 foreach (ISceneEntity entity in this.stage.Entities)
                 {
                     this.RegisterEntity(entity);
-                    this.AddSceneEntityToRenderingList(entity, 1);
+                    this.AddSceneEntityToRenderingList(entity, targetList: 1);
                 }
             }
         }

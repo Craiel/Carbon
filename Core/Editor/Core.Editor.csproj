@@ -78,6 +78,7 @@
     <Compile Include="Processors\UserInterfaceProcessor.cs" />
     <Compile Include="Processors\ScriptProcessor.cs" />
     <Compile Include="Resource\Generic\Data\BoolArrayType.cs" />
+    <Compile Include="Resource\Xcd\Scene\XcdElement.cs" />
     <Compile Include="Resource\Xcd\Scene\XcdBoundingBox.cs" />
     <Compile Include="Resource\Xcd\XcdProcessor.cs" />
     <Compile Include="Processors\FontProcessor.cs" />

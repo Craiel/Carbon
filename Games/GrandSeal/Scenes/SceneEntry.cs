@@ -1,25 +1,19 @@
-﻿using Core.Engine.Contracts;
+﻿using System;
+
+using Core.Engine.Contracts;
+using Core.Engine.Contracts.Logic;
 using Core.Engine.Contracts.Rendering;
 using Core.Engine.Logic;
+using Core.Engine.Logic.Scripting;
+using Core.Engine.Resource.Resources;
 using Core.Engine.Scene;
+using Core.Utils;
 using Core.Utils.Contracts;
+
+using GrandSeal.Contracts;
 
 namespace GrandSeal.Scenes
 {
-    using System.Collections.Generic;
-
-    using Contracts;
-
-    using Core.Engine.Contracts.Logic;
-    using Core.Engine.Contracts.Scene;
-    using Core.Engine.Contracts.UserInterface;
-    using Core.Engine.Logic.Scripting;
-    using Core.Engine.Rendering;
-    using Core.Engine.Resource.Resources;
-    using Core.Engine.Resource.Resources.Stage;
-    using Core.Engine.UserInterface;
-    using Core.Utils;
-
     /// <summary>
     /// Entry Point scene for GrandSeal
     /// </summary>
@@ -71,10 +65,16 @@ namespace GrandSeal.Scenes
         [ScriptingMethod]
         public void SceneTransition(string target, string initializeScriptHash)
         {
-            string key = target.ToLower();
+            SceneKey key;
+            if (!Enum.TryParse(target, out key))
+            {
+                this.log.Error("Unknown scene for transition: " + key);
+                return;
+            }
+
             switch (key)
             {
-                case "mainmenu":
+                case SceneKey.MainMenu:
                     {
                         this.log.Info("Transition into MainMenu Scene...");
                         var scene = this.factory.Get<ISceneMainMenu>();
@@ -87,7 +87,7 @@ namespace GrandSeal.Scenes
 
                 default:
                     {
-                        this.log.Error("Unknown scene for transition: " + key);
+                        this.log.Error("Scene for transition is not implemented: " + key);
                         break;
                     }
             }

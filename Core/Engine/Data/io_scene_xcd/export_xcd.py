@@ -232,7 +232,7 @@ class XCDExporter:
         rotation = rotation[0][:] + (rotation[1], )
         
         link = obj.library.filepath.replace("//", "").replace(".blend", ".dae");
-        self._fileWriter('<element id=%s mesh="%s"' % (id, link))
+        self._fileWriter('<element id=%s link="%s"' % (id, link))
         self._fileWriter('>')
         
         self._fileWriter('<translation>%.6f %.6f %.6f</translation>' % location[:])

@@ -16,5 +16,8 @@ namespace Core.Editor.Resource.Xcd
 
         [XmlElement(ElementName = "mesh")]
         public XcdMesh[] Meshes { get; set; }
+
+        [XmlElement(ElementName = "element")]
+        public XcdElement[] Elements { get; set; }
     }
 }

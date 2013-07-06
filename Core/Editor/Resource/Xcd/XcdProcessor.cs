@@ -1,19 +1,20 @@
-﻿namespace Core.Editor.Resource.Xcd
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+using Core.Editor.Logic;
+using Core.Editor.Resource.Generic.Data;
+using Core.Editor.Resource.Xcd.Scene;
+using Core.Engine.Resource.Resources.Stage;
+
+using SlimDX;
+
+namespace Core.Editor.Resource.Xcd
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-
-    using Core.Engine.Resource.Resources.Stage;
-
-    using Core.Editor.Resource.Generic.Data;
-    using Core.Editor.Resource.Xcd.Scene;
-
-    using SlimDX;
-
     public struct XcdProcessingOptions
     {
+        public ReferenceResolveDelegate ReferenceResolver;
     }
 
     public static class XcdProcessor
@@ -21,6 +22,9 @@
         private static readonly IList<StageCameraElement> CameraElements;
         private static readonly IList<StageLightElement> LightElements;
         private static readonly IList<StageModelElement> ModelElements;
+        private static readonly IList<string> ReferenceDictionary;
+
+        private static XcdProcessingOptions currentOptions;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -30,6 +34,7 @@
             CameraElements = new List<StageCameraElement>();
             LightElements = new List<StageLightElement>();
             ModelElements = new List<StageModelElement>();
+            ReferenceDictionary = new List<string>();
         }
 
         // -------------------------------------------------------------------
@@ -39,10 +44,12 @@
         {
             ClearCache();
 
+            currentOptions = options;
+
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 var stage = Xcd.Load(stream);
-                StageResource resource = new StageResource();
+                var resource = new StageResource();
                 if (stage.Scene == null)
                 {
                     throw new InvalidDataException("XCD File contains no scene information!");
@@ -76,6 +83,7 @@
             CameraElements.Clear();
             LightElements.Clear();
             ModelElements.Clear();
+            ReferenceDictionary.Clear();
         }
 
         private static void TranslateScene(XcdScene scene)
@@ -98,9 +106,9 @@
 
             if (scene.Meshes != null)
             {
-                foreach (XcdMesh mesh in scene.Meshes)
+                foreach (XcdElement element in scene.Elements)
                 {
-                    TranslateModel(mesh);
+                    TranslateModel(element);
                 }
             }
         }
@@ -171,26 +179,46 @@
             LightElements.Add(element);
         }
 
-        private static void TranslateModel(XcdMesh mesh)
+        private static void TranslateModel(XcdElement element)
         {
-            Vector3 translation = DataConversion.ToVector3(mesh.Translation.Data)[0];
-            Vector4 rotation = DataConversion.ToVector4(mesh.Rotation.Data)[0];
-            Vector3 scale = DataConversion.ToVector3(mesh.Scale.Data)[0];
-            var element = new StageModelElement
+            Vector3 translation = DataConversion.ToVector3(element.Translation.Data)[0];
+            Vector4 rotation = DataConversion.ToVector4(element.Rotation.Data)[0];
+            Vector3 scale = DataConversion.ToVector3(element.Scale.Data)[0];
+            var modelElement = new StageModelElement
             {
-                Id = mesh.Id,
+                Id = element.Id,
                 Translation = translation,
                 Rotation = rotation,
                 Scale = scale,
-                Properties = TranslateProperties(mesh.CustomProperties)
+                Properties = TranslateProperties(element.CustomProperties)
             };
 
-            if (mesh.LayerInfo != null)
+            if (!string.IsNullOrEmpty(element.Reference))
             {
-                element.LayerFlags = new List<bool>(mesh.LayerInfo.Data);
+                modelElement.Reference = GetReference(element.Reference);
             }
 
-            ModelElements.Add(element);
+            if (element.LayerInfo != null)
+            {
+                modelElement.LayerFlags = new List<bool>(element.LayerInfo.Data);
+            }
+
+            ModelElements.Add(modelElement);
+        }
+
+        private static int GetReference(string sourceReference)
+        {
+            string resolved = currentOptions.ReferenceResolver != null
+                                             ? currentOptions.ReferenceResolver(sourceReference)
+                                             : sourceReference;
+
+            if (ReferenceDictionary.Contains(resolved))
+            {
+                return ReferenceDictionary.IndexOf(resolved);
+            }
+
+            ReferenceDictionary.Add(resolved);
+            return ReferenceDictionary.Count - 1;
         }
 
         private static StagePropertyElement[] TranslateProperties(XcdCustomProperties customProperties)
