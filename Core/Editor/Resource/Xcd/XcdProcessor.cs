@@ -71,6 +71,8 @@ namespace Core.Editor.Resource.Xcd
                     resource.Models = ModelElements.ToArray();
                 }
 
+                resource.References = ReferenceDictionary;
+
                 return resource;
             }
         }
@@ -104,11 +106,11 @@ namespace Core.Editor.Resource.Xcd
                 }
             }
 
-            if (scene.Meshes != null)
+            if (scene.Elements != null)
             {
                 foreach (XcdElement element in scene.Elements)
                 {
-                    TranslateModel(element);
+                    TranslateElement(element);
                 }
             }
         }
@@ -179,7 +181,7 @@ namespace Core.Editor.Resource.Xcd
             LightElements.Add(element);
         }
 
-        private static void TranslateModel(XcdElement element)
+        private static void TranslateElement(XcdElement element)
         {
             Vector3 translation = DataConversion.ToVector3(element.Translation.Data)[0];
             Vector4 rotation = DataConversion.ToVector4(element.Rotation.Data)[0];
@@ -195,7 +197,7 @@ namespace Core.Editor.Resource.Xcd
 
             if (!string.IsNullOrEmpty(element.Reference))
             {
-                modelElement.Reference = GetReference(element.Reference);
+                modelElement.ReferenceId = GetReferenceId(element.Reference);
             }
 
             if (element.LayerInfo != null)
@@ -206,7 +208,7 @@ namespace Core.Editor.Resource.Xcd
             ModelElements.Add(modelElement);
         }
 
-        private static int GetReference(string sourceReference)
+        private static int GetReferenceId(string sourceReference)
         {
             string resolved = currentOptions.ReferenceResolver != null
                                              ? currentOptions.ReferenceResolver(sourceReference)

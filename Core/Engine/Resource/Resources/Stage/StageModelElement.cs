@@ -21,7 +21,7 @@ namespace Core.Engine.Resource.Resources.Stage
             System.Diagnostics.Debug.Assert(data.ScaleCount == 3, "Scale data has invalid count");
 
             this.Id = data.Id;
-            this.Reference = data.Reference;
+            this.ReferenceId = data.ReferenceId;
 
             this.Translation = VectorExtension.Vector3FromList(data.TranslationList);
             this.Rotation = VectorExtension.Vector4FromList(data.RotationList);
@@ -41,7 +41,7 @@ namespace Core.Engine.Resource.Resources.Stage
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public int Reference { get; set; }
+        public int ReferenceId { get; set; }
 
         public Vector3 Translation { get; set; }
         public Vector4 Rotation { get; set; }
@@ -49,7 +49,7 @@ namespace Core.Engine.Resource.Resources.Stage
 
         public Protocol.Resource.StageModel.Builder GetBuilder()
         {
-            var builder = new Protocol.Resource.StageModel.Builder { Id = this.Id, Reference = this.Reference };
+            var builder = new Protocol.Resource.StageModel.Builder { Id = this.Id, ReferenceId = this.ReferenceId };
 
             builder.AddRangeTranslation(this.Translation.ToList());
             builder.AddRangeRotation(this.Rotation.ToList());

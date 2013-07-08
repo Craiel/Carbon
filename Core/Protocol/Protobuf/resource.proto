@@ -112,7 +112,7 @@ message StageLight {
 
 message StageModel {
 	required string Id = 1;
-	required int32 Reference = 2;
+	required int32 ReferenceId = 2;
 	
 	optional int32 LayerFlags = 10;
 	repeated StageProperty Properties = 11;
@@ -124,6 +124,8 @@ message StageModel {
 
 message Stage {
 	required int32 Version = 1 [default = 1];
+	
+	repeated string References = 9;
 	
 	repeated StageCamera Cameras = 10;
 	repeated StageLight Lights = 11;

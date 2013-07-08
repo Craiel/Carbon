@@ -42,7 +42,7 @@
                 </DockPanel>
 
                 <TextBlock Text="Force Export" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverterInverted}, ConverterParameter={x:Static content:ResourceType.Script}}" Grid.Row="2" Margin="4"/>
-                <CheckBox IsChecked="{Binding Path=ForceExport}" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverterInverted}, ConverterParameter={x:Static content:ResourceType.Script}}" Grid.Row="2" Grid.Column="1" Margin="4"/>
+                <CheckBox IsChecked="{Binding Path=ForceSave}" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverterInverted}, ConverterParameter={x:Static content:ResourceType.Script}}" Grid.Row="2" Grid.Column="1" Margin="4"/>
                 
                 <TextBlock Text="Last Changed:" Grid.Row="3" Margin="4"/>
                 <TextBlock Text="{Binding Path=LastChangeDate}" Grid.Row="3" Grid.Column="1" Margin="4"/>

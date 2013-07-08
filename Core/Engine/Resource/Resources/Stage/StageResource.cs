@@ -14,7 +14,7 @@ namespace Core.Engine.Resource.Resources.Stage
         public IList<StageLightElement> Lights { get; set; }
         public IList<StageModelElement> Models { get; set; }
 
-        public IList<string> ReferenceDictionary { get; set; } 
+        public IList<string> References { get; set; } 
 
         public override void Load(Stream source)
         {
@@ -23,6 +23,15 @@ namespace Core.Engine.Resource.Resources.Stage
             if (entry.Version != Version)
             {
                 throw new InvalidDataException("Stage version is not correct: " + entry.Version);
+            }
+
+            if (entry.ReferencesCount > 0)
+            {
+                this.References = new List<string>();
+                foreach (string reference in entry.ReferencesList)
+                {
+                    this.References.Add(reference);
+                }
             }
 
             if (entry.CamerasCount > 0)
@@ -77,6 +86,14 @@ namespace Core.Engine.Resource.Resources.Stage
                 foreach (StageModelElement model in this.Models)
                 {
                     builder.AddModels(model.GetBuilder());
+                }
+            }
+
+            if (this.References != null)
+            {
+                foreach (string reference in this.References)
+                {
+                    builder.AddReferences(reference);
                 }
             }
 
