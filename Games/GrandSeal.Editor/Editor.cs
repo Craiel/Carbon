@@ -1,11 +1,10 @@
 ﻿using System.Windows;
 
+using Core.Engine.Contracts;
+using Core.Utils.Contracts;
+
 using GrandSeal.Editor.Contracts;
 using GrandSeal.Editor.Views;
-
-using Core.Engine.Contracts;
-
-using Core.Utils.Contracts;
 
 namespace GrandSeal.Editor
 {

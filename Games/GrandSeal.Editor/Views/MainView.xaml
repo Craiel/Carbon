@@ -36,6 +36,7 @@
     
         <fluent:Ribbon IsMinimized="True">
             <fluent:Ribbon.QuickAccessItems>
+                <fluent:QuickAccessMenuItem Target="{Binding ElementName=OpenButton}" ItemsSource="{Binding Path=RecentProjects}"/>
                 <fluent:QuickAccessMenuItem Target="{Binding ElementName=SaveButton}"/>
             </fluent:Ribbon.QuickAccessItems>
 
@@ -43,7 +44,7 @@
                 <fluent:Backstage Header="File">
                     <fluent:BackstageTabControl>
                         <fluent:Button Header="New" ToolTip="Create a new Project" Command="{Binding Path=CommandNewProject}" Icon="{StaticResource IconNew}"/>
-                        <fluent:Button Header="Open" ToolTip="Open Project" Command="{Binding Path=CommandOpenProject}" Icon="{StaticResource IconOpen}"/>
+                        <fluent:Button Name="OpenButton" Header="Open" ToolTip="Open Project" Command="{Binding Path=CommandOpenProject}" Icon="{StaticResource IconOpen}"/>
                         <fluent:Button Name="SaveButton" Header="Save" ToolTip="Save Project" Command="{Binding Path=CommandSaveProject}" Icon="{StaticResource IconSave}"/>
                         <fluent:SeparatorTabItem/>
                         <fluent:Button Header="Close" ToolTip="Close Project" Command="{Binding Path=CommandCloseProject}" Icon="{StaticResource IconClose}"/>

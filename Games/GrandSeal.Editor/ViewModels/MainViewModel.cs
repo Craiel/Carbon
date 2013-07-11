@@ -1,30 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-
+﻿using Core.Engine.Contracts;
+using Core.Engine.Resource.Content;
+using Core.Utils.Contracts;
 using GrandSeal.Editor.Contracts;
 using GrandSeal.Editor.Events;
 using GrandSeal.Editor.Logic;
 using GrandSeal.Editor.Logic.MVVM;
 using GrandSeal.Editor.Views;
-
-using Core.Engine.Contracts;
-using Core.Engine.Resource.Content;
-
-using Core.Utils.Contracts;
-
 using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Windows;
+using System.Windows.Input;
 
 namespace GrandSeal.Editor.ViewModels
 {
-    using System.IO;
-    using System.Threading;
-    using System.Threading.Tasks;
-
     public class MainViewModel : EditorBase, IMainViewModel
     {
         private const string DefaultProjectFileExtension = ".crbn";
@@ -56,7 +48,9 @@ namespace GrandSeal.Editor.ViewModels
         private IEditorDocument activeDocument;
 
         private IFolderViewModel currentCreationContext;
-        
+
+        private ObservableCollection<string> recentProjects;
+
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -73,6 +67,7 @@ namespace GrandSeal.Editor.ViewModels
             this.resourceExplorerViewModel = factory.Get<IResourceExplorerViewModel>();
             this.materialExplorerViewModel = factory.Get<IMaterialExplorerViewModel>();
             this.fontExplorerViewModel = factory.Get<IFontExplorerViewModel>();
+            this.recentProjects = new ObservableCollection<string>();
             
             this.documentTemplates = new List<IDocumentTemplate>();
             this.documentTemplateCategories = new List<IDocumentTemplateCategory>();
@@ -161,6 +156,14 @@ namespace GrandSeal.Editor.ViewModels
                 }
 
                 return this.undoRedoManager.ActiveGroup.RedoOperations;
+            }
+        }
+
+        public ReadOnlyObservableCollection<string> RecentProjects
+        {
+            get
+            {
+                return new ReadOnlyObservableCollection<string>(this.recentProjects);
             }
         }
 
@@ -441,8 +444,21 @@ namespace GrandSeal.Editor.ViewModels
 
                 this.logic.OpenProject(dialog.FileName);
                 this.currentProjectFile = dialog.FileName;
+                this.UpdateRecentProjectList();
                 this.RestoreProjectLayout();
                 this.NotifyProjectChange();
+            }
+        }
+
+        private void UpdateRecentProjectList()
+        {
+            if (!this.recentProjects.Contains(this.currentProjectFile))
+            {
+                this.recentProjects.Insert(0, this.currentProjectFile);
+            }
+            else
+            {
+                this.recentProjects.Move(this.recentProjects.IndexOf(this.currentProjectFile), 0);
             }
         }
 
@@ -460,6 +476,7 @@ namespace GrandSeal.Editor.ViewModels
             }
 
             this.logic.SaveProject(this.currentProjectFile);
+            this.UpdateRecentProjectList();
         }
 
         private void OnSaveProjectAs(object obj)
@@ -475,6 +492,7 @@ namespace GrandSeal.Editor.ViewModels
             {
                 this.logic.SaveProject(dialog.FileName);
                 this.currentProjectFile = dialog.FileName;
+                this.UpdateRecentProjectList();
             }
         }
 

@@ -128,6 +128,11 @@
     <Compile Include="Contracts\IUndoRedoManager.cs" />
     <Compile Include="Contracts\IUserInterfaceViewModel.cs" />
     <Compile Include="Contracts\IViewModelFactory.cs" />
+    <Compile Include="UserPreferences.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>UserPreferences.settings</DependentUpon>
+    </Compile>
     <Compile Include="Entry.cs" />
     <Compile Include="Events\LayoutEvents.cs" />
     <Compile Include="Logic\ApplicationLog.cs" />
@@ -253,6 +258,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="UserPreferences.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>UserPreferences.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

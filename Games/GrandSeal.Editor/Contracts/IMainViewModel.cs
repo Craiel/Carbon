@@ -22,6 +22,8 @@ namespace GrandSeal.Editor.Contracts
 
         ReadOnlyCollection<UndoRedoOperation> UndoOperations { get; }
         ReadOnlyCollection<UndoRedoOperation> RedoOperations { get; }
+
+        ReadOnlyObservableCollection<string> RecentProjects { get; }
         
         IEditorDocument ActiveDocument { get; set; }
 
