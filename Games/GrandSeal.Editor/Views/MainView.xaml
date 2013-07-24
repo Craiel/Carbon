@@ -1,13 +1,14 @@
 ﻿<fluent:RibbonWindow x:Class="GrandSeal.Editor.Views.MainView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-        xmlns:avalonDock="http://avalondock.codeplex.com"
         xmlns:fluent="clr-namespace:Fluent;assembly=Fluent"
         xmlns:local="clr-namespace:GrandSeal.Editor.Logic.Docking"
         xmlns:views="clr-namespace:GrandSeal.Editor.Views" 
         xmlns:mvvm="clr-namespace:GrandSeal.Editor.Logic.MVVM"
         xmlns:editor="clr-namespace:GrandSeal.Editor"
-                     Icon="{Binding Source={x:Static editor:StaticResources.IconUri}}">
+        xmlns:avalonDock="clr-namespace:Xceed.Wpf.AvalonDock;assembly=Xceed.Wpf.AvalonDock"
+        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        Icon="{Binding Source={x:Static editor:StaticResources.IconUri}}">
 
     <fluent:RibbonWindow.Title>
         <MultiBinding StringFormat="{} GrandSeal.Editor - {0}">
@@ -19,7 +20,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/presentationframework.Aero;component/themes/aero.normalcolor.xaml" />
-                <ResourceDictionary Source="/Logic/Docking/Theme/Theme.xaml" />
                 <ResourceDictionary Source="/Resources/Converters.xaml"/>
                 <ResourceDictionary Source="/Resources/Icons.xaml"/>
             </ResourceDictionary.MergedDictionaries>
@@ -36,14 +36,28 @@
     
         <fluent:Ribbon IsMinimized="True">
             <fluent:Ribbon.QuickAccessItems>
-                <fluent:QuickAccessMenuItem Target="{Binding ElementName=OpenButton}" ItemsSource="{Binding Path=RecentProjects}"/>
+                <fluent:QuickAccessMenuItem Target="{Binding ElementName=OpenButton}"/>
                 <fluent:QuickAccessMenuItem Target="{Binding ElementName=SaveButton}"/>
             </fluent:Ribbon.QuickAccessItems>
 
             <fluent:Ribbon.Menu>
                 <fluent:Backstage Header="File">
                     <fluent:BackstageTabControl>
-                        <fluent:Button Header="New" ToolTip="Create a new Project" Command="{Binding Path=CommandNewProject}" Icon="{StaticResource IconNew}"/>
+                        <fluent:BackstageTabItem Header="Recent">
+                            <ItemsControl ItemsSource="{Binding Path=RecentProjects}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <MenuItem Header="{Binding}" Command="{Binding Path=DataContext.CommandOpenProject, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </fluent:BackstageTabItem>
+                        <fluent:Button Header="New" ToolTip="Create a new Project" Command="{Binding Path=CommandNewProject}">
+                            <fluent:Button.Icon>
+                                <Image Source="{Binding Source={x:Static editor:StaticResources.NewIconUri}}"/>
+                            </fluent:Button.Icon>
+                        </fluent:Button>
+                        
                         <fluent:Button Name="OpenButton" Header="Open" ToolTip="Open Project" Command="{Binding Path=CommandOpenProject}" Icon="{StaticResource IconOpen}"/>
                         <fluent:Button Name="SaveButton" Header="Save" ToolTip="Save Project" Command="{Binding Path=CommandSaveProject}" Icon="{StaticResource IconSave}"/>
                         <fluent:SeparatorTabItem/>
@@ -82,10 +96,10 @@
             </fluent:RibbonTabItem>
         </fluent:Ribbon>
 
-        <avalonDock:DockingManager AnchorablesSource="{Binding ToolWindows}"
-                                   DocumentsSource="{Binding Documents}"
-                                   ActiveContent="{Binding ActiveDocument, Mode=TwoWay, Converter={StaticResource ActiveDocumentConverter}}"
-                                   Grid.Row="1"
+        <avalonDock:DockingManager AnchorablesSource="{Binding Path=ToolWindows}"
+                                   DocumentsSource="{Binding Path=Documents}"
+                                   ActiveContent="{Binding Path=ActiveDocument, Mode=TwoWay, Converter={StaticResource ActiveDocumentConverter}}"
+                                   Grid.Row="1" Theme="{Binding Path=AvalonDockTheme}"
                                    x:Name="dockingManager">
             
             <avalonDock:DockingManager.LayoutItemTemplateSelector>
@@ -142,18 +156,18 @@
             <avalonDock:DockingManager.LayoutItemContainerStyleSelector>
                 <local:PanesStyleSelector>
                     <local:PanesStyleSelector.ToolStyle>
-                        <Style TargetType="{x:Type avalonDock:LayoutAnchorableItem}">
+                        <Style TargetType="{x:Type xcad:LayoutAnchorableItem}">
                             <Setter Property="Title" Value="{Binding Model.Title}"/>
                             <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
                             <Setter Property="IconSource" Value="{Binding Model.IconUri}"/>
-                            <Setter Property="Visibility" Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}"/>
+                            <Setter Property="Visibility" Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}"/>
                             <Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}"/>
                             <Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}"/>
                         </Style>
                     </local:PanesStyleSelector.ToolStyle>
                     <local:PanesStyleSelector.DocumentStyle>
-                        <Style TargetType="{x:Type avalonDock:LayoutItem}">
-                            <Setter Property="mvvm:DynamicBasedOn.DynamicBasedOn" Value="{DynamicResource {x:Type avalonDock:LayoutItem}}"/>
+                        <Style TargetType="{x:Type xcad:LayoutItem}">
+                            <Setter Property="mvvm:DynamicBasedOn.DynamicBasedOn" Value="{DynamicResource {x:Type xcad:LayoutItem}}"/>
                             <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
                             <Setter Property="Title" Value="{Binding Model.Title}"/>
                             <Setter Property="ToolTip" Value="{Binding Model.Type}"/>
@@ -167,13 +181,13 @@
                 <local:LayoutInitializer/>
             </avalonDock:DockingManager.LayoutUpdateStrategy>
 
-            <avalonDock:LayoutRoot>
-                <avalonDock:LayoutPanel Orientation="Horizontal">
-                    <avalonDock:LayoutDocumentPane/>
-                    <avalonDock:LayoutAnchorablePane Name="ToolsPane" DockWidth="200">
-                    </avalonDock:LayoutAnchorablePane>
-                </avalonDock:LayoutPanel>
-            </avalonDock:LayoutRoot>
+            <xcad:LayoutRoot>
+                <xcad:LayoutPanel Orientation="Horizontal">
+                    <xcad:LayoutDocumentPane/>
+                    <xcad:LayoutAnchorablePane Name="ToolsPane" DockWidth="200">
+                    </xcad:LayoutAnchorablePane>
+                </xcad:LayoutPanel>
+            </xcad:LayoutRoot>
         </avalonDock:DockingManager>
 
         <StatusBar Grid.Row="2">

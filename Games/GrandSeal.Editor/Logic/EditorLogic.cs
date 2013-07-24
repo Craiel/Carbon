@@ -3,31 +3,31 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 using System.Xml;
-
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Views;
 
 using Core.Engine.Contracts;
 using Core.Engine.Contracts.Resource;
 using Core.Engine.Resource;
 using Core.Engine.Resource.Content;
-
 using Core.Utils.Contracts;
-
+using GrandSeal.Editor.Contracts;
+using GrandSeal.Editor.Views;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
 namespace GrandSeal.Editor.Logic
 {
     using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+
+    using Core.Engine.Logic;
 
     public class EditorLogic : EditorBase, IEditorLogic
     {
+        private const int RecentProjectMaximum = 10;
+
         private readonly IEngineFactory engineFactory;
         private readonly ILog log;
         private readonly IViewModelFactory viewModelFactory;
@@ -36,8 +36,9 @@ namespace GrandSeal.Editor.Logic
         private readonly ObservableCollection<IMaterialViewModel> materials;
         private readonly ObservableCollection<IFontViewModel> fonts;
         private readonly ObservableCollection<IFolderViewModel> folders;
+        private readonly ObservableCollection<CarbonPath> recentProjects;
 
-        private string projectPath;
+        private CarbonPath projectPath;
         private IContentManager projectContent;
         private IResourceManager projectResources;
 
@@ -56,6 +57,7 @@ namespace GrandSeal.Editor.Logic
             this.materials = new ObservableCollection<IMaterialViewModel>();
             this.fonts = new ObservableCollection<IFontViewModel>();
             this.folders = new ObservableCollection<IFolderViewModel>();
+            this.recentProjects = new ObservableCollection<CarbonPath>();
 
             this.LoadSyntaxHightlighting();
         }
@@ -97,6 +99,14 @@ namespace GrandSeal.Editor.Logic
             }
         }
 
+        public ReadOnlyObservableCollection<CarbonPath> RecentProjects
+        {
+            get
+            {
+                return new ReadOnlyObservableCollection<CarbonPath>(this.recentProjects);
+            }
+        }
+
         public void NewProject()
         {
             this.CloseProject();
@@ -128,22 +138,23 @@ namespace GrandSeal.Editor.Logic
             this.NotifyProjectChanged();
         }
 
-        public void OpenProject(string path)
+        public void OpenProject(CarbonPath path)
         {
             this.CloseProject();
 
-            if (string.IsNullOrEmpty(path))
+            if (path.IsNull)
             {
                 throw new ArgumentException("Invalid Path specified: " + path);
             }
 
-            this.InitializeProject(Path.GetDirectoryName(path));
+            this.InitializeProject(path.DirectoryName);
             this.Reload();
             this.CheckProjectDefaults();
+            this.AddToRecentProjects(path);
             this.NotifyProjectChanged();
         }
 
-        public void SaveProject(string file)
+        public void SaveProject(CarbonPath file)
         {
             this.log.Warning("Saving into different file is not fully supported yet!");
             /*
@@ -154,32 +165,15 @@ namespace GrandSeal.Editor.Logic
              */
 
             this.CloseProject();
-            this.settings.Save(Path.GetDirectoryName(file));
+            this.settings.Save(file.DirectoryName);
 
             // Move the database file over to our new location
-            if (File.Exists(projectPath))
+            if (this.projectPath.Exists)
             {
-                File.Copy(projectPath, file);
+                this.projectPath.CopyTo(file);
             }
             
             this.OpenProject(file);
-        }
-
-        public static void DoEvents(Dispatcher dispatcher)
-        {
-            var frame = new DispatcherFrame(true);
-            dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
-                (SendOrPostCallback)delegate(object arg)
-                {
-                    var f = arg as DispatcherFrame;
-                    if (f != null)
-                    {
-                        f.Continue = false;
-                    }
-                },
-                frame);
-            Dispatcher.PushFrame(frame);
         }
 
         public void Reload()
@@ -482,6 +476,31 @@ namespace GrandSeal.Editor.Logic
             return results;
         }
 
+        public void ReloadSettings()
+        {
+            UserPreferences.Default.Reload();
+            this.recentProjects.Clear();
+            if (UserPreferences.Default.ProjectHistory != null)
+            {
+                foreach (string history in UserPreferences.Default.ProjectHistory)
+                {
+                    this.recentProjects.Add(new CarbonPath(history));
+                }
+            }
+        }
+
+        public void SaveSettings()
+        {
+            var history = new StringCollection();
+            foreach (CarbonPath path in this.recentProjects)
+            {
+                history.Add(path.ToString());
+            }
+
+            UserPreferences.Default.ProjectHistory = history;
+            UserPreferences.Default.Save();
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
@@ -556,11 +575,26 @@ namespace GrandSeal.Editor.Logic
             }
         }
 
-        private void OnBuilderProgressChanged(string message, int current, int max)
+        private void AddToRecentProjects(CarbonPath newPath)
         {
-            TaskProgress.CurrentMaxProgress = max;
-            TaskProgress.CurrentProgress = current;
-            TaskProgress.CurrentMessage = message;
+            // Update the recent project list, move to top if its already in there
+            if (this.recentProjects.Contains(newPath))
+            {
+                int index = this.recentProjects.IndexOf(newPath);
+                if (index > 0)
+                {
+                    this.recentProjects.Move(index, 0);
+                }
+            }
+            else
+            {
+                this.recentProjects.Add(newPath);   
+            }
+
+            while (this.recentProjects.Count > RecentProjectMaximum)
+            {
+                this.recentProjects.RemoveAt(this.recentProjects.Count - 1);
+            }
         }
 
         private IFolderViewModel LocateFolder(IFolderViewModel current, string hash)
@@ -701,7 +735,7 @@ namespace GrandSeal.Editor.Logic
             {
                 if (s != null)
                 {
-                    using (XmlTextReader reader = new XmlTextReader(s))
+                    using (var reader = new XmlTextReader(s))
                     {
                         IHighlightingDefinition luaHighlightingDefinition = HighlightingLoader.Load(reader, HighlightingManager.Instance);
                         if (luaHighlightingDefinition != null)

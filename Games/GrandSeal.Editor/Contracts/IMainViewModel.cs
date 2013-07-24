@@ -7,6 +7,10 @@ using GrandSeal.Editor.Logic;
 
 namespace GrandSeal.Editor.Contracts
 {
+    using Core.Engine.Logic;
+
+    using Xceed.Wpf.AvalonDock.Themes;
+
     public interface IMainViewModel : IEditorBase
     {
         event PropertyChangedEventHandler ProjectChanged;
@@ -23,13 +27,15 @@ namespace GrandSeal.Editor.Contracts
         ReadOnlyCollection<UndoRedoOperation> UndoOperations { get; }
         ReadOnlyCollection<UndoRedoOperation> RedoOperations { get; }
 
-        ReadOnlyObservableCollection<string> RecentProjects { get; }
+        ReadOnlyObservableCollection<CarbonPath> RecentProjects { get; }
         
         IEditorDocument ActiveDocument { get; set; }
 
         IProjectViewModel Project { get; }
 
         IOperationProgress OperationProgress { get; }
+
+        Theme AvalonDockTheme { get; }
 
         ICommand CommandNewProject { get; }
         ICommand CommandNewMaterial { get; }

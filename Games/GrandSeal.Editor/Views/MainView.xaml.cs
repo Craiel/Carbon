@@ -1,22 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-
-using AvalonDock.Layout.Serialization;
-
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Events;
-
 using Core.Utils.Contracts;
+using GrandSeal.Editor.Events;
 
 namespace GrandSeal.Editor.Views
 {
+    using Xceed.Wpf.AvalonDock.Layout.Serialization;
+
     public partial class MainView
     {
         private readonly IEventRelay eventRelay;
-
-        private IMainViewModel currentSerializiationContext;
-
+        
         public MainView(IEventRelay eventRelay)
         {
             this.eventRelay = eventRelay;
@@ -41,14 +36,11 @@ namespace GrandSeal.Editor.Views
                 throw new ArgumentException();
             }
 
-            this.currentSerializiationContext = args.MainViewModel;
             var serializer = new XmlLayoutSerializer(this.dockingManager);
             using (var stream = new FileStream(args.File, FileMode.Open, FileAccess.Read))
             {
                 serializer.Deserialize(stream);
             }
-
-            this.currentSerializiationContext = null;
         }
 
         private void OnSaveLayoutEvent(EventSaveLayout args)

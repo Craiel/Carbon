@@ -17,6 +17,10 @@ using System.Windows.Input;
 
 namespace GrandSeal.Editor.ViewModels
 {
+    using Core.Engine.Logic;
+
+    using Xceed.Wpf.AvalonDock.Themes;
+
     public class MainViewModel : EditorBase, IMainViewModel
     {
         private const string DefaultProjectFileExtension = ".crbn";
@@ -38,10 +42,8 @@ namespace GrandSeal.Editor.ViewModels
 
         private readonly List<IEditorTool> availableTools;
 
-        private string currentProjectFile;
-
-        private bool isClosing;
-
+        private CarbonPath currentProjectFile;
+        
         private IProjectViewModel projectViewModel;
         private IEditorSettingsViewModel settingsViewModel;
 
@@ -49,7 +51,7 @@ namespace GrandSeal.Editor.ViewModels
 
         private IFolderViewModel currentCreationContext;
 
-        private ObservableCollection<string> recentProjects;
+        private ReadOnlyObservableCollection<CarbonPath> recentProjects;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -67,7 +69,6 @@ namespace GrandSeal.Editor.ViewModels
             this.resourceExplorerViewModel = factory.Get<IResourceExplorerViewModel>();
             this.materialExplorerViewModel = factory.Get<IMaterialExplorerViewModel>();
             this.fontExplorerViewModel = factory.Get<IFontExplorerViewModel>();
-            this.recentProjects = new ObservableCollection<string>();
             
             this.documentTemplates = new List<IDocumentTemplate>();
             this.documentTemplateCategories = new List<IDocumentTemplateCategory>();
@@ -159,11 +160,11 @@ namespace GrandSeal.Editor.ViewModels
             }
         }
 
-        public ReadOnlyObservableCollection<string> RecentProjects
+        public ReadOnlyObservableCollection<CarbonPath> RecentProjects
         {
             get
             {
-                return new ReadOnlyObservableCollection<string>(this.recentProjects);
+                return this.logic.RecentProjects;
             }
         }
 
@@ -224,6 +225,14 @@ namespace GrandSeal.Editor.ViewModels
             get
             {
                 return this.operationProgress;
+            }
+        }
+
+        public Theme AvalonDockTheme
+        {
+            get
+            {
+                return new MetroTheme();
             }
         }
 
@@ -429,6 +438,13 @@ namespace GrandSeal.Editor.ViewModels
 
         private void OnOpenProject(object obj)
         {
+            // See if we got a path to open
+            if (obj as CarbonPath != null)
+            {
+                this.DoOpenProject((CarbonPath)obj);
+                return;
+            }
+
             var dialog = new OpenFileDialog
                 {
                     CheckFileExists = true,
@@ -437,31 +453,23 @@ namespace GrandSeal.Editor.ViewModels
 
             if (dialog.ShowDialog() == true)
             {
-                if (this.CanCloseProject(null))
+                this.DoOpenProject(new CarbonPath(Path.GetDirectoryName(dialog.FileName) + Path.DirectorySeparatorChar));
+            }
+        }
+
+        private void DoOpenProject(CarbonPath path)
+        {
+            if (this.CanCloseProject(null))
                 {
                     this.OnCloseProject(null);
                 }
 
-                this.logic.OpenProject(dialog.FileName);
-                this.currentProjectFile = dialog.FileName;
-                this.UpdateRecentProjectList();
+                this.currentProjectFile = path;
+                this.logic.OpenProject(this.currentProjectFile);
                 this.RestoreProjectLayout();
                 this.NotifyProjectChange();
-            }
         }
-
-        private void UpdateRecentProjectList()
-        {
-            if (!this.recentProjects.Contains(this.currentProjectFile))
-            {
-                this.recentProjects.Insert(0, this.currentProjectFile);
-            }
-            else
-            {
-                this.recentProjects.Move(this.recentProjects.IndexOf(this.currentProjectFile), 0);
-            }
-        }
-
+        
         private bool CanSaveProject(object obj)
         {
             return this.logic.IsProjectLoaded;
@@ -469,14 +477,13 @@ namespace GrandSeal.Editor.ViewModels
 
         private void OnSaveProject(object obj)
         {
-            if(string.IsNullOrEmpty(this.currentProjectFile))
+            if (this.currentProjectFile.IsNull)
             {
                 this.OnSaveProjectAs(obj);
                 return;
             }
 
             this.logic.SaveProject(this.currentProjectFile);
-            this.UpdateRecentProjectList();
         }
 
         private void OnSaveProjectAs(object obj)
@@ -490,9 +497,8 @@ namespace GrandSeal.Editor.ViewModels
 
             if (dialog.ShowDialog() == true)
             {
-                this.logic.SaveProject(dialog.FileName);
-                this.currentProjectFile = dialog.FileName;
-                this.UpdateRecentProjectList();
+                this.currentProjectFile = new CarbonPath(dialog.FileName);
+                this.logic.SaveProject(this.currentProjectFile);
             }
         }
 
@@ -615,14 +621,14 @@ namespace GrandSeal.Editor.ViewModels
 
         private void RestoreProjectLayout()
         {
-            if (string.IsNullOrEmpty(this.currentProjectFile))
+            if (this.currentProjectFile.IsNull)
             {
                 return;
             }
 
             string file = Path.Combine(
-                Path.GetDirectoryName(this.currentProjectFile),
-                Path.GetFileNameWithoutExtension(this.currentProjectFile) + DefaultProjectLayoutExtension);
+                this.currentProjectFile.DirectoryName,
+                this.currentProjectFile.ChangeExtension(DefaultProjectLayoutExtension));
             if (!File.Exists(file))
             {
                 return;
@@ -633,22 +639,20 @@ namespace GrandSeal.Editor.ViewModels
 
         private void SaveProjectLayout()
         {
-            if (string.IsNullOrEmpty(this.currentProjectFile))
+            if (this.currentProjectFile == null || this.currentProjectFile.IsNull)
             {
                 return;
             }
 
             string file = Path.Combine(
-                Path.GetDirectoryName(this.currentProjectFile),
-                Path.GetFileNameWithoutExtension(this.currentProjectFile) + DefaultProjectLayoutExtension);
+                this.currentProjectFile.DirectoryName,
+                this.currentProjectFile.ChangeExtension(DefaultProjectLayoutExtension));
 
             this.eventRelay.Relay(new EventSaveLayout(file));
         }
 
         private void OnMainWindowClosing(EventWindowClosing obj)
         {
-            this.isClosing = true;
-
             this.SaveProjectLayout();
         }
     }

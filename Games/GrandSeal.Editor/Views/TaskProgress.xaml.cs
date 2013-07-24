@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-using GrandSeal.Editor.Logic;
+using Core.Utils;
 
 namespace GrandSeal.Editor.Views
 {
@@ -59,7 +59,7 @@ namespace GrandSeal.Editor.Views
             while (this.tasks.Any(x => !x.IsCompleted))
             {
                 this.Dispatcher.Invoke(this.Update);
-                EditorLogic.DoEvents(Application.Current.Dispatcher);
+                Application.Current.DoEvents();
 
                 try
                 {

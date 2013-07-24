@@ -1,9 +1,9 @@
-﻿using System.Linq;
-
-using AvalonDock.Layout;
+﻿using Xceed.Wpf.AvalonDock.Layout;
 
 namespace GrandSeal.Editor.Logic.Docking
 {
+    using System.Linq;
+
     public class LayoutInitializer : ILayoutUpdateStrategy
     {
         public bool BeforeInsertAnchorable(LayoutRoot layout, LayoutAnchorable anchorableToShow, ILayoutContainer destinationContainer)

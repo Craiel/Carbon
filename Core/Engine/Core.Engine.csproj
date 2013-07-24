@@ -120,6 +120,7 @@
     <Compile Include="Contracts\UserInterface\IUserInterfaceImage.cs" />
     <Compile Include="Logic\CarbonConsole.cs" />
     <Compile Include="Logic\CarbonGraphics.cs" />
+    <Compile Include="Logic\CarbonPath.cs" />
     <Compile Include="Logic\CarbonWindow.cs">
       <SubType>Form</SubType>
     </Compile>

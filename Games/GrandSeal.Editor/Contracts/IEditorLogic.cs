@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using Core.Engine.Logic;
 using Core.Engine.Resource.Content;
 
 namespace GrandSeal.Editor.Contracts
@@ -17,11 +18,12 @@ namespace GrandSeal.Editor.Contracts
         ReadOnlyObservableCollection<IMaterialViewModel> Materials { get; }
         ReadOnlyObservableCollection<IFontViewModel> Fonts { get; }
         ReadOnlyObservableCollection<IFolderViewModel> Folders { get; }
+        ReadOnlyObservableCollection<CarbonPath> RecentProjects { get; }
         
         void NewProject();
         void CloseProject();
-        void OpenProject(string file);
-        void SaveProject(string file);
+        void OpenProject(CarbonPath file);
+        void SaveProject(CarbonPath file);
 
         void Reload();
 
@@ -63,5 +65,8 @@ namespace GrandSeal.Editor.Contracts
         IResourceViewModel LocateResource(string hash);
 
         IList<IResourceViewModel> LocateResources(string filter);
+
+        void ReloadSettings();
+        void SaveSettings();
     }
 }
