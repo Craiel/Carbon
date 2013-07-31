@@ -1,4 +1,4 @@
-﻿namespace Core.Editor.Resource.Collada.Geometry
+﻿namespace Core.Processing.Resource.Collada.Geometry
 {
     using System;
     using System.Xml.Serialization;

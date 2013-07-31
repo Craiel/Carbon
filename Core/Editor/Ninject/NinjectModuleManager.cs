@@ -1,9 +1,9 @@
 ﻿using Ninject.Modules;
 
-namespace Core.Editor.Ninject
+namespace Core.Processing.Ninject
 {
-    using Core.Editor.Contracts;
-    using Core.Editor.Logic;
+    using Core.Processing.Contracts;
+    using Core.Processing.Logic;
 
     public static class NinjectModuleManager
     {

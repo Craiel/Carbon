@@ -34,7 +34,7 @@
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
     
-        <fluent:Ribbon IsMinimized="True">
+        <fluent:Ribbon IsMinimized="True" x:Name="Ribbon">
             <fluent:Ribbon.QuickAccessItems>
                 <fluent:QuickAccessMenuItem Target="{Binding ElementName=OpenButton}"/>
                 <fluent:QuickAccessMenuItem Target="{Binding ElementName=SaveButton}"/>
@@ -47,7 +47,7 @@
                             <ItemsControl ItemsSource="{Binding Path=RecentProjects}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <MenuItem Header="{Binding}" Command="{Binding Path=DataContext.CommandOpenProject, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
+                                        <MenuItem Header="{Binding}" Click="OnRecentItemClick" Command="{Binding Path=DataContext.CommandOpenProject, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -100,7 +100,7 @@
                                    DocumentsSource="{Binding Path=Documents}"
                                    ActiveContent="{Binding Path=ActiveDocument, Mode=TwoWay, Converter={StaticResource ActiveDocumentConverter}}"
                                    Grid.Row="1" Theme="{Binding Path=AvalonDockTheme}"
-                                   x:Name="dockingManager">
+                                   x:Name="DockingManager">
             
             <avalonDock:DockingManager.LayoutItemTemplateSelector>
                 <local:PanesTemplateSelector>

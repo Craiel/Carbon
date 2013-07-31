@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace Core.Editor.Resource.Xcd.Scene
+namespace Core.Processing.Resource.Xcd.Scene
 {
     [Serializable]
     public class XcdCustomProperties

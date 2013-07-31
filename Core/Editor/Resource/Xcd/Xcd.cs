@@ -2,7 +2,7 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Core.Editor.Resource.Xcd
+namespace Core.Processing.Resource.Xcd
 {
     [Serializable]
     [XmlRoot(ElementName = "xcd", IsNullable = false)]

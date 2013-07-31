@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Engine", "Core\Engine\
 		{70D4C0DD-845B-4569-9DF2-32887D9AEA32} = {70D4C0DD-845B-4569-9DF2-32887D9AEA32}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Editor", "Core\Editor\Core.Editor.csproj", "{819FF5D0-4498-48F2-9F7D-81A322B9B082}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Processing", "Core\Editor\Core.Processing.csproj", "{819FF5D0-4498-48F2-9F7D-81A322B9B082}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core.Server", "Core\Server\Carbon.Server.vcxproj", "{70D4C0DD-845B-4569-9DF2-32887D9AEA32}"
 EndProject

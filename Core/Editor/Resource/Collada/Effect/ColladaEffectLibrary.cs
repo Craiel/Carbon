@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.Editor.Resource.Collada.Effect
+namespace Core.Processing.Resource.Collada.Effect
 {
     using System.Xml.Serialization;
 

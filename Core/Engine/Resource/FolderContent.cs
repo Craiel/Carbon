@@ -4,26 +4,27 @@ using System.IO.Compression;
 using Core.Engine.Contracts.Resource;
 
 using Core.Utils;
+using Core.Utils.IO;
 
 namespace Core.Engine.Resource
 {
     public class FolderContent : ResourceContent
     {
-        private readonly string folder;
+        private readonly CarbonDirectory folder;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public FolderContent(string folder, bool create = false)
+        public FolderContent(CarbonDirectory folder, bool create = false)
         {
-            if (!Directory.Exists(folder))
+            if (!folder.Exists)
             {
                 if (!create)
                 {
                     throw new DirectoryNotFoundException("FolderContent could not find the directory specified: " + folder);
                 }
 
-                Directory.CreateDirectory(folder);
+                folder.Create();
             }
 
             this.folder = folder;
@@ -34,15 +35,15 @@ namespace Core.Engine.Resource
         // -------------------------------------------------------------------
         public override Stream Load(string hash)
         {
-            string fileName = this.GetFileName(hash);
-            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
+            CarbonFile file = this.GetFileName(hash);
+            if (!file.Exists)
             {
                 return null;
             }
 
-            System.Diagnostics.Trace.TraceInformation("Loading {0}", fileName);
-            MemoryStream dataStream = new MemoryStream();
-            using (FileStream stream = File.OpenRead(fileName))
+            System.Diagnostics.Trace.TraceInformation("Loading {0}", file);
+            var dataStream = new MemoryStream();
+            using (FileStream stream = file.OpenRead())
             {
                 using (var compression = new GZipStream(stream, CompressionMode.Decompress, false))
                 {
@@ -55,79 +56,75 @@ namespace Core.Engine.Resource
 
         public override bool Store(string hash, ICarbonResource data)
         {
-            string fileName = this.GetFileName(hash);
-
-            if (File.Exists(fileName))
-            {
-                File.Delete(fileName);
-            }
+            CarbonFile file = this.GetFileName(hash);
+            file.DeleteIfExists();
 
             long size;
-            using (FileStream stream = File.OpenWrite(fileName))
+            using (FileStream stream = file.OpenWrite())
             {
-                using (GZipStream compression = new GZipStream(stream, CompressionLevel.Optimal, true))
+                using (var compression = new GZipStream(stream, CompressionLevel.Optimal, true))
                 {
                     size = data.Save(compression);
                     compression.Flush();
                 }
 
-                System.Diagnostics.Trace.TraceInformation("Stored {0} bytes as {1} ({2})", size, fileName, stream.Length);
+                System.Diagnostics.Trace.TraceInformation("Stored {0} bytes as {1} ({2})", size, file, stream.Length);
                 return true;
             }
         }
 
         public override bool Replace(string hash, ICarbonResource data)
         {
-            string fileName = this.GetFileName(hash);
-            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
+            CarbonFile file = this.GetFileName(hash);
+            if (!file.Exists)
             {
                 return false;
             }
 
             long size;
-            File.Delete(fileName);
-            using (FileStream stream = File.OpenWrite(fileName))
+            file.Delete();
+            using (FileStream stream = file.OpenWrite())
             {
-                using (GZipStream compression = new GZipStream(stream, CompressionLevel.Optimal, true))
+                using (var compression = new GZipStream(stream, CompressionLevel.Optimal, true))
                 {
                     size = data.Save(compression);
                     compression.Flush();
                 }
 
-                System.Diagnostics.Trace.TraceInformation("Stored {0} bytes as {1} ({2})", size, fileName, stream.Length);
+                System.Diagnostics.Trace.TraceInformation("Stored {0} bytes as {1} ({2})", size, file.ToString(), stream.Length);
                 return true;
             }
         }
 
         public override bool Delete(string hash)
         {
-            string fileName = this.GetFileName(hash);
-            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
+            CarbonFile file = this.GetFileName(hash);
+            if (!file.Exists)
             {
                 return false;
             }
 
-            File.Delete(fileName);
+            file.Delete();
             return true;
         }
 
         public override ResourceInfo GetInfo(string hash)
         {
-            string fileName = this.GetFileName(hash);
-            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
+            CarbonFile file = this.GetFileName(hash);
+            if (!file.Exists)
             {
                 return null;
             }
 
-            using (FileStream stream = File.OpenRead(fileName))
+            using (FileStream stream = file.OpenRead())
             {
                 return new ResourceInfo(hash, stream.Length, HashUtils.GetMd5(stream));
             }
         }
 
-        private string GetFileName(string hash)
+        private CarbonFile GetFileName(string hash)
         {
-            return Path.Combine(this.folder, hash.Replace('/', '.'));
+            return this.folder.ToFile(hash.Replace('/', '.'));
         }
     }
 }

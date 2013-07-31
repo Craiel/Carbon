@@ -1,17 +1,19 @@
 ﻿using System;
 using System.IO;
 
-using Core.Editor.Contracts;
-using Core.Editor.Processors;
-using Core.Editor.Resource.Collada;
-using Core.Editor.Resource.Xcd;
+using Core.Processing.Contracts;
+using Core.Processing.Processors;
+using Core.Processing.Resource.Collada;
+using Core.Processing.Resource.Xcd;
 using Core.Engine.Contracts;
 using Core.Engine.Resource.Resources;
 using Core.Engine.Resource.Resources.Model;
 using Core.Engine.Resource.Resources.Stage;
 
-namespace Core.Editor.Logic
+namespace Core.Processing.Logic
 {
+    using Core.Utils.IO;
+
     public delegate string ReferenceResolveDelegate(string reference);
 
     public class ResourceProcessor : IResourceProcessor
@@ -26,7 +28,7 @@ namespace Core.Editor.Logic
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public string TextureToolsPath
+        public CarbonDirectory TextureToolsPath
         {
             get
             {

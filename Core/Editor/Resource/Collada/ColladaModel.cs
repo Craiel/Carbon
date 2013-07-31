@@ -2,12 +2,12 @@
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Core.Editor.Resource.Collada
+namespace Core.Processing.Resource.Collada
 {
-    using Core.Editor.Resource.Collada.Effect;
-    using Core.Editor.Resource.Collada.General;
-    using Core.Editor.Resource.Collada.Geometry;
-    using Core.Editor.Resource.Collada.Scene;
+    using Core.Processing.Resource.Collada.Effect;
+    using Core.Processing.Resource.Collada.General;
+    using Core.Processing.Resource.Collada.Geometry;
+    using Core.Processing.Resource.Collada.Scene;
 
     [Serializable]
     [XmlRoot(ElementName = "COLLADA", Namespace = "http://www.collada.org/2005/11/COLLADASchema", IsNullable = false)]

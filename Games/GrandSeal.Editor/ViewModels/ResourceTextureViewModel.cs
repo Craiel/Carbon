@@ -8,8 +8,8 @@ namespace GrandSeal.Editor.ViewModels
 {
     using System.IO;
 
-    using Core.Editor.Contracts;
-    using Core.Editor.Processors;
+    using Core.Processing.Contracts;
+    using Core.Processing.Processors;
 
     using global::GrandSeal.Editor.Logic.MVVM;
 

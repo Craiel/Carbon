@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-
-using Core.Engine.Logic;
-using Core.Engine.Resource.Content;
+﻿using Core.Engine.Resource.Content;
+using Core.Utils.IO;
+using System.Collections.Generic;
 
 namespace GrandSeal.Editor.Contracts
 {
@@ -18,12 +17,12 @@ namespace GrandSeal.Editor.Contracts
         ReadOnlyObservableCollection<IMaterialViewModel> Materials { get; }
         ReadOnlyObservableCollection<IFontViewModel> Fonts { get; }
         ReadOnlyObservableCollection<IFolderViewModel> Folders { get; }
-        ReadOnlyObservableCollection<CarbonPath> RecentProjects { get; }
+        ReadOnlyObservableCollection<CarbonDirectory> RecentProjects { get; }
         
         void NewProject();
         void CloseProject();
-        void OpenProject(CarbonPath file);
-        void SaveProject(CarbonPath file);
+        void OpenProject(CarbonDirectory path);
+        void SaveProject(CarbonDirectory path);
 
         void Reload();
 

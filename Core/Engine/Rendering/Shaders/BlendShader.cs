@@ -16,8 +16,6 @@ namespace Core.Engine.Rendering.Shaders
         private readonly ICarbonGraphics graphics;
 
         private readonly Buffer[] buffers;
-        private readonly SamplerState[] samplerStates;
-        private readonly SamplerDescription[] samplerStateCache;
         private readonly ShaderResourceView[] resources;
         private readonly ShaderMacro[] macros;
 
@@ -97,7 +95,7 @@ namespace Core.Engine.Rendering.Shaders
                 texturesChanged = true;
             }
 
-            if(texturesChanged)
+            if (texturesChanged)
             {
                 this.SetResources(this.resources);
             }
@@ -109,7 +107,7 @@ namespace Core.Engine.Rendering.Shaders
         private void AcquireShaderStates()
         {
             this.buffers[0] =
-                graphics.StateManager.GetBuffer(
+                this.graphics.StateManager.GetBuffer(
                     new BufferDescription(
                         this.DefaultConstantBufferSize,
                         ResourceUsage.Default,
@@ -124,7 +122,7 @@ namespace Core.Engine.Rendering.Shaders
 
         private void SetMacroDefaults()
         {
-            for (int i = 0; i < this.macros.Length;i++ )
+            for (int i = 0; i < this.macros.Length; i++)
             {
                 this.macros[i].Value = "0";
             }

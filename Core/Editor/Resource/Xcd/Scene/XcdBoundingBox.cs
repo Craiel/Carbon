@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Core.Editor.Resource.Xcd.Scene
+namespace Core.Processing.Resource.Xcd.Scene
 {
     using System.Xml.Serialization;
 
-    using Core.Editor.Resource.Generic.Data;
+    using Core.Processing.Resource.Generic.Data;
 
     [Serializable]
     public class XcdBoundingBox

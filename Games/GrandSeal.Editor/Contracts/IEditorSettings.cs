@@ -2,6 +2,8 @@
 
 namespace GrandSeal.Editor.Contracts
 {
+    using Core.Utils.IO;
+
     public interface IEditorSettings : INotifyPropertyChanged
     {
         string TextureToolsFolder { get; set; }
@@ -9,8 +11,8 @@ namespace GrandSeal.Editor.Contracts
 
         bool ModelTextureAutoCreateFolder { get; set; }
 
-        void Save(string projectFolder);
-        void Load(string projectFolder);
+        void Save(CarbonDirectory projectFolder);
+        void Load(CarbonDirectory projectFolder);
         void Reset();
     }
 }

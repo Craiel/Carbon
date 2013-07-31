@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="C#\NetworkProtocol.pb.cs" />
     <Compile Include="C#\ResourceProtocol.pb.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
@@ -119,9 +120,7 @@
       <Name>Core.Utils</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>$(ProjectDir)\build.bat $(ProjectDir)</PreBuildEvent>

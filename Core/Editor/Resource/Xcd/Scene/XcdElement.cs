@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-using Core.Editor.Resource.Generic.Data;
+using Core.Processing.Resource.Generic.Data;
 
-namespace Core.Editor.Resource.Xcd.Scene
+namespace Core.Processing.Resource.Xcd.Scene
 {
     [Serializable]
     public class XcdElement

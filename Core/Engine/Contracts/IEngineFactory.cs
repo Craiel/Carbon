@@ -1,5 +1,6 @@
 ﻿using Core.Engine.Contracts.Logic;
 using Core.Engine.Contracts.Resource;
+using Core.Utils.IO;
 
 using Ninject;
 
@@ -12,7 +13,7 @@ namespace Core.Engine.Contracts
         T Get<T>();
 
         ICarbonGraphics GetGraphics(IResourceManager resourceManager);
-        IResourceManager GetResourceManager(string path);
-        IContentManager GetContentManager(IResourceManager resourceManager, string root);
+        IResourceManager GetResourceManager(CarbonPath path);
+        IContentManager GetContentManager(IResourceManager resourceManager, CarbonFile file);
     }
 }

@@ -22,7 +22,9 @@ namespace GrandSeal.Editor.Logic
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
 
-    using Core.Engine.Logic;
+    using Core.Utils.IO;
+
+    using GrandSeal.Editor.Properties;
 
     public class EditorLogic : EditorBase, IEditorLogic
     {
@@ -36,7 +38,7 @@ namespace GrandSeal.Editor.Logic
         private readonly ObservableCollection<IMaterialViewModel> materials;
         private readonly ObservableCollection<IFontViewModel> fonts;
         private readonly ObservableCollection<IFolderViewModel> folders;
-        private readonly ObservableCollection<CarbonPath> recentProjects;
+        private readonly ObservableCollection<CarbonDirectory> recentProjects;
 
         private CarbonPath projectPath;
         private IContentManager projectContent;
@@ -57,7 +59,7 @@ namespace GrandSeal.Editor.Logic
             this.materials = new ObservableCollection<IMaterialViewModel>();
             this.fonts = new ObservableCollection<IFontViewModel>();
             this.folders = new ObservableCollection<IFolderViewModel>();
-            this.recentProjects = new ObservableCollection<CarbonPath>();
+            this.recentProjects = new ObservableCollection<CarbonDirectory>();
 
             this.LoadSyntaxHightlighting();
         }
@@ -99,11 +101,11 @@ namespace GrandSeal.Editor.Logic
             }
         }
 
-        public ReadOnlyObservableCollection<CarbonPath> RecentProjects
+        public ReadOnlyObservableCollection<CarbonDirectory> RecentProjects
         {
             get
             {
-                return new ReadOnlyObservableCollection<CarbonPath>(this.recentProjects);
+                return new ReadOnlyObservableCollection<CarbonDirectory>(this.recentProjects);
             }
         }
 
@@ -138,7 +140,7 @@ namespace GrandSeal.Editor.Logic
             this.NotifyProjectChanged();
         }
 
-        public void OpenProject(CarbonPath path)
+        public void OpenProject(CarbonDirectory path)
         {
             this.CloseProject();
 
@@ -154,7 +156,7 @@ namespace GrandSeal.Editor.Logic
             this.NotifyProjectChanged();
         }
 
-        public void SaveProject(CarbonPath file)
+        public void SaveProject(CarbonDirectory path)
         {
             this.log.Warning("Saving into different file is not fully supported yet!");
             /*
@@ -165,15 +167,15 @@ namespace GrandSeal.Editor.Logic
              */
 
             this.CloseProject();
-            this.settings.Save(file.DirectoryName);
+            this.settings.Save(path.DirectoryName);
 
             // Move the database file over to our new location
             if (this.projectPath.Exists)
             {
-                this.projectPath.CopyTo(file);
+                this.projectPath.CopyTo(path);
             }
             
-            this.OpenProject(file);
+            this.OpenProject(path);
         }
 
         public void Reload()
@@ -350,13 +352,13 @@ namespace GrandSeal.Editor.Logic
             // Todo: Add caching for this
             return
                 this.projectContent.TypedLoad(
-                    new ContentQuery<MetaDataEntry>().IsEqual("TargetId", primaryKeyValue).IsEqual("Target", target)).ToList<MetaDataEntry>();
+                    new ContentQuery<MetaDataEntry>().IsEqual("TargetId", primaryKeyValue).IsEqual("Target", target)).ToList();
         }
 
         public IList<IFolderViewModel> GetResourceTreeChildren(int parent)
         {
             // Todo: Cache if this gets to slow
-            IList<ResourceTree> treeData = this.projectContent.TypedLoad(new ContentQuery<ResourceTree>().IsEqual("Parent", parent)).ToList<ResourceTree>();
+            IList<ResourceTree> treeData = this.projectContent.TypedLoad(new ContentQuery<ResourceTree>().IsEqual("Parent", parent)).ToList();
             return treeData.Select(x => this.viewModelFactory.GetFolderViewModel(x)).ToList();
         }
 
@@ -365,7 +367,7 @@ namespace GrandSeal.Editor.Logic
             // Todo: Cache if this gets to slow
             IList<ResourceEntry> resourceData =
                 this.projectContent.TypedLoad(new ContentQuery<ResourceEntry>().IsEqual("TreeNode", node))
-                    .ToList<ResourceEntry>();
+                    .ToList();
 
             IList<IResourceViewModel> results = new List<IResourceViewModel>();
             foreach (ResourceEntry entry in resourceData)
@@ -478,13 +480,13 @@ namespace GrandSeal.Editor.Logic
 
         public void ReloadSettings()
         {
-            UserPreferences.Default.Reload();
+            Settings.Default.Reload();
             this.recentProjects.Clear();
-            if (UserPreferences.Default.ProjectHistory != null)
+            if (Settings.Default.ProjectHistory != null)
             {
-                foreach (string history in UserPreferences.Default.ProjectHistory)
+                foreach (string history in Settings.Default.ProjectHistory)
                 {
-                    this.recentProjects.Add(new CarbonPath(history));
+                    this.recentProjects.Add(new CarbonDirectory(history));
                 }
             }
         }
@@ -497,8 +499,8 @@ namespace GrandSeal.Editor.Logic
                 history.Add(path.ToString());
             }
 
-            UserPreferences.Default.ProjectHistory = history;
-            UserPreferences.Default.Save();
+            Settings.Default.ProjectHistory = history;
+            Settings.Default.Save();
         }
 
         // -------------------------------------------------------------------
@@ -509,7 +511,7 @@ namespace GrandSeal.Editor.Logic
             TaskProgress.CurrentProgress = 0;
             TaskProgress.CurrentMaxProgress = 0;
             ContentQueryResult<ResourceTree> treeData = this.projectContent.TypedLoad(new ContentQuery<ResourceTree>().IsEqual("Parent", null));
-            var treeEntries = treeData.ToList<ResourceTree>();
+            var treeEntries = treeData.ToList();
             TaskProgress.CurrentMaxProgress = treeEntries.Count;
             foreach (ResourceTree entry in treeEntries)
             {
@@ -524,7 +526,7 @@ namespace GrandSeal.Editor.Logic
         private void ReloadMaterials()
         {
             ContentQueryResult<MaterialEntry> materialData = this.projectContent.TypedLoad(new ContentQuery<MaterialEntry>());
-            var materialEntries = materialData.ToList<MaterialEntry>();
+            var materialEntries = materialData.ToList();
             TaskProgress.CurrentMaxProgress += materialEntries.Count;
             foreach (MaterialEntry entry in materialEntries)
             {
@@ -538,7 +540,7 @@ namespace GrandSeal.Editor.Logic
         private void ReloadFonts()
         {
             ContentQueryResult<FontEntry> fontData = this.projectContent.TypedLoad(new ContentQuery<FontEntry>());
-            var fontEntries = fontData.ToList<FontEntry>();
+            var fontEntries = fontData.ToList();
             TaskProgress.CurrentMaxProgress += fontEntries.Count;
             foreach (FontEntry entry in fontEntries)
             {
@@ -555,13 +557,13 @@ namespace GrandSeal.Editor.Logic
             this.folders.Clear();
         }
 
-        private void InitializeProject(string rootPath)
+        private void InitializeProject(CarbonDirectory rootPath)
         {
-            string resourcePath = Path.Combine(rootPath, "Data");
+            CarbonDirectory resourcePath = rootPath.ToDirectory("Data");
             this.projectResources = this.engineFactory.GetResourceManager(resourcePath);
 
-            string contentPath = Path.Combine(rootPath, "Main.db");
-            this.projectContent = this.engineFactory.GetContentManager(this.projectResources, contentPath);
+            CarbonFile contentFile = rootPath.ToFile("Main.db");
+            this.projectContent = this.engineFactory.GetContentManager(this.projectResources, contentFile);
 
             this.settings.Load(rootPath);
         }
@@ -575,7 +577,7 @@ namespace GrandSeal.Editor.Logic
             }
         }
 
-        private void AddToRecentProjects(CarbonPath newPath)
+        private void AddToRecentProjects(CarbonDirectory newPath)
         {
             // Update the recent project list, move to top if its already in there
             if (this.recentProjects.Contains(newPath))

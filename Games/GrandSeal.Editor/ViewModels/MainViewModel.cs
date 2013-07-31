@@ -1,4 +1,12 @@
-﻿using Core.Engine.Contracts;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
+using System.Windows;
+using System.Windows.Input;
+
+using Core.Engine.Contracts;
 using Core.Engine.Resource.Content;
 using Core.Utils.Contracts;
 using GrandSeal.Editor.Contracts;
@@ -7,17 +15,11 @@ using GrandSeal.Editor.Logic;
 using GrandSeal.Editor.Logic.MVVM;
 using GrandSeal.Editor.Views;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using System.Windows;
-using System.Windows.Input;
 
 namespace GrandSeal.Editor.ViewModels
 {
     using Core.Engine.Logic;
+    using Core.Utils.IO;
 
     using Xceed.Wpf.AvalonDock.Themes;
 
@@ -28,7 +30,6 @@ namespace GrandSeal.Editor.ViewModels
 
         private readonly IEditorLogic logic;
         private readonly IEngineFactory factory;
-        private readonly IViewModelFactory viewModelFactory;
         private readonly IEventRelay eventRelay;
         private readonly IUndoRedoManager undoRedoManager;
         private readonly IOperationProgress operationProgress;
@@ -39,9 +40,7 @@ namespace GrandSeal.Editor.ViewModels
 
         private readonly List<IDocumentTemplate> documentTemplates;
         private readonly List<IDocumentTemplateCategory> documentTemplateCategories;
-
-        private readonly List<IEditorTool> availableTools;
-
+        
         private CarbonPath currentProjectFile;
         
         private IProjectViewModel projectViewModel;
@@ -51,8 +50,6 @@ namespace GrandSeal.Editor.ViewModels
 
         private IFolderViewModel currentCreationContext;
 
-        private ReadOnlyObservableCollection<CarbonPath> recentProjects;
-
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -60,7 +57,6 @@ namespace GrandSeal.Editor.ViewModels
         {
             this.logic = logic;
             this.factory = factory;
-            this.viewModelFactory = factory.Get<IViewModelFactory>();
             this.eventRelay = factory.Get<IEventRelay>();
             this.undoRedoManager = factory.Get<IUndoRedoManager>();
             this.undoRedoManager.PropertyChanged += this.OnUndoRedoManagerChanged;
@@ -73,7 +69,7 @@ namespace GrandSeal.Editor.ViewModels
             this.documentTemplates = new List<IDocumentTemplate>();
             this.documentTemplateCategories = new List<IDocumentTemplateCategory>();
 
-            this.ToolWindows = new ObservableCollection<IEditorTool>()
+            this.ToolWindows = new ObservableCollection<IEditorTool>
                                    {
                                        this.propertyViewModel,
                                        this.resourceExplorerViewModel,
@@ -95,7 +91,6 @@ namespace GrandSeal.Editor.ViewModels
             this.CommandCloseProject = new RelayCommand(this.OnCloseProject, this.CanCloseProject);
             this.CommandSaveProject = new RelayCommand(this.OnSaveProject, this.CanSaveProject);
             this.CommandSaveProjectAs = new RelayCommand(this.OnSaveProjectAs, this.CanSaveProject);
-            this.CommandBuild = new RelayCommand(this.OnBuild, this.CanBuild);
             this.CommandExit = new RelayCommand(this.OnExit);
             this.CommandOpenResourceExplorer = new RelayCommand(this.OnShowResourceExplorer);
             this.CommandOpenMaterialExplorer = new RelayCommand(this.OnShowMaterialExplorer);
@@ -174,6 +169,7 @@ namespace GrandSeal.Editor.ViewModels
             {
                 return this.activeDocument;
             }
+
             set
             {
                 if (this.activeDocument != value)
@@ -211,12 +207,7 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                if (this.projectViewModel == null)
-                {
-                    this.projectViewModel = this.factory.Get<IProjectViewModel>();
-                }
-
-                return this.projectViewModel;
+                return this.projectViewModel ?? (this.projectViewModel = this.factory.Get<IProjectViewModel>());
             }
         }
 
@@ -247,8 +238,6 @@ namespace GrandSeal.Editor.ViewModels
         public ICommand CommandCloseProject { get; private set; }
         public ICommand CommandSaveProject { get; private set; }
         public ICommand CommandSaveProjectAs { get; private set; }
-
-        public ICommand CommandBuild { get; private set; }
 
         public ICommand CommandUndo { get; private set; }
         public ICommand CommandRedo { get; private set; }
@@ -287,7 +276,7 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         private void NotifyProjectChanged()
         {
-            PropertyChangedEventHandler handler = ProjectChanged;
+            PropertyChangedEventHandler handler = this.ProjectChanged;
             if (handler != null)
             {
                 handler(this, new PropertyChangedEventArgs("Project"));
@@ -389,16 +378,20 @@ namespace GrandSeal.Editor.ViewModels
 
         private void NotifyProjectChange()
         {
+            // ReSharper disable ExplicitCallerInfoArgument
             this.NotifyPropertyChanged("Project");
             this.NotifyPropertyChanged("ProjectTitle");
+            // ReSharper restore ExplicitCallerInfoArgument
         }
 
         private void NotifyUndoRedoChanged()
         {
+            // ReSharper disable ExplicitCallerInfoArgument
             this.NotifyPropertyChanged("UndoOperations");
             this.NotifyPropertyChanged("RedoOperations");
             this.NotifyPropertyChanged("CommandUndo");
             this.NotifyPropertyChanged("CommandRedo");
+            // ReSharper restore ExplicitCallerInfoArgument
         }
 
         private void OnRedo(object obj)
@@ -453,11 +446,11 @@ namespace GrandSeal.Editor.ViewModels
 
             if (dialog.ShowDialog() == true)
             {
-                this.DoOpenProject(new CarbonPath(Path.GetDirectoryName(dialog.FileName) + Path.DirectorySeparatorChar));
+                this.DoOpenProject(new CarbonDirectory(dialog.FileName));
             }
         }
 
-        private void DoOpenProject(CarbonPath path)
+        private void DoOpenProject(CarbonDirectory path)
         {
             if (this.CanCloseProject(null))
                 {
@@ -587,38 +580,7 @@ namespace GrandSeal.Editor.ViewModels
             StaticResources.MeshTemplate.Categories.Add(resourceMain);
             this.documentTemplates.Add(StaticResources.MeshTemplate);
         }
-
-        private void OnBuild(object obj)
-        {
-            var dialog = new OpenFileDialog { CheckPathExists = true, CheckFileExists = false };
-            if (dialog.ShowDialog() != true)
-            {
-                return;
-            }
-
-            string folder = Path.GetDirectoryName(dialog.FileName);
-            if (Directory.GetFiles(folder, "*", SearchOption.TopDirectoryOnly).Length > 0)
-            {
-                if (MessageBox.Show(
-                    "Folder is not empty, continue?",
-                    "Confirmation",
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Question,
-                    MessageBoxResult.Cancel) == MessageBoxResult.Cancel)
-                {
-                    return;
-                }
-            }
-
-            throw new NotImplementedException();
-            //this.logic.Build(folder);
-        }
-
-        private bool CanBuild(object obj)
-        {
-            return this.logic.IsProjectLoaded;
-        }
-
+        
         private void RestoreProjectLayout()
         {
             if (this.currentProjectFile.IsNull)

@@ -2,8 +2,8 @@
 using System.IO;
 using System.Windows;
 
-using Core.Editor.Contracts;
-using Core.Editor.Processors;
+using Core.Processing.Contracts;
+using Core.Processing.Processors;
 using Core.Engine.Contracts;
 using Core.Engine.Contracts.Resource;
 using Core.Engine.Resource.Content;

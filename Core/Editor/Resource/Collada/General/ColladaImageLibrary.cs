@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace Core.Editor.Resource.Collada.General
+namespace Core.Processing.Resource.Collada.General
 {
     [Serializable]
     public class ColladaImageLibrary

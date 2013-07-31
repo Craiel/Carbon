@@ -6,6 +6,8 @@ using GrandSeal.Editor.Events;
 
 namespace GrandSeal.Editor.Views
 {
+    using System.Windows;
+
     using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
     public partial class MainView
@@ -36,7 +38,7 @@ namespace GrandSeal.Editor.Views
                 throw new ArgumentException();
             }
 
-            var serializer = new XmlLayoutSerializer(this.dockingManager);
+            var serializer = new XmlLayoutSerializer(this.DockingManager);
             using (var stream = new FileStream(args.File, FileMode.Open, FileAccess.Read))
             {
                 serializer.Deserialize(stream);
@@ -45,11 +47,16 @@ namespace GrandSeal.Editor.Views
 
         private void OnSaveLayoutEvent(EventSaveLayout args)
         {
-            var serializer = new XmlLayoutSerializer(this.dockingManager);
+            var serializer = new XmlLayoutSerializer(this.DockingManager);
             using (var stream = new FileStream(args.File, FileMode.Create, FileAccess.ReadWrite))
             {
                 serializer.Serialize(stream);
             }
+        }
+
+        private void OnRecentItemClick(object sender, RoutedEventArgs e)
+        {
+            this.Ribbon.SelectedTabIndex = 0;
         }
     }
 }

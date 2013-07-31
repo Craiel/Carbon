@@ -102,7 +102,7 @@ namespace Core.Engine.Resource
                     }
             }
 
-            return this.TypedLoad(new ContentQuery<T>().IsEqual("Id", link.ContentId)).UniqueResult<T>();
+            return this.TypedLoad(new ContentQuery<T>().IsEqual("Id", link.ContentId)).UniqueResult();
         }
 
         public void Save(ICarbonContent content)

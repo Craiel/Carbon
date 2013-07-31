@@ -8,7 +8,7 @@ using System.IO;
 
 using Core.Engine.Resource.Resources;
 
-namespace Core.Editor.Processors
+namespace Core.Processing.Processors
 {
     public struct FontProcessingOptions
     {

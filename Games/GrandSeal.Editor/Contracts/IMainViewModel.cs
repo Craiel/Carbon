@@ -7,7 +7,7 @@ using GrandSeal.Editor.Logic;
 
 namespace GrandSeal.Editor.Contracts
 {
-    using Core.Engine.Logic;
+    using Core.Utils.IO;
 
     using Xceed.Wpf.AvalonDock.Themes;
 
@@ -27,7 +27,7 @@ namespace GrandSeal.Editor.Contracts
         ReadOnlyCollection<UndoRedoOperation> UndoOperations { get; }
         ReadOnlyCollection<UndoRedoOperation> RedoOperations { get; }
 
-        ReadOnlyObservableCollection<CarbonPath> RecentProjects { get; }
+        ReadOnlyObservableCollection<CarbonDirectory> RecentProjects { get; }
         
         IEditorDocument ActiveDocument { get; set; }
 
@@ -47,9 +47,7 @@ namespace GrandSeal.Editor.Contracts
         ICommand CommandOpenProject { get; }
         ICommand CommandCloseProject { get; }
         ICommand CommandSaveProject { get; }
-
-        ICommand CommandBuild { get; }
-
+        
         ICommand CommandUndo { get; }
         ICommand CommandRedo { get; }
 

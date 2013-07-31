@@ -4,7 +4,7 @@ using System.Globalization;
 
 using SlimDX;
 
-namespace Core.Editor.Resource.Generic.Data
+namespace Core.Processing.Resource.Generic.Data
 {
     public static class DataConversion
     {

@@ -1,18 +1,16 @@
-﻿using GrandSeal.Editor.Logic.MVVM;
-
-using Core.Engine.Resource.Resources;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
     using System.Drawing;
-    
-    using Core.Editor.Contracts;
-    using Core.Editor.Processors;
+
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;
-
+    using Core.Engine.Resource.Resources;
+    using Core.Processing.Contracts;
+    using Core.Processing.Processors;
+    using Core.Utils.IO;
     using global::GrandSeal.Editor.Contracts;
+    using GrandSeal.Editor.Logic.MVVM;
 
     public class ResourceFontViewModel : ResourceViewModel, IResourceFontViewModel
     {
@@ -91,7 +89,7 @@ namespace GrandSeal.Editor.ViewModels
             }
         }
 
-        public override void SelectFile(string path)
+        public override void SelectFile(CarbonPath path)
         {
             base.SelectFile(path);
 

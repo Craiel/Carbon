@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace Core.Editor.Resource.Collada.Geometry
+namespace Core.Processing.Resource.Collada.Geometry
 {
-    using Core.Editor.Resource.Collada.Data;
-    using Core.Editor.Resource.Generic.Data;
+    using Core.Processing.Resource.Collada.Data;
+    using Core.Processing.Resource.Generic.Data;
 
     [Serializable]
     public abstract class ColladaGeometryElement

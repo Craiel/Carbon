@@ -82,6 +82,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationExtension.cs" />
+    <Compile Include="IO\CarbonFile.cs" />
+    <Compile Include="IO\CarbonPath.cs" />
     <Compile Include="Contracts\IEventRelay.cs" />
     <Compile Include="Contracts\IFormatter.cs" />
     <Compile Include="Contracts\ILog.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="Diagnostics\Profiler.cs" />
     <Compile Include="Diagnostics\ProfileRegion.cs" />
     <Compile Include="HashUtils.cs" />
+    <Compile Include="IO\CarbonDirectory.cs" />
     <Compile Include="LimitedList.cs" />
     <Compile Include="MathExtension.cs" />
     <Compile Include="Ninject\NinjectModuleManager.cs" />

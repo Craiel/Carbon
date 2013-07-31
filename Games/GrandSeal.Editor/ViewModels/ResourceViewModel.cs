@@ -2,29 +2,25 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Logic.MVVM;
-
 using Core.Engine.Contracts;
 using Core.Engine.Contracts.Resource;
 using Core.Engine.Resource;
 using Core.Engine.Resource.Content;
-
 using Core.Utils;
-
+using GrandSeal.Editor.Contracts;
+using GrandSeal.Editor.Logic.MVVM;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-
 using Microsoft.Win32;
 
 namespace GrandSeal.Editor.ViewModels
 {
-    using Core.Editor.Contracts;
+    using Core.Processing.Contracts;
+    using Core.Utils.IO;
 
     public abstract class ResourceViewModel : ContentViewModel, IResourceViewModel
     {
@@ -146,13 +142,8 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                string path = this.GetMetaValue(MetaDataKey.SourcePath);
-                if (string.IsNullOrEmpty(path))
-                {
-                    return false;
-                }
-
-                return File.Exists(path);
+                var path = new CarbonPath(this.GetMetaValue(MetaDataKey.SourcePath));
+                return !path.IsNull && path.Exists;
             }
         }
 
@@ -174,7 +165,7 @@ namespace GrandSeal.Editor.ViewModels
             }
         }
 
-        public string SourcePath
+        public CarbonPath SourcePath
         {
             get
             {
@@ -343,9 +334,9 @@ namespace GrandSeal.Editor.ViewModels
             this.NotifyPropertyChanged();
         }
 
-        public virtual void SelectFile(string path)
+        public virtual void SelectFile(CarbonPath path)
         {
-            if(string.IsNullOrEmpty(path) || !File.Exists(path))
+            if(path == null || !path.Exists)
             {
                 throw new DataException("Invalid file specified for select");
             }

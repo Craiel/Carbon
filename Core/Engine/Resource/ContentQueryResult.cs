@@ -27,13 +27,13 @@ namespace Core.Engine.Resource
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public IList<T> ToList<T>()
+        public IList<T> ToList()
         {
             IList untyped = this.ToList(typeof(T));
             return untyped.Cast<T>().ToList();
         }
 
-        public T UniqueResult<T>()
+        public new T UniqueResult()
         {
             return (T)this.UniqueResult(typeof(T));
         }

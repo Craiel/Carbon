@@ -11,12 +11,12 @@ using Core.Utils;
 
 using SlimDX;
 
-namespace Core.Editor.Resource.Collada
+namespace Core.Processing.Resource.Collada
 {
-    using Core.Editor.Resource.Collada.Data;
-    using Core.Editor.Resource.Collada.Geometry;
-    using Core.Editor.Resource.Collada.Scene;
-    using Core.Editor.Resource.Generic.Data;
+    using Core.Processing.Resource.Collada.Data;
+    using Core.Processing.Resource.Collada.Geometry;
+    using Core.Processing.Resource.Collada.Scene;
+    using Core.Processing.Resource.Generic.Data;
 
     /// <summary>
     /// Todo:

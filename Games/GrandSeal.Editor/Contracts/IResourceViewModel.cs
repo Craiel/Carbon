@@ -14,7 +14,8 @@ namespace GrandSeal.Editor.Contracts
 {
     using System.Drawing;
 
-    using Core.Editor.Processors;
+    using Core.Processing.Processors;
+    using Core.Utils.IO;
 
     public interface IResourceRawViewModel : IResourceViewModel
     {
@@ -87,7 +88,7 @@ namespace GrandSeal.Editor.Contracts
         
         bool ForceSave { get; set; }
 
-        string SourcePath { get; }
+        CarbonPath SourcePath { get; }
 
         DateTime? LastChangeDate { get; }
 
@@ -101,7 +102,7 @@ namespace GrandSeal.Editor.Contracts
         void Save(IContentManager target, IResourceManager resourceTarget, bool force);
         void Delete(IContentManager target, IResourceManager resourceTarget);
 
-        void SelectFile(string path);
+        void SelectFile(CarbonPath path);
         void CheckSource();
     }
 }

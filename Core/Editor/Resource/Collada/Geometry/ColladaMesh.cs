@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Core.Editor.Resource.Collada.Geometry
+namespace Core.Processing.Resource.Collada.Geometry
 {
     using System.Xml.Serialization;
 
-    using Core.Editor.Resource.Collada.Data;
+    using Core.Processing.Resource.Collada.Data;
 
     [Serializable]
     public class ColladaMesh

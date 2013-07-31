@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using Core.Engine.Contracts.Resource;
+using Core.Utils.IO;
 
 namespace Core.Engine.Resource
 {
@@ -40,7 +41,7 @@ namespace Core.Engine.Resource
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ResourceManager(string root)
+        public ResourceManager(CarbonDirectory root)
         {
             this.content = new List<ResourceContent> { new FolderContent(root, true) };
 

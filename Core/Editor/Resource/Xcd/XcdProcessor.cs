@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Core.Editor.Logic;
-using Core.Editor.Resource.Generic.Data;
-using Core.Editor.Resource.Xcd.Scene;
+using Core.Processing.Logic;
+using Core.Processing.Resource.Generic.Data;
+using Core.Processing.Resource.Xcd.Scene;
 using Core.Engine.Resource.Resources.Stage;
 
 using SlimDX;
 
-namespace Core.Editor.Resource.Xcd
+namespace Core.Processing.Resource.Xcd
 {
     public struct XcdProcessingOptions
     {

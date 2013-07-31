@@ -1,8 +1,7 @@
-﻿using GrandSeal.Editor.Contracts;
+﻿using Core.Engine.Ninject;
+using GrandSeal.Editor.Contracts;
 using GrandSeal.Editor.Logic;
 using GrandSeal.Editor.ViewModels;
-
-using Core.Engine.Ninject;
 using Ninject.Modules;
 
 namespace GrandSeal.Editor.Ninject
@@ -14,8 +13,8 @@ namespace GrandSeal.Editor.Ninject
             return new NinjectModule[]
                        {
                            new EngineModule(), new EditorModule(),
-                           new Core.Editor.Ninject.NinjectModuleManager.CarbonEditorModule(),
-                           new Core.Utils.Ninject.NinjectModuleManager.UtilsModule(), 
+                           new Core.Processing.Ninject.NinjectModuleManager.CarbonEditorModule(),
+                           new Core.Utils.Ninject.NinjectModuleManager.UtilsModule()
                        };
         }
 

@@ -147,11 +147,6 @@
     <Compile Include="Contracts\IUndoRedoManager.cs" />
     <Compile Include="Contracts\IUserInterfaceViewModel.cs" />
     <Compile Include="Contracts\IViewModelFactory.cs" />
-    <Compile Include="UserPreferences.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>UserPreferences.settings</DependentUpon>
-    </Compile>
     <Compile Include="Entry.cs" />
     <Compile Include="Events\LayoutEvents.cs" />
     <Compile Include="Logic\ApplicationLog.cs" />
@@ -277,10 +272,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="UserPreferences.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>UserPreferences.Designer.cs</LastGenOutput>
-    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -296,9 +287,9 @@
       <Project>{e05836d9-0bb3-4bfa-89e6-f5ed40a9d93c}</Project>
       <Name>Core.Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Editor\Core.Editor.csproj">
+    <ProjectReference Include="..\..\Core\Editor\Core.Processing.csproj">
       <Project>{819ff5d0-4498-48f2-9f7d-81a322b9b082}</Project>
-      <Name>Core.Editor</Name>
+      <Name>Core.Processing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Engine\Core.Engine.csproj">
       <Project>{a724db75-b032-4ae5-b901-063a165f7e71}</Project>

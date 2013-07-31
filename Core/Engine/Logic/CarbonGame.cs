@@ -13,6 +13,8 @@ using SlimDX.Windows;
 
 namespace Core.Engine.Logic
 {
+    using Core.Utils.IO;
+
     public struct EngineContent
     {
         public string FallbackTexture;
@@ -20,7 +22,6 @@ namespace Core.Engine.Logic
 
     /// <summary>
     /// Base class for a carbon based game
-    /// 
     /// 
     /// Todo:
     /// - Cleanup           !!!!!
@@ -79,7 +80,7 @@ namespace Core.Engine.Logic
         // -------------------------------------------------------------------
         protected CarbonGame(IEngineFactory factory)
         {
-            this.coreResourceManager = factory.GetResourceManager("Data");
+            this.coreResourceManager = factory.GetResourceManager(new CarbonDirectory("Data"));
             this.graphics = factory.GetGraphics(this.coreResourceManager);
             this.debugController = factory.Get<IDebugController>();
             this.inputManager = factory.Get<IInputManager>();
@@ -88,7 +89,7 @@ namespace Core.Engine.Logic
             this.scriptingEngine = factory.Get<IScriptingEngine>();
             this.log = factory.Get<IEngineLog>().AquireContextLog("CarbonGame");
 
-            this.gameTimer = new Core.Utils.Timer();
+            this.gameTimer = new Utils.Timer();
         }
 
         // -------------------------------------------------------------------
@@ -208,7 +209,6 @@ namespace Core.Engine.Logic
             frameManager.BeginFrame();
 
             // Nothing to do here
-
             renderer.EndFrame();
         }
 
@@ -235,6 +235,20 @@ namespace Core.Engine.Logic
         protected virtual void DoClearCache()
         {
             this.graphics.ClearCache();
+        }
+
+        protected virtual void OnClose(object sender, System.Windows.Forms.FormClosedEventArgs e)
+        {
+            this.gameTimer.Pause();
+
+            this.inputManager.Dispose();
+            this.mainRenderer.Dispose();
+            this.mainFrameManager.Dispose();
+            this.graphics.Dispose();
+
+#if DEBUG
+            Profiler.TraceProfilerStatistics();
+#endif
         }
 
         // -------------------------------------------------------------------
@@ -271,9 +285,9 @@ namespace Core.Engine.Logic
 
                     if (this.fpsAccumulator >= FrameTime)
                     {
-                        if (this.possibleFramesPerSecond > TargetFrameRate)
+                        if (this.possibleFramesPerSecond > this.TargetFrameRate)
                         {
-                            this.currentFrameDrop = (int)(this.possibleFramesPerSecond / TargetFrameRate);
+                            this.currentFrameDrop = (int)(this.possibleFramesPerSecond / this.TargetFrameRate);
                         }
                         else
                         {
@@ -340,24 +354,10 @@ namespace Core.Engine.Logic
             this.log.Debug("------------------------------------------------------");
             this.log.Debug("Closing Down");
             this.isClosing = true;
-            while(this.renderThread.IsAlive)
+            while (this.renderThread.IsAlive)
             {
                 Thread.Sleep(10);
             }
-        }
-
-        protected virtual void OnClose(object sender, System.Windows.Forms.FormClosedEventArgs e)
-        {
-            this.gameTimer.Pause();
-            
-            this.inputManager.Dispose();
-            this.mainRenderer.Dispose();
-            this.mainFrameManager.Dispose();
-            this.graphics.Dispose();
-
-#if DEBUG
-            Profiler.TraceProfilerStatistics();
-#endif
         }
     }
 }

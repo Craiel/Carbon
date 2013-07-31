@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace Core.Editor.Resource.Generic.Data
+namespace Core.Processing.Resource.Generic.Data
 {
     [Serializable]
     public class BoolArrayType

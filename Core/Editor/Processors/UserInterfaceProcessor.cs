@@ -3,7 +3,7 @@ using System.IO;
 
 using Core.Engine.Resource.Resources;
 
-namespace Core.Editor.Processors
+namespace Core.Processing.Processors
 {
     using System.Collections.Generic;
     using System.Text.RegularExpressions;

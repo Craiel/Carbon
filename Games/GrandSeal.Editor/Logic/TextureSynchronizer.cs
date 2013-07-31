@@ -10,7 +10,7 @@ namespace GrandSeal.Editor.Logic
 {
     using System.Windows;
 
-    using Core.Editor.Resource.Collada;
+    using Core.Processing.Resource.Collada;
 
     internal struct SynchronizationEntry
     {

@@ -5,8 +5,10 @@ using System.Text;
 
 using Core.Engine.Resource.Resources;
 
-namespace Core.Editor.Processors
+namespace Core.Processing.Processors
 {
+    using Core.Utils.IO;
+
     public enum TextureTargetFormat
     {
         Undefined,
@@ -31,7 +33,7 @@ namespace Core.Editor.Processors
     public static class TextureProcessor
     {
         private const string CompressionTool = "nvcompress.exe";
-        public static string TextureToolsPath { get; set; }
+        public static CarbonDirectory TextureToolsPath { get; set; }
 
         // -------------------------------------------------------------------
         // Public
@@ -43,41 +45,43 @@ namespace Core.Editor.Processors
                 throw new ArgumentException("Target format was not defined properly");
             }
 
-            if (!Directory.Exists(TextureToolsPath))
+            if (!TextureToolsPath.Exists)
             {
                 throw new InvalidOperationException("Texture tools have not been set or directory does not exist");
             }
 
-            string toolPath = Path.Combine(TextureToolsPath, CompressionTool);
-            if (!File.Exists(toolPath))
+            CarbonFile toolPath = TextureToolsPath.ToFile(CompressionTool);
+            if (!toolPath.Exists)
             {
                 throw new InvalidOperationException("Texture tool was not found in the expected location: " + toolPath);
             }
 
-            string tempDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            string tempFile = Path.Combine(tempDir, Path.GetRandomFileName());
+            CarbonFile tempFile = CarbonFile.GetTempFile();
             string parameter = BuildCompressionParameter(options);
 
-            Directory.CreateDirectory(tempDir);
             try
             {
-                var process = new Process();
-                process.StartInfo.FileName = toolPath;
-                process.StartInfo.Arguments = string.Format("{0} \"{1}\" \"{2}\"", parameter, path, tempFile);
-                process.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
-                process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.UseShellExecute = false;
+                var startInfo = new ProcessStartInfo
+                                    {
+                                        FileName = toolPath.ToString(),
+                                        Arguments = string.Format("{0} \"{1}\" \"{2}\"", parameter, path, tempFile),
+                                        WorkingDirectory = Environment.CurrentDirectory,
+                                        CreateNoWindow = true,
+                                        UseShellExecute = false
+                                    };
+
+                var process = new Process { StartInfo = startInfo };
                 process.Start();
                 process.WaitForExit();
 
-                if (!File.Exists(tempFile))
+                if (!tempFile.Exists)
                 {
                     throw new InvalidOperationException("Expected result file was not found after texture compression");
                 }
 
-                using (FileStream stream = new FileStream(tempFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (var stream = new FileStream(tempFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    byte[] data = new byte[stream.Length];
+                    var data = new byte[stream.Length];
                     stream.Read(data, 0, (int)stream.Length);
                     return new RawResource { Data = data };
                 }
@@ -85,7 +89,7 @@ namespace Core.Editor.Processors
             finally
             {
                 // Make sure we clean up after
-                Directory.Delete(tempDir, true);
+                tempFile.DeleteIfExists();
             }
         }
 

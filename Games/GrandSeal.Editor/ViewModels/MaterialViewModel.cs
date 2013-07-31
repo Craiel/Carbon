@@ -2,13 +2,12 @@
 using System.Windows.Input;
 using System.Windows.Media;
 
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Logic.MVVM;
-using GrandSeal.Editor.Views;
-
 using Core.Engine.Contracts;
 using Core.Engine.Contracts.Resource;
 using Core.Engine.Resource.Content;
+using GrandSeal.Editor.Contracts;
+using GrandSeal.Editor.Logic.MVVM;
+using GrandSeal.Editor.Views;
 
 namespace GrandSeal.Editor.ViewModels
 {
@@ -22,8 +21,6 @@ namespace GrandSeal.Editor.ViewModels
         private IResourceViewModel specularTexture;
         private IResourceViewModel alphaTexture;
         
-        private ICommand commandSelectColor;
-
         private ICommand commandSelectDiffuse;
         private ICommand commandSelectNormal;
         private ICommand commandSelectAlpha;
@@ -73,7 +70,10 @@ namespace GrandSeal.Editor.ViewModels
             set
             {
                 base.Name = value;
+
+                // ReSharper disable ExplicitCallerInfoArgument
                 this.NotifyPropertyChanged("Title");
+                // ReSharper restore ExplicitCallerInfoArgument
             }
         }
         
@@ -124,8 +124,11 @@ namespace GrandSeal.Editor.ViewModels
                     this.CreateUndoState();
                     this.diffuseTexture = value;
                     this.needSave = true;
-                    this.NotifyPropertyChanged("IsChanged");
                     this.NotifyPropertyChanged();
+
+                    // ReSharper disable ExplicitCallerInfoArgument
+                    this.NotifyPropertyChanged("IsChanged");
+                    // ReSharper restore ExplicitCallerInfoArgument
                 }
             }
         }

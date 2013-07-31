@@ -1,18 +1,20 @@
 ﻿using System.IO;
 using System.Windows.Media.Imaging;
 
+using Core.Utils.IO;
+
 namespace GrandSeal.Editor.Logic.MVVM
 {
     public static class WPFUtilities
     {
-        public static BitmapImage FileToImage(string path)
+        public static BitmapImage FileToImage(CarbonPath path)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            if (path == null || !path.Exists)
             {
                 return null;
             }
 
-            Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            Stream stream = new FileStream(path.ToString(), FileMode.Open, FileAccess.Read, FileShare.Read);
             var result = new BitmapImage { CacheOption = BitmapCacheOption.OnDemand };
             result.BeginInit();
             result.StreamSource = stream;

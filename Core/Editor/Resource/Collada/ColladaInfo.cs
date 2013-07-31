@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 
-namespace Core.Editor.Resource.Collada
+namespace Core.Processing.Resource.Collada
 {
     using Core.Engine.Resource.Resources.Model;
 
-    using Core.Editor.Resource.Collada.Effect;
-    using Core.Editor.Resource.Collada.General;
-    using Core.Editor.Resource.Collada.Geometry;
+    using Core.Processing.Resource.Collada.Effect;
+    using Core.Processing.Resource.Collada.General;
+    using Core.Processing.Resource.Collada.Geometry;
 
     public struct ColladaMeshInfo
     {

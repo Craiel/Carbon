@@ -3,9 +3,9 @@ using System.Xml.Serialization;
 
 using SlimDX;
 
-namespace Core.Editor.Resource.Collada.Data
+namespace Core.Processing.Resource.Collada.Data
 {
-    using Core.Editor.Resource.Generic.Data;
+    using Core.Processing.Resource.Generic.Data;
 
     [Serializable]
     public class ColladaColor

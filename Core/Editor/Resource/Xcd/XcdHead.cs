@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace Core.Editor.Resource.Xcd
+namespace Core.Processing.Resource.Xcd
 {
-    using Core.Editor.Resource.Xcd.Scene;
+    using Core.Processing.Resource.Xcd.Scene;
 
     [Serializable]
     public class XcdHead

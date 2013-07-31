@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.Editor.Resource.Collada.Data
+namespace Core.Processing.Resource.Collada.Data
 {
     using System.Xml.Serialization;
 

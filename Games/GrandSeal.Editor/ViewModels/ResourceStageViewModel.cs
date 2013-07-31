@@ -7,8 +7,8 @@ namespace GrandSeal.Editor.ViewModels
 {
     using System.Windows;
 
-    using Core.Editor.Contracts;
-    using Core.Editor.Resource.Xcd;
+    using Core.Processing.Contracts;
+    using Core.Processing.Resource.Xcd;
     using Core.Engine.Contracts.Resource;
 
     public class ResourceStageViewModel : ResourceViewModel, IResourceStageViewModel

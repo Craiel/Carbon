@@ -40,7 +40,7 @@ namespace Core.Engine.Ninject
             return this.kernel.Get<ICarbonGraphics>(new ConstructorArgument("resourceManager", resourceManager));
         }
 
-        public IResourceManager GetResourceManager(string root)
+        public IResourceManager GetResourceManager(Utils.IO.CarbonPath root)
         {
             return this.kernel.Get<IResourceManager>(new ConstructorArgument("root", root));
         }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace Core.Editor.Resource.Collada.Effect
+namespace Core.Processing.Resource.Collada.Effect
 {
-    using Core.Editor.Resource.Collada.Data;
+    using Core.Processing.Resource.Collada.Data;
 
     [Serializable]
     public class EffectParameter

@@ -9,7 +9,7 @@ using Core.Engine.Contracts;
 
 namespace GrandSeal.Editor.Logic
 {
-    using Core.Editor.Contracts;
+    using Core.Processing.Contracts;
 
     [Serializable]
     public class EditorSettingsData

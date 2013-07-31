@@ -16,8 +16,8 @@ using Core.Engine.Resource.Content;
 
 namespace GrandSeal.Editor.ViewModels
 {
-    using Core.Editor.Contracts;
-    using Core.Editor.Resource.Collada;
+    using Core.Processing.Contracts;
+    using Core.Processing.Resource.Collada;
 
     public class ResourceModelViewModel : ResourceViewModel, IResourceModelViewModel
     {

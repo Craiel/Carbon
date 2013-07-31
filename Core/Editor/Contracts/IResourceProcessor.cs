@@ -1,22 +1,23 @@
-﻿using Core.Editor.Processors;
-using Core.Editor.Resource.Collada;
-using Core.Editor.Resource.Xcd;
-using Core.Engine.Resource.Resources;
+﻿using Core.Engine.Resource.Resources;
 using Core.Engine.Resource.Resources.Model;
 using Core.Engine.Resource.Resources.Stage;
+using Core.Processing.Processors;
+using Core.Processing.Resource.Collada;
+using Core.Processing.Resource.Xcd;
+using Core.Utils.IO;
 
-namespace Core.Editor.Contracts
+namespace Core.Processing.Contracts
 {
     public interface IResourceProcessor
     {
-        string TextureToolsPath { get; set; }
+        CarbonDirectory TextureToolsPath { get; set; }
 
-        RawResource ProcessRaw(string path);
-        RawResource ProcessTexture(string path, TextureProcessingOptions options);
-        RawResource ProcessFont(string path, FontProcessingOptions options);
-        StageResource ProcessStage(string path, XcdProcessingOptions options);
+        RawResource ProcessRaw(CarbonPath path);
+        RawResource ProcessTexture(CarbonPath path, TextureProcessingOptions options);
+        RawResource ProcessFont(CarbonPath path, FontProcessingOptions options);
+        StageResource ProcessStage(CarbonPath path, XcdProcessingOptions options);
         ModelResourceGroup ProcessModel(ColladaInfo info, string element, string texturePath);
-        ScriptResource ProcessScript(string path, ScriptProcessingOptions options);
-        UserInterfaceResource ProcessUserInterface(string path, UserInterfaceProcessingOptions options);
+        ScriptResource ProcessScript(CarbonPath path, ScriptProcessingOptions options);
+        UserInterfaceResource ProcessUserInterface(CarbonPath path, UserInterfaceProcessingOptions options);
     }
 }

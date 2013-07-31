@@ -2,7 +2,7 @@
 
 namespace GrandSeal.Editor.Contracts
 {
-    using Core.Editor.Resource.Collada;
+    using Core.Processing.Resource.Collada;
 
     public interface ITextureSynchronizer : INotifyPropertyChanged
     {

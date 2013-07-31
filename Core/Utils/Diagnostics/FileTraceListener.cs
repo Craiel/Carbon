@@ -88,6 +88,27 @@ namespace Core.Utils.Diagnostics
             this.Flush();
         }
 
+        public override void Flush()
+        {
+            if (this.isRotating)
+            {
+                return;
+            }
+
+            lock (this.traceCache)
+            {
+                foreach (string line in this.traceCache)
+                {
+                    this.file.WriteLine(line);
+                }
+
+                this.traceCache.Clear();
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
         protected override string[] GetSupportedAttributes()
         {
             return new[] { "template", "Template", "rotateFiles", "RotateFiles", "maxRotation", "MaxRotation" };
@@ -169,24 +190,6 @@ namespace Core.Utils.Diagnostics
             }
 
             this.isRotating = false;
-        }
-
-        private void Flush()
-        {
-            if (this.isRotating)
-            {
-                return;
-            }
-
-            lock (this.traceCache)
-            {
-                foreach (string line in this.traceCache)
-                {
-                    this.file.WriteLine(line);
-                }
-
-                this.traceCache.Clear();
-            }
         }
     }
 }
