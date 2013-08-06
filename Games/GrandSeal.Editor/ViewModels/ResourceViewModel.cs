@@ -142,10 +142,12 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                var path = new CarbonPath(this.GetMetaValue(MetaDataKey.SourcePath));
-                return !path.IsNull && path.Exists;
+                CarbonFile source = this.SourceFile;
+                return !source.IsNull && source.Exists;
             }
         }
+
+        public bool UsesPath { get; protected set; }
 
         public bool ForceSave
         {
@@ -165,25 +167,49 @@ namespace GrandSeal.Editor.ViewModels
             }
         }
 
-        public CarbonPath SourcePath
+        public CarbonDirectory SourcePath
         {
             get
             {
                 string path = this.GetMetaValue(MetaDataKey.SourcePath);
                 if (string.IsNullOrEmpty(path))
                 {
-                    return "<none selected>";
+                    return null;
                 }
 
-                return path;
+                return new CarbonDirectory(path);
             }
 
             private set
             {
-                if (this.GetMetaValue(MetaDataKey.SourcePath) != value)
+                if (!this.SourcePath.Equals(value))
                 {
                     this.CreateUndoState();
-                    this.SetMetaValue(MetaDataKey.SourcePath, value);
+                    this.SetMetaValue(MetaDataKey.SourcePath, value.ToString());
+                    this.NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public CarbonFile SourceFile
+        {
+            get
+            {
+                string path = this.GetMetaValue(MetaDataKey.SourceFile);
+                if (string.IsNullOrEmpty(path))
+                {
+                    return null;
+                }
+
+                return new CarbonFile(path);
+            }
+
+            private set
+            {
+                if (!this.SourceFile.Equals(value))
+                {
+                    this.CreateUndoState();
+                    this.SetMetaValue(MetaDataKey.SourceFile, value.ToString());
                     this.NotifyPropertyChanged();
                 }
             }
@@ -282,11 +308,21 @@ namespace GrandSeal.Editor.ViewModels
                 throw new DataException("Resource needs to be named before saving");
             }
 
-            if (string.IsNullOrEmpty(this.SourcePath) || !File.Exists(this.SourcePath))
+            if (this.UsesPath)
             {
-                throw new DataException("File does not exist for resource " + this.Name);
+                if (this.SourcePath.IsNull || !this.SourcePath.Exists)
+                {
+                    throw new DataException("Path does not exist for resource " + this.Name);
+                }
             }
-            
+            else
+            {
+                if (this.SourceFile.IsNull || !this.SourceFile.Exists)
+                {
+                    throw new DataException("File does not exist for resource " + this.Name);
+                }
+            }
+
             if (this.oldHash != null)
             {
                 // Todo: resourceTarget.Delete(this.oldHash);
@@ -296,7 +332,7 @@ namespace GrandSeal.Editor.ViewModels
             this.PrepareSave();
 
             this.data.TreeNode = this.parent.Id;
-            this.data.Hash = HashUtils.BuildResourceHash(Path.Combine(this.parent.FullPath, this.Name));
+            this.data.Hash = HashUtils.BuildResourceHash(this.parent.FullPath.ToFile(this.Name).ToString());
 
             bool forceSave = this.GetMetaValueBit(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceSave) ?? false;
             if (this.NeedSave || force || forceSave)
@@ -334,35 +370,66 @@ namespace GrandSeal.Editor.ViewModels
             this.NotifyPropertyChanged();
         }
 
-        public virtual void SelectFile(CarbonPath path)
+        public virtual void SelectFile(CarbonFile file)
         {
-            if(path == null || !path.Exists)
+            if (file.IsNull || !file.Exists)
             {
                 throw new DataException("Invalid file specified for select");
             }
 
-            this.SourcePath = path;
             if (!this.IsNamed)
             {
-                this.Name = Path.GetFileName(path);
+                this.Name = file.FileName;
             }
 
-            this.SetSettingsByExtension(Path.GetExtension(path));
+            this.SetSettingsByExtension(file.Extension);
+
+            this.CheckSource();
+        }
+
+        public virtual void SelectPath(CarbonDirectory path)
+        {
+            if (!this.UsesPath)
+            {
+                throw new InvalidOperationException("Viewmodel is not using path");
+            }
+
+            this.SourcePath = path;
+
+            // Todo:
+            // Set settings by path content
 
             this.CheckSource();
         }
 
         public void CheckSource()
         {
-            string path = this.SourcePath;
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            if (this.UsesPath)
+            {
+                this.CheckSourcePath();
+            }
+            else
+            {
+                this.CheckSourceFile();
+            }
+        }
+
+        public void CheckSourcePath()
+        {
+            System.Diagnostics.Trace.TraceWarning("CheckSourcePath is not implemented");
+        }
+
+        public void CheckSourceFile()
+        {
+            CarbonFile source = this.SourceFile;
+            if (source.IsNull || !source.Exists)
             {
                 this.sourceSize = null;
                 this.NeedSave = true;
                 return;
             }
             
-            DateTime changeTime = File.GetLastWriteTime(path);
+            DateTime changeTime = source.LastWriteTime;
             if (this.LastChangeDate != changeTime)
             {
                 this.NeedSave = true;
@@ -374,8 +441,7 @@ namespace GrandSeal.Editor.ViewModels
                 this.NeedSave = true;
             }
 
-            var info = new FileInfo(path);
-            this.SourceSize = info.Length;
+            this.SourceSize = source.Size;
         }
 
         public override void Load()
@@ -448,7 +514,16 @@ namespace GrandSeal.Editor.ViewModels
 
         protected virtual void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
-            ICarbonResource resource = this.resourceProcessor.ProcessRaw(this.SourcePath);
+            ICarbonResource resource;
+            if (this.UsesPath)
+            {
+                resource = this.resourceProcessor.ProcessRaw(this.SourcePath);
+            }
+            else
+            {
+                resource = this.resourceProcessor.ProcessRaw(this.SourceFile);
+            }
+
             if (resource != null)
             {
                 resourceTarget.StoreOrReplace(this.data.Hash, resource);
@@ -491,7 +566,7 @@ namespace GrandSeal.Editor.ViewModels
             var dialog = new OpenFileDialog { CheckFileExists = true, CheckPathExists = true };
             if (dialog.ShowDialog() == true)
             {
-                this.SelectFile(dialog.FileName);
+                this.SelectFile(new CarbonFile(dialog.FileName));
             }
         }
 

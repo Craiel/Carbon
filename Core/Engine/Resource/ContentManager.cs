@@ -33,7 +33,7 @@ namespace Core.Engine.Resource
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ContentManager(IEngineLog log, string root)
+        public ContentManager(IEngineLog log, string file)
         {
             this.log = log.AquireContextLog("ContentManager");
             this.root = root;

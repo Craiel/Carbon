@@ -1,12 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
-
-using Core.Engine.Resource.Resources;
-
-namespace Core.Processing.Processors
+﻿namespace Core.Processing.Processors
 {
+    using System;
+    using System.Diagnostics;
+    using System.Text;
+
+    using Core.Engine.Resource.Resources;
     using Core.Utils.IO;
 
     public enum TextureTargetFormat
@@ -38,7 +36,7 @@ namespace Core.Processing.Processors
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static RawResource Process(string path, TextureProcessingOptions options)
+        public static RawResource Process(CarbonFile file, TextureProcessingOptions options)
         {
             if (options.Format == TextureTargetFormat.Undefined)
             {
@@ -64,7 +62,7 @@ namespace Core.Processing.Processors
                 var startInfo = new ProcessStartInfo
                                     {
                                         FileName = toolPath.ToString(),
-                                        Arguments = string.Format("{0} \"{1}\" \"{2}\"", parameter, path, tempFile),
+                                        Arguments = string.Format("{0} \"{1}\" \"{2}\"", parameter, file, tempFile),
                                         WorkingDirectory = Environment.CurrentDirectory,
                                         CreateNoWindow = true,
                                         UseShellExecute = false
@@ -79,7 +77,7 @@ namespace Core.Processing.Processors
                     throw new InvalidOperationException("Expected result file was not found after texture compression");
                 }
 
-                using (var stream = new FileStream(tempFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (var stream = tempFile.OpenRead())
                 {
                     var data = new byte[stream.Length];
                     stream.Read(data, 0, (int)stream.Length);
@@ -98,7 +96,7 @@ namespace Core.Processing.Processors
         // -------------------------------------------------------------------
         private static string BuildCompressionParameter(TextureProcessingOptions options)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             bool isNormal;
             if (options.ConvertToNormalMap)
             {

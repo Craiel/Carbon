@@ -8,6 +8,7 @@ namespace Core.Processing.Processors
     using System.Text.RegularExpressions;
 
     using Core.Utils;
+    using Core.Utils.IO;
 
     public delegate string ResolveIncludeDelegate(string include);
     public struct ScriptProcessingOptions
@@ -24,9 +25,9 @@ namespace Core.Processing.Processors
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static ScriptResource Process(string path, ScriptProcessingOptions options)
+        public static ScriptResource Process(CarbonFile file, ScriptProcessingOptions options)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            if (file.IsNull || !file.Exists)
             {
                 throw new ArgumentException("Invalid Script Processing options");
             }
@@ -34,7 +35,7 @@ namespace Core.Processing.Processors
             currentOptions = options;
             try
             {
-                using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (var stream = file.OpenRead())
                 {
                     using (var reader = new StreamReader(stream))
                     {

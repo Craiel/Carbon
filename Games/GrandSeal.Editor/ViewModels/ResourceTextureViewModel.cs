@@ -1,15 +1,12 @@
-﻿using GrandSeal.Editor.Contracts;
-
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Resource.Content;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
-    using System.IO;
-
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource.Content;
     using Core.Processing.Contracts;
     using Core.Processing.Processors;
+
+    using GrandSeal.Editor.Contracts;
 
     using global::GrandSeal.Editor.Logic.MVVM;
 
@@ -121,7 +118,7 @@ namespace GrandSeal.Editor.ViewModels
             ICarbonResource resource;
             if (!this.CompressTexture)
             {
-                resource = this.resourceProcessor.ProcessRaw(this.SourcePath);
+                resource = this.resourceProcessor.ProcessRaw(this.SourceFile);
             }
             else
             {
@@ -131,7 +128,7 @@ namespace GrandSeal.Editor.ViewModels
                     ConvertToNormalMap = this.ConvertToNormalMap,
                     IsNormalMap = this.IsNormalMap
                 };
-                resource = this.resourceProcessor.ProcessTexture(this.SourcePath, options);
+                resource = this.resourceProcessor.ProcessTexture(this.SourceFile, options);
             }
 
             if (resource != null)
@@ -171,7 +168,7 @@ namespace GrandSeal.Editor.ViewModels
 
         protected override System.Windows.Media.ImageSource GetPreviewImage()
         {
-            switch (Path.GetExtension(this.SourcePath))
+            switch (this.SourceFile.Extension)
             {
                 case ".png":
                 case ".tif":

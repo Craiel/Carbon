@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
-using System.Windows;
-using System.Windows.Input;
-
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Logic.MVVM;
-using GrandSeal.Editor.Views;
-
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Resource.Content;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Windows;
+    using System.Windows.Input;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource.Content;
     using Core.Processing.Contracts;
     using Core.Processing.Resource.Collada;
+    using Core.Utils.IO;
+
+    using GrandSeal.Editor.Contracts;
+    using GrandSeal.Editor.Logic.MVVM;
+    using GrandSeal.Editor.Views;
 
     public class ResourceModelViewModel : ResourceViewModel, IResourceModelViewModel
     {
@@ -155,15 +154,15 @@ namespace GrandSeal.Editor.ViewModels
             this.textureSynchronizer.Refresh();
         }
 
-        public override void SelectFile(string path)
+        public override void SelectFile(CarbonFile file)
         {
-            base.SelectFile(path);
+            base.SelectFile(file);
 
             this.UpdateSourceElements();
 
-            if (this.settings.ModelTextureAutoCreateFolder && this.settings.ModelTextureParentFolder != null && this.TextureFolder == null)
+            if (this.settings.ModelTextureAutoCreateFolder && this.settings.ModelTextureParentFolderHash != null && this.TextureFolder == null)
             {
-                var textureParent = this.logic.LocateFolder(this.settings.ModelTextureParentFolder);
+                var textureParent = this.logic.LocateFolder(this.settings.ModelTextureParentFolderHash);
                 if (textureParent != null)
                 {
                     var folder = textureParent.AddFolder();
@@ -224,7 +223,7 @@ namespace GrandSeal.Editor.ViewModels
                 this.UpdateSourceElements();
             }
 
-            string texturePath = this.textureFolder == null ? null : this.textureFolder.FullPath;
+            CarbonDirectory texturePath = this.textureFolder == null ? null : this.textureFolder.FullPath;
             ICarbonResource resource = this.resourceProcessor.ProcessModel(this.colladaSourceInfo, this.SelectedSourceElement, texturePath);
             if (resource != null)
             {
@@ -256,8 +255,8 @@ namespace GrandSeal.Editor.ViewModels
 
         private void UpdateSourceElements()
         {
-            string path = this.SourcePath;
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            CarbonFile file = this.SourceFile;
+            if (file.IsNull || !file.Exists)
             {
                 return;
             }
@@ -267,7 +266,7 @@ namespace GrandSeal.Editor.ViewModels
 
             try
             {
-                this.colladaSourceInfo = new ColladaInfo(path);
+                this.colladaSourceInfo = new ColladaInfo(file);
                 this.textureSynchronizer.SetSource(this.colladaSourceInfo);
                 foreach (ColladaMeshInfo meshInfo in this.colladaSourceInfo.MeshInfos)
                 {

@@ -1,16 +1,17 @@
-﻿using System.ComponentModel;
-using System.Windows.Input;
-
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Logic.MVVM;
-using GrandSeal.Editor.Views;
-
-using Core.Engine.Contracts;
-
-using Microsoft.Win32;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
+    using System.ComponentModel;
+    using System.Windows.Input;
+
+    using Core.Engine.Contracts;
+    using Core.Utils.IO;
+
+    using GrandSeal.Editor.Contracts;
+    using GrandSeal.Editor.Logic.MVVM;
+    using GrandSeal.Editor.Views;
+
+    using Microsoft.Win32;
+
     public class EditorSettingsViewModel : DocumentViewModel, IEditorSettingsViewModel
     {
         private readonly IEditorSettings settings;
@@ -43,7 +44,7 @@ namespace GrandSeal.Editor.ViewModels
             }
         }
 
-        public string TextureToolsFolder
+        public CarbonDirectory TextureToolsFolder
         {
             get
             {
@@ -60,7 +61,7 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                return this.logic.LocateFolder(this.settings.ModelTextureParentFolder);
+                return this.logic.LocateFolder(this.settings.ModelTextureParentFolderHash);
             }
         }
 
@@ -109,16 +110,16 @@ namespace GrandSeal.Editor.ViewModels
             var dialog = new SelectFolderDialog(this.logic);
             if (dialog.ShowDialog() == true)
             {
-                this.settings.ModelTextureParentFolder = dialog.SelectedFolder.Hash;
+                this.settings.ModelTextureParentFolderHash = dialog.SelectedFolder.Hash;
             }
         }
 
         private void OnSelectTextureToolsFolder(object obj)
         {
-            var dialog = new OpenFileDialog() { CheckFileExists = false, CheckPathExists = true };
+            var dialog = new OpenFileDialog { CheckFileExists = false, CheckPathExists = true };
             if (dialog.ShowDialog() == true)
             {
-                this.TextureToolsFolder = System.IO.Path.GetDirectoryName(dialog.FileName);
+                this.TextureToolsFolder = new CarbonFile(dialog.FileName).ToDirectory();
             }
         }
         

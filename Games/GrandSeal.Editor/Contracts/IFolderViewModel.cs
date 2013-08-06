@@ -1,10 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
-
-using Core.Engine.Contracts.Resource;
-
-namespace GrandSeal.Editor.Contracts
+﻿namespace GrandSeal.Editor.Contracts
 {
+    using System.Collections.ObjectModel;
+    using System.Windows.Input;
+
+    using Core.Engine.Contracts.Resource;
+    using Core.Utils.IO;
+
     public interface IFolderViewModel : IEditorDocument
     {
         bool IsExpanded { get; set; }
@@ -13,7 +14,7 @@ namespace GrandSeal.Editor.Contracts
         int? ContentCount { get; }
 
         string Hash { get; }
-        string FullPath { get; }
+        CarbonDirectory FullPath { get; }
 
         IFolderViewModel Parent { get; set; }
 

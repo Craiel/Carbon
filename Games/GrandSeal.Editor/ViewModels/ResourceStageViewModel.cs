@@ -52,7 +52,7 @@ namespace GrandSeal.Editor.ViewModels
         protected override void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
             var options = new XcdProcessingOptions();
-            ICarbonResource resource = this.resourceProcessor.ProcessStage(this.SourcePath, options);
+            ICarbonResource resource = this.resourceProcessor.ProcessStage(this.SourceFile, options);
             if (resource != null)
             {
                 resourceTarget.StoreOrReplace(this.Data.Hash, resource);

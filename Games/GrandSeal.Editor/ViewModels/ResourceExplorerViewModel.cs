@@ -73,7 +73,7 @@ namespace GrandSeal.Editor.ViewModels
             TaskProgress.CurrentMaxProgress = this.Folders.Count;
             foreach (IFolderViewModel folder in this.Folders)
             {
-                TaskProgress.CurrentMessage = folder.FullPath;
+                TaskProgress.CurrentMessage = folder.FullPath.ToString();
                 folder.CommandRefresh.Execute(obj);
                 folder.CommandSave.Execute(obj);
                 TaskProgress.CurrentProgress++;
@@ -92,7 +92,7 @@ namespace GrandSeal.Editor.ViewModels
             TaskProgress.CurrentMaxProgress = this.Folders.Count;
             foreach (IFolderViewModel folder in this.Folders)
             {
-                TaskProgress.CurrentMessage = folder.FullPath;
+                TaskProgress.CurrentMessage = folder.FullPath.ToString();
                 folder.CommandRefresh.Execute(obj);
                 TaskProgress.CurrentProgress++;
             }

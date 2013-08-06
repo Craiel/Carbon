@@ -89,9 +89,9 @@
             }
         }
 
-        public override void SelectFile(CarbonPath path)
+        public override void SelectFile(CarbonFile file)
         {
-            base.SelectFile(path);
+            base.SelectFile(file);
 
             // Set some defaults that make sense
             if (this.FontCharactersPerRow == 0)
@@ -116,7 +116,7 @@
                 Size = this.FontSize,
                 CharactersPerRow = this.FontCharactersPerRow,
             };
-            ICarbonResource resource = this.resourceProcessor.ProcessFont(this.SourcePath, options);
+            ICarbonResource resource = this.resourceProcessor.ProcessFont(this.SourceFile, options);
             
             if (resource != null)
             {
@@ -140,7 +140,7 @@
                 Size = this.FontSize,
                 CharactersPerRow = this.FontCharactersPerRow,
             };
-            RawResource resource = this.resourceProcessor.ProcessFont(this.SourcePath, options);
+            RawResource resource = this.resourceProcessor.ProcessFont(this.SourceFile, options);
             if (resource != null)
             {
                 return WPFUtilities.DataToImage(resource.Data);

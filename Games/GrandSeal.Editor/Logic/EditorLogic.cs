@@ -40,11 +40,11 @@ namespace GrandSeal.Editor.Logic
         private readonly ObservableCollection<IFolderViewModel> folders;
         private readonly ObservableCollection<CarbonDirectory> recentProjects;
 
-        private CarbonPath projectPath;
+        private CarbonDirectory projectPath;
         private IContentManager projectContent;
         private IResourceManager projectResources;
 
-        private string tempLocation;
+        private CarbonDirectory tempLocation;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -112,7 +112,7 @@ namespace GrandSeal.Editor.Logic
         public void NewProject()
         {
             this.CloseProject();
-            this.tempLocation = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            this.tempLocation = CarbonDirectory.GetTempDirectory();
             this.InitializeProject(this.tempLocation);
             this.NotifyProjectChanged();
         }
@@ -131,7 +131,6 @@ namespace GrandSeal.Editor.Logic
 
             if (this.projectResources != null)
             {
-
                 this.projectResources.Dispose();
                 this.projectResources = null;
             }
@@ -149,7 +148,7 @@ namespace GrandSeal.Editor.Logic
                 throw new ArgumentException("Invalid Path specified: " + path);
             }
 
-            this.InitializeProject(path.DirectoryName);
+            this.InitializeProject(path);
             this.Reload();
             this.CheckProjectDefaults();
             this.AddToRecentProjects(path);
@@ -167,7 +166,7 @@ namespace GrandSeal.Editor.Logic
              */
 
             this.CloseProject();
-            this.settings.Save(path.DirectoryName);
+            this.settings.Save(path);
 
             // Move the database file over to our new location
             if (this.projectPath.Exists)

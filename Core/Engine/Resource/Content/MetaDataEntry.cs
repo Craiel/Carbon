@@ -16,6 +16,7 @@
         FontSize = 20,
         FontCharactersPerRow = 21,
         FontStyle = 22,
+        SourceFile = 23,
     }
 
     public enum MetaDataTargetEnum

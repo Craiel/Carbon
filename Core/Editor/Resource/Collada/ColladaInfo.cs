@@ -10,6 +10,7 @@ namespace Core.Processing.Resource.Collada
     using Core.Processing.Resource.Collada.Effect;
     using Core.Processing.Resource.Collada.General;
     using Core.Processing.Resource.Collada.Geometry;
+    using Core.Utils.IO;
 
     public struct ColladaMeshInfo
     {
@@ -29,9 +30,9 @@ namespace Core.Processing.Resource.Collada
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ColladaInfo(string file)
+        public ColladaInfo(CarbonFile file)
         {
-            if (string.IsNullOrEmpty(file) || !File.Exists(file))
+            if (file.IsNull || !file.Exists)
             {
                 throw new ArgumentException("Invalid file specified");
             }
@@ -44,7 +45,7 @@ namespace Core.Processing.Resource.Collada
 
             this.Source = file;
 
-            using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var stream = file.OpenRead())
             {
                 var model = ColladaModel.Load(stream);
                 this.BuildImageLibrary(model.ImageLibrary);
@@ -56,7 +57,7 @@ namespace Core.Processing.Resource.Collada
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public string Source { get; private set; }
+        public CarbonFile Source { get; private set; }
 
         public IReadOnlyCollection<ColladaMeshInfo> MeshInfos
         {

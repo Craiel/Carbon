@@ -1,19 +1,19 @@
-﻿using System;
-using System.IO;
-using System.Windows;
-
-using Core.Processing.Contracts;
-using Core.Processing.Processors;
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Resource.Content;
-
-using GrandSeal.Editor.Contracts;
-
-using ICSharpCode.AvalonEdit.Document;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
+    using System;
+    using System.IO;
+    using System.Windows;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource.Content;
+    using Core.Processing.Contracts;
+    using Core.Processing.Processors;
+
+    using GrandSeal.Editor.Contracts;
+
+    using ICSharpCode.AvalonEdit.Document;
+
     public class ResourceScriptViewModel : ResourceViewModel, IResourceScriptViewModel
     {
         private readonly IResourceProcessor resourceProcessor;
@@ -64,7 +64,7 @@ namespace GrandSeal.Editor.ViewModels
 
         protected override void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
-            ICarbonResource resource = this.resourceProcessor.ProcessScript(this.SourcePath, new ScriptProcessingOptions());
+            ICarbonResource resource = this.resourceProcessor.ProcessScript(this.SourceFile, new ScriptProcessingOptions());
 
             if (resource != null)
             {
@@ -87,22 +87,28 @@ namespace GrandSeal.Editor.ViewModels
 
         private ITextSource GetScriptingSource()
         {
-            if (!File.Exists(this.SourcePath))
+            if (!this.SourceFile.Exists)
             {
                 return new TextDocument();
             }
 
-            using (var reader = new StreamReader(this.SourcePath))
+            using (var stream = this.SourceFile.OpenRead())
             {
-                return new TextDocument(reader.ReadToEnd());
+                using (var reader = new StreamReader(stream))
+                {
+                    return new TextDocument(reader.ReadToEnd());
+                }
             }
         }
 
         private void SaveScript()
         {
-            using (var writer = new StreamWriter(this.SourcePath, false))
+            using (var stream = this.SourceFile.OpenWrite())
             {
-                writer.Write(this.scriptDocument.Text);
+                using (var writer = new StreamWriter(stream))
+                {
+                    writer.Write(this.scriptDocument.Text);
+                }
             }
 
             this.scriptWasChanged = false;

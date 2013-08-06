@@ -10,6 +10,8 @@ using Core.Engine.Resource.Resources;
 
 namespace Core.Processing.Processors
 {
+    using Core.Utils.IO;
+
     public struct FontProcessingOptions
     {
         public FontStyle Style;
@@ -30,7 +32,7 @@ namespace Core.Processing.Processors
             var charSelection = new List<char>();
             for (byte c = 0; c < byte.MaxValue; c++)
             {
-                char current = (char)c;
+                var current = (char)c;
                 if (char.IsLetterOrDigit(current) || char.IsPunctuation(current) || char.IsSymbol(current))
                 {
                     charSelection.Add(current);
@@ -47,16 +49,16 @@ namespace Core.Processing.Processors
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static RawResource Process(string path, FontProcessingOptions options)
+        public static RawResource Process(CarbonFile file, FontProcessingOptions options)
         {
-            if (options.Size <= 0 || options.CharactersPerRow <= 0 || string.IsNullOrEmpty(path) || !File.Exists(path))
+            if (options.Size <= 0 || options.CharactersPerRow <= 0 || file.IsNull || !file.Exists)
             {
                 throw new ArgumentException("Invalid Font Processing options");
             }
 
             using (var fontCollection = new PrivateFontCollection())
             {
-                fontCollection.AddFontFile(path);
+                fontCollection.AddFontFile(file.ToString());
                 using (var font = new Font(fontCollection.Families[0], options.Size, options.Style))
                 {
                     using (Bitmap image = Draw(options, font))
@@ -80,7 +82,7 @@ namespace Core.Processing.Processors
         // -------------------------------------------------------------------
         private static Point Measure(Font font)
         {
-            Bitmap image = new Bitmap(1, 1);
+            var image = new Bitmap(1, 1);
             Graphics graphics = Graphics.FromImage(image);
             int width = 0;
             int height = 0;

@@ -7,6 +7,8 @@ using Ninject.Parameters;
 
 namespace Core.Engine.Ninject
 {
+    using Core.Utils.IO;
+
     public class EngineFactory : IEngineFactory
     {
         private readonly IKernel kernel;
@@ -40,15 +42,15 @@ namespace Core.Engine.Ninject
             return this.kernel.Get<ICarbonGraphics>(new ConstructorArgument("resourceManager", resourceManager));
         }
 
-        public IResourceManager GetResourceManager(Utils.IO.CarbonPath root)
+        public IResourceManager GetResourceManager(CarbonPath root)
         {
             return this.kernel.Get<IResourceManager>(new ConstructorArgument("root", root));
         }
 
-        public IContentManager GetContentManager(IResourceManager resourceManager, string root)
+        public IContentManager GetContentManager(IResourceManager resourceManager, CarbonFile file)
         {
             return this.kernel.Get<IContentManager>(
-                new ConstructorArgument("resourceManager", resourceManager), new ConstructorArgument("root", root));
+                new ConstructorArgument("resourceManager", resourceManager), new ConstructorArgument("file", file));
         }
     }
 }

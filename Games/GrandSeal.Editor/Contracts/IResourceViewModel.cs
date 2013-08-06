@@ -87,8 +87,10 @@ namespace GrandSeal.Editor.Contracts
         bool IsValidSource { get; }
         
         bool ForceSave { get; set; }
+        bool UsesPath { get; }
 
-        CarbonPath SourcePath { get; }
+        CarbonDirectory SourcePath { get; }
+        CarbonFile SourceFile { get; }
 
         DateTime? LastChangeDate { get; }
 
@@ -102,7 +104,8 @@ namespace GrandSeal.Editor.Contracts
         void Save(IContentManager target, IResourceManager resourceTarget, bool force);
         void Delete(IContentManager target, IResourceManager resourceTarget);
 
-        void SelectFile(CarbonPath path);
+        void SelectFile(CarbonFile file);
+        void SelectPath(CarbonDirectory path);
         void CheckSource();
     }
 }

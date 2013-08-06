@@ -1,30 +1,20 @@
-﻿using System;
-using System.IO;
-
-using Core.Processing.Contracts;
-using Core.Processing.Processors;
-using Core.Processing.Resource.Collada;
-using Core.Processing.Resource.Xcd;
-using Core.Engine.Contracts;
-using Core.Engine.Resource.Resources;
-using Core.Engine.Resource.Resources.Model;
-using Core.Engine.Resource.Resources.Stage;
-
-namespace Core.Processing.Logic
+﻿namespace Core.Processing.Logic
 {
+    using System;
+
+    using Core.Engine.Resource.Resources;
+    using Core.Engine.Resource.Resources.Model;
+    using Core.Engine.Resource.Resources.Stage;
+    using Core.Processing.Contracts;
+    using Core.Processing.Processors;
+    using Core.Processing.Resource.Collada;
+    using Core.Processing.Resource.Xcd;
     using Core.Utils.IO;
 
     public delegate string ReferenceResolveDelegate(string reference);
 
     public class ResourceProcessor : IResourceProcessor
     {
-        // -------------------------------------------------------------------
-        // Constructor
-        // -------------------------------------------------------------------
-        public ResourceProcessor(IEngineFactory factory)
-        {
-        }
-
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
@@ -41,14 +31,19 @@ namespace Core.Processing.Logic
             }
         }
 
-        public RawResource ProcessRaw(string path)
+        public RawResource ProcessRaw(CarbonDirectory path)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            throw new NotImplementedException();
+        }
+
+        public RawResource ProcessRaw(CarbonFile file)
+        {
+            if (file.IsNull || !file.Exists)
             {
                 throw new ArgumentException("Given path is invalid");
             }
 
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var stream = file.OpenRead())
             {
                 var data = new byte[stream.Length];
                 stream.Read(data, 0, (int)stream.Length);
@@ -56,19 +51,19 @@ namespace Core.Processing.Logic
             }
         }
 
-        public RawResource ProcessTexture(string path, TextureProcessingOptions options)
+        public RawResource ProcessTexture(CarbonFile file, TextureProcessingOptions options)
         {
-            return TextureProcessor.Process(path, options);
+            return TextureProcessor.Process(file, options);
         }
 
-        public RawResource ProcessFont(string path, FontProcessingOptions options)
+        public RawResource ProcessFont(CarbonFile file, FontProcessingOptions options)
         {
-            return FontProcessor.Process(path, options);
+            return FontProcessor.Process(file, options);
         }
 
-        public ModelResourceGroup ProcessModel(ColladaInfo info, string element, string texturePath)
+        public ModelResourceGroup ProcessModel(ColladaInfo info, string element, CarbonDirectory texturePath)
         {
-            if (info == null || string.IsNullOrEmpty(info.Source) || !File.Exists(info.Source))
+            if (info == null)
             {
                 throw new ArgumentException();
             }
@@ -76,19 +71,19 @@ namespace Core.Processing.Logic
             return ColladaProcessor.Process(info, element, texturePath);
         }
 
-        public StageResource ProcessStage(string path, XcdProcessingOptions options)
+        public StageResource ProcessStage(CarbonFile file, XcdProcessingOptions options)
         {
-            return XcdProcessor.Process(path, options);
+            return XcdProcessor.Process(file, options);
         }
 
-        public ScriptResource ProcessScript(string path, ScriptProcessingOptions options)
+        public ScriptResource ProcessScript(CarbonFile file, ScriptProcessingOptions options)
         {
-            return ScriptProcessor.Process(path, options);
+            return ScriptProcessor.Process(file, options);
         }
 
-        public UserInterfaceResource ProcessUserInterface(string path, UserInterfaceProcessingOptions options)
+        public UserInterfaceResource ProcessUserInterface(CarbonFile file, UserInterfaceProcessingOptions options)
         {
-            return UserInterfaceProcessor.Process(path, options);
+            return UserInterfaceProcessor.Process(file, options);
         }
     }
 }

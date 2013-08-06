@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-using Core.Processing.Logic;
-using Core.Processing.Resource.Generic.Data;
-using Core.Processing.Resource.Xcd.Scene;
-using Core.Engine.Resource.Resources.Stage;
-
-using SlimDX;
-
-namespace Core.Processing.Resource.Xcd
+﻿namespace Core.Processing.Resource.Xcd
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
+    using Core.Engine.Resource.Resources.Stage;
+    using Core.Processing.Logic;
+    using Core.Processing.Resource.Generic.Data;
+    using Core.Processing.Resource.Xcd.Scene;
+    using Core.Utils.IO;
+
+    using SlimDX;
+
     public struct XcdProcessingOptions
     {
         public ReferenceResolveDelegate ReferenceResolver;
@@ -40,13 +41,13 @@ namespace Core.Processing.Resource.Xcd
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static StageResource Process(string path, XcdProcessingOptions options)
+        public static StageResource Process(CarbonFile file, XcdProcessingOptions options)
         {
             ClearCache();
 
             currentOptions = options;
 
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var stream = file.OpenRead())
             {
                 var stage = Xcd.Load(stream);
                 var resource = new StageResource();

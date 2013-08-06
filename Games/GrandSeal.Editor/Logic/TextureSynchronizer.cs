@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using GrandSeal.Editor.Contracts;
-
-using Core.Engine.Contracts;
-
-namespace GrandSeal.Editor.Logic
+﻿namespace GrandSeal.Editor.Logic
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Windows;
 
+    using Core.Engine.Contracts;
     using Core.Processing.Resource.Collada;
+    using Core.Utils.IO;
+
+    using GrandSeal.Editor.Contracts;
 
     internal struct SynchronizationEntry
     {
@@ -103,7 +102,7 @@ namespace GrandSeal.Editor.Logic
         {
             get
             {
-                IList<string> list = this.queuedForDelete.Select(x => x.SourcePath).ToList();
+                IList<CarbonFile> list = this.queuedForDelete.Select(x => x.SourceFile).ToList();
                 return string.Join(Environment.NewLine, list);
             }
         }
@@ -147,7 +146,7 @@ namespace GrandSeal.Editor.Logic
                 return;
             }
 
-            string sourcePath = System.IO.Path.GetDirectoryName(this.source.Source);
+            string sourcePath = this.source.Source.DirectoryName;
             if (string.IsNullOrEmpty(sourcePath))
             {
                 return;
@@ -184,11 +183,12 @@ namespace GrandSeal.Editor.Logic
                 bool found = false;
                 foreach (IResourceViewModel resourceViewModel in targetResources)
                 {
-                    if (resourceViewModel.SourcePath.Equals(resource.File, StringComparison.OrdinalIgnoreCase))
+                    var resourceFile = new CarbonFile(resource.File);
+                    if (resourceViewModel.SourceFile.Equals(resourceFile))
                     {
                         if (resource.Name == null)
                         {
-                            if (!resourceViewModel.Name.Equals(System.IO.Path.GetFileName(resource.File), StringComparison.OrdinalIgnoreCase))
+                            if (!resourceViewModel.Name.Equals(resourceFile.FileName, StringComparison.OrdinalIgnoreCase))
                             {
                                 continue;
                             }
@@ -237,7 +237,7 @@ namespace GrandSeal.Editor.Logic
             foreach (SynchronizationEntry entry in this.queuedForAdd)
             {
                 IResourceTextureViewModel viewModel = this.logic.AddResourceTexture();
-                viewModel.SelectFile(entry.File);
+                viewModel.SelectFile(new CarbonFile(entry.File));
                 viewModel.IsNormalMap = entry.IsNormal;
                 viewModel.ConvertToNormalMap = entry.ToNormal;
                 if (entry.Name != null)

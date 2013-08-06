@@ -17,6 +17,7 @@ namespace Core.Processing.Resource.Collada
     using Core.Processing.Resource.Collada.Geometry;
     using Core.Processing.Resource.Collada.Scene;
     using Core.Processing.Resource.Generic.Data;
+    using Core.Utils.IO;
 
     /// <summary>
     /// Todo:
@@ -47,15 +48,13 @@ namespace Core.Processing.Resource.Collada
         private static Vector3[] positionData;
         private static Vector3[] normalData;
         private static Vector2[] textureData;
-        
-        public static ModelResourceGroup Process(ColladaInfo info, string element, string texPath)
+
+        public static ModelResourceGroup Process(ColladaInfo info, string element, CarbonDirectory texPath)
         {
             ClearCache();
 
             targetElement = element;
-            texturePath = texPath;
-
-            using (var stream = new FileStream(info.Source, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var stream = info.Source.OpenRead())
             {
                 var model = ColladaModel.Load(stream);
 

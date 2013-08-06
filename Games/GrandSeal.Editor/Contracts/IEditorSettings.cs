@@ -6,8 +6,9 @@ namespace GrandSeal.Editor.Contracts
 
     public interface IEditorSettings : INotifyPropertyChanged
     {
-        string TextureToolsFolder { get; set; }
-        string ModelTextureParentFolder { get; set; }
+        CarbonDirectory TextureToolsFolder { get; set; }
+
+        string ModelTextureParentFolderHash { get; set; }
 
         bool ModelTextureAutoCreateFolder { get; set; }
 

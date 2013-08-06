@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Windows;
-using System.Windows.Input;
-
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Logic.MVVM;
-
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Resource.Content;
-
-using Core.Utils;
-
-using Microsoft.Win32;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Input;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource.Content;
+    using Core.Utils;
+    using Core.Utils.IO;
+
+    using GrandSeal.Editor.Contracts;
+    using GrandSeal.Editor.Logic.MVVM;
+
+    using Microsoft.Win32;
 
     using global::GrandSeal.Editor.Views;
 
@@ -124,14 +122,14 @@ namespace GrandSeal.Editor.ViewModels
             }
         }
         
-        public string FullPath
+        public CarbonDirectory FullPath
         {
             get
             {
                 if (!this.IsNamed)
                 {
                     this.Log.Warning("FullPath queried with name not being set yet!");
-                    return string.Empty;
+                    return null;
                 }
 
                 string name = this.Name;
@@ -142,10 +140,10 @@ namespace GrandSeal.Editor.ViewModels
                         return this.parent.FullPath;
                     }
 
-                    return Path.Combine(this.parent.FullPath, name);
+                    return this.parent.FullPath.ToDirectory(name);
                 }
 
-                return name ?? string.Empty;
+                return new CarbonDirectory(name ?? string.Empty);
             }
         }
 
@@ -350,7 +348,7 @@ namespace GrandSeal.Editor.ViewModels
                 this.data.Parent = this.parent.Id;
             }
 
-            this.data.Hash = HashUtils.BuildResourceHash(this.FullPath);
+            this.data.Hash = HashUtils.BuildResourceHash(this.FullPath.ToString());
             this.Save(target);
             
             // Save all our children as well
@@ -360,7 +358,7 @@ namespace GrandSeal.Editor.ViewModels
                 TaskProgress.CurrentProgress++;
                 if (entry as IFolderViewModel != null)
                 {
-                    TaskProgress.CurrentMessage = ((IFolderViewModel)entry).FullPath;
+                    TaskProgress.CurrentMessage = ((IFolderViewModel)entry).FullPath.ToString();
                     ((IFolderViewModel)entry).Save(target, resourceTarget, force);
                     continue;
                 }
@@ -478,9 +476,9 @@ namespace GrandSeal.Editor.ViewModels
             {
                 foreach (string fileName in dialog.FileNames)
                 {
-                    IResourceViewModel vm = this.GetResourceViewModelForFile(fileName);
+                    IResourceViewModel vm = this.GetResourceViewModelForFile(new CarbonFile(fileName));
                     vm.Parent = this;
-                    vm.SelectFile(fileName);
+                    vm.SelectFile(new CarbonFile(fileName));
                     this.content.Add(vm);
                 }
 
@@ -488,9 +486,9 @@ namespace GrandSeal.Editor.ViewModels
             }
         }
 
-        private IResourceViewModel GetResourceViewModelForFile(string file)
+        private IResourceViewModel GetResourceViewModelForFile(CarbonFile file)
         {
-            switch (Path.GetExtension(file))
+            switch (file.Extension)
             {
                 case ".dds":
                 case ".png":
@@ -560,7 +558,7 @@ namespace GrandSeal.Editor.ViewModels
 
         private void OnCopyPath(object obj)
         {
-            Clipboard.SetText(this.FullPath);
+            Clipboard.SetText(this.FullPath.ToString());
         }
     }
 }

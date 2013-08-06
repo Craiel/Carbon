@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -10,6 +9,7 @@ using Core.Engine.Contracts;
 namespace GrandSeal.Editor.Logic
 {
     using Core.Processing.Contracts;
+    using Core.Utils.IO;
 
     [Serializable]
     public class EditorSettingsData
@@ -18,7 +18,7 @@ namespace GrandSeal.Editor.Logic
         public string TextureToolsFolder { get; set; }
 
         [XmlElement]
-        public string ModelTextureParentFolder { get; set; }
+        public string ModelTextureParentFolderHash { get; set; }
 
         [XmlElement]
         public bool ModelTextureAutoCreateFolder { get; set; }
@@ -52,36 +52,36 @@ namespace GrandSeal.Editor.Logic
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public string TextureToolsFolder
+        public CarbonDirectory TextureToolsFolder
         {
             get
             {
-                return this.data.TextureToolsFolder;
+                return new CarbonDirectory(this.data.TextureToolsFolder);
             }
 
             set
             {
-                if (this.data.TextureToolsFolder != value)
+                if (this.data.TextureToolsFolder != value.ToString())
                 {
-                    this.data.TextureToolsFolder = value;
+                    this.data.TextureToolsFolder = value.ToString();
                     this.resourceProcessor.TextureToolsPath = value;
                     this.NotifyPropertyChanged();
                 }
             }
         }
 
-        public string ModelTextureParentFolder
+        public string ModelTextureParentFolderHash
         {
             get
             {
-                return this.data.ModelTextureParentFolder;
+                return this.data.ModelTextureParentFolderHash;
             }
 
             set
             {
-                if (this.data.ModelTextureParentFolder != value)
+                if (this.data.ModelTextureParentFolderHash != value)
                 {
-                    this.data.ModelTextureParentFolder = value;
+                    this.data.ModelTextureParentFolderHash = value;
                     this.NotifyPropertyChanged();
                 }
             }
@@ -104,25 +104,25 @@ namespace GrandSeal.Editor.Logic
             }
         }
 
-        public void Save(string projectFolder)
+        public void Save(CarbonDirectory projectFolder)
         {
-            string file = Path.Combine(projectFolder ?? string.Empty, SettingsFileName);
-            using (XmlWriter writer = new XmlTextWriter(file, null))
+            CarbonFile file = projectFolder.ToFile(SettingsFileName);
+            using (XmlWriter writer = file.OpenXmlWrite())
             {
                 serializer.Serialize(writer, this.data);
             }
         }
 
-        public void Load(string projectFolder)
+        public void Load(CarbonDirectory projectFolder)
         {
-            string file = Path.Combine(projectFolder ?? string.Empty, SettingsFileName);
-            if (!File.Exists(file))
+            CarbonFile file = projectFolder.ToFile(SettingsFileName);
+            if (!file.Exists)
             {
                 this.Reset();
                 return;
             }
 
-            using (XmlReader reader = new XmlTextReader(file))
+            using (XmlReader reader = file.OpenXmlRead())
             {
                 this.data = serializer.Deserialize(reader) as EditorSettingsData;
                 if (this.data == null)
@@ -131,7 +131,7 @@ namespace GrandSeal.Editor.Logic
                 }
 
                 // Update the dependencies directly that we know of
-                this.resourceProcessor.TextureToolsPath = this.data.TextureToolsFolder;
+                this.resourceProcessor.TextureToolsPath = this.TextureToolsFolder;
 
                 // Notify
                 this.NotifyPropertyChanged();
@@ -141,8 +141,8 @@ namespace GrandSeal.Editor.Logic
         public void Reset()
         {
             this.data = new EditorSettingsData();
-            this.TextureToolsFolder = "TexTools";
-            this.ModelTextureParentFolder = null;
+            this.TextureToolsFolder = new CarbonDirectory("TexTools");
+            this.ModelTextureParentFolderHash = null;
             this.ModelTextureAutoCreateFolder = false;
         }
     }

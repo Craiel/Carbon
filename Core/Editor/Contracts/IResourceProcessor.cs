@@ -12,12 +12,14 @@ namespace Core.Processing.Contracts
     {
         CarbonDirectory TextureToolsPath { get; set; }
 
-        RawResource ProcessRaw(CarbonPath path);
-        RawResource ProcessTexture(CarbonPath path, TextureProcessingOptions options);
-        RawResource ProcessFont(CarbonPath path, FontProcessingOptions options);
-        StageResource ProcessStage(CarbonPath path, XcdProcessingOptions options);
-        ModelResourceGroup ProcessModel(ColladaInfo info, string element, string texturePath);
-        ScriptResource ProcessScript(CarbonPath path, ScriptProcessingOptions options);
-        UserInterfaceResource ProcessUserInterface(CarbonPath path, UserInterfaceProcessingOptions options);
+        RawResource ProcessRaw(CarbonDirectory path);
+
+        RawResource ProcessRaw(CarbonFile file);
+        RawResource ProcessTexture(CarbonFile file, TextureProcessingOptions options);
+        RawResource ProcessFont(CarbonFile file, FontProcessingOptions options);
+        StageResource ProcessStage(CarbonFile file, XcdProcessingOptions options);
+        ModelResourceGroup ProcessModel(ColladaInfo info, string element, CarbonDirectory texturePath);
+        ScriptResource ProcessScript(CarbonFile file, ScriptProcessingOptions options);
+        UserInterfaceResource ProcessUserInterface(CarbonFile file, UserInterfaceProcessingOptions options);
     }
 }

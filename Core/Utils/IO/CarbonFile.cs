@@ -2,6 +2,7 @@
 {
     using System;
     using System.IO;
+    using System.Xml;
 
     public class CarbonFile : CarbonPath
     {
@@ -14,6 +15,7 @@
             if (!string.IsNullOrEmpty(path))
             {
                 this.FileName = System.IO.Path.GetFileName(path);
+                this.Extension = System.IO.Path.GetExtension(path);
                 this.DirectoryName = System.IO.Path.GetDirectoryName(path);
             }
         }
@@ -22,6 +24,29 @@
         // Public
         // -------------------------------------------------------------------
         public string FileName { get; protected set; }
+        public string Extension { get; protected set; }
+
+        public DateTime LastWriteTime
+        {
+            get
+            {
+                return File.GetLastWriteTime(this.Path);
+            }
+        }
+
+        public long Size
+        {
+            get
+            {
+                if (!this.Exists)
+                {
+                    return -1;
+                }
+
+                var info = new FileInfo(this.Path);
+                return info.Length;
+            }
+        }
 
         public override bool Exists
         {
@@ -49,6 +74,11 @@
             return System.IO.Path.ChangeExtension(this.Path, newExtension);
         }
 
+        public FileStream OpenCreate()
+        {
+            return new FileStream(this.Path, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
+        }
+
         public FileStream OpenRead()
         {
             return File.OpenRead(this.Path);
@@ -57,6 +87,16 @@
         public FileStream OpenWrite()
         {
             return File.OpenWrite(this.Path);
+        }
+
+        public XmlReader OpenXmlRead()
+        {
+            return XmlReader.Create(this.Path);
+        }
+
+        public XmlWriter OpenXmlWrite()
+        {
+            return XmlWriter.Create(this.Path);
         }
 
         public void Delete()

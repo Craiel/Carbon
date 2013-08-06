@@ -11,6 +11,7 @@ namespace Core.Processing.Processors
 
     using Core.Protocol.Resource;
     using Core.Utils;
+    using Core.Utils.IO;
 
     public struct UserInterfaceProcessingOptions
     {
@@ -46,15 +47,15 @@ namespace Core.Processing.Processors
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static UserInterfaceResource Process(string path, UserInterfaceProcessingOptions options)
+        public static UserInterfaceResource Process(CarbonFile file, UserInterfaceProcessingOptions options)
         {
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            if (file.IsNull || !file.Exists)
             {
                 throw new ArgumentException("Invalid Script Processing options");
             }
 
-            string scriptPath = path + ".lua";
-            if (!File.Exists(scriptPath))
+            CarbonFile scriptFile = file.ToFile(".lua");
+            if (scriptFile.Exists)
             {
                 throw new InvalidDataException("Script file was not found for User Interface");
             }
@@ -62,7 +63,7 @@ namespace Core.Processing.Processors
             var resource = new UserInterfaceResource();
 
             // Read the Csaml
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (var stream = file.OpenRead())
             {
                 using (var reader = new StreamReader(stream))
                 {
@@ -73,7 +74,7 @@ namespace Core.Processing.Processors
             }
 
             // Read the Script
-            resource.Script = ScriptProcessor.Process(scriptPath, options.ScriptOptions);
+            resource.Script = ScriptProcessor.Process(scriptFile, options.ScriptOptions);
 
             return resource;
         }

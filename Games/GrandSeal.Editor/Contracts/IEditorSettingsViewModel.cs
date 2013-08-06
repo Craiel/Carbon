@@ -2,9 +2,11 @@
 
 namespace GrandSeal.Editor.Contracts
 {
+    using Core.Utils.IO;
+
     public interface IEditorSettingsViewModel : IEditorDocument
     {
-        string TextureToolsFolder { get; }
+        CarbonDirectory TextureToolsFolder { get; }
 
         IFolderViewModel ModelTextureParentFolder { get; }
 
