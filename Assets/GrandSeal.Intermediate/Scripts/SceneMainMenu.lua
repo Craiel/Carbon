@@ -4,4 +4,4 @@
 
 -- Set the basic resources for the scene
 SetUserInterface("{Resource UserInterface\MainMenu.csaml}");
-SetStage("{Resource Stages\MainMenu.xcd}");
+SetStage("{Resource Stages\MenuScene.xcd}");

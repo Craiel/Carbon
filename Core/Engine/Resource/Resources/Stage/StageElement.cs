@@ -14,6 +14,7 @@ namespace Core.Engine.Resource.Resources.Stage
 
         protected void LoadProperties(IList<Protocol.Resource.StageProperty> propertiesList)
         {
+            this.Properties = new List<StagePropertyElement>();
             foreach (Protocol.Resource.StageProperty property in propertiesList)
             {
                 switch (property.Type)

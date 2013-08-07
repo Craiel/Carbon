@@ -142,8 +142,7 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                CarbonFile source = this.SourceFile;
-                return !source.IsNull && source.Exists;
+                return CarbonFile.FileExists(this.SourceFile);
             }
         }
 
@@ -182,7 +181,13 @@ namespace GrandSeal.Editor.ViewModels
 
             private set
             {
-                if (!this.SourcePath.Equals(value))
+                CarbonDirectory sourcePath = this.SourcePath;
+                if (sourcePath == null && value == null)
+                {
+                    return;
+                }
+
+                if (sourcePath == null || !sourcePath.Equals(value))
                 {
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.SourcePath, value.ToString());
@@ -206,7 +211,13 @@ namespace GrandSeal.Editor.ViewModels
 
             private set
             {
-                if (!this.SourceFile.Equals(value))
+                CarbonFile source = this.SourceFile;
+                if (source == null && value == null)
+                {
+                    return;
+                }
+
+                if (source == null || !source.Equals(value))
                 {
                     this.CreateUndoState();
                     this.SetMetaValue(MetaDataKey.SourceFile, value.ToString());
@@ -308,16 +319,17 @@ namespace GrandSeal.Editor.ViewModels
                 throw new DataException("Resource needs to be named before saving");
             }
 
+            bool validSource = this.IsValidSource;
             if (this.UsesPath)
             {
-                if (this.SourcePath.IsNull || !this.SourcePath.Exists)
+                if (!validSource)
                 {
                     throw new DataException("Path does not exist for resource " + this.Name);
                 }
             }
             else
             {
-                if (this.SourceFile.IsNull || !this.SourceFile.Exists)
+                if (!validSource)
                 {
                     throw new DataException("File does not exist for resource " + this.Name);
                 }
@@ -334,7 +346,9 @@ namespace GrandSeal.Editor.ViewModels
             this.data.TreeNode = this.parent.Id;
             this.data.Hash = HashUtils.BuildResourceHash(this.parent.FullPath.ToFile(this.Name).ToString());
 
-            bool forceSave = this.GetMetaValueBit(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceSave) ?? false;
+            // See if we have this resource, if not we force anyway
+            var existingInfo = resourceTarget.GetInfo(this.data.Hash);
+            bool forceSave = this.GetMetaValueBit(MetaDataKey.ResourceCoreFlags, (int)CoreFlags.AlwaysForceSave) ?? existingInfo == null;
             if (this.NeedSave || force || forceSave)
             {
                 this.DoSave(target, resourceTarget);
@@ -372,7 +386,7 @@ namespace GrandSeal.Editor.ViewModels
 
         public virtual void SelectFile(CarbonFile file)
         {
-            if (file.IsNull || !file.Exists)
+            if (!CarbonFile.FileExists(file))
             {
                 throw new DataException("Invalid file specified for select");
             }
@@ -382,6 +396,9 @@ namespace GrandSeal.Editor.ViewModels
                 this.Name = file.FileName;
             }
 
+            var sourceFile = file.ToRelative<CarbonFile>(this.logic.ProjectLocation);
+            this.SourceFile = sourceFile;
+            this.SourcePath = new CarbonDirectory(sourceFile.DirectoryName);
             this.SetSettingsByExtension(file.Extension);
 
             this.CheckSource();
@@ -394,7 +411,7 @@ namespace GrandSeal.Editor.ViewModels
                 throw new InvalidOperationException("Viewmodel is not using path");
             }
 
-            this.SourcePath = path;
+            this.SourcePath = path.ToRelative<CarbonDirectory>(this.logic.ProjectLocation);
 
             // Todo:
             // Set settings by path content
@@ -422,7 +439,7 @@ namespace GrandSeal.Editor.ViewModels
         public void CheckSourceFile()
         {
             CarbonFile source = this.SourceFile;
-            if (source.IsNull || !source.Exists)
+            if (!CarbonFile.FileExists(source))
             {
                 this.sourceSize = null;
                 this.NeedSave = true;

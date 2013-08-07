@@ -27,11 +27,12 @@ namespace Core.Processing.Processors
         // -------------------------------------------------------------------
         public static ScriptResource Process(CarbonFile file, ScriptProcessingOptions options)
         {
-            if (file.IsNull || !file.Exists)
+            if (!CarbonFile.FileExists(file))
             {
                 throw new ArgumentException("Invalid Script Processing options");
             }
 
+            System.Diagnostics.Trace.TraceInformation("Processing script {0}", file);
             currentOptions = options;
             try
             {
@@ -73,7 +74,9 @@ namespace Core.Processing.Processors
                             return "ERROR";
                         }
 
-                        return HashUtils.BuildResourceHash(fieldValue);
+                        string hash = HashUtils.BuildResourceHash(fieldValue);
+                        System.Diagnostics.Trace.TraceInformation(" Resource: {0} -> {1}", fieldValue, hash);
+                        return hash;
                     }
 
                 case "include":
@@ -90,7 +93,9 @@ namespace Core.Processing.Processors
                             return "ERROR";
                         }
 
-                        return currentOptions.Value.IncludeResolver(fieldValue);
+                        string include = currentOptions.Value.IncludeResolver(fieldValue);
+                        System.Diagnostics.Trace.TraceInformation(" Include: {0} -> {1}", fieldValue, include);
+                        return include;
                     }
             }
 

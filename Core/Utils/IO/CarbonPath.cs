@@ -1,10 +1,11 @@
 ﻿namespace Core.Utils.IO
 {
     using System;
-    using System.Text;
+    using System.Globalization;
 
     public abstract class CarbonPath
     {
+        private static readonly string DirectorySeparator = System.IO.Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
         private readonly string path;
 
         // -------------------------------------------------------------------
@@ -27,12 +28,11 @@
 
         public bool IsNull { get; private set; }
 
-        public virtual bool Exists
+        public abstract bool Exists { get; }
+
+        public Uri GetUri()
         {
-            get
-            {
-                return string.IsNullOrEmpty(this.path);
-            }
+            return new Uri(this.path);
         }
 
         public override int GetHashCode()
@@ -65,24 +65,17 @@
             throw new NotImplementedException();   
         }
 
-        public CarbonDirectory ToDirectory()
+        public T ToRelative<T>(CarbonPath other) where T : CarbonPath
         {
-            return new CarbonDirectory(this.path);
-        }
+            string relativePath = other.GetUri().MakeRelativeUri(this.GetUri()).ToString();
+            if (string.IsNullOrEmpty(relativePath))
+            {
+                return null;
+            }
 
-        public CarbonDirectory ToDirectory<T>(params T[] other)
-        {
-            return new CarbonDirectory(this.CombineBefore(other));
-        }
-
-        public CarbonFile ToFile()
-        {
-            return new CarbonFile(this.path);
-        }
-
-        public CarbonFile ToFile<T>(params T[] other)
-        {
-            return new CarbonFile(this.CombineAfter(other));
+            // Uri transforms this so we have to bring it back in line
+            relativePath = relativePath.Replace("/", DirectorySeparator);
+            return (T)Activator.CreateInstance(typeof(T), relativePath);
         }
 
         // -------------------------------------------------------------------
@@ -98,30 +91,26 @@
 
         protected string CombineBefore<T>(params T[] other)
         {
-            var builder = new StringBuilder();
-            builder.Append(this.Path);
-            for (int i = 0; i < other.Length - 1; i++)
-            {
-                builder.Append(System.IO.Path.PathSeparator);
-                builder.Append(other[i]);
-            }
-
-            builder.Append(other[other.Length - 1]);
-            return builder.ToString();
-        }
-
-        protected string CombineAfter<T>(params T[] other)
-        {
-            var builder = new StringBuilder();
-            
+            string result = this.Path;
             for (int i = 0; i < other.Length; i++)
             {
-                builder.Append(other[i]);
-                builder.Append(System.IO.Path.PathSeparator);
+                string otherValue = other[i].ToString();
+                result = this.HasDelimiter(result, otherValue) ? 
+                    string.Concat(result, otherValue) :
+                    string.Concat(result, DirectorySeparator, otherValue);
             }
 
-            builder.Append(this.Path);
-            return builder.ToString();
+            return result;
+        }
+
+        protected bool HasDelimiter(string first, string second)
+        {
+            return first.EndsWith(DirectorySeparator) || second.StartsWith(DirectorySeparator);
+        }
+
+        protected string GetRelativePath(CarbonPath other)
+        {
+            return this.GetUri().MakeRelativeUri(other.GetUri()).LocalPath;
         }
     }
 }

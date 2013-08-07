@@ -49,13 +49,13 @@ namespace Core.Processing.Processors
         // -------------------------------------------------------------------
         public static UserInterfaceResource Process(CarbonFile file, UserInterfaceProcessingOptions options)
         {
-            if (file.IsNull || !file.Exists)
+            if (!CarbonFile.FileExists(file))
             {
                 throw new ArgumentException("Invalid Script Processing options");
             }
 
             CarbonFile scriptFile = file.ToFile(".lua");
-            if (scriptFile.Exists)
+            if (!CarbonFile.FileExists(scriptFile))
             {
                 throw new InvalidDataException("Script file was not found for User Interface");
             }

@@ -1,7 +1,7 @@
-﻿using Core.Engine.Logic.Scripting;
-
-namespace Core.Engine.Contracts.Logic
+﻿namespace Core.Engine.Contracts.Logic
 {
+    using Core.Engine.Logic.Scripting;
+
     using LuaInterface;
 
     public interface IScriptingEngine

@@ -1,7 +1,7 @@
-﻿using Core.Engine.Logic;
-
-namespace Core.Engine.Contracts.Logic
+﻿namespace Core.Engine.Contracts.Logic
 {
+    using Core.Engine.Logic;
+
     public interface IInputReceiver
     {
         bool IsActive { get; }

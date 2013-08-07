@@ -256,7 +256,7 @@
         private void UpdateSourceElements()
         {
             CarbonFile file = this.SourceFile;
-            if (file.IsNull || !file.Exists)
+            if (!CarbonFile.FileExists(file))
             {
                 return;
             }

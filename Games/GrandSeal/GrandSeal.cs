@@ -72,7 +72,6 @@ namespace GrandSeal
            
             // Activate the entry scene
             this.gameState.SceneManager.Activate((int)SceneKey.Entry);
-            this.gameState.SceneManager.Resize(size);
         }
 
         protected override void OnWindowResize(object sender, EventArgs eventArgs)

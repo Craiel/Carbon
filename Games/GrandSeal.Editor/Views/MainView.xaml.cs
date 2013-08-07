@@ -7,6 +7,8 @@ namespace GrandSeal.Editor.Views
 {
     using System.Windows;
 
+    using Core.Utils.IO;
+
     using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
     public partial class MainView
@@ -32,7 +34,7 @@ namespace GrandSeal.Editor.Views
         private void OnLoadLayoutEvent(EventLoadLayout args)
         {
             // Not yet supported properly, can't do this
-            if (args.File == null || args.File.IsNull || !args.File.Exists)
+            if (args.File == null || !CarbonFile.FileExists(args.File))
             {
                 throw new ArgumentException();
             }

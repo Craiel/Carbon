@@ -51,7 +51,7 @@ namespace Core.Processing.Processors
         // -------------------------------------------------------------------
         public static RawResource Process(CarbonFile file, FontProcessingOptions options)
         {
-            if (options.Size <= 0 || options.CharactersPerRow <= 0 || file.IsNull || !file.Exists)
+            if (options.Size <= 0 || options.CharactersPerRow <= 0 || !CarbonFile.FileExists(file))
             {
                 throw new ArgumentException("Invalid Font Processing options");
             }

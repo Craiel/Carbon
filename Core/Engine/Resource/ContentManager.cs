@@ -12,6 +12,8 @@ using Core.Utils.Contracts;
 
 namespace Core.Engine.Resource
 {
+    using Core.Utils.IO;
+
     public class ContentManager : IContentManager
     {
         private const string SqlNotNull = " NOT NULL";
@@ -19,8 +21,8 @@ namespace Core.Engine.Resource
 
         private readonly ILog log;
 
-        private readonly string root;
-
+        private readonly CarbonFile file;
+        
         private readonly SQLiteFactory factory;
         private readonly IList<string> checkedTableList;
 
@@ -33,10 +35,11 @@ namespace Core.Engine.Resource
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ContentManager(IEngineLog log, string file)
+        public ContentManager(IEngineLog log, CarbonFile file)
         {
             this.log = log.AquireContextLog("ContentManager");
-            this.root = root;
+
+            this.file = file;
 
             this.factory = new SQLiteFactory();
             this.checkedTableList = new List<string>();
@@ -446,7 +449,7 @@ namespace Core.Engine.Resource
             // - Release the resource
             this.connection = (SQLiteConnection)this.factory.CreateConnection();
             //this.connection.ConnectionString = "Data Source=:memory:";
-            this.connection.ConnectionString = string.Format("Data Source={0}", this.root);
+            this.connection.ConnectionString = string.Format("Data Source={0}", this.file);
             this.connection.Open();
         }
 

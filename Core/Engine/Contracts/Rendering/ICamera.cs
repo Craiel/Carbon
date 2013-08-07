@@ -1,16 +1,11 @@
-﻿using System;
-
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Logic;
-using Core.Engine.Rendering;
-using SlimDX;
-
-namespace Core.Engine.Contracts.Rendering
+﻿namespace Core.Engine.Contracts.Rendering
 {
-    public static class CameraConstants
-    {
-        public const float DefaultFoV = (float)Math.PI / 4;
-    }
+    using System;
+
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Logic;
+    using Core.Engine.Rendering;
+    using SlimDX;
 
     public interface ICamera : IEngineComponent
     {
@@ -35,5 +30,10 @@ namespace Core.Engine.Contracts.Rendering
         Quaternion Rotation { get; set; }
 
         void LookAt(Vector3 target);
+    }
+
+    public static class CameraConstants
+    {
+        public const float DefaultFoV = (float)Math.PI / 4;
     }
 }

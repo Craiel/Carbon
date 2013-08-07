@@ -1,9 +1,9 @@
-﻿using System;
-
-using Core.Engine.Resource;
-
-namespace Core.Engine.Contracts.Resource
+﻿namespace Core.Engine.Contracts.Resource
 {
+    using System;
+
+    using Core.Engine.Resource;
+
     public interface IResourceManager : IDisposable
     {
         T Load<T>(string hash) where T : ICarbonResource;

@@ -52,7 +52,7 @@
         {
             get
             {
-                return base.Exists && File.Exists(this.Path);
+                return File.Exists(this.Path);
             }
         }
 
@@ -114,6 +114,16 @@
             this.Delete();
         }
 
+        public CarbonDirectory ToDirectory()
+        {
+            return new CarbonDirectory(this.DirectoryName);
+        }
+        
+        public CarbonFile ToFile<T>(params T[] other)
+        {
+            return new CarbonFile(this.Path + string.Concat(other));
+        }
+
         public static CarbonFile GetTempFile()
         {
             return CarbonDirectory.TempDirectory.ToFile(System.IO.Path.GetRandomFileName());
@@ -122,6 +132,11 @@
         public static CarbonFile GetRandomFile()
         {
             return new CarbonFile(System.IO.Path.GetRandomFileName());
+        }
+
+        public static bool FileExists(CarbonFile file)
+        {
+            return file != null && !file.IsNull && file.Exists;
         }
     }
 }

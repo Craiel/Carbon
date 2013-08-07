@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-
-namespace Core.Engine.Contracts.Network
+﻿namespace Core.Engine.Contracts.Network
 {
+    using System;
+    using System.IO;
+
     using Core.Protocol.Network;
 
     public interface INetworkMessage

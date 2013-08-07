@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Rendering;
-
-namespace Core.Engine.Contracts.Rendering
+﻿namespace Core.Engine.Contracts.Rendering
 {
+    using System.Collections.Generic;
+
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Rendering;
+
     public interface IRenderer : IEngineComponent
     {
         IList<FrameStatistics> FrameStatistics { get; }

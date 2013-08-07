@@ -1,11 +1,11 @@
-﻿using System;
-using Core.Engine.Logic;
-
-using SlimDX.DXGI;
-using SlimDX.Direct3D11;
-
-namespace Core.Engine.Contracts.Logic
+﻿namespace Core.Engine.Contracts.Logic
 {
+    using System;
+
+    using Core.Engine.Logic;
+    using SlimDX.Direct3D11;
+    using SlimDX.DXGI;
+
     public interface ICarbonGraphics : IDisposable
     {
         IntPtr TargetHandle { get; set; }

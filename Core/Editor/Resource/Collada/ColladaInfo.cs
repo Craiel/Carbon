@@ -32,7 +32,7 @@ namespace Core.Processing.Resource.Collada
         // -------------------------------------------------------------------
         public ColladaInfo(CarbonFile file)
         {
-            if (file.IsNull || !file.Exists)
+            if (!CarbonFile.FileExists(file))
             {
                 throw new ArgumentException("Invalid file specified");
             }

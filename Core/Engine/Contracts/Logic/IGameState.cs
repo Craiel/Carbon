@@ -1,8 +1,8 @@
-﻿using Core.Engine.Contracts.Resource;
-using Core.Engine.Contracts.Scene;
-
-namespace Core.Engine.Contracts.Logic
+﻿namespace Core.Engine.Contracts.Logic
 {
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Contracts.Scene;
+
     public interface IGameState : IEngineComponent
     {
         IScriptingEngine ScriptingEngine { get; }

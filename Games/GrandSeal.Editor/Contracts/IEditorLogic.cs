@@ -14,6 +14,8 @@ namespace GrandSeal.Editor.Contracts
 
         bool IsProjectLoaded { get; }
 
+        CarbonDirectory ProjectLocation { get; }
+
         ReadOnlyObservableCollection<IMaterialViewModel> Materials { get; }
         ReadOnlyObservableCollection<IFontViewModel> Fonts { get; }
         ReadOnlyObservableCollection<IFolderViewModel> Folders { get; }

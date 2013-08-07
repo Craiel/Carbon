@@ -38,7 +38,7 @@
 
         public RawResource ProcessRaw(CarbonFile file)
         {
-            if (file.IsNull || !file.Exists)
+            if (!CarbonFile.FileExists(file))
             {
                 throw new ArgumentException("Given path is invalid");
             }

@@ -36,7 +36,7 @@
         {
             get
             {
-                return base.Exists && System.IO.Directory.Exists(this.Path);
+                return System.IO.Directory.Exists(this.Path);
             }
         }
 
@@ -53,6 +53,16 @@
         public void Delete(bool recursive = false)
         {
             System.IO.Directory.Delete(this.Path, recursive);
+        }
+        
+        public CarbonDirectory ToDirectory<T>(params T[] other)
+        {
+            return new CarbonDirectory(this.CombineBefore(other));
+        }
+
+        public CarbonFile ToFile<T>(params T[] other)
+        {
+            return new CarbonFile(this.CombineBefore(other));
         }
 
         public static CarbonDirectory GetTempDirectory()

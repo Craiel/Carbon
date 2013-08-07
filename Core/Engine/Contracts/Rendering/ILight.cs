@@ -1,10 +1,10 @@
-﻿using Core.Engine.Contracts.Logic;
-using Core.Engine.Rendering;
-
-using SlimDX;
-
-namespace Core.Engine.Contracts.Rendering
+﻿namespace Core.Engine.Contracts.Rendering
 {
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Rendering;
+
+    using SlimDX;
+
     public interface ILight : IEngineComponent
     {
         bool IsCastingShadow { get; set; }

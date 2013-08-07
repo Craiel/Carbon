@@ -44,8 +44,6 @@ namespace GrandSeal.Editor.Logic
         private IContentManager projectContent;
         private IResourceManager projectResources;
 
-        private CarbonDirectory tempLocation;
-
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -74,6 +72,14 @@ namespace GrandSeal.Editor.Logic
             get
             {
                 return this.projectContent != null;
+            }
+        }
+
+        public CarbonDirectory ProjectLocation
+        {
+            get
+            {
+                return this.projectPath;
             }
         }
 
@@ -112,8 +118,8 @@ namespace GrandSeal.Editor.Logic
         public void NewProject()
         {
             this.CloseProject();
-            this.tempLocation = CarbonDirectory.GetTempDirectory();
-            this.InitializeProject(this.tempLocation);
+            this.projectPath = CarbonDirectory.GetTempDirectory();
+            this.InitializeProject(this.projectPath);
             this.NotifyProjectChanged();
         }
 
@@ -135,7 +141,7 @@ namespace GrandSeal.Editor.Logic
                 this.projectResources = null;
             }
 
-            this.tempLocation = null;
+            this.projectPath = null;
             this.NotifyProjectChanged();
         }
 
@@ -148,6 +154,7 @@ namespace GrandSeal.Editor.Logic
                 throw new ArgumentException("Invalid Path specified: " + path);
             }
 
+            this.projectPath = path;
             this.InitializeProject(path);
             this.Reload();
             this.CheckProjectDefaults();

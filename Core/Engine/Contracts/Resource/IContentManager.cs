@@ -1,10 +1,10 @@
-﻿using System;
-
-using Core.Engine.Resource;
-using Core.Engine.Resource.Content;
-
-namespace Core.Engine.Contracts.Resource
+﻿namespace Core.Engine.Contracts.Resource
 {
+    using System;
+
+    using Core.Engine.Resource;
+    using Core.Engine.Resource.Content;
+
     public interface IContentManager : IDisposable
     {
         ContentQueryResult<T> TypedLoad<T>(ContentQuery<T> criteria) where T : ICarbonContent;

@@ -1,7 +1,7 @@
-﻿using Core.Utils.Contracts;
-
-namespace Core.Engine.Contracts.Logic
+﻿namespace Core.Engine.Contracts.Logic
 {
+    using Core.Utils.Contracts;
+
     public interface IEngineLog : ILogBase
     {
     }
