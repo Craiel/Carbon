@@ -1,9 +1,9 @@
-﻿using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Rendering;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
     using System;
+
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
 
     using SlimDX.Direct3D11;
 
@@ -13,13 +13,6 @@ namespace Core.Engine.Logic
 
     public class DebugController : BoundController, IDebugController
     {
-        internal enum DebugControllerAction
-        {
-            ToggleDebugOverlay,
-            ToggleDepth,
-            ToggleWireframe,
-        }
-
         private readonly ICarbonGraphics graphics;
         private readonly IFrameManager frameManager;
 
@@ -37,6 +30,16 @@ namespace Core.Engine.Logic
             this.graphics = graphics;
 
             this.SetInputBindings("debug");
+        }
+
+        // -------------------------------------------------------------------
+        // Internal
+        // -------------------------------------------------------------------
+        internal enum DebugControllerAction
+        {
+            ToggleDebugOverlay,
+            ToggleDepth,
+            ToggleWireframe,
         }
 
         // -------------------------------------------------------------------

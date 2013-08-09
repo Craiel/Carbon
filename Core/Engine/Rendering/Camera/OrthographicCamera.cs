@@ -1,17 +1,21 @@
-﻿using System;
-
-using Core.Engine.Contracts.Rendering;
-using Core.Engine.Logic;
-
-using Core.Utils.Contracts;
-using SlimDX;
-
-namespace Core.Engine.Rendering.Camera
+﻿namespace Core.Engine.Rendering.Camera
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Logic;
+
+    using Core.Utils.Contracts;
+    using SlimDX;
+
     public class OrthographicCamera : BaseCamera, IOrthographicCamera
     {
         private readonly Vector4 position = new Vector4(-Vector3.UnitZ, 1.0f);
+
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
         private readonly Vector3 upVector = Vector3.UnitY;
+
         private readonly Vector3 targetVector = Vector3.UnitZ;
 
         private Matrix view;

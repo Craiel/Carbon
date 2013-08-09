@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Core.Engine.Resource;
-
-using Core.Utils;
-
-using SlimDX;
-
-namespace Core.Engine.Rendering.Primitives
+﻿namespace Core.Engine.Rendering.Primitives
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
+    using Core.Utils;
+
+    using SlimDX;
 
     public static class Cone
     {
@@ -79,11 +77,12 @@ namespace Core.Engine.Rendering.Primitives
                 index++;
             }
 
-            uint[] data = new uint[indices.Count];
+            var data = new uint[indices.Count];
             for (int i = 0; i < indices.Count; i++)
             {
                 data[i] = indices[i];
             }
+
             return data;
         }
     }

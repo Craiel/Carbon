@@ -1,14 +1,13 @@
-﻿using Core.Engine.Contracts.Logic;
-
-using SlimDX;
-using SlimDX.D3DCompiler;
-using SlimDX.Direct3D11;
-
-namespace Core.Engine.Rendering.Shaders
+﻿namespace Core.Engine.Rendering.Shaders
 {
-    public interface IShadowMapShader : ICarbonShader
-    {
-    }
+    using System.IO;
+
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+
+    using SlimDX;
+    using SlimDX.D3DCompiler;
+    using SlimDX.Direct3D11;
 
     public class ShadowMapShader : CarbonShader, IShadowMapShader
     {
@@ -70,6 +69,11 @@ namespace Core.Engine.Rendering.Shaders
             {
                 for (int i = 0; i < instruction.InstanceCount; i++)
                 {
+                    if (instruction.Instances[i] == null)
+                    {
+                        throw new InvalidDataException("Instance data was null");
+                    }
+
                     this.instanceConstantBuffer.World[i] = Matrix.Transpose((Matrix)instruction.Instances[i]);
                 }
 

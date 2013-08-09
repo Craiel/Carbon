@@ -1,13 +1,13 @@
-﻿using Core.Engine.Contracts.Logic;
-using Core.Engine.Logic;
-
-using SlimDX;
-using SlimDX.DXGI;
-using SlimDX.Direct3D11;
-
-namespace Core.Engine.Rendering.RenderTarget
+﻿namespace Core.Engine.Rendering.RenderTarget
 {
-    class GBufferRenderTarget : RenderTargetBase
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Logic;
+
+    using SlimDX;
+    using SlimDX.Direct3D11;
+    using SlimDX.DXGI;
+
+    internal class GBufferRenderTarget : RenderTargetBase
     {
         private readonly TextureData[] textures;
         private readonly RenderTargetView[] targetViews;
@@ -35,13 +35,6 @@ namespace Core.Engine.Rendering.RenderTarget
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override void Dispose()
-        {
-            this.DisposeResources();
-
-            base.Dispose();
-        }
-
         public TextureData NormalData
         {
             get
@@ -101,6 +94,13 @@ namespace Core.Engine.Rendering.RenderTarget
             graphics.ImmediateContext.Rasterizer.SetViewports(this.Viewport);
 
             base.Set(graphics);
+        }
+
+        public override void Dispose()
+        {
+            this.DisposeResources();
+
+            base.Dispose();
         }
         
         // -------------------------------------------------------------------
@@ -166,7 +166,7 @@ namespace Core.Engine.Rendering.RenderTarget
             this.desiredTexture.Format = Format.R16G16B16A16_SNorm;
             this.desiredTargetView.Format = this.desiredTexture.Format;
             Texture2D texture = graphics.StateManager.GetTexture(this.desiredTexture);
-            ShaderResourceView view = new ShaderResourceView(graphics.ImmediateContext.Device, texture);
+            var view = new ShaderResourceView(graphics.ImmediateContext.Device, texture);
             this.targetViews[0] = graphics.StateManager.GetRenderTargetView(texture, this.desiredTargetView);
             this.textures[0] = new TextureData(texture, view);
 

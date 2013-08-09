@@ -1,11 +1,9 @@
-﻿using Core.Engine.Contracts.Logic;
-using Core.Utils.Contracts;
-using SlimDX;
-using SlimDX.DirectInput;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
     using System;
+
+    using Core.Engine.Contracts.Logic;
+    using SlimDX;
 
     public interface IFirstPersonController : IBoundController
     {
@@ -20,21 +18,6 @@ namespace Core.Engine.Logic
     
     public class FirstPersonController : BoundController, IFirstPersonController
     {
-        internal enum FirstPersonControllerAction
-        {
-            MoveForward,
-            MoveBackward,
-            MoveLeft,
-            MoveRight,
-            
-            RotateLeft,
-            RotateRight,
-            RotateUp,
-            RotateDown,
-
-            ToggleRotation,
-        }
-        
         private Vector4 position;
 
         private float yaw;
@@ -57,6 +40,21 @@ namespace Core.Engine.Logic
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        internal enum FirstPersonControllerAction
+        {
+            MoveForward,
+            MoveBackward,
+            MoveLeft,
+            MoveRight,
+
+            RotateLeft,
+            RotateRight,
+            RotateUp,
+            RotateDown,
+
+            ToggleRotation,
+        }
+
         public float Speed { get; set; }
 
         public float RotationSpeed { get; set; }

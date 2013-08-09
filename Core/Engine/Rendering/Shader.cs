@@ -1,36 +1,26 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Logic;
-
-using Core.Utils;
-using Core.Utils.Contracts;
-using Core.Utils.Diagnostics;
-
-using SlimDX;
-using SlimDX.D3DCompiler;
-using SlimDX.Direct3D11;
-
-using Buffer = SlimDX.Direct3D11.Buffer;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
-    public interface ICarbonShader : IEngineComponent
-    {
-        bool LightingEnabled { get; set; }
+    using System;
+    using System.Runtime.InteropServices;
 
-        bool ForceReloadOnNextPass { get; set; }
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Logic;
 
-        void Permutate();
+    using Core.Utils;
+    using Core.Utils.Diagnostics;
 
-        void Apply(DeviceContext context, Type vertexType, RenderParameters parameters, RenderInstruction instruction);
-
-        void ResetConfigurationState(DeviceContext context);
-    }
+    using SlimDX;
+    using SlimDX.D3DCompiler;
+    using SlimDX.Direct3D11;
 
     public abstract class CarbonShader : EngineComponent, ICarbonShader
     {
+        internal readonly int DefaultConstantBufferSize = Marshal.SizeOf(typeof(DefaultConstantBuffer));
+        internal readonly int InstanceConstantBufferSize = Marshal.SizeOf(typeof(Matrix)) * RenderInstruction.MaxInstanceCount;
+        internal readonly int DirectionalLightDataSize = Marshal.SizeOf(typeof(DirectionalLightData));
+        internal readonly int PointLightDataSize = Marshal.SizeOf(typeof(PointLightData));
+
         private readonly ICarbonGraphics graphics;
 
         private readonly CarbonShaderDescription desiredVertexShader;
@@ -44,7 +34,7 @@ namespace Core.Engine.Rendering
         private ShaderSignature signature;
         private InputLayout inputLayout;
 
-        private Buffer[] constantBuffers;
+        private SlimDX.Direct3D11.Buffer[] constantBuffers;
         private DataStream[] constantBufferData;
         private bool[] constantBufferDataState;
         private SamplerState[] samplerStates;
@@ -60,86 +50,7 @@ namespace Core.Engine.Rendering
         
         private Type currentVertexType;
 
-        int macroHash;
-
-        internal readonly int DefaultConstantBufferSize = Marshal.SizeOf(typeof(DefaultConstantBuffer));
-        internal readonly int InstanceConstantBufferSize = Marshal.SizeOf(typeof(Matrix)) * RenderInstruction.MaxInstanceCount;
-        internal readonly int DirectionalLightDataSize = Marshal.SizeOf(typeof(DirectionalLightData));
-        internal readonly int PointLightDataSize = Marshal.SizeOf(typeof(PointLightData));
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        internal struct DefaultConstantBuffer
-        {
-            public Matrix World;
-            public Matrix View;
-            public Matrix Projection;
-            public Matrix InvertedView;
-            public Matrix InvertedProjection;
-            public Matrix InvertedViewProjection;
-
-            public Vector4 Padding; // Still no idea why this is needed...
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        internal struct InstanceConstantBuffer
-        {
-            public Matrix[] World;
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        internal struct DirectionalLightData
-        {
-            public Vector4 DiffuseColor;
-            public Vector4 Direction;
-            public float SpecularPower;
-            public Vector3 Padding;
-
-            public void Clear()
-            {
-                this.DiffuseColor = Vector4.Zero;
-                this.Direction = Vector4.Zero;
-                this.SpecularPower = 0;
-            }
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        internal struct PointLightData
-        {
-            public Vector4 DiffuseColor;
-            public Vector4 Position;
-            public float Range;
-            public float SpecularPower;
-            public Vector2 Padding;
-
-            public void Clear()
-            {
-                this.DiffuseColor = Vector4.Zero;
-                this.Position = Vector4.Zero;
-                this.Range = 0;
-                this.SpecularPower = 0;
-            }
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        internal  struct SpotLightData
-        {
-            public Vector4 DiffuseColor;
-            public Vector4 Position;
-            public Vector4 Direction;
-            public float Range;
-            public float SpecularPower;
-            public Vector2 Angles;
-
-            public void Clear()
-            {
-                this.DiffuseColor = Vector4.Zero;
-                this.Position = Vector4.Zero;
-                this.Direction = Vector4.Zero;
-                this.Range = 0;
-                this.SpecularPower = 0;
-                this.Angles = Vector2.Zero;
-            }
-        }
+        private int macroHash;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -199,7 +110,7 @@ namespace Core.Engine.Rendering
             if (this.reloadShaders || this.currentVertexType != vertexType)
             {
                 this.desiredInputLayout.Type = vertexType;
-                this.inputLayout = this.graphics.StateManager.GetInputLayout(this.desiredInputLayout, signature);
+                this.inputLayout = this.graphics.StateManager.GetInputLayout(this.desiredInputLayout, this.signature);
                 this.currentVertexType = vertexType;
                 this.uploadLayout = true;
             }
@@ -312,7 +223,7 @@ namespace Core.Engine.Rendering
             this.uploadSamplers = states != null;
         }
 
-        protected void SetConstantBuffers(Buffer[] buffers)
+        protected void SetConstantBuffers(SlimDX.Direct3D11.Buffer[] buffers)
         {
             this.constantBuffers = buffers;
             if (buffers != null)
@@ -454,6 +365,80 @@ namespace Core.Engine.Rendering
 
             this.globalMacros[0].Value = instruction.InstanceCount <= 1 ? "0" : "1";
             this.globalMacros[1].Value = this.LightingEnabled ? "1" : "0";
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        internal struct DefaultConstantBuffer
+        {
+            public Matrix World;
+            public Matrix View;
+            public Matrix Projection;
+            public Matrix InvertedView;
+            public Matrix InvertedProjection;
+            public Matrix InvertedViewProjection;
+
+            public Vector4 Padding; // Still no idea why this is needed...
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        internal struct InstanceConstantBuffer
+        {
+            public Matrix[] World;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        internal struct DirectionalLightData
+        {
+            public Vector4 DiffuseColor;
+            public Vector4 Direction;
+            public float SpecularPower;
+            public Vector3 Padding;
+
+            public void Clear()
+            {
+                this.DiffuseColor = Vector4.Zero;
+                this.Direction = Vector4.Zero;
+                this.SpecularPower = 0;
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        internal struct PointLightData
+        {
+            public Vector4 DiffuseColor;
+            public Vector4 Position;
+            public float Range;
+            public float SpecularPower;
+            public Vector2 Padding;
+
+            public void Clear()
+            {
+                this.DiffuseColor = Vector4.Zero;
+                this.Position = Vector4.Zero;
+                this.Range = 0;
+                this.SpecularPower = 0;
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        internal struct SpotLightData
+        {
+            public Vector4 DiffuseColor;
+            public Vector4 Position;
+            public Vector4 Direction;
+            public float Range;
+            public float SpecularPower;
+            public Vector2 Angles;
+
+            public void Clear()
+            {
+                this.DiffuseColor = Vector4.Zero;
+                this.Position = Vector4.Zero;
+                this.Direction = Vector4.Zero;
+                this.Range = 0;
+                this.SpecularPower = 0;
+                this.Angles = Vector2.Zero;
+            }
         }
     }
 }

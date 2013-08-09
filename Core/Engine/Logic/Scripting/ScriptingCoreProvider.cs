@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-
-using Core.Engine.Contracts.Logic;
-
-using Core.Utils.Contracts;
-
-using SlimDX;
-
-namespace Core.Engine.Logic.Scripting
+﻿namespace Core.Engine.Logic.Scripting
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+
+    using Core.Engine.Contracts.Logic;
+    using Core.Utils.Contracts;
+
+    using SlimDX;
+
     public class ScriptingCoreProvider : IScriptingProvider
     {
         private readonly ILog log;

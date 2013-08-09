@@ -1,9 +1,9 @@
-﻿using Core.Engine.Contracts.Rendering;
-
-using SlimDX;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using Core.Engine.Contracts.Rendering;
+
+    using SlimDX;
+
     public sealed class LightInstruction
     {
         public ILight Light { get; set; }

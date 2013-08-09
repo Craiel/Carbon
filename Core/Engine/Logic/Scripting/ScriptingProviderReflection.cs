@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-using Core.Engine.Contracts.Logic;
-
-namespace Core.Engine.Logic.Scripting
+﻿namespace Core.Engine.Logic.Scripting
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Reflection;
+
+    using Core.Engine.Contracts.Logic;
+
     public static class ScriptingProviderReflection
     {
         private static readonly IDictionary<Type, IList<ScriptingMethodInfo>> MethodCache =
@@ -60,7 +59,7 @@ namespace Core.Engine.Logic.Scripting
                 MethodInfo[] methods = type.GetMethods();
                 foreach (MethodInfo method in methods)
                 {
-                    ScriptingMethod attribute = method.GetCustomAttribute<ScriptingMethod>();
+                    var attribute = method.GetCustomAttribute<ScriptingMethod>();
                     if (attribute != null)
                     {
                         var info = new ScriptingMethodInfo(method);
@@ -82,7 +81,7 @@ namespace Core.Engine.Logic.Scripting
                 PropertyInfo[] properties = type.GetProperties();
                 foreach (PropertyInfo property in properties)
                 {
-                    ScriptingProperty attribute = property.GetCustomAttribute<ScriptingProperty>();
+                    var attribute = property.GetCustomAttribute<ScriptingProperty>();
                     if (attribute != null)
                     {
                         var info = new ScriptingPropertyInfo(property);

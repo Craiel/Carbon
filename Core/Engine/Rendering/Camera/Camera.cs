@@ -1,9 +1,10 @@
-﻿using Core.Engine.Contracts.Rendering;
-using Core.Engine.Logic;
-using SlimDX;
+﻿namespace Core.Engine.Rendering.Camera
+{
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Logic;
 
-namespace Core.Engine.Rendering.Camera
-{  
+    using SlimDX;
+
     public abstract class BaseCamera : EngineComponent, ICamera
     {
         // -------------------------------------------------------------------

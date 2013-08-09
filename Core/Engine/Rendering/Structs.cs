@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
-using SlimDX;
-using SlimDX.Direct3D11;
-using SlimDX.DXGI;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Runtime.InteropServices;
+
+    using SlimDX;
+    using SlimDX.Direct3D11;
+    using SlimDX.DXGI;
+
     public interface IMeshStructure
     {
     }
@@ -41,7 +41,7 @@ namespace Core.Engine.Rendering
 
     public static class InputStructures
     {
-        public static IDictionary<Type, int> InputLayoutSizes = new Dictionary<Type, int>
+        public static readonly IDictionary<Type, int> InputLayoutSizes = new Dictionary<Type, int>
                                                                     {
                                                                         { typeof(PositionVertex), Marshal.SizeOf(typeof(PositionVertex)) },
                                                                         { typeof(PositionColorVertex), Marshal.SizeOf(typeof(PositionColorVertex)) },
@@ -49,7 +49,7 @@ namespace Core.Engine.Rendering
                                                                         { typeof(PositionNormalTangentVertex), Marshal.SizeOf(typeof(PositionNormalTangentVertex)) },
                                                                     };
 
-        public static IDictionary<Type, InputElement[]> InputLayouts = new Dictionary<Type, InputElement[]>
+        public static readonly IDictionary<Type, InputElement[]> InputLayouts = new Dictionary<Type, InputElement[]>
             {
                 {
                     typeof(PositionVertex),
@@ -66,7 +66,7 @@ namespace Core.Engine.Rendering
                         {
                             new InputElement("POSITION", 0, Format.R32G32B32_Float, 0),
                             new InputElement("TEXCOORD", 0, Format.R32G32_Float, 0),
-                            new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 0), 
+                            new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 0)
                         }
                 },
                 {

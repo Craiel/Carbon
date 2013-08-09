@@ -1,7 +1,7 @@
-﻿using System.Reflection;
-
-namespace Core.Engine.Logic.Scripting
+﻿namespace Core.Engine.Logic.Scripting
 {
+    using System.Reflection;
+
     public class ScriptingMethodInfo
     {
         public ScriptingMethodInfo(MethodInfo method)

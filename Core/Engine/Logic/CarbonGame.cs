@@ -1,24 +1,24 @@
-﻿using System;
-using System.Threading;
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Rendering;
-using Core.Engine.Contracts.Resource;
-
-using Core.Utils;
-using Core.Utils.Contracts;
-using Core.Utils.Diagnostics;
-
-using SlimDX.Windows;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System;
+    using System.Threading;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Contracts.Resource;
+
+    using Core.Utils;
+    using Core.Utils.Contracts;
+    using Core.Utils.Diagnostics;
     using Core.Utils.IO;
+
+    using SlimDX.Windows;
 
     public struct EngineContent
     {
         public string FallbackTexture;
-     }
+    }
 
     /// <summary>
     /// Base class for a carbon based game

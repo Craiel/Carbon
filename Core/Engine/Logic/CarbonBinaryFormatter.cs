@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System;
+    using System.IO;
+
     public class CarbonBinaryFormatter : IDisposable
     {
         private readonly System.Text.ASCIIEncoding stringEncoding = new System.Text.ASCIIEncoding();
@@ -159,7 +159,7 @@ namespace Core.Engine.Logic
             }
 
             this.Write(value.Length);
-            byte[] data = stringEncoding.GetBytes(value);
+            byte[] data = this.stringEncoding.GetBytes(value);
             Buffer.BlockCopy(data, 0, this.buffer, 0, data.Length);
             this.SafeWrite(data.Length);
         }
@@ -181,10 +181,10 @@ namespace Core.Engine.Logic
 
             if (this.buffer.Length < count)
             {
-                buffer = new byte[count * 2];
+                this.buffer = new byte[count * 2];
             }
 
-            int bytesRead = this.target.Read(buffer, 0, count);
+            int bytesRead = this.target.Read(this.buffer, 0, count);
             if (bytesRead != count)
             {
                 throw new IOException(string.Format("Expected to read {0} bytes but got {1}", count, bytesRead));

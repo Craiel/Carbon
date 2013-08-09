@@ -1,16 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-using Core.Engine.Contracts.Logic;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
-    public interface IBoundController : IEngineComponent, IInputReceiver
-    {
-        new bool IsActive { get; set; }
+    using System.Collections.Generic;
+    using System.Linq;
 
-        void SetInputBindings(string name);
-    }
+    using Core.Engine.Contracts.Logic;
 
     public abstract class BoundController : EngineComponent, IBoundController
     {

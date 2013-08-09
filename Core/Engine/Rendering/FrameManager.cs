@@ -1,35 +1,34 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Rendering;
-using Core.Engine.Logic;
-using Core.Engine.Rendering.Debug;
-using Core.Engine.Rendering.Primitives;
-using Core.Engine.Rendering.RenderTarget;
-
-using Core.Utils;
-
-using SlimDX;
-using SlimDX.Direct3D11;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Logic;
+    using Core.Engine.Rendering.Primitives;
+    using Core.Engine.Rendering.RenderTarget;
+
+    using Core.Utils;
+
+    using SlimDX;
+    using SlimDX.Direct3D11;
+
     public class FrameManager : EngineComponent, IFrameManager
     {
         private readonly ICarbonGraphics graphics;
         private readonly IRenderer renderer;
-
-        private readonly DebugOverlay debugOverlay;
         
         private readonly IList<RenderInstruction> instructionCache;
         private readonly IList<RenderLightInstruction> lightInstructionCache;
 
-        private readonly BackBufferRenderTarget backBufferRenderTarget;
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
         private readonly GBufferRenderTarget gBufferTarget;
+        private readonly BackBufferRenderTarget backBufferRenderTarget;
         private readonly TextureRenderTarget deferredLightTarget;
         private readonly DepthRenderTarget shadowMapTarget;
         private readonly IDictionary<int, TextureRenderTarget> textureTargets;
@@ -45,35 +44,15 @@ namespace Core.Engine.Rendering
             this.graphics = factory.Get<ICarbonGraphics>();
             this.renderer = factory.Get<IRenderer>();
 
-            this.debugOverlay = new DebugOverlay();
             this.instructionCache = new List<RenderInstruction>();
             this.lightInstructionCache = new List<RenderLightInstruction>();
 
             this.backBufferRenderTarget = new BackBufferRenderTarget();
             this.gBufferTarget = new GBufferRenderTarget();
-            this.deferredLightTarget = new TextureRenderTarget { BlendMode = RendertargetBlendMode.Additive};
+            this.deferredLightTarget = new TextureRenderTarget { BlendMode = RendertargetBlendMode.Additive };
             this.shadowMapTarget = new DepthRenderTarget();
             this.textureTargets = new Dictionary<int, TextureRenderTarget>();
             this.shadowMapCache = new Dictionary<int, TextureData>();
-        }
-
-        public override void Dispose()
-        {
-            this.debugOverlay.Dispose();
-
-            this.backBufferRenderTarget.Dispose();
-            this.gBufferTarget.Dispose();
-            this.deferredLightTarget.Dispose();
-            this.shadowMapTarget.Dispose();
-
-            foreach (TextureRenderTarget target in this.textureTargets.Values)
-            {
-                target.Dispose();
-            }
-
-            this.textureTargets.Clear();
-
-            this.ClearCache();
         }
 
         // -------------------------------------------------------------------
@@ -177,6 +156,23 @@ namespace Core.Engine.Rendering
             }
 
             this.shadowMapCache.Clear();
+        }
+
+        public override void Dispose()
+        {
+            this.backBufferRenderTarget.Dispose();
+            this.gBufferTarget.Dispose();
+            this.deferredLightTarget.Dispose();
+            this.shadowMapTarget.Dispose();
+
+            foreach (TextureRenderTarget target in this.textureTargets.Values)
+            {
+                target.Dispose();
+            }
+
+            this.textureTargets.Clear();
+
+            this.ClearCache();
         }
 
         // -------------------------------------------------------------------
@@ -492,12 +488,10 @@ namespace Core.Engine.Rendering
                         }
 
                         instructions[instructions.Count - 1].AddInstance(currentInstruction.World);
-                        // this.currentFrameStatistic.InstructionsDiscarded++;
                     }
                     else
                     {
                         instructions.Add(this.CreateRenderInstruction(currentInstruction));
-                        // this.currentFrameStatistic.InstanceLimitExceeded++;
                     }
                 }
             }
@@ -516,9 +510,9 @@ namespace Core.Engine.Rendering
 
         private RenderInstruction CreateRenderInstruction(FrameInstruction source)
         {
-            var instruction = new RenderInstruction { Mesh = source.Mesh, World = source.World};
+            var instruction = new RenderInstruction { Mesh = source.Mesh, World = source.World };
 
-            if(source.Material != null)
+            if (source.Material != null)
             {
                 instruction.Color = source.Material.Color;
 
@@ -579,7 +573,7 @@ namespace Core.Engine.Rendering
             for (int i = 0; i < instructions.Count; i++)
             {
                 LightInstruction instruction = instructions[i];
-                if(instruction.Light == null)
+                if (instruction.Light == null)
                 {
                     throw new InvalidOperationException("Light Instruction without actual light information!");
                 }

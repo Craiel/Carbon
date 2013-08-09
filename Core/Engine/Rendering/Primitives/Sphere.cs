@@ -1,14 +1,12 @@
-﻿using System;
-
-using Core.Engine.Resource;
-using Core.Engine.Resource.Resources;
-
-using SlimDX;
-using System.Collections.Generic;
-
-namespace Core.Engine.Rendering.Primitives
+﻿namespace Core.Engine.Rendering.Primitives
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
+
+    using SlimDX;
 
     public static class Sphere
     {

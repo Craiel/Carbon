@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System;
+
     public struct TypedVector2<T>
     {
         public T X;

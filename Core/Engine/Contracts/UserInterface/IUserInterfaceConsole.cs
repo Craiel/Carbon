@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Core.Engine.Contracts.UserInterface
+﻿namespace Core.Engine.Contracts.UserInterface
 {
+    using System;
+    using System.Collections.Generic;
+
     public interface IUserInterfaceConsole : IUserInterfaceControl
     {
         event Action<string> OnLineEntered;

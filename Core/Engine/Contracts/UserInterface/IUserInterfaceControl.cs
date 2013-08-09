@@ -1,9 +1,9 @@
-﻿using Core.Engine.Contracts.Logic;
-
-using SlimDX;
-
-namespace Core.Engine.Contracts.UserInterface
+﻿namespace Core.Engine.Contracts.UserInterface
 {
+    using Core.Engine.Contracts.Logic;
+
+    using SlimDX;
+
     public interface IUserInterfaceControl : IEngineComponent
     {
         string Name { get; set; }

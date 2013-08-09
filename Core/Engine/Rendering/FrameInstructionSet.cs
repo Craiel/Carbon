@@ -1,23 +1,12 @@
-﻿using System.Collections.Generic;
-
-using Core.Engine.Contracts.Rendering;
-using Core.Engine.Resource;
-
-using SlimDX;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System.Collections.Generic;
+
+    using Core.Engine.Contracts.Rendering;
     using Core.Engine.Rendering.RenderTarget;
 
+    using SlimDX;
     using SlimDX.Direct3D11;
-
-    public struct FrameInstruction
-    {
-        public Mesh Mesh { get; set; }
-        public Material Material { get; set; }
-
-        public Matrix World { get; set; }
-    }
 
     public enum FrameTechnique
     {
@@ -27,6 +16,14 @@ namespace Core.Engine.Rendering
 
         DebugNormal,
         DebugDepth,
+    }
+
+    public struct FrameInstruction
+    {
+        public Mesh Mesh { get; set; }
+        public Material Material { get; set; }
+
+        public Matrix World { get; set; }
     }
 
     public sealed class FrameInstructionSet

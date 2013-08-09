@@ -1,7 +1,7 @@
-﻿using Core.Engine.Resource.Content;
-
-namespace Core.Engine.Contracts.Resource
+﻿namespace Core.Engine.Contracts.Resource
 {
+    using Core.Engine.Resource.Content;
+
     public interface ICarbonContent
     {
         bool IsNew { get; }

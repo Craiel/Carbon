@@ -1,13 +1,12 @@
-﻿using System;
-using System.IO;
-
-using Core.Engine.Contracts.Network;
-
-using Google.ProtocolBuffers;
-
-namespace Core.Engine.Network
+﻿namespace Core.Engine.Network
 {
+    using System;
+    using System.IO;
+
+    using Core.Engine.Contracts.Network;
     using Core.Protocol.Network;
+
+    using Google.ProtocolBuffers;
 
     public abstract class NetworkMessageBase : INetworkMessage
     {

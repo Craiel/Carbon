@@ -1,32 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Core.Engine.Resource;
-
-using SlimDX;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+
+    using Core.Engine.Resource;
     using Core.Engine.Resource.Content;
     using Core.Engine.Resource.Resources.Model;
+
+    using SlimDX;
 
     internal struct FontBuilderLine
     {
         public Vector2 Position { get; set; }
         
         public string Text { get; set; }
-    }
-
-    internal class FontBuilderSegment
-    {
-        public FontBuilderSegment()
-        {
-            this.Lines = new List<FontBuilderLine>();
-        }
-
-        public Vector4 Color { get; set; }
-
-        public IList<FontBuilderLine> Lines { get; private set; }
     }
 
     public static class FontBuilder
@@ -39,7 +27,8 @@ namespace Core.Engine.Rendering
                 return null;
             }
 
-            ProcessText(text);
+            // Todo:
+            // ProcessText(text);
 
             /*
              * - Process into segments
@@ -50,27 +39,29 @@ namespace Core.Engine.Rendering
              */
 
             int rowCount = byte.MaxValue / font.CharactersPerRow;
-            Vector2 characterUVSize = new Vector2(1.0f / font.CharactersPerRow, 1.0f / rowCount);
+            var characterUVSize = new Vector2(1.0f / font.CharactersPerRow, 1.0f / rowCount);
             var builder = new ModelBuilder("Font");
 
             string[] lines = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-            
-            float x = 0;
+
             float y = 0;
             for (int l = lines.Length - 1; l >= 0; l--)
             {
-                x = 0;
+                float x = 0;
                 foreach (char c in lines[l])
                 {
                     Vector2 uvx;
-                    uvx.Y = ((byte)c / font.CharactersPerRow);
+
+                    // ReSharper disable PossibleLossOfFraction
+                    uvx.Y = (byte)c / font.CharactersPerRow;
+                    // ReSharper restore PossibleLossOfFraction
                     uvx.X = (byte)c - (uvx.Y * font.CharactersPerRow);
                     if ((byte)c >= font.CharactersPerRow)
                     {
                         uvx.Y++;
                     }
 
-                    uvx.Y = (uvx.Y / rowCount);
+                    uvx.Y = uvx.Y / rowCount;
                     uvx.X = uvx.X / font.CharactersPerRow;
 
                     builder.BeginPolygon();
@@ -93,13 +84,18 @@ namespace Core.Engine.Rendering
 
             return builder.ToResource();
         }
+    }
 
-        // -------------------------------------------------------------------
-        // Private
-        // -------------------------------------------------------------------
-        private static void ProcessText(string text)
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
+    internal class FontBuilderSegment
+    {
+        public FontBuilderSegment()
         {
-            string[] lines = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+            this.Lines = new List<FontBuilderLine>();
         }
+
+        public Vector4 Color { get; set; }
+
+        public IList<FontBuilderLine> Lines { get; private set; }
     }
 }

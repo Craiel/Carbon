@@ -88,6 +88,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\Logic\IBoundController.cs" />
+    <Compile Include="Contracts\Logic\ICarbonConsole.cs" />
     <Compile Include="Contracts\Logic\IGameState.cs" />
     <Compile Include="Contracts\Logic\IScriptingEngine.cs" />
     <Compile Include="Contracts\Logic\IScriptingProvider.cs" />
@@ -99,12 +101,20 @@
     <Compile Include="Contracts\Logic\IInputManager.cs" />
     <Compile Include="Contracts\Network\INetworkMessage.cs" />
     <Compile Include="Contracts\Network\INetworkTarget.cs" />
+    <Compile Include="Contracts\Rendering\IBlendShader.cs" />
     <Compile Include="Contracts\Rendering\ICamera.cs" />
+    <Compile Include="Contracts\Rendering\ICarbonShader.cs" />
+    <Compile Include="Contracts\Rendering\IDebugShader.cs" />
+    <Compile Include="Contracts\Rendering\IDefaultShader.cs" />
+    <Compile Include="Contracts\Rendering\IDeferredLightShader.cs" />
+    <Compile Include="Contracts\Rendering\IGBufferShader.cs" />
     <Compile Include="Contracts\Rendering\ILight.cs" />
+    <Compile Include="Contracts\Rendering\IPlainShader.cs" />
     <Compile Include="Contracts\Rendering\IRenderable.cs" />
     <Compile Include="Contracts\Rendering\IRenderer.cs" />
     <Compile Include="Contracts\Rendering\IFrameManager.cs" />
     <Compile Include="Contracts\Rendering\IRenderTarget.cs" />
+    <Compile Include="Contracts\Rendering\IShadowMapShader.cs" />
     <Compile Include="Contracts\Resource\ICarbonContent.cs" />
     <Compile Include="Contracts\Resource\ICarbonResource.cs" />
     <Compile Include="Contracts\Resource\IContentManager.cs" />
@@ -126,6 +136,7 @@
     <Compile Include="Logic\BoundController.cs" />
     <Compile Include="Logic\GameState.cs" />
     <Compile Include="Logic\InputBindings.cs" />
+    <Compile Include="Logic\TextureReference.cs" />
     <Compile Include="Logic\TypedVectors.cs" />
     <Compile Include="Logic\Scripting\ScriptingGameProvider.cs" />
     <Compile Include="Logic\TypingController.cs" />
@@ -154,9 +165,6 @@
     <Compile Include="Logic\DeviceStateManager.cs" />
     <Compile Include="Rendering\Camera\OrthographicCamera.cs" />
     <Compile Include="Rendering\Camera\ProjectionCamera.cs" />
-    <Compile Include="Rendering\Debug\CoordinateDisplay.cs" />
-    <Compile Include="Rendering\Debug\DebugOverlay.cs" />
-    <Compile Include="Rendering\Debug\OrientationDisplay.cs" />
     <Compile Include="Rendering\DeviceContext.cs" />
     <Compile Include="Rendering\DeviceSettings.cs" />
     <Compile Include="Rendering\DynamicBuffer.cs" />
@@ -166,6 +174,7 @@
     <Compile Include="Rendering\Light.cs" />
     <Compile Include="Rendering\Material.cs" />
     <Compile Include="Rendering\Mesh.cs" />
+    <Compile Include="Rendering\RenderLightInstruction.cs" />
     <Compile Include="Resource\ModelBuilder.cs" />
     <Compile Include="Rendering\Primitives\Cone.cs" />
     <Compile Include="Rendering\Primitives\Cube.cs" />
@@ -196,7 +205,6 @@
     <Compile Include="Rendering\DataContainer.cs" />
     <Compile Include="Logic\CarbonBinaryFormatter.cs" />
     <Compile Include="Rendering\TextureData.cs" />
-    <Compile Include="Resource\CompiledShader.cs" />
     <Compile Include="Resource\ContentEntryAttributes.cs" />
     <Compile Include="Resource\ContentManager.cs" />
     <Compile Include="Resource\ContentQuery.cs" />
@@ -213,6 +221,7 @@
     <Compile Include="Resource\Content\StageRegionEntry.cs" />
     <Compile Include="Resource\Content\ResourceEntry.cs" />
     <Compile Include="Resource\Content\ScriptEntry.cs" />
+    <Compile Include="Resource\Resources\CompiledShaderResource.cs" />
     <Compile Include="Resource\Resources\UserInterfaceResource.cs" />
     <Compile Include="Resource\Resources\Model\ModelResourceGroup.cs" />
     <Compile Include="Resource\Resources\Model\ModelMaterialElement.cs" />

@@ -1,15 +1,17 @@
-﻿using System;
-using System.Reflection;
-using System.Text;
-using Core.Utils;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+    using System.Reflection;
+    using System.Text;
+
+    using Core.Utils;
+
     public sealed class FrameStatistics
     {
         private static readonly PropertyInfo[] Properties = typeof(FrameStatistics).GetProperties();
+        private static ulong frameCounter;
+
         private readonly StringBuilder traceBuilder;
-        private static ulong FrameCounter;
 
         public FrameStatistics()
         {
@@ -50,7 +52,7 @@ namespace Core.Engine.Rendering
         public void StartFrame()
         {
             this.Ended = false;
-            this.Id = ++FrameCounter;
+            this.Id = ++frameCounter;
             this.StartTime = Timer.CoreTimer.ElapsedTime;
 
             this.Duration = 0;

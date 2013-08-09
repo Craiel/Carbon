@@ -1,7 +1,6 @@
-﻿using Core.Engine.Contracts.Logic;
-
-namespace Core.Engine.Contracts.Scene
+﻿namespace Core.Engine.Contracts.Scene
 {
+    using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
 
     public enum SceneStatus

@@ -1,18 +1,19 @@
-﻿using Core.Engine.Contracts;
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Rendering;
-using Core.Utils.Contracts;
-using SlimDX.Direct3D11;
-using SlimDX.DXGI;
-using System;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Rendering;
+    using Core.Utils.Contracts;
+
+    using SlimDX.Direct3D11;
+    using SlimDX.DXGI;
+
     public class CarbonGraphics : ICarbonGraphics
     {
         private readonly ILog log;
-        private readonly IEngineFactory factory;
         private readonly IResourceManager resourceManager;
 
         private CarbonDeviceContextDx11 context;
@@ -42,7 +43,6 @@ namespace Core.Engine.Logic
         {
             this.log = factory.Get<IEngineLog>().AquireContextLog("CarbonGraphics");
             this.resourceManager = resourceManager;
-            this.factory = factory;
 
             this.desiredDepthStencilState = DeviceStateManager.DefaultDepthStencilState;
             this.desiredRasterizerState = DeviceStateManager.SolidRasterState;
@@ -266,7 +266,7 @@ namespace Core.Engine.Logic
                 this.deviceStateManager = null;
             }
 
-            if(this.shaderManager != null)
+            if (this.shaderManager != null)
             {
                 this.shaderManager.Dispose();
                 this.shaderManager = null;
@@ -303,7 +303,7 @@ namespace Core.Engine.Logic
             this.deviceStateManager = new DeviceStateManager(this.context.Device);
 
             this.shaderManager = new ShaderManager(this.resourceManager, this.context.Device);
-            this.textureManager = new TextureManager(this.resourceManager, this.context.Device);
+            this.textureManager = new TextureManager(this.resourceManager);
         }
 
         private void DisposeBuffers()

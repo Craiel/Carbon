@@ -1,28 +1,21 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-using Core.Engine.Contracts.Logic;
-
-using SlimDX;
-using SlimDX.D3DCompiler;
-using SlimDX.Direct3D11;
-using Buffer = SlimDX.Direct3D11.Buffer;
-
-namespace Core.Engine.Rendering.Shaders
+﻿namespace Core.Engine.Rendering.Shaders
 {
-    public interface IDeferredLightShader : ICarbonShader
-    {
-        void SetAmbient(Vector4 color);
-        void SetDirectional(Vector4 position, Vector3 direction, Vector4 color);
-        void SetPoint(Vector4 position, Vector4 color, float range, Matrix lightViewProjection);
-        void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles, bool useShadowMapping, Matrix lightViewProjection);
-    }
+    using System;
+    using System.IO;
+    using System.Runtime.InteropServices;
+
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+
+    using SlimDX;
+    using SlimDX.D3DCompiler;
+    using SlimDX.Direct3D11;
 
     public class DeferredLightShader : CarbonShader, IDeferredLightShader
     {
         private readonly ICarbonGraphics graphics;
 
-        private readonly Buffer[] buffers;
+        private readonly SlimDX.Direct3D11.Buffer[] buffers;
         private readonly SamplerState[] samplerStates;
         private readonly SamplerDescription[] samplerStateCache;
         private readonly ShaderResourceView[] resources;
@@ -61,7 +54,7 @@ namespace Core.Engine.Rendering.Shaders
         {
             this.graphics = graphics;
 
-            this.buffers = new Buffer[4];
+            this.buffers = new SlimDX.Direct3D11.Buffer[4];
             this.resources = new ShaderResourceView[5];
             this.samplerStates = new SamplerState[4];
             this.samplerStateCache = new SamplerDescription[4];
@@ -173,43 +166,6 @@ namespace Core.Engine.Rendering.Shaders
         }
 
         // -------------------------------------------------------------------
-        // Structs
-        // -------------------------------------------------------------------
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        internal struct CameraConstantBuffer
-        {
-            public Vector4 CameraPosition;
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        internal struct LightConstantBuffer
-        {
-            public Vector4 Color;
-            public Vector4 Position;
-            public Vector4 Direction;
-            public Vector2 SpotlightAngles;
-
-            public float Range;
-            public float padding;
-
-            public Vector2 ShadowMapSize;
-            public Vector2 padding2;
-            
-            public Matrix LightViewProjection;
-
-            public void Clear()
-            {
-                this.Color = Vector4.Zero;
-                this.Position = Vector4.Zero;
-                this.Direction = Vector4.Zero;
-                this.SpotlightAngles = Vector2.Zero;
-                this.ShadowMapSize = Vector2.Zero;
-                this.LightViewProjection = Matrix.Identity;
-                this.Range = 0;
-            }
-        }
-
-        // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
         protected override void Configure(RenderParameters parameters, RenderInstruction instruction)
@@ -241,6 +197,11 @@ namespace Core.Engine.Rendering.Shaders
             {
                 for (int i = 0; i < instruction.InstanceCount; i++)
                 {
+                    if (instruction.Instances[i] == null)
+                    {
+                        throw new InvalidDataException("Instance data was null");
+                    }
+
                     this.instanceConstantBuffer.World[i] = Matrix.Transpose((Matrix)instruction.Instances[i]);
                 }
 
@@ -249,8 +210,8 @@ namespace Core.Engine.Rendering.Shaders
 
             if (this.needLightPositionUpdate)
             {
-                Vector4 position = new Vector4(this.lightPosition, 1.0f);
-                Vector4 direction = new Vector4(this.lightDirection, 0);
+                var position = new Vector4(this.lightPosition, 1.0f);
+                var direction = new Vector4(this.lightDirection, 0);
                 this.lightConstantBuffer.Direction = Vector4.Transform(direction, parameters.View);
                 this.lightConstantBuffer.Position = Vector4.Transform(position, parameters.View);
                 this.needLightPositionUpdate = false;
@@ -371,7 +332,7 @@ namespace Core.Engine.Rendering.Shaders
         private void AcquireShaderStates()
         {
             this.buffers[0] =
-                graphics.StateManager.GetBuffer(
+                this.graphics.StateManager.GetBuffer(
                     new BufferDescription(
                         this.DefaultConstantBufferSize,
                         ResourceUsage.Default,
@@ -381,7 +342,7 @@ namespace Core.Engine.Rendering.Shaders
                         0));
 
             this.buffers[1] =
-                graphics.StateManager.GetBuffer(
+                this.graphics.StateManager.GetBuffer(
                     new BufferDescription(
                         this.InstanceConstantBufferSize,
                         ResourceUsage.Default,
@@ -391,7 +352,7 @@ namespace Core.Engine.Rendering.Shaders
                         0));
 
             this.buffers[2] =
-                graphics.StateManager.GetBuffer(
+                this.graphics.StateManager.GetBuffer(
                     new BufferDescription(
                         this.lightConstantBufferSize,
                         ResourceUsage.Default,
@@ -401,7 +362,7 @@ namespace Core.Engine.Rendering.Shaders
                         0));
 
             this.buffers[3] =
-                graphics.StateManager.GetBuffer(
+                this.graphics.StateManager.GetBuffer(
                     new BufferDescription(
                         this.cameraConstantBufferSize,
                         ResourceUsage.Default,
@@ -445,6 +406,43 @@ namespace Core.Engine.Rendering.Shaders
             this.isShadowMapping = false;
 
             this.lightConstantBuffer.Clear();
+        }
+
+        // -------------------------------------------------------------------
+        // Structs
+        // -------------------------------------------------------------------
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        internal struct CameraConstantBuffer
+        {
+            public Vector4 CameraPosition;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        internal struct LightConstantBuffer
+        {
+            public Vector4 Color;
+            public Vector4 Position;
+            public Vector4 Direction;
+            public Vector2 SpotlightAngles;
+
+            public float Range;
+            public float Padding;
+
+            public Vector2 ShadowMapSize;
+            public Vector2 Padding2;
+
+            public Matrix LightViewProjection;
+
+            public void Clear()
+            {
+                this.Color = Vector4.Zero;
+                this.Position = Vector4.Zero;
+                this.Direction = Vector4.Zero;
+                this.SpotlightAngles = Vector2.Zero;
+                this.ShadowMapSize = Vector2.Zero;
+                this.LightViewProjection = Matrix.Identity;
+                this.Range = 0;
+            }
         }
     }
 }

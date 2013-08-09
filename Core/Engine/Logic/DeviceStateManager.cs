@@ -1,17 +1,40 @@
-﻿using System;
-using System.Collections;
-
-using Core.Engine.Rendering;
-
-using SlimDX.D3DCompiler;
-using SlimDX.Direct3D11;
-
-using Buffer = SlimDX.Direct3D11.Buffer;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System;
+    using System.Collections;
+
+    using Core.Engine.Rendering;
+
+    using SlimDX.D3DCompiler;
+    using SlimDX.Direct3D11;
+
     public class DeviceStateManager : IDisposable
     {
+        public static readonly RasterizerStateDescription WireFrameRasterDescription = new RasterizerStateDescription { FillMode = FillMode.Wireframe, CullMode = CullMode.None, IsDepthClipEnabled = true };
+        public static readonly RasterizerStateDescription SolidRasterState = new RasterizerStateDescription { CullMode = CullMode.Back, FillMode = FillMode.Solid, IsDepthClipEnabled = true };
+        public static readonly DepthStencilStateDescription DefaultDepthStencilState = new DepthStencilStateDescription
+        {
+            IsDepthEnabled = true,
+            DepthWriteMask = DepthWriteMask.All,
+            DepthComparison = Comparison.Less,
+            StencilReadMask = 0xFF,
+            StencilWriteMask = 0xFF,
+            FrontFace = new DepthStencilOperationDescription
+            {
+                FailOperation = StencilOperation.Keep,
+                DepthFailOperation = StencilOperation.Increment,
+                PassOperation = StencilOperation.Keep,
+                Comparison = Comparison.Always
+            },
+            BackFace = new DepthStencilOperationDescription
+            {
+                FailOperation = StencilOperation.Keep,
+                DepthFailOperation = StencilOperation.Decrement,
+                PassOperation = StencilOperation.Keep,
+                Comparison = Comparison.Always
+            }
+        };
+
         private readonly Device device;
 
         private readonly Hashtable samplingStateCache;
@@ -37,32 +60,6 @@ namespace Core.Engine.Logic
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static RasterizerStateDescription WireFrameRasterDescription = new RasterizerStateDescription { FillMode = FillMode.Wireframe, CullMode = CullMode.None, IsDepthClipEnabled = true };
-        public static RasterizerStateDescription SolidRasterState = new RasterizerStateDescription { CullMode = CullMode.Back, FillMode = FillMode.Solid, IsDepthClipEnabled = true };
-
-        public static DepthStencilStateDescription DefaultDepthStencilState = new DepthStencilStateDescription
-        {
-            IsDepthEnabled = true,
-            DepthWriteMask = DepthWriteMask.All,
-            DepthComparison = Comparison.Less,
-            StencilReadMask = 0xFF,
-            StencilWriteMask = 0xFF,
-            FrontFace = new DepthStencilOperationDescription
-            {
-                FailOperation = StencilOperation.Keep,
-                DepthFailOperation = StencilOperation.Increment,
-                PassOperation = StencilOperation.Keep,
-                Comparison = Comparison.Always
-            },
-            BackFace = new DepthStencilOperationDescription
-            {
-                FailOperation = StencilOperation.Keep,
-                DepthFailOperation = StencilOperation.Decrement,
-                PassOperation = StencilOperation.Keep,
-                Comparison = Comparison.Always
-            }
-        };
-
         public void Dispose()
         {
             foreach (SamplerState state in this.samplingStateCache.Values)
@@ -86,14 +83,14 @@ namespace Core.Engine.Logic
 
             this.depthStencilStateCache.Clear();
 
-            foreach (Buffer buffer in bufferCache.Values)
+            foreach (SlimDX.Direct3D11.Buffer buffer in this.bufferCache.Values)
             {
                 buffer.Dispose();
             }
 
             this.bufferCache.Clear();
 
-            foreach (InputLayout layout in inputLayoutCache.Values)
+            foreach (InputLayout layout in this.inputLayoutCache.Values)
             {
                 layout.Dispose();
             }
@@ -111,14 +108,14 @@ namespace Core.Engine.Logic
             return (SamplerState)this.samplingStateCache[description];
         }
 
-        public Buffer GetBuffer(BufferDescription description)
+        public SlimDX.Direct3D11.Buffer GetBuffer(BufferDescription description)
         {
             if (!this.bufferCache.ContainsKey(description))
             {
-                this.bufferCache.Add(description, new Buffer(this.device, description));
+                this.bufferCache.Add(description, new SlimDX.Direct3D11.Buffer(this.device, description));
             }
 
-            return (Buffer)this.bufferCache[description];
+            return (SlimDX.Direct3D11.Buffer)this.bufferCache[description];
         }
 
         public InputLayout GetInputLayout(ShaderInputLayoutDescription description, ShaderSignature signature)

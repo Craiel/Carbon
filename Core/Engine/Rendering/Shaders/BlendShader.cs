@@ -1,15 +1,11 @@
-﻿using Core.Engine.Contracts.Logic;
-
-using SlimDX;
-using SlimDX.D3DCompiler;
-using SlimDX.Direct3D11;
-using Buffer = SlimDX.Direct3D11.Buffer;
-
-namespace Core.Engine.Rendering.Shaders
+﻿namespace Core.Engine.Rendering.Shaders
 {
-    public interface IBlendShader : ICarbonShader
-    {
-    }
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+
+    using SlimDX;
+    using SlimDX.D3DCompiler;
+    using SlimDX.Direct3D11;
 
     public class BlendShader : CarbonShader, IBlendShader
     {

@@ -1,15 +1,14 @@
-﻿using System;
-
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Logic;
-using Core.Engine.Resource.Content;
-
-using SlimDX;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+
+    using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Resource;
+    using Core.Engine.Logic;
+    using Core.Engine.Resource.Content;
     using Core.Engine.Resource.Resources.Model;
+
+    using SlimDX;
 
     public class Material : IDisposable
     {

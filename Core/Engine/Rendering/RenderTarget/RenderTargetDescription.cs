@@ -1,7 +1,7 @@
-﻿using Core.Engine.Logic;
-
-namespace Core.Engine.Rendering.RenderTarget
+﻿namespace Core.Engine.Rendering.RenderTarget
 {
+    using Core.Engine.Logic;
+
     public enum RenderTargetType
     {
         Default,

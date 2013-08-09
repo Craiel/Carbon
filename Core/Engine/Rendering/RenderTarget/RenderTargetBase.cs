@@ -1,12 +1,12 @@
-﻿using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Rendering;
-using Core.Engine.Logic;
-
-using SlimDX;
-using SlimDX.Direct3D11;
-
-namespace Core.Engine.Rendering.RenderTarget
+﻿namespace Core.Engine.Rendering.RenderTarget
 {
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Logic;
+
+    using SlimDX;
+    using SlimDX.Direct3D11;
+
     public enum RendertargetBlendMode
     {
         None,

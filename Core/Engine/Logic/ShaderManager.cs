@@ -1,17 +1,18 @@
-﻿using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Resource;
-using Core.Utils;
-using SlimDX;
-using SlimDX.D3DCompiler;
-using SlimDX.Direct3D11;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
     using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Security.Cryptography;
+    using System.Text;
+
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource.Resources;
+    using Core.Utils;
+
+    using SlimDX;
+    using SlimDX.D3DCompiler;
+    using SlimDX.Direct3D11;
 
     internal class ShaderIncludeHandler : Include
     {
@@ -76,8 +77,8 @@ namespace Core.Engine.Logic
                 return this.vertexShaderCache[key];
             }
 
-            CompiledShader data = this.GetData(description);
-            using (var stream = new DataStream(data.ShaderData, true, false))
+            CompiledShaderResource data = this.GetData(description);
+            using (var stream = new DataStream(data.Data, true, false))
             {
                 using (var byteCode = new ShaderBytecode(stream))
                 {
@@ -96,8 +97,8 @@ namespace Core.Engine.Logic
                 return this.signatureCache[key];
             }
 
-            CompiledShader data = this.GetData(description);
-            using (var stream = new DataStream(data.ShaderData, true, false))
+            CompiledShaderResource data = this.GetData(description);
+            using (var stream = new DataStream(data.Data, true, false))
             {
                 using (var byteCode = new ShaderBytecode(stream))
                 {
@@ -116,8 +117,8 @@ namespace Core.Engine.Logic
                 return this.pixelShaderCache[key];
             }
 
-            CompiledShader data = this.GetData(description);
-            using (var stream = new DataStream(data.ShaderData, true, false))
+            CompiledShaderResource data = this.GetData(description);
+            using (var stream = new DataStream(data.Data, true, false))
             {
                 using (var byteCode = new ShaderBytecode(stream))
                 {
@@ -155,7 +156,7 @@ namespace Core.Engine.Logic
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private CompiledShader GetData(CarbonShaderDescription description)
+        private CompiledShaderResource GetData(CarbonShaderDescription description)
         {
             string cachedKey = Path.Combine(ShaderCacheKeyPrefix, description.GetCacheFileName());
             string sourceFile = Path.Combine(ShaderLocation, description.File);
@@ -163,10 +164,10 @@ namespace Core.Engine.Logic
             byte[] md5;
             string sourceData = this.ReadSource(sourceFile, out md5);
             string hash = HashUtils.BuildResourceHash(cachedKey);
-            var shader = this.resourceManager.Load<CompiledShader>(hash);
+            var shader = this.resourceManager.Load<CompiledShaderResource>(hash);
             if (shader != null)
             {
-                if (this.UsePrecompiledShaders && md5.SequenceEqual(shader.SourceMd5))
+                if (this.UsePrecompiledShaders && md5.SequenceEqual(shader.Md5))
                 {
                     return shader;
                 }
@@ -185,7 +186,7 @@ namespace Core.Engine.Logic
                     shaderBytecode.Data.Position = 0;
                     shaderBytecode.Data.Read(data, 0, data.Length);
 
-                    shader = new CompiledShader { SourceMd5 = md5, ShaderData = data };
+                    shader = new CompiledShaderResource { Md5 = md5, Data = data };
                     this.resourceManager.Replace(hash, shader);
                 }
             }
@@ -205,7 +206,7 @@ namespace Core.Engine.Logic
                     shaderBytecode.Data.Position = 0;
                     shaderBytecode.Data.Read(data, 0, data.Length);
 
-                    shader = new CompiledShader { SourceMd5 = md5, ShaderData = data };
+                    shader = new CompiledShaderResource { Md5 = md5, Data = data };
                     this.resourceManager.Store(hash, shader);
                 }
             }
@@ -230,26 +231,5 @@ namespace Core.Engine.Logic
                 }
             }
         }
-
-        /*private string ReadSource(string file, out byte[] md5)
-        {
-            using (FileStream stream = File.OpenRead(file))
-            {
-                using (var compression = new GZipStream(stream, CompressionMode.Decompress, false))
-                {
-                    using (MD5 hashProvider = MD5.Create())
-                    {
-                        md5 = hashProvider.ComputeHash(compression);
-                    }
-
-                    compression.Position = 0;
-                    using (var reader = new StreamReader(compression, Encoding.ASCII))
-                    {
-                        string result = reader.ReadToEnd();
-                        return result;
-                    }
-                }
-            }
-        }*/
     }
 }

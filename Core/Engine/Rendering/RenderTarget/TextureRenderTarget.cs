@@ -1,12 +1,12 @@
-﻿using Core.Engine.Contracts.Logic;
-using Core.Engine.Logic;
-
-using SlimDX;
-using SlimDX.DXGI;
-using SlimDX.Direct3D11;
-
-namespace Core.Engine.Rendering.RenderTarget
+﻿namespace Core.Engine.Rendering.RenderTarget
 {
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Logic;
+
+    using SlimDX;
+    using SlimDX.Direct3D11;
+    using SlimDX.DXGI;
+
     internal class TextureRenderTarget : RenderTargetBase
     {
         private TextureData texture;
@@ -28,6 +28,14 @@ namespace Core.Engine.Rendering.RenderTarget
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public TextureData Data
+        {
+            get
+            {
+                return this.texture;
+            }
+        }
+
         public override void Dispose()
         {
             this.DisposeResources();
@@ -59,15 +67,7 @@ namespace Core.Engine.Rendering.RenderTarget
 
             base.Set(graphics);
         }
-
-        public TextureData Data
-        {
-            get
-            {
-                return this.texture;
-            }
-        }
-
+        
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
@@ -122,7 +122,7 @@ namespace Core.Engine.Rendering.RenderTarget
             };
 
             Texture2D newTexture = graphics.StateManager.GetTexture(this.desiredTexture);
-            ShaderResourceView view = new ShaderResourceView(graphics.ImmediateContext.Device, newTexture);
+            var view = new ShaderResourceView(graphics.ImmediateContext.Device, newTexture);
             this.targetView = graphics.StateManager.GetRenderTargetView(newTexture, this.desiredTargetView);
             this.texture = new TextureData(newTexture, view);
 
@@ -149,7 +149,7 @@ namespace Core.Engine.Rendering.RenderTarget
                 this.targetView = null;
             }
 
-            if(this.texture != null)
+            if (this.texture != null)
             {
                 this.texture.Dispose();
                 this.texture = null;

@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Logic.Scripting;
-
-using Core.Utils.Contracts;
-using SlimDX.DirectInput;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Logic.Scripting;
+    using Core.Utils.Contracts;
+
     using SlimDX;
+    using SlimDX.DirectInput;
 
     public class InputManager : EngineComponent, IInputManager
     {
-        private static readonly TimeSpan updateCycle = TimeSpan.FromMilliseconds(10);
+        private static readonly TimeSpan UpdateCycle = TimeSpan.FromMilliseconds(10);
 
         private readonly IList<IInputReceiver> receivers;
         private readonly IDictionary<string, bool> pressedState;
@@ -35,23 +35,14 @@ namespace Core.Engine.Logic
             this.pressedState = new Dictionary<string, bool>();
 
             this.directInput = new DirectInput();
-            this.keyboard = new Keyboard(directInput);
+            this.keyboard = new Keyboard(this.directInput);
             this.keyboard.Acquire();
 
-            this.mouse = new Mouse(directInput);
+            this.mouse = new Mouse(this.directInput);
             this.mouse.Acquire();
 
             this.bindings = new Dictionary<string, InputBindings>();
             this.SetupDefaultBindings();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            this.mouse.Dispose();
-            this.keyboard.Dispose();
-            this.directInput.Dispose();
         }
 
         // -------------------------------------------------------------------
@@ -83,7 +74,7 @@ namespace Core.Engine.Logic
                 return false;
             }
 
-            if ((gameTimer.ActualElapsedTime - this.lastUpdateTime) < updateCycle)
+            if ((gameTimer.ActualElapsedTime - this.lastUpdateTime) < UpdateCycle)
             {
                 return true;
             }
@@ -169,9 +160,9 @@ namespace Core.Engine.Logic
                 throw new InvalidOperationException("Bindings with the same name are already registered");
             }
 
-            var bindings = new InputBindings();
-            this.bindings.Add(name, bindings);
-            return bindings;
+            var binding = new InputBindings();
+            this.bindings.Add(name, binding);
+            return binding;
         }
 
         [ScriptingMethod]
@@ -195,12 +186,21 @@ namespace Core.Engine.Logic
             return this.bindings[name];
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.mouse.Dispose();
+            this.keyboard.Dispose();
+            this.directInput.Dispose();
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
         private void OnStateChange(string entry)
         {
-            if(this.receivers == null)
+            if (this.receivers == null)
             {
                 // No receivers registered yet, bail out
                 return;
@@ -243,7 +243,8 @@ namespace Core.Engine.Logic
             binding.BindEx("F10", "ToggleWireframe", "PressAndRelease", "And");
 
             binding = this.RegisterBinding("console");
-            object[] capsModifiers = new[] { (object)"RightShift", "LeftShift" };
+            var capsModifiers = new[] { (object)"RightShift", "LeftShift" };
+
             binding.BindEx("A", "a", "Always", "And");
             binding.BindEx("A", "A", "Always", "Or", capsModifiers);
             binding.BindEx("B", "b", "Always", "And");

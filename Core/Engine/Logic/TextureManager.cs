@@ -1,27 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Rendering;
-using Core.Engine.Resource.Resources;
-
-using SlimDX.Direct3D11;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Rendering;
+    using Core.Engine.Resource.Resources;
+
+    using SlimDX.Direct3D11;
+
     public enum TextureReferenceType
     {
         Resource,
         View,
         Register
-    }
-
-    public struct TextureReferenceDescription
-    {
-        public int Register;
-        public TextureReferenceType Type;
-        public TypedVector2<int> Size;
     }
 
     public enum StaticTextureRegister
@@ -37,57 +30,18 @@ namespace Core.Engine.Logic
         ShadowMapTarget = 16,
     }
 
-    public class TextureReference
+    public struct TextureReferenceDescription
     {
-        internal TextureReference(TextureReferenceDescription description)
-        {
-            this.Register = description.Register;
-            this.Type = description.Type;
-            this.Size = description.Size;
-            this.IsValid = true;
-        }
-
-        internal TextureReference(string resourceHash, TextureReferenceDescription description)
-            : this(description)
-        {
-            this.ResourceHash = resourceHash;
-        }
-
-        internal TextureReference(byte[] data, TextureReferenceDescription description)
-            : this(description)
-        {
-            this.Data = data;
-        }
-
-        public TextureReferenceType Type { get; private set; }
-
-        public string ResourceHash { get; private set; }
-
-        public byte[] Data { get; set; }
-        
-        public int Register { get; private set; }
-
-        public TypedVector2<int> Size { get; private set; }
-
-        public bool IsValid { get; private set; }
-
-        public void Invalidate()
-        {
-            this.IsValid = false;
-        }
-
-        public override int GetHashCode()
-        {
-            return Tuple.Create(this.ResourceHash).GetHashCode();
-        }
+        public int Register;
+        public TextureReferenceType Type;
+        public TypedVector2<int> Size;
     }
-    
+
     public class TextureManager : IDisposable
     {
         private const int StaticRegisterLimit = 4999;
 
         private readonly IResourceManager resourceManager;
-        private readonly Device device;
 
         private readonly IDictionary<string, TextureReference> managedReferenceCache;
         private readonly IDictionary<TextureReference, TextureData> textureCache;
@@ -99,10 +53,9 @@ namespace Core.Engine.Logic
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public TextureManager(IResourceManager resourceManager, Device device)
+        public TextureManager(IResourceManager resourceManager)
         {
             this.resourceManager = resourceManager;
-            this.device = device;
 
             this.managedReferenceCache = new Dictionary<string, TextureReference>();
             this.textureCache = new Dictionary<TextureReference, TextureData>();

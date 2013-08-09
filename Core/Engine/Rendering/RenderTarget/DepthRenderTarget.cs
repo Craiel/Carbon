@@ -1,14 +1,14 @@
-﻿using System.IO;
-
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Logic;
-
-using SlimDX;
-using SlimDX.Direct3D11;
-using SlimDX.DXGI;
-
-namespace Core.Engine.Rendering.RenderTarget
+﻿namespace Core.Engine.Rendering.RenderTarget
 {
+    using System.IO;
+
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Logic;
+
+    using SlimDX;
+    using SlimDX.Direct3D11;
+    using SlimDX.DXGI;
+
     internal class DepthRenderTarget : RenderTargetBase
     {
         private TextureData texture;
@@ -140,7 +140,7 @@ namespace Core.Engine.Rendering.RenderTarget
             };
             
             Texture2D data = graphics.StateManager.GetTexture(this.desiredTexture);
-            ShaderResourceView view = new ShaderResourceView(graphics.ImmediateContext.Device, data, this.desiredShaderResourceView);
+            var view = new ShaderResourceView(graphics.ImmediateContext.Device, data, this.desiredShaderResourceView);
             this.targetView = graphics.StateManager.GetDepthStencilView(this.desiredTargetView, data);
             this.texture = new TextureData(data, view);
             

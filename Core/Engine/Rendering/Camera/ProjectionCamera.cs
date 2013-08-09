@@ -1,21 +1,21 @@
-﻿using System;
-
-using Core.Engine.Logic;
-
-using Core.Utils;
-using Core.Utils.Contracts;
-
-using SlimDX;
-using Core.Engine.Contracts.Rendering;
-
-namespace Core.Engine.Rendering.Camera
+﻿namespace Core.Engine.Rendering.Camera
 {
-    class ProjectionCamera : BaseCamera, IProjectionCamera
+    using System.Diagnostics.CodeAnalysis;
+
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Logic;
+    using Core.Utils.Contracts;
+
+    using SlimDX;
+
+    public class ProjectionCamera : BaseCamera, IProjectionCamera
     {
         // This camera object is used to perform runtime operations like shadow map calculations
         private static readonly IProjectionCamera StaticCamera = new ProjectionCamera();
 
-        private Vector3 upVector = Vector3.UnitY;
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
+        private readonly Vector3 upVector = Vector3.UnitY;
+
         private Vector3 targetVector = Vector3.UnitZ;
 
         private Matrix view;
@@ -128,7 +128,8 @@ namespace Core.Engine.Rendering.Camera
         public void LookAt(Vector3 target)
         {
             this.targetVector = target;
-            //this.rotation = QuaternionExtension.RotateTo(this.targetVector, target, this.upVector);
+
+            // Todo: do we need this: this.rotation = QuaternionExtension.RotateTo(this.targetVector, target, this.upVector);
             this.needUpdate = true;
         }
 
@@ -145,7 +146,7 @@ namespace Core.Engine.Rendering.Camera
                 Matrix rotationMatrix = Matrix.RotationQuaternion(this.rotation);
 
                 // Calculate the rotated target and up vectors
-                Vector3 positionVector = new Vector3(this.position.X, this.position.Y, this.position.Z);
+                var positionVector = new Vector3(this.position.X, this.position.Y, this.position.Z);
                 Vector4 rotatedTarget = Vector3.Transform(this.targetVector, rotationMatrix * Matrix.Translation(positionVector));
                 Vector4 rotatedUp = Vector3.Transform(this.upVector, rotationMatrix);
 
@@ -167,7 +168,7 @@ namespace Core.Engine.Rendering.Camera
             this.viewPort = newViewPort;
             this.near = newNear;
             this.far = newFar;
-            this.projection = Matrix.PerspectiveFovLH(fov, this.viewPort.X / this.viewPort.Y, this.near, this.far);
+            this.projection = Matrix.PerspectiveFovLH(fov, (float)this.viewPort.X / this.viewPort.Y, this.near, this.far);
             this.needUpdate = true;
         }
     }

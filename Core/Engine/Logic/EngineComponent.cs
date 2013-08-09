@@ -1,8 +1,8 @@
-﻿using Core.Engine.Contracts.Logic;
-using Core.Utils.Contracts;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using Core.Engine.Contracts.Logic;
+    using Core.Utils.Contracts;
+
     public abstract class EngineComponent : IEngineComponent
     {
         // -------------------------------------------------------------------

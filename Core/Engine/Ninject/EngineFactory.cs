@@ -1,12 +1,11 @@
-﻿using Core.Engine.Contracts;
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Resource;
-
-using Ninject;
+﻿using Ninject;
 using Ninject.Parameters;
 
 namespace Core.Engine.Ninject
 {
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Resource;
     using Core.Utils.IO;
 
     public class EngineFactory : IEngineFactory
@@ -49,8 +48,7 @@ namespace Core.Engine.Ninject
 
         public IContentManager GetContentManager(IResourceManager resourceManager, CarbonFile file)
         {
-            return this.kernel.Get<IContentManager>(
-                new ConstructorArgument("resourceManager", resourceManager), new ConstructorArgument("file", file));
+            return this.kernel.Get<IContentManager>(new ConstructorArgument("resourceManager", resourceManager), new ConstructorArgument("file", file));
         }
     }
 }

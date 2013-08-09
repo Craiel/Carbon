@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-
-using Core.Engine.Contracts.Logic;
-
-using Core.Utils.Contracts;
-using System;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Core.Engine.Contracts.Logic;
+    using Core.Utils.Contracts;
+    
     public class EngineComponentStack<T> : EngineComponent
         where T : class, IEngineComponent
     {

@@ -1,8 +1,9 @@
-﻿using System;
-using SlimDX.Direct3D11;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+
+    using SlimDX.Direct3D11;
+
     public enum TextureDataType
     {
         Unknown,

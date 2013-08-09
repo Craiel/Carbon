@@ -1,25 +1,16 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-using Core.Engine.Contracts.Logic;
-
-using SlimDX;
-using SlimDX.D3DCompiler;
-using SlimDX.Direct3D11;
-using Buffer = SlimDX.Direct3D11.Buffer;
-
-namespace Core.Engine.Rendering.Shaders
+﻿namespace Core.Engine.Rendering.Shaders
 {
-    public interface IDefaultShader : ICarbonShader
-    {
-        Vector4 AmbientLight { get; set; }
+    using System;
+    using System.IO;
+    using System.Runtime.InteropServices;
 
-        void ClearLight();
-        void AddDirectionalLight(Vector3 direction, Vector4 color, float specularPower = 1.0f);
-        void AddPointLight(Vector4 position, Vector4 color, float range, float specularPower = 1.0f);
-        void AddSpotLight(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles, float specularPower = 1.0f);
-    }
-    
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+
+    using SlimDX;
+    using SlimDX.D3DCompiler;
+    using SlimDX.Direct3D11;
+
     public class DefaultShader : CarbonShader, IDefaultShader
     {
         private const int MaxDirectionalLights = 4;
@@ -28,7 +19,7 @@ namespace Core.Engine.Rendering.Shaders
 
         private readonly ICarbonGraphics graphics;
 
-        private readonly Buffer[] buffers;
+        private readonly SlimDX.Direct3D11.Buffer[] buffers;
         private readonly SamplerState[] samplerStates;
         private readonly SamplerDescription[] samplerStateCache;
         private readonly ShaderResourceView[] resources;
@@ -62,7 +53,7 @@ namespace Core.Engine.Rendering.Shaders
         {
             this.graphics = graphics;
 
-            this.buffers = new Buffer[4];
+            this.buffers = new SlimDX.Direct3D11.Buffer[4];
             this.resources = new ShaderResourceView[6];
             this.samplerStates = new SamplerState[3];
             this.samplerStateCache = new SamplerDescription[3];
@@ -207,28 +198,6 @@ namespace Core.Engine.Rendering.Shaders
         }
 
         // -------------------------------------------------------------------
-        // Structs
-        // -------------------------------------------------------------------
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        internal struct MaterialConstantBuffer
-        {
-            public Vector4 Color;
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        internal struct LightConstantBuffer
-        {
-            public Vector4 CameraPosition;
-            public float DirectionalLights;
-            public float PointLights;
-            public float SpotLights;
-            public float Padding;
-            public DirectionalLightData[] DirectionalData;
-            public PointLightData[] PointData;
-            public SpotLightData[] SpotData;
-        }
-
-        // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
         protected override void Configure(RenderParameters parameters, RenderInstruction instruction)
@@ -260,6 +229,11 @@ namespace Core.Engine.Rendering.Shaders
             {
                 for (int i = 0; i < instruction.InstanceCount; i++)
                 {
+                    if (instruction.Instances[i] == null)
+                    {
+                        throw new InvalidDataException("Instance data was null");
+                    }
+
                     this.instanceConstantBuffer.World[i] = Matrix.Transpose((Matrix)instruction.Instances[i]);
                 }
 
@@ -311,7 +285,7 @@ namespace Core.Engine.Rendering.Shaders
                 samplerStateChanged = true;
             }
 
-            if(samplerStateChanged)
+            if (samplerStateChanged)
             {
                 this.SetSamplerStates(this.samplerStates);
             }
@@ -362,7 +336,7 @@ namespace Core.Engine.Rendering.Shaders
                 texturesChanged = true;
             }
 
-            if(texturesChanged)
+            if (texturesChanged)
             {
                 this.SetResources(this.resources);
             }
@@ -374,7 +348,7 @@ namespace Core.Engine.Rendering.Shaders
         private void AcquireShaderStates()
         {
             this.buffers[0] =
-                graphics.StateManager.GetBuffer(
+                this.graphics.StateManager.GetBuffer(
                     new BufferDescription(
                         this.DefaultConstantBufferSize,
                         ResourceUsage.Default,
@@ -384,7 +358,7 @@ namespace Core.Engine.Rendering.Shaders
                         0));
 
             this.buffers[1] =
-                graphics.StateManager.GetBuffer(
+                this.graphics.StateManager.GetBuffer(
                     new BufferDescription(
                         this.InstanceConstantBufferSize,
                         ResourceUsage.Default,
@@ -394,7 +368,7 @@ namespace Core.Engine.Rendering.Shaders
                         0));
 
             this.buffers[2] =
-                graphics.StateManager.GetBuffer(
+                this.graphics.StateManager.GetBuffer(
                     new BufferDescription(
                         this.lightConstantBufferSize,
                         ResourceUsage.Default,
@@ -404,7 +378,7 @@ namespace Core.Engine.Rendering.Shaders
                         0));
 
             this.buffers[3] =
-                graphics.StateManager.GetBuffer(
+                this.graphics.StateManager.GetBuffer(
                     new BufferDescription(
                         this.materialConstantBufferSize,
                         ResourceUsage.Default,
@@ -419,7 +393,7 @@ namespace Core.Engine.Rendering.Shaders
 
         private void SetMacroDefaults()
         {
-            for (int i = 0; i < this.macros.Length;i++ )
+            for (int i = 0; i < this.macros.Length; i++)
             {
                 this.macros[i].Value = "0";
             }
@@ -436,6 +410,28 @@ namespace Core.Engine.Rendering.Shaders
             this.macros[4].Value = instruction.AlphaTexture == null || !this.AlphaEnabled ? "0" : "1";
 
             this.SetMacros(this.macros);
+        }
+
+        // -------------------------------------------------------------------
+        // Structs
+        // -------------------------------------------------------------------
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        internal struct MaterialConstantBuffer
+        {
+            public Vector4 Color;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        internal struct LightConstantBuffer
+        {
+            public Vector4 CameraPosition;
+            public float DirectionalLights;
+            public float PointLights;
+            public float SpotLights;
+            public float Padding;
+            public DirectionalLightData[] DirectionalData;
+            public PointLightData[] PointData;
+            public SpotLightData[] SpotData;
         }
     }
 }

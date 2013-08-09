@@ -1,32 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Rendering;
-using Core.Engine.Logic;
-using Core.Engine.Rendering.Shaders;
+﻿namespace Core.Engine.Rendering
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
-using Core.Utils;
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Logic;
+    using Core.Engine.Rendering.Shaders;
 
-using SlimDX;
-using SlimDX.Direct3D11;
-using SlimDX.DXGI;
+    using Core.Utils;
 
-namespace Core.Engine.Rendering
-{    
+    using SlimDX;
+    using SlimDX.Direct3D11;
+    using SlimDX.DXGI;
+
     public class Renderer : EngineComponent, IRenderer
     {
-        private ICarbonGraphics graphics;
-
         private readonly LimitedList<FrameStatistics> frameStatistics;
 
         private readonly IDefaultShader defaultShader;
+
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
         private readonly IGBufferShader gBufferShader;
         private readonly IDeferredLightShader deferredLightShader;
         private readonly IDebugShader debugShader;
         private readonly IBlendShader blendShader;
         private readonly IShadowMapShader shadowMapShader;
         private readonly IPlainShader plainShader;
+
+        private ICarbonGraphics graphics;
 
         private DynamicBuffer vertexBuffer;
         private DynamicBuffer indexBuffer;
@@ -55,22 +59,6 @@ namespace Core.Engine.Rendering
             this.plainShader = factory.Get<IPlainShader>();
         }
 
-        public override void Dispose()
-        {
-            base.Dispose();
-
-            this.vertexBuffer.Dispose();
-            this.indexBuffer.Dispose();
-
-            this.defaultShader.Dispose();
-            this.gBufferShader.Dispose();
-            this.debugShader.Dispose();
-            this.deferredLightShader.Dispose();
-            this.blendShader.Dispose();
-            this.shadowMapShader.Dispose();
-            this.plainShader.Dispose();
-        }
-
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
@@ -84,20 +72,20 @@ namespace Core.Engine.Rendering
 
         public override void Initialize(ICarbonGraphics graphic)
         {
-            base.Initialize(graphics);
+            base.Initialize(graphic);
 
             this.graphics = graphic;
 
-            this.vertexBuffer = graphics.StateManager.GetDynamicBuffer(BindFlags.VertexBuffer);
-            this.indexBuffer = graphics.StateManager.GetDynamicBuffer(BindFlags.IndexBuffer);
+            this.vertexBuffer = graphic.StateManager.GetDynamicBuffer(BindFlags.VertexBuffer);
+            this.indexBuffer = graphic.StateManager.GetDynamicBuffer(BindFlags.IndexBuffer);
 
-            this.defaultShader.Initialize(graphics);
-            this.gBufferShader.Initialize(graphics);
-            this.debugShader.Initialize(graphics);
-            this.deferredLightShader.Initialize(graphics);
-            this.blendShader.Initialize(graphics);
-            this.shadowMapShader.Initialize(graphics);
-            this.plainShader.Initialize(graphics);
+            this.defaultShader.Initialize(graphic);
+            this.gBufferShader.Initialize(graphic);
+            this.debugShader.Initialize(graphic);
+            this.deferredLightShader.Initialize(graphic);
+            this.blendShader.Initialize(graphic);
+            this.shadowMapShader.Initialize(graphic);
+            this.plainShader.Initialize(graphic);
         }
 
         public void BeginFrame()
@@ -107,9 +95,10 @@ namespace Core.Engine.Rendering
 
         public void AddForwardLighting(IList<RenderLightInstruction> instructions)
         {
-            // Todo
-            // - Clear all shaders that can support lights of light info
-            // - Set the new Lighting information to all shaders that support it
+            /* Todo
+             - Clear all shaders that can support lights of light info
+             - Set the new Lighting information to all shaders that support it
+             */
 
             this.defaultShader.ClearLight();
             foreach (RenderLightInstruction instruction in instructions)
@@ -224,6 +213,22 @@ namespace Core.Engine.Rendering
             this.blendShader.ForceReloadOnNextPass = true;
             this.shadowMapShader.ForceReloadOnNextPass = true;
             this.plainShader.ForceReloadOnNextPass = true;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
+            this.vertexBuffer.Dispose();
+            this.indexBuffer.Dispose();
+
+            this.defaultShader.Dispose();
+            this.gBufferShader.Dispose();
+            this.debugShader.Dispose();
+            this.deferredLightShader.Dispose();
+            this.blendShader.Dispose();
+            this.shadowMapShader.Dispose();
+            this.plainShader.Dispose();
         }
         
         // -------------------------------------------------------------------
@@ -358,7 +363,7 @@ namespace Core.Engine.Rendering
             context.DrawInstanced(instruction.Mesh.ElementCount, instruction.InstanceCount, 0, 0);
             this.currentFrameStatistic.InstanceCount += (ulong)instruction.InstanceCount;
             this.currentFrameStatistic.DrawInstancedCalls++;
-            this.currentFrameStatistic.Triangles += ((uint)(instruction.Mesh.ElementCount)) * (ulong)instruction.InstanceCount;
+            this.currentFrameStatistic.Triangles += ((uint)instruction.Mesh.ElementCount) * (ulong)instruction.InstanceCount;
         }
 
         private void RenderIndexed(DeviceContext context)
@@ -366,9 +371,9 @@ namespace Core.Engine.Rendering
             context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(this.vertexBuffer.Buffer, this.vertexBufferStride, 0));
             context.InputAssembler.SetIndexBuffer(this.indexBuffer.Buffer, Format.R32_UInt, 0);
 
-            context.DrawIndexed(activeMesh.IndexCount, 0, 0);
+            context.DrawIndexed(this.activeMesh.IndexCount, 0, 0);
             this.currentFrameStatistic.DrawIndexedCalls++;
-            this.currentFrameStatistic.Triangles += (uint)(activeMesh.IndexCount / 3);
+            this.currentFrameStatistic.Triangles += (uint)(this.activeMesh.IndexCount / 3);
         }
 
         private void UploadMesh(Type neededVertexBufferType, Mesh mesh)

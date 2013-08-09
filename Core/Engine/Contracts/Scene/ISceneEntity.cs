@@ -1,10 +1,10 @@
-﻿using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Rendering;
-
-using SlimDX;
-
-namespace Core.Engine.Contracts.Scene
+﻿namespace Core.Engine.Contracts.Scene
 {
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+
+    using SlimDX;
+
     public interface ISceneEntity : IEngineComponent, IRenderable
     {
         string Name { get; set; }

@@ -1,10 +1,10 @@
-﻿using Core.Engine.Resource;
-using Core.Engine.Resource.Resources.Model;
-
-using SlimDX;
-
-namespace Core.Engine.Rendering.Primitives
+﻿namespace Core.Engine.Rendering.Primitives
 {
+    using Core.Engine.Resource;
+    using Core.Engine.Resource.Resources.Model;
+
+    using SlimDX;
+
     public static class Cube
     {
         private static int creationCount;

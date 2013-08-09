@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Core.Engine.Contracts.Logic;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Core.Engine.Contracts.Logic;
+
     public interface ITypingController : IBoundController
     {
         event Action OnReturnPressed;
@@ -18,13 +18,6 @@ namespace Core.Engine.Logic
 
     public class TypingController : BoundController, ITypingController
     {
-        internal enum TypingControllerAction
-        {
-            Submit,
-            Backspace,
-            Complete,
-        }
-
         private readonly IList<string> buffer;
         private string lineBuffer;
 
@@ -52,6 +45,13 @@ namespace Core.Engine.Logic
         public event Action OnReturnPressed;
         public event Func<string, string> OnCompletionRequested;
 
+        internal enum TypingControllerAction
+        {
+            Submit,
+            Backspace,
+            Complete,
+        }
+
         public int RepeatDelay { get; set; }
         public int RepeatThreshold { get; set; }
         
@@ -67,7 +67,7 @@ namespace Core.Engine.Logic
             return values;
         }
 
-        public override bool Update(Core.Utils.Contracts.ITimer gameTime)
+        public override bool Update(Utils.Contracts.ITimer gameTime)
         {
             if (!base.Update(gameTime))
             {

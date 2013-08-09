@@ -1,13 +1,13 @@
-﻿using Core.Engine.Contracts.Logic;
-using Core.Engine.Logic;
-
-using SlimDX;
-using SlimDX.DXGI;
-using SlimDX.Direct3D11;
-
-namespace Core.Engine.Rendering.RenderTarget
+﻿namespace Core.Engine.Rendering.RenderTarget
 {
-    class BackBufferRenderTarget : RenderTargetBase
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Logic;
+
+    using SlimDX;
+    using SlimDX.Direct3D11;
+    using SlimDX.DXGI;
+
+    internal class BackBufferRenderTarget : RenderTargetBase
     {
         private Texture2D depthStencil;
         private DepthStencilView depthStencilView;
@@ -94,13 +94,13 @@ namespace Core.Engine.Rendering.RenderTarget
         // -------------------------------------------------------------------
         private void DisposeResources()
         {
-            if(this.depthStencilView != null)
+            if (this.depthStencilView != null)
             {
                 this.depthStencilView.Dispose();
                 this.depthStencilView = null;
             }
 
-            if(this.depthStencil != null)
+            if (this.depthStencil != null)
             {
                 this.depthStencil.Dispose();
                 this.depthStencil = null;

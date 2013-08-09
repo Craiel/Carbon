@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using SlimDX.DirectInput;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
+
     public enum InputBindingModifierMode
     {
         And,
@@ -31,6 +30,7 @@ namespace Core.Engine.Logic
         public string[] Modifiers { get; set; }
     }
 
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
     public class InputBindings
     {
         private readonly IDictionary<string, IList<InputBindingEntry>> bindings;

@@ -1,44 +1,25 @@
-﻿using Core.Engine.Contracts;
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Rendering;
-using Core.Engine.Rendering;
-
-using SlimDX;
-using SlimDX.DirectInput;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
-    public interface ICarbonConsole : IEngineComponent, IRenderable
-    {
-        bool EnableTimeStamp { get; set; }
-        bool IsEnabled { get; set; }
-        bool IsVisible { get; set; }
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Rendering;
 
-        int MaxLines { get; set; }
-
-        Vector4 BackgroundColor { get; set; }
-
-        string Text { get; }
-
-        void Write(string text);
-        void WriteLine(string line);
-    }
+    using SlimDX;
+    using SlimDX.DirectInput;
 
     public class CarbonConsole : EngineComponent, ICarbonConsole
     {
         private readonly ITypingController controller;
-
-        private string currentLine;
-
+        
         private bool enableTimeStamp;
 
         private int maxLines;
 
         private Vector4 backgroundColor;
-
-        private string text;
         
         private bool isVisible;
+
+        private string text;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -51,26 +32,6 @@ namespace Core.Engine.Logic
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public void Render(FrameInstructionSet activeSet)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void ReceivePersists(Key key, ref bool isHandled)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void ReceivePressed(Key key, ref bool isHandled)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void ReceiveReleased(Key key, ref bool isHandled)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public bool EnableTimeStamp
         {
             get
@@ -142,6 +103,26 @@ namespace Core.Engine.Logic
             {
                 return this.text;
             }
+        }
+
+        public void Render(FrameInstructionSet activeSet)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ReceivePersists(Key key, ref bool isHandled)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ReceivePressed(Key key, ref bool isHandled)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ReceiveReleased(Key key, ref bool isHandled)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void Write(string text)

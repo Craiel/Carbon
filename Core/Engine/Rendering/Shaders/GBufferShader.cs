@@ -1,15 +1,13 @@
-﻿using Core.Engine.Contracts.Logic;
-
-using SlimDX;
-using SlimDX.D3DCompiler;
-using SlimDX.Direct3D11;
-using Buffer = SlimDX.Direct3D11.Buffer;
-
-namespace Core.Engine.Rendering.Shaders
+﻿namespace Core.Engine.Rendering.Shaders
 {
-    public interface IGBufferShader : ICarbonShader
-    {
-    }
+    using System.IO;
+
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+
+    using SlimDX;
+    using SlimDX.D3DCompiler;
+    using SlimDX.Direct3D11;
 
     public class GBufferShader : CarbonShader, IGBufferShader
     {
@@ -113,6 +111,11 @@ namespace Core.Engine.Rendering.Shaders
             {
                 for (int i = 0; i < instruction.InstanceCount; i++)
                 {
+                    if (instruction.Instances[i] == null)
+                    {
+                        throw new InvalidDataException("Instance data was null");
+                    }
+
                     this.instanceConstantBuffer.World[i] = Matrix.Transpose((Matrix)instruction.Instances[i]);
                 }
 
@@ -138,7 +141,7 @@ namespace Core.Engine.Rendering.Shaders
                 samplerStateChanged = true;
             }
 
-            if(samplerStateChanged)
+            if (samplerStateChanged)
             {
                 this.SetSamplerStates(this.samplerStates);
             }
@@ -167,7 +170,7 @@ namespace Core.Engine.Rendering.Shaders
                 texturesChanged = true;
             }
 
-            if(texturesChanged)
+            if (texturesChanged)
             {
                 this.SetResources(this.resources);
             }
@@ -179,7 +182,7 @@ namespace Core.Engine.Rendering.Shaders
         private void AcquireShaderStates()
         {
             this.buffers[0] =
-                graphics.StateManager.GetBuffer(
+                this.graphics.StateManager.GetBuffer(
                     new BufferDescription(
                         this.DefaultConstantBufferSize,
                         ResourceUsage.Default,
@@ -189,7 +192,7 @@ namespace Core.Engine.Rendering.Shaders
                         0));
             
             this.buffers[1] =
-                graphics.StateManager.GetBuffer(
+                this.graphics.StateManager.GetBuffer(
                     new BufferDescription(
                         this.InstanceConstantBufferSize,
                         ResourceUsage.Default,
@@ -204,7 +207,7 @@ namespace Core.Engine.Rendering.Shaders
 
         private void SetMacroDefaults()
         {
-            for (int i = 0; i < this.macros.Length;i++ )
+            for (int i = 0; i < this.macros.Length; i++)
             {
                 this.macros[i].Value = "0";
             }

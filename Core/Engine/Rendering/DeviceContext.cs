@@ -1,12 +1,12 @@
-﻿using System;
-using SlimDX;
-using SlimDX.Direct3D11;
-using SlimDX.DXGI;
-
-using Device = SlimDX.Direct3D11.Device;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+
+    using SlimDX;
+    using SlimDX.Direct3D11;
+    using SlimDX.DXGI;
+
     public abstract class CarbonDeviceContext
     {
         protected CarbonDeviceContext(IntPtr targetHandle)
@@ -19,20 +19,21 @@ namespace Core.Engine.Rendering
             this.TargetHandle = targetHandle;
         }
 
-        public abstract Device Device { get; }
+        public abstract SlimDX.Direct3D11.Device Device { get; }
 
         protected IntPtr TargetHandle { get; private set; }
         
         public abstract void Present(PresentFlags flags);
     }
 
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
     public class CarbonDeviceContextDx11 : CarbonDeviceContext, IDisposable
     {
         private readonly DeviceSettings settings;
 
         private Factory factory;
         private SwapChain swapChain;
-        private Device device;
+        private SlimDX.Direct3D11.Device device;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -74,7 +75,7 @@ namespace Core.Engine.Rendering
             }
         }
 
-        public override Device Device
+        public override SlimDX.Direct3D11.Device Device
         {
             get
             {
@@ -112,7 +113,7 @@ namespace Core.Engine.Rendering
                 SwapEffect = SwapEffect.Discard
             };
 
-            Device.CreateWithSwapChain(DriverType.Hardware, this.settings.CreationFlags, description, out this.device, out this.swapChain);
+            SlimDX.Direct3D11.Device.CreateWithSwapChain(DriverType.Hardware, this.settings.CreationFlags, description, out this.device, out this.swapChain);
 
             this.factory.SetWindowAssociation(this.TargetHandle, WindowAssociationFlags.IgnoreAll | WindowAssociationFlags.IgnoreAltEnter);
         }

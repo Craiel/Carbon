@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-
-namespace Core.Engine.Contracts.Resource
+﻿namespace Core.Engine.Contracts.Resource
 {
+    using System;
+    using System.IO;
+
     public interface ICarbonResource : IDisposable
     {
         void Load(Stream source);

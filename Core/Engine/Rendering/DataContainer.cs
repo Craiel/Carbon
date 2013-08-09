@@ -1,10 +1,11 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-using SlimDX;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Runtime.InteropServices;
+
+    using SlimDX;
+
     internal abstract class DataContainer
     {
         public abstract long Size { get; }
@@ -14,6 +15,7 @@ namespace Core.Engine.Rendering
         public abstract void Clear();
     }
 
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
     internal class StaticDataContainer<T> : DataContainer
          where T : struct
     {
@@ -40,7 +42,7 @@ namespace Core.Engine.Rendering
         {
             get
             {
-                return elements[index];
+                return this.elements[index];
             }
         }
 

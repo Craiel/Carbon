@@ -1,11 +1,11 @@
-﻿using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Resource;
-using Core.Utils.IO;
-
-using Ninject;
+﻿using Ninject;
 
 namespace Core.Engine.Contracts
 {
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Resource;
+    using Core.Utils.IO;
+
     public interface IEngineFactory
     {
         IKernel Kernel { get; }

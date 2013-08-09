@@ -1,31 +1,24 @@
-﻿using System.IO;
-using System.Net.Sockets;
-using System.Threading;
-
-using Core.Engine.Logic;
-
-using Google.ProtocolBuffers;
-
-namespace Core.Engine.Network
+﻿namespace Core.Engine.Network
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
+    using System.Net.Sockets;
+    using System.Threading;
 
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Network;
+    using Core.Engine.Logic;
     using Core.Protocol.Network;
     using Core.Utils.Contracts;
 
+    using Google.ProtocolBuffers;
+
     public class NetworkClient : EngineComponent, INetworkClient
     {
-        private enum ClientState
-        {
-            Idle,
-            Connecting,
-            Connected,
-            Disconnecting
-        }
-        
+        public static readonly Guid Guid;
+        public static readonly Client ClientData;
+
         private readonly ILog log;
 
         private readonly Queue<INetworkMessage> pending;
@@ -66,8 +59,13 @@ namespace Core.Engine.Network
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static readonly Guid Guid;
-        public static readonly Client ClientData;
+        private enum ClientState
+        {
+            Idle,
+            Connecting,
+            Connected,
+            Disconnecting
+        }
         
         public Guid Id { get; private set; }
 
@@ -153,6 +151,7 @@ namespace Core.Engine.Network
                                 this.client.Close();
                                 this.client = null;
                             }
+
                             break;
                         }
 

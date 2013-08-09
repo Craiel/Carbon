@@ -1,15 +1,17 @@
-﻿using System;
-using System.Text;
-
-using SlimDX;
-
-using Core.Utils;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+    using System.Text;
+
+    using Core.Utils;
+
+    using SlimDX;
+
     // Taken from Mono.XNA implementation
     public class BoundingFrustum : IEquatable<BoundingFrustum>
     {
+        public const int CornerCount = 8;
+
         private Matrix matrix;
         private Plane bottom;
         private Plane far;
@@ -19,13 +21,11 @@ namespace Core.Engine.Rendering
         private Plane top;
         private Vector3[] corners;
 
-        public const int CornerCount = 8;
-
         public BoundingFrustum(Matrix value)
         {
             this.matrix = value;
-            CreatePlanes();
-            CreateCorners();
+            this.CreatePlanes();
+            this.CreateCorners();
         }
 
         public BoundingFrustum(Matrix view, Matrix projection, float depth)
@@ -35,28 +35,41 @@ namespace Core.Engine.Rendering
             projection.M33 = r;
             projection.M43 = -r * minimumZ;
             this.matrix = Matrix.Multiply(view, projection);
-            CreatePlanes();
-            CreateCorners();
+            this.CreatePlanes();
+            this.CreateCorners();
         }
 
         public Plane Bottom
         {
-            get { return this.bottom; }
+            get
+            {
+                return this.bottom;
+            }
         }
 
         public Plane Far
         {
-            get { return this.far; }
+            get
+            {
+                return this.far;
+            }
         }
 
         public Plane Left
         {
-            get { return this.left; }
+            get
+            {
+                return this.left;
+            }
         }
 
         public Matrix Matrix
         {
-            get { return this.matrix; }
+            get
+            {
+                return this.matrix;
+            }
+
             set
             {
                 this.matrix = value;
@@ -67,26 +80,39 @@ namespace Core.Engine.Rendering
 
         public Plane Near
         {
-            get { return this.near; }
+            get
+            {
+                return this.near;
+            }
         }
 
         public Plane Right
         {
-            get { return this.right; }
+            get
+            {
+                return this.right;
+            }
         }
 
         public Plane Top
         {
-            get { return this.top; }
+            get
+            {
+                return this.top;
+            }
         }
 
         public static bool operator ==(BoundingFrustum a, BoundingFrustum b)
         {
             if (Equals(a, null))
-                return (Equals(b, null));
+            {
+                return Equals(b, null);
+            }
 
             if (Equals(b, null))
+            {
                 return false;
+            }
 
             return a.matrix == (b.matrix);
         }

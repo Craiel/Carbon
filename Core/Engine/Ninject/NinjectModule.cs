@@ -1,21 +1,20 @@
-﻿using Core.Engine.Contracts;
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Rendering;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Contracts.Scene;
-using Core.Engine.Contracts.UserInterface;
-using Core.Engine.Logic;
-using Core.Engine.Logic.Scripting;
-using Core.Engine.Rendering;
-using Core.Engine.Rendering.Camera;
-using Core.Engine.Rendering.Shaders;
-using Core.Engine.Resource;
-using Core.Engine.Scene;
-
-using Ninject.Modules;
+﻿using Ninject.Modules;
 
 namespace Core.Engine.Ninject
 {
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Contracts.Scene;
+    using Core.Engine.Contracts.UserInterface;
+    using Core.Engine.Logic;
+    using Core.Engine.Logic.Scripting;
+    using Core.Engine.Rendering;
+    using Core.Engine.Rendering.Camera;
+    using Core.Engine.Rendering.Shaders;
+    using Core.Engine.Resource;
+    using Core.Engine.Scene;
     using Core.Engine.UserInterface;
 
     public class EngineModule : NinjectModule
@@ -33,7 +32,6 @@ namespace Core.Engine.Ninject
             this.Bind<IDebugController>().To<DebugController>();
             this.Bind<ITypingController>().To<TypingController>();
             this.Bind<IScriptingEngine>().To<ScriptingEngine>();
-            //this.Bind<ISceneEntityFactory>().To<SceneEntityFactory>();
             this.Bind<ISceneManager>().To<SceneManager>();
 
             // Rendering

@@ -1,7 +1,7 @@
-﻿using Core.Engine.Contracts.Logic;
-
-namespace Core.Engine.Logic.Scripting
+﻿namespace Core.Engine.Logic.Scripting
 {
+    using Core.Engine.Contracts.Logic;
+
     public class ScriptingGameProvider : IScriptingProvider
     {
         private readonly ICarbonGame game;

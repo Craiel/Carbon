@@ -1,18 +1,16 @@
-﻿using System;
-
-using SlimDX;
-using SlimDX.Direct3D11;
-
-using Buffer = SlimDX.Direct3D11.Buffer;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+
+    using SlimDX;
+    using SlimDX.Direct3D11;
+
     public class DynamicBuffer : IDisposable
     {
         private readonly Device device;
 
         private BufferDescription description;
-        private Buffer buffer;
+        private SlimDX.Direct3D11.Buffer buffer;
 
         private DataBox box;
 
@@ -46,7 +44,7 @@ namespace Core.Engine.Rendering
             }
         }
 
-        public Buffer Buffer
+        public SlimDX.Direct3D11.Buffer Buffer
         {
             get
             {
@@ -82,12 +80,12 @@ namespace Core.Engine.Rendering
 
         private void Resize()
         {
-            if(this.buffer != null)
+            if (this.buffer != null)
             {
                 this.buffer.Dispose();
             }
 
-            this.buffer = new Buffer(this.device, this.description);
+            this.buffer = new SlimDX.Direct3D11.Buffer(this.device, this.description);
         }
     }
 }

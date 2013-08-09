@@ -1,7 +1,7 @@
-﻿using Core.Engine.Logic;
-
-namespace Core.Engine.Rendering.Primitives
+﻿namespace Core.Engine.Rendering.Primitives
 {
+    using Core.Engine.Logic;
+
     using SlimDX;
 
     public static class Grid
@@ -14,7 +14,7 @@ namespace Core.Engine.Rendering.Primitives
 
             for (int i = 0; i < size.X + 1; i++)
             {
-                Vector3 vertex = new Vector3(i * spacing, 0, 0);
+                var vertex = new Vector3(i * spacing, 0, 0);
                 vertices[index].Position = vertex;
                 indices[index] = index;
                 index++;
@@ -27,7 +27,7 @@ namespace Core.Engine.Rendering.Primitives
 
             for (int i = 0; i < size.Y + 1; i++)
             {
-                Vector3 vertex = new Vector3(0, 0, i * spacing);
+                var vertex = new Vector3(0, 0, i * spacing);
                 vertices[index].Position = vertex;
                 indices[index] = index;
                 index++;

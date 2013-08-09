@@ -1,11 +1,11 @@
-﻿using System.IO;
-
-using Core.Utils;
-
-using SlimDX.D3DCompiler;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System.IO;
+
+    using Core.Utils;
+
+    using SlimDX.D3DCompiler;
+
     public sealed class CarbonShaderDescription
     {
         // -------------------------------------------------------------------

@@ -1,9 +1,9 @@
-﻿using System.Collections.ObjectModel;
-
-using Core.Engine.Contracts.Logic;
-
-namespace Core.Engine.Contracts.Scene
+﻿namespace Core.Engine.Contracts.Scene
 {
+    using System.Collections.ObjectModel;
+
+    using Core.Engine.Contracts.Logic;
+
     public interface IStage : IEngineComponent
     {
         ReadOnlyCollection<ISceneEntity> Entities { get; }

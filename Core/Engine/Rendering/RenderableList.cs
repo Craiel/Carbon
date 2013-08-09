@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+    using System.Collections.Generic;
+
     using Core.Engine.Contracts.Rendering;
 
     public class RenderableList<T> : IRenderable

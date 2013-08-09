@@ -1,11 +1,11 @@
-﻿using Core.Engine.Contracts;
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Contracts.Scene;
-using Core.Engine.Logic.Scripting;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Contracts.Scene;
+    using Core.Engine.Logic.Scripting;
+
     public abstract class GameState : EngineComponent, IGameState
     {
         protected GameState()
@@ -39,7 +39,7 @@ namespace Core.Engine.Logic
             }
         }
 
-        public override bool Update(Core.Utils.Contracts.ITimer gameTime)
+        public override bool Update(Utils.Contracts.ITimer gameTime)
         {
             if (!base.Update(gameTime))
             {

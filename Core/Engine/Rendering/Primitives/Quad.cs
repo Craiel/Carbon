@@ -1,11 +1,10 @@
-﻿using Core.Engine.Logic;
-using Core.Engine.Resource;
-
-using SlimDX;
-
-namespace Core.Engine.Rendering.Primitives
+﻿namespace Core.Engine.Rendering.Primitives
 {
+    using Core.Engine.Logic;
+    using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
+
+    using SlimDX;
 
     public static class Quad
     {

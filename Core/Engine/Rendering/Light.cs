@@ -1,13 +1,13 @@
-﻿using System;
-
-using Core.Engine.Contracts.Rendering;
-using Core.Engine.Logic;
-using Core.Engine.Rendering.Camera;
-
-using SlimDX;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Logic;
+    using Core.Engine.Rendering.Camera;
+
+    using SlimDX;
+
     public enum LightType
     {
         Ambient,
@@ -144,7 +144,8 @@ namespace Core.Engine.Rendering
 
             set
             {
-                if (this.range != value)
+                System.Diagnostics.Debug.Assert(false, "This code needs to be tested");
+                if (Math.Abs(this.range - value) > float.Epsilon)
                 {
                     this.range = value;
                     this.CheckLightViewProjectionUpdate();

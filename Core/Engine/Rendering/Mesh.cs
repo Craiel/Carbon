@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-
-using SlimDX;
-
-namespace Core.Engine.Rendering
+﻿namespace Core.Engine.Rendering
 {
+    using System;
+    using System.Collections.Generic;
+
     using Core.Engine.Resource.Resources.Model;
 
-    /// <summary> 
-    /// Todo:
-    /// - this will only deal with a single resource
-    /// - sub parts will be evaluated before and put into a container mesh holder which will deal with transformations and rendering
-    /// - Merge meshes with same material together
-    /// </summary>
+    using SlimDX;
+
+    /* Todo:
+     - this will only deal with a single resource
+     - sub parts will be evaluated before and put into a container mesh holder which will deal with transformations and rendering
+     - Merge meshes with same material together
+    */
     public class Mesh : IDisposable
     {
         private readonly WeakReference<ModelResource> resourceReference; 

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Logic;
-
-using Core.Utils.Contracts;
-using Core.Utils.Diagnostics;
-
-using LuaInterface;
-
-namespace Core.Engine.Logic.Scripting
+﻿namespace Core.Engine.Logic.Scripting
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Logic;
+    using Core.Utils.Contracts;
+    using Core.Utils.Diagnostics;
+
+    using LuaInterface;
+
     public class ScriptingEngine : IScriptingEngine
     {
         private readonly ILog log;
@@ -61,7 +60,7 @@ namespace Core.Engine.Logic.Scripting
             {
                 using (new ProfileRegion("ScriptingEngine.Execute"))
                 {
-                    using (Lua runtime = new Lua())
+                    using (var runtime = new Lua())
                     {
                         this.PrepareRuntime(runtime);
                         runtime.DoString(processedScript);
