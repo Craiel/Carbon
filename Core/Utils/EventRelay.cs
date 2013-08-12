@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Core.Utils.Contracts;
-
-namespace Core.Utils
+﻿namespace Core.Utils
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Core.Utils.Contracts;
+
     public class EventRelay : IEventRelay
     {
         private readonly IDictionary<Type, IList<object>> subscribers;

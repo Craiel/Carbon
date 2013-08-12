@@ -1,11 +1,11 @@
-﻿using System;
-using System.Xml.Serialization;
-
-using SlimDX;
-
-namespace Core.Processing.Resource.Collada.Data
+﻿namespace Core.Processing.Resource.Collada.Data
 {
+    using System;
+    using System.Xml.Serialization;
+
     using Core.Processing.Resource.Generic.Data;
+
+    using SlimDX;
 
     [Serializable]
     public class ColladaColor

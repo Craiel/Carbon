@@ -175,6 +175,11 @@
     <Compile Include="Rendering\Material.cs" />
     <Compile Include="Rendering\Mesh.cs" />
     <Compile Include="Rendering\RenderLightInstruction.cs" />
+    <Compile Include="Resource\ContentCriterion.cs" />
+    <Compile Include="Resource\ContentOrder.cs" />
+    <Compile Include="Resource\ContentReflectionProperty.cs" />
+    <Compile Include="Resource\Generic\ContentQuery.cs" />
+    <Compile Include="Resource\Generic\ContentQueryResult.cs" />
     <Compile Include="Resource\ModelBuilder.cs" />
     <Compile Include="Rendering\Primitives\Cone.cs" />
     <Compile Include="Rendering\Primitives\Cube.cs" />
@@ -221,6 +226,8 @@
     <Compile Include="Resource\Content\StageRegionEntry.cs" />
     <Compile Include="Resource\Content\ResourceEntry.cs" />
     <Compile Include="Resource\Content\ScriptEntry.cs" />
+    <Compile Include="Resource\ResourceContent.cs" />
+    <Compile Include="Resource\ResourceInfo.cs" />
     <Compile Include="Resource\Resources\CompiledShaderResource.cs" />
     <Compile Include="Resource\Resources\UserInterfaceResource.cs" />
     <Compile Include="Resource\Resources\Model\ModelResourceGroup.cs" />

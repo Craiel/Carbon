@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Core.Utils.Diagnostics
+﻿namespace Core.Utils.Diagnostics
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public static class Profiler
     {
         private static readonly Hashtable RegionStatistics;
@@ -39,12 +39,13 @@ namespace Core.Utils.Diagnostics
 
         public static void TraceProfilerStatistics()
         {
-            ProfileStatistics[] statistics = new ProfileStatistics[RegionStatistics.Values.Count];
+            var statistics = new ProfileStatistics[RegionStatistics.Values.Count];
             RegionStatistics.Values.CopyTo(statistics, 0);
             IList<ProfileStatistics> bla = new List<ProfileStatistics>(statistics).OrderBy(x => x.Name).ToList();
             foreach (ProfileStatistics statistic in bla)
             {
-                System.Diagnostics.Trace.TraceInformation("Region Statistic - {0}: Count {1}, Total Time {2}, Average {3:f2}ms",
+                System.Diagnostics.Trace.TraceInformation(
+                    "Region Statistic - {0}: Count {1}, Total Time {2}, Average {3:f2}ms",
                     statistic.Name, 
                     statistic.Count, 
                     Timer.CounterToTimeSpan((long)statistic.Time).ToString(@"hh\:mm\:ss\:fff"),

@@ -59,7 +59,7 @@ namespace Core.Engine.Resource.Content
         private int GetState()
         {
             IList<ContentReflectionProperty> properties = ContentReflection.GetPropertyInfos(this.GetType());
-            int[] hashes = new int[properties.Count];
+            var hashes = new int[properties.Count];
             for (int i = 0; i < properties.Count; i++)
             {
                 var value = properties[i].Info.GetValue(this);

@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-
-using SlimDX;
-
-namespace Core.Utils
+﻿namespace Core.Utils
 {
+    using System.Collections.Generic;
+
+    using SlimDX;
+
     public static class VectorExtension
     {
         static VectorExtension()

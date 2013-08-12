@@ -1,13 +1,13 @@
-﻿using Core.Engine.Resource.Resources;
-using Core.Engine.Resource.Resources.Model;
-using Core.Engine.Resource.Resources.Stage;
-using Core.Processing.Processors;
-using Core.Processing.Resource.Collada;
-using Core.Processing.Resource.Xcd;
-using Core.Utils.IO;
-
-namespace Core.Processing.Contracts
+﻿namespace Core.Processing.Contracts
 {
+    using Core.Engine.Resource.Resources;
+    using Core.Engine.Resource.Resources.Model;
+    using Core.Engine.Resource.Resources.Stage;
+    using Core.Processing.Processors;
+    using Core.Processing.Resource.Collada;
+    using Core.Processing.Resource.Xcd;
+    using Core.Utils.IO;
+
     public interface IResourceProcessor
     {
         CarbonDirectory TextureToolsPath { get; set; }

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace Core.Processing.Resource.Generic.Data
+﻿namespace Core.Processing.Resource.Generic.Data
 {
+    using System;
+    using System.Xml.Serialization;
+
     [Serializable]
     public class BoolArrayType
     {

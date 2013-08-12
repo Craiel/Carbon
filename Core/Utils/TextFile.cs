@@ -1,10 +1,10 @@
-﻿using System;
-using System.IO;
-
-using Core.Utils.Contracts;
-
-namespace Core.Utils
+﻿namespace Core.Utils
 {
+    using System;
+    using System.IO;
+
+    using Core.Utils.Contracts;
+
     public class TextFile : ITextFile
     {
         private readonly object fileLock;

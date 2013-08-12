@@ -1,7 +1,8 @@
-﻿using System;
-
-namespace Core.Engine.Resource
+﻿namespace Core.Engine.Resource
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+
     public enum PrimaryKeyMode
     {
         None,
@@ -20,7 +21,8 @@ namespace Core.Engine.Resource
         public string Table { get; private set; }
     }
 
-    [AttributeUsage(AttributeTargets.Property)]
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here."),
+    AttributeUsage(AttributeTargets.Property)]
     public class ContentEntryElementAttribute : Attribute
     {
         public ContentEntryElementAttribute()

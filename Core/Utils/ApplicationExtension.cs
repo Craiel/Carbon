@@ -1,9 +1,8 @@
-﻿using System.Windows;
-using System.Windows.Threading;
-
-namespace Core.Utils
+﻿namespace Core.Utils
 {
     using System.Threading;
+    using System.Windows;
+    using System.Windows.Threading;
 
     public static class ApplicationExtension
     {
@@ -11,8 +10,7 @@ namespace Core.Utils
         {
             var frame = new DispatcherFrame(true);
             application.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
-                (SendOrPostCallback)delegate(object arg)
+                DispatcherPriority.Background, (SendOrPostCallback)delegate(object arg)
                     {
                         var f = arg as DispatcherFrame;
                         if (f != null)

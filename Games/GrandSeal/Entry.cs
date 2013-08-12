@@ -1,10 +1,11 @@
-﻿using GrandSeal.Contracts;
-using GrandSeal.Ninject;
-
-using Ninject;
+﻿using Ninject;
 
 namespace GrandSeal
 {
+    using Contracts;
+
+    using Ninject;
+
     public static class Entry
     {
         public static void Main()

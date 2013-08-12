@@ -1,17 +1,19 @@
-﻿using System;
-using System.Drawing;
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Rendering;
-using Core.Engine.Logic;
-using GrandSeal.Contracts;
-
-using Core.Utils;
-using Core.Utils.Contracts;
-
-using GrandSeal.Ninject;
-
-namespace GrandSeal
+﻿namespace GrandSeal
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Drawing;
+
+    using Contracts;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Logic;
+    using Core.Utils;
+    using Core.Utils.Contracts;
+
+    using Ninject;
+
     public enum SceneKey
     {
         Entry = 0,
@@ -41,8 +43,36 @@ namespace GrandSeal
         }
 
         // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
+        public void SwitchScene(int key)
+        {
+            lock (this.RenderSynchronizationLock)
+            {
+                this.gameState.ScriptingEngine.Unregister(this.gameState.SceneManager.ActiveScene);
+                this.gameState.SceneManager.Activate(key);
+                this.gameState.SceneManager.Resize(new TypedVector2<int>(this.Window.Size.Width, this.Window.Size.Height));
+                this.gameState.ScriptingEngine.Register(this.gameState.SceneManager.ActiveScene);
+            }
+        }
+
+        public void Reload()
+        {
+            lock (this.RenderSynchronizationLock)
+            {
+                this.Graphics.ClearCache();
+                this.gameState.ResourceManager.ClearCache();
+                this.gameState.ContentManager.ClearCache();
+                this.clearCacheOnNextPass = true;
+
+                this.gameState.SceneManager.Reload();
+            }
+        }
+
+        // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
+        [SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1201:ElementsMustAppearInTheCorrectOrder", Justification = "Reviewed. Suppression is OK here.")]
         protected override string InternalGameName
         {
             get { return "GrandSeal"; }
@@ -83,8 +113,8 @@ namespace GrandSeal
                 this.log.Debug("OnWindowResize {0}", this.Window.Location.ToString());
 
                 // Todo: need to fix this
-                //this.Cursor.MinPosition = new Vector2(this.Window.Location.X, this.Window.Location.Y);
-                //this.Cursor.MaxPosition = new Vector2(this.Window.Location.X + this.Window.ClientSize.Width, this.Window.Location.Y + this.Window.ClientSize.Height);
+                // this.Cursor.MinPosition = new Vector2(this.Window.Location.X, this.Window.Location.Y);
+                // this.Cursor.MaxPosition = new Vector2(this.Window.Location.X + this.Window.ClientSize.Width, this.Window.Location.Y + this.Window.ClientSize.Height);
 
                 this.gameState.SceneManager.Resize(new TypedVector2<int>(this.Window.ClientSize.Width, this.Window.ClientSize.Height));
             }
@@ -131,30 +161,6 @@ namespace GrandSeal
             this.gameState.Dispose();
 
             base.OnClose(sender, e);
-        }
-
-        public void SwitchScene(int key)
-        {
-            lock (this.RenderSynchronizationLock)
-            {
-                this.gameState.ScriptingEngine.Unregister(this.gameState.SceneManager.ActiveScene);
-                this.gameState.SceneManager.Activate(key);
-                this.gameState.SceneManager.Resize(new TypedVector2<int>(this.Window.Size.Width, this.Window.Size.Height));
-                this.gameState.ScriptingEngine.Register(this.gameState.SceneManager.ActiveScene);
-            }
-        }
-
-        public void Reload()
-        {
-            lock (this.RenderSynchronizationLock)
-            {
-                this.Graphics.ClearCache();
-                this.gameState.ResourceManager.ClearCache();
-                this.gameState.ContentManager.ClearCache();
-                this.clearCacheOnNextPass = true;
-
-                this.gameState.SceneManager.Reload();
-            }
         }
     }
 }

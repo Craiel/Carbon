@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace Core.Processing.Resource.Collada.Data
+﻿namespace Core.Processing.Resource.Collada.Data
 {
+    using System;
     using System.Xml.Serialization;
 
     [Serializable]

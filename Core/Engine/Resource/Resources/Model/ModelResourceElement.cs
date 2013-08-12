@@ -1,9 +1,9 @@
-﻿using Core.Utils;
-
-using SlimDX;
-
-namespace Core.Engine.Resource.Resources.Model
+﻿namespace Core.Engine.Resource.Resources.Model
 {
+    using Core.Utils;
+
+    using SlimDX;
+
     public class ModelResourceElement
     {
         internal const int Version = 1;

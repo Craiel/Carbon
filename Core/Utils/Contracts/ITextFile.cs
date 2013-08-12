@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Core.Utils.Contracts
+﻿namespace Core.Utils.Contracts
 {
+    using System;
+
     public interface ITextFile : IDisposable
     {
         string FileName { get; set; }

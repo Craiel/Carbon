@@ -1,8 +1,8 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace Core.Processing.Resource.Xcd
+﻿namespace Core.Processing.Resource.Xcd
 {
+    using System;
+    using System.Xml.Serialization;
+
     using Core.Processing.Resource.Xcd.Scene;
 
     [Serializable]

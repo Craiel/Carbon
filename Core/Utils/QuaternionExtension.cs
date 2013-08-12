@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-using SlimDX;
-
-namespace Core.Utils
+﻿namespace Core.Utils
 {
+    using System;
+    using System.Collections.Generic;
+
+    using SlimDX;
+
     public static class QuaternionExtension
     {
         /*public static Quaternion RotateTo(Vector3 source, Vector3 target)

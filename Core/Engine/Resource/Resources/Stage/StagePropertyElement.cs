@@ -1,10 +1,11 @@
-﻿using System;
-using System.Text;
-
-using Google.ProtocolBuffers;
-
-namespace Core.Engine.Resource.Resources.Stage
+﻿namespace Core.Engine.Resource.Resources.Stage
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Text;
+
+    using Google.ProtocolBuffers;
+
     public abstract class StagePropertyElement
     {
         public string Id { get; set; }
@@ -15,6 +16,7 @@ namespace Core.Engine.Resource.Resources.Stage
         }
     }
 
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
     public class StagePropertyElementString : StagePropertyElement
     {
         public StagePropertyElementString()

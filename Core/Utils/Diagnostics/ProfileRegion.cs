@@ -1,8 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-
-namespace Core.Utils.Diagnostics
+﻿namespace Core.Utils.Diagnostics
 {
+    using System;
+    using System.Diagnostics;
+
     public class ProfileRegion : IDisposable
     {
         private readonly Stopwatch timer;

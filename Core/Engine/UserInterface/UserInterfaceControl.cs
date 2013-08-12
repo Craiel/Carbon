@@ -1,10 +1,10 @@
-﻿using Core.Engine.Contracts.UserInterface;
-using Core.Engine.Logic;
-
-using SlimDX;
-
-namespace Core.Engine.UserInterface
+﻿namespace Core.Engine.UserInterface
 {
+    using Core.Engine.Contracts.UserInterface;
+    using Core.Engine.Logic;
+
+    using SlimDX;
+
     public class UserInterfaceControl : EngineComponent, IUserInterfaceControl
     {
         public string Name { get; set; }

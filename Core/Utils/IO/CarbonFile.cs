@@ -64,6 +64,21 @@
             }
         }
 
+        public static CarbonFile GetTempFile()
+        {
+            return CarbonDirectory.TempDirectory.ToFile(System.IO.Path.GetRandomFileName());
+        }
+
+        public static CarbonFile GetRandomFile()
+        {
+            return new CarbonFile(System.IO.Path.GetRandomFileName());
+        }
+
+        public static bool FileExists(CarbonFile file)
+        {
+            return file != null && !file.IsNull && file.Exists;
+        }
+
         public string ChangeExtension(string newExtension)
         {
             if (this.IsNull)
@@ -122,21 +137,6 @@
         public CarbonFile ToFile<T>(params T[] other)
         {
             return new CarbonFile(this.Path + string.Concat(other));
-        }
-
-        public static CarbonFile GetTempFile()
-        {
-            return CarbonDirectory.TempDirectory.ToFile(System.IO.Path.GetRandomFileName());
-        }
-
-        public static CarbonFile GetRandomFile()
-        {
-            return new CarbonFile(System.IO.Path.GetRandomFileName());
-        }
-
-        public static bool FileExists(CarbonFile file)
-        {
-            return file != null && !file.IsNull && file.Exists;
         }
     }
 }

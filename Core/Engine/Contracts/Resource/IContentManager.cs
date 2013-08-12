@@ -4,6 +4,7 @@
 
     using Core.Engine.Resource;
     using Core.Engine.Resource.Content;
+    using Core.Engine.Resource.Generic;
 
     public interface IContentManager : IDisposable
     {

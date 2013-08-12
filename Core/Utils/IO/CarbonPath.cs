@@ -1,6 +1,7 @@
 ﻿namespace Core.Utils.IO
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
 
     public abstract class CarbonPath
@@ -81,6 +82,7 @@
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
+        [SuppressMessage("StyleCop.CSharp.OrderingRules", "SA1201:ElementsMustAppearInTheCorrectOrder", Justification = "Reviewed. Suppression is OK here.")]
         protected string Path
         {
             get

@@ -1,8 +1,9 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace Core.Processing.Resource.Collada.Effect
+﻿namespace Core.Processing.Resource.Collada.Effect
 {
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Xml.Serialization;
+
     using Core.Processing.Resource.Collada.Data;
 
     [Serializable]
@@ -12,8 +13,9 @@ namespace Core.Processing.Resource.Collada.Effect
         public ColladaColor Color { get; set; }
     }
 
-    [Serializable]
-    public class EffectAmbinet
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here."),
+    Serializable]
+    public class EffectAmbient
     {
         [XmlElement("texture")]
         public ColladaTexture Texture { get; set; }

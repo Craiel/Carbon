@@ -8,9 +8,9 @@
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Resource;
 
-    using Core.Utils;
     using Core.Utils.Contracts;
     using Core.Utils.Diagnostics;
+    using Core.Utils.Formatting;
     using Core.Utils.IO;
 
     using SlimDX.Windows;

@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-using Core.Utils;
-
-using SlimDX;
-
-namespace Core.Engine.Resource.Resources.Model
+﻿namespace Core.Engine.Resource.Resources.Model
 {
+    using System.Collections.Generic;
+    using System.IO;
+
+    using Core.Utils;
+
+    using SlimDX;
+
     public class ModelResourceGroup : ProtocolResource
     {
         private const int Version = 1;

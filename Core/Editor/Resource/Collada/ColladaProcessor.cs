@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-
-using Core.Engine.Resource;
-using Core.Engine.Resource.Resources.Model;
-
-using Core.Utils;
-
-using SlimDX;
-
-namespace Core.Processing.Resource.Collada
+﻿namespace Core.Processing.Resource.Collada
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+
+    using Core.Engine.Resource;
+    using Core.Engine.Resource.Resources.Model;
     using Core.Processing.Resource.Collada.Data;
     using Core.Processing.Resource.Collada.Geometry;
     using Core.Processing.Resource.Collada.Scene;
     using Core.Processing.Resource.Generic.Data;
+    using Core.Utils;
     using Core.Utils.IO;
 
-    /// <summary>
-    /// Todo:
-    /// - Clean up the general process
-    /// - First we get all the Model groups out of the collada since that is really all we care for here
-    /// - then either group them all together if nothing specific was requested, otherwise return the one that was asked for
-    /// - !! Get rid of the offset and scaling entirely here, we will do that at the actual scene definition !!
-    /// </summary>
+    using SlimDX;
+
+    /* <summary>
+     Todo:
+     - Clean up the general process
+     - First we get all the Model groups out of the collada since that is really all we care for here
+     - then either group them all together if nothing specific was requested, otherwise return the one that was asked for
+     - !! Get rid of the offset and scaling entirely here, we will do that at the actual scene definition !!
+    */
     public static class ColladaProcessor
     {
         private static readonly IDictionary<string, ModelResourceGroup> MeshLibrary = new Dictionary<string, ModelResourceGroup>();
@@ -165,7 +163,7 @@ namespace Core.Processing.Resource.Collada
                 throw new InvalidOperationException("ConvertGeometry failed, no Mesh or Vertex data found for " + geometry.Name);
             }
 
-            if (geometry.Mesh.PolyLists == null && geometry.Mesh.PolyLists.Length > index)
+            if (geometry.Mesh.PolyLists == null)
             {
                 throw new NotImplementedException("Currently we do not support models without poly lists");
             }
@@ -207,7 +205,7 @@ namespace Core.Processing.Resource.Collada
             // TraceConversionInfo(geometry);
         }
 
-        private static void TraceConversionInfo(ColladaGeometry geometry)
+        /*private static void TraceConversionInfo(ColladaGeometry geometry)
         {
             Trace.TraceInformation("Converting Collada Geometry {0}", geometry.Name);
             Trace.TraceInformation("  -> {0} Polygons", vertexCount.Length);
@@ -222,7 +220,7 @@ namespace Core.Processing.Resource.Collada
             {
                 Trace.TraceInformation("  -> {0} UV's", textureData.Length);
             }
-        }
+        }*/
 
         private static ModelResource TranslateGeometry(int polyIndex, string name)
         {
@@ -288,7 +286,7 @@ namespace Core.Processing.Resource.Collada
                 if (polygonData[index].ContainsKey((uint)input.Offset))
                 {
                     // Todo: This currently happens for normal map texture mapping, the same offset is defined twice with different material source
-                    //throw new InvalidDataException("Multiple inputs defined with the same offset");
+                    // throw new InvalidDataException("Multiple inputs defined with the same offset");
                     continue;
                 }
 

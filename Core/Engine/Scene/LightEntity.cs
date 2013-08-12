@@ -1,9 +1,9 @@
-﻿using Core.Engine.Contracts.Rendering;
-using Core.Engine.Contracts.Scene;
-using Core.Engine.Rendering;
-
-namespace Core.Engine.Scene
+﻿namespace Core.Engine.Scene
 {
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Contracts.Scene;
+    using Core.Engine.Rendering;
+
     public interface ILightNode : ISceneEntity
     {
     }
@@ -22,9 +22,9 @@ namespace Core.Engine.Scene
             base.Dispose();
         }
 
-        public override bool Update(Core.Utils.Contracts.ITimer gameTime)
+        public override bool Update(Utils.Contracts.ITimer gameTime)
         {
-            if(!base.Update(gameTime))
+            if (!base.Update(gameTime))
             {
                 return false;
             }

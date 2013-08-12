@@ -1,43 +1,16 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.IO;
-using System.Linq;
-
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Resource.Content;
-
-using Core.Utils;
-using Core.Utils.Contracts;
-
-namespace Core.Engine.Resource
+﻿namespace Core.Engine.Resource
 {
-    public class ContentQueryResult<T> : ContentQueryResult
-        where T : ICarbonContent
-    {
-        // -------------------------------------------------------------------
-        // Constructor
-        // -------------------------------------------------------------------
-        public ContentQueryResult(IContentManager contentManager, ILog log, DbCommand command)
-            : base(contentManager, log, command)
-        {
-        }
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Data.Common;
+    using System.IO;
 
-        // -------------------------------------------------------------------
-        // Public
-        // -------------------------------------------------------------------
-        public IList<T> ToList()
-        {
-            IList untyped = this.ToList(typeof(T));
-            return untyped.Cast<T>().ToList();
-        }
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource.Content;
 
-        public new T UniqueResult()
-        {
-            return (T)this.UniqueResult(typeof(T));
-        }
-    }
+    using Core.Utils;
+    using Core.Utils.Contracts;
 
     public class ContentQueryResult
     {
@@ -110,7 +83,7 @@ namespace Core.Engine.Resource
             {
                 while (reader.Read())
                 {
-                    object[] buffer = new object[reader.FieldCount];
+                    var buffer = new object[reader.FieldCount];
                     if (reader.GetValues(buffer) != reader.FieldCount)
                     {
                         throw new InvalidOperationException("GetValues returned wrong number of values, expected " + reader.FieldCount);
@@ -169,7 +142,7 @@ namespace Core.Engine.Resource
 
             if (targetType == typeof(ContentLink))
             {
-                int? id = (int?)typeof(int?).ConvertValue(source);
+                var id = (int?)typeof(int?).ConvertValue(source);
                 if (id == null)
                 {
                     return null;

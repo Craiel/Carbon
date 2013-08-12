@@ -5,9 +5,9 @@ using Core.Utils.Contracts;
 
 namespace Core.Utils.Diagnostics
 {
-    /// <summary>
-    /// Taken in large parts from Essential Diagnostics Project
-    /// </summary>
+    using Core.Utils.Formatting;
+
+    // Taken in large parts from Essential Diagnostics Project
     public class ConsoleTraceListener : System.Diagnostics.ConsoleTraceListener
     {
         private const string DefaultTemplate = "{DateTime:u}\t{Source}({ThreadId})\t{EventType}\t{Id}\t{Message}";

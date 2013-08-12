@@ -1,5 +1,7 @@
 ﻿namespace Core.Engine.Resource.Content
 {
+    using System;
+
     [ContentEntry("Material")]
     public class MaterialEntry : ContentEntry
     {
@@ -83,6 +85,11 @@
         public override void LoadFrom(Contracts.Resource.ICarbonContent source)
         {
             var other = source as MaterialEntry;
+            if (other == null)
+            {
+                throw new ArgumentException("Argument is null or invalid type");
+            }
+
             this.ColorR = other.ColorR;
             this.ColorG = other.ColorG;
             this.ColorB = other.ColorB;

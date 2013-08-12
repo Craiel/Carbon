@@ -1,9 +1,9 @@
-﻿using Core.Utils;
-
-using SlimDX;
-
-namespace Core.Engine.Resource.Resources.Stage
+﻿namespace Core.Engine.Resource.Resources.Stage
 {
+    using Core.Utils;
+
+    using SlimDX;
+
     public class StageLightElement : StageElement
     {
         // -------------------------------------------------------------------

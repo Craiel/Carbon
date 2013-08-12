@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Core.Engine.Resource.Resources.Stage
+﻿namespace Core.Engine.Resource.Resources.Stage
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     public abstract class StageElement

@@ -6,6 +6,8 @@ using Core.Utils.Contracts;
 
 namespace Core.Utils.Diagnostics
 {
+    using Core.Utils.Formatting;
+
     /// <summary>
     /// Taken in large parts from Essential Diagnostics Project
     /// </summary>
@@ -24,7 +26,7 @@ namespace Core.Utils.Diagnostics
         private bool attributesProcessed;
         private bool isRotating;
 
-        private IList<string> traceCache;
+        private readonly IList<string> traceCache;
 
         // -------------------------------------------------------------------
         // Constructor

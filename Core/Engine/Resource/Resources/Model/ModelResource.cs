@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-using Core.Utils;
-
-using SlimDX;
-
-namespace Core.Engine.Resource.Resources.Model
+﻿namespace Core.Engine.Resource.Resources.Model
 {
+    using System.Collections.Generic;
+    using System.IO;
+
+    using Core.Utils;
+
+    using SlimDX;
+
     public class ModelResource : ProtocolResource
     {
         private const int Version = 1;
@@ -90,40 +90,6 @@ namespace Core.Engine.Resource.Resources.Model
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void DoLoad(Protocol.Resource.Model entry)
-        {
-            if (entry.Version != Version)
-            {
-                throw new InvalidDataException("Model version is not correct: " + entry.Version);
-            }
-
-            this.Name = entry.Name;
-            this.HasTangents = entry.TangentsCalculated;
-            
-            if (entry.ElementsCount > 0)
-            {
-                this.Elements = new List<ModelResourceElement>(entry.ElementsCount);
-                foreach (Protocol.Resource.ModelElement element in entry.ElementsList)
-                {
-                    this.Elements.Add(new ModelResourceElement(element));
-                }
-            }
-
-            if (entry.MaterialsCount > 0)
-            {
-                this.Materials = new List<ModelMaterialElement>(entry.MaterialsCount);
-                foreach (Protocol.Resource.ModelMaterial material in entry.MaterialsList)
-                {
-                    this.Materials.Add(new ModelMaterialElement(material));
-                }
-            }
-
-            this.Indices = entry.IndicesList;
-        }
-        
-        // -------------------------------------------------------------------
-        // Private
-        // -------------------------------------------------------------------
         private static void CalculateTangents(ref IList<ModelResourceElement> elements, ref IList<uint> indices)
         {
             if (indices == null || indices.Count <= 0)
@@ -189,6 +155,37 @@ namespace Core.Engine.Resource.Resources.Model
                 float w = (Vector3.Dot(Vector3.Cross(n, t), tan2[i]) < 0.0f) ? -1.0f : 1.0f;
                 elements[i].Tangent = new Vector4(tan1[i], w);
             }
+        }
+
+        private void DoLoad(Protocol.Resource.Model entry)
+        {
+            if (entry.Version != Version)
+            {
+                throw new InvalidDataException("Model version is not correct: " + entry.Version);
+            }
+
+            this.Name = entry.Name;
+            this.HasTangents = entry.TangentsCalculated;
+
+            if (entry.ElementsCount > 0)
+            {
+                this.Elements = new List<ModelResourceElement>(entry.ElementsCount);
+                foreach (Protocol.Resource.ModelElement element in entry.ElementsList)
+                {
+                    this.Elements.Add(new ModelResourceElement(element));
+                }
+            }
+
+            if (entry.MaterialsCount > 0)
+            {
+                this.Materials = new List<ModelMaterialElement>(entry.MaterialsCount);
+                foreach (Protocol.Resource.ModelMaterial material in entry.MaterialsList)
+                {
+                    this.Materials.Add(new ModelMaterialElement(material));
+                }
+            }
+
+            this.Indices = entry.IndicesList;
         }
     }
 }

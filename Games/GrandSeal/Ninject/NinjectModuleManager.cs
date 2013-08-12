@@ -1,11 +1,10 @@
-﻿using Core.Engine.Ninject;
-using Ninject.Modules;
-
-using GrandSeal.Contracts;
-using GrandSeal.Logic;
+﻿using Ninject.Modules;
 
 namespace GrandSeal.Ninject
 {
+    using Contracts;
+    using Core.Engine.Ninject;
+    using Logic;
     using Scenes;
 
     public static class NinjectModuleManager

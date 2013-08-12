@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Scene;
-using Core.Engine.Logic;
-
-namespace Core.Engine.Scene
+﻿namespace Core.Engine.Scene
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Contracts.Scene;
+    using Core.Engine.Logic;
 
     public class SceneManager : EngineComponent, ISceneManager
     {
@@ -192,7 +191,7 @@ namespace Core.Engine.Scene
             }
         }
 
-        public override bool Update(Core.Utils.Contracts.ITimer gameTime)
+        public override bool Update(Utils.Contracts.ITimer gameTime)
         {
             if (!base.Update(gameTime))
             {

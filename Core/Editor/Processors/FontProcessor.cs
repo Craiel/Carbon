@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Drawing.Text;
-using System.IO;
-
-using Core.Engine.Resource.Resources;
-
-namespace Core.Processing.Processors
+﻿namespace Core.Processing.Processors
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+    using System.Drawing.Imaging;
+    using System.Drawing.Text;
+    using System.IO;
+
+    using Core.Engine.Resource.Resources;
     using Core.Utils.IO;
 
     public struct FontProcessingOptions

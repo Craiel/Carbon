@@ -1,40 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Reflection;
-
-using Core.Engine.Contracts.Resource;
-
-namespace Core.Engine.Resource
+﻿namespace Core.Engine.Resource
 {
-    public class ContentReflectionProperty
-    {
-        public ContentReflectionProperty(ContentEntryElementAttribute attribute, PropertyInfo info)
-        {
-            this.Name = attribute.Name ?? info.Name;
-            this.Info = info;
-        }
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Linq;
+    using System.Reflection;
 
-        public string Name { get; private set; }
-        public PropertyInfo Info { get; private set; }
-        public PrimaryKeyMode PrimaryKey { get; set; }
-    }
+    using Core.Engine.Contracts.Resource;
 
     public static class ContentReflection
     {
-        private static readonly IDictionary<Type, string> tableNameCache;
-        private static readonly IDictionary<Type, IList<ContentReflectionProperty>> propertyLookupCache;
-        private static readonly IDictionary<Type, ContentReflectionProperty> primaryKeyPropertyLookupCache; 
+        private static readonly IDictionary<Type, string> TableNameCache;
+        private static readonly IDictionary<Type, IList<ContentReflectionProperty>> PropertyLookupCache;
+        private static readonly IDictionary<Type, ContentReflectionProperty> PrimaryKeyPropertyLookupCache; 
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
         static ContentReflection()
         {
-            tableNameCache = new Dictionary<Type, string>();
-            propertyLookupCache = new Dictionary<Type, IList<ContentReflectionProperty>>();
-            primaryKeyPropertyLookupCache = new Dictionary<Type, ContentReflectionProperty>();
+            TableNameCache = new Dictionary<Type, string>();
+            PropertyLookupCache = new Dictionary<Type, IList<ContentReflectionProperty>>();
+            PrimaryKeyPropertyLookupCache = new Dictionary<Type, ContentReflectionProperty>();
         }
 
         // -------------------------------------------------------------------
@@ -42,9 +29,9 @@ namespace Core.Engine.Resource
         // -------------------------------------------------------------------
         public static string GetTableName(Type key)
         {
-            lock (tableNameCache)
+            lock (TableNameCache)
             {
-                if (!tableNameCache.ContainsKey(key))
+                if (!TableNameCache.ContainsKey(key))
                 {
                     var attribute =
                         key.GetCustomAttributes(typeof(ContentEntryAttribute), true).FirstOrDefault() as
@@ -54,10 +41,10 @@ namespace Core.Engine.Resource
                         throw new InvalidOperationException("Unknown error finding table specification");
                     }
 
-                    tableNameCache.Add(key, attribute.Table);
+                    TableNameCache.Add(key, attribute.Table);
                 }
 
-                return tableNameCache[key];
+                return TableNameCache[key];
             }
         }
 
@@ -68,12 +55,12 @@ namespace Core.Engine.Resource
 
         public static IList<ContentReflectionProperty> GetPropertyInfos(Type type)
         {
-            if (!propertyLookupCache.ContainsKey(type))
+            if (!PropertyLookupCache.ContainsKey(type))
             {
                 BuildLookupCache(type);
             }
             
-            return propertyLookupCache[type];
+            return PropertyLookupCache[type];
         }
 
         public static IList<ContentReflectionProperty> GetPropertyInfos<T>() where T : ICarbonContent
@@ -83,12 +70,12 @@ namespace Core.Engine.Resource
 
         public static ContentReflectionProperty GetPrimaryKeyPropertyInfo(Type type)
         {
-            if (!primaryKeyPropertyLookupCache.ContainsKey(type))
+            if (!PrimaryKeyPropertyLookupCache.ContainsKey(type))
             {
                 BuildLookupCache(type);
             }
 
-            return primaryKeyPropertyLookupCache[type];
+            return PrimaryKeyPropertyLookupCache[type];
         }
 
         public static ContentReflectionProperty GetPrimaryKeyPropertyInfo<T>() where T : ICarbonContent
@@ -101,7 +88,7 @@ namespace Core.Engine.Resource
         // -------------------------------------------------------------------
         private static void BuildLookupCache(Type type)
         {
-            lock (propertyLookupCache)
+            lock (PropertyLookupCache)
             {
                 IList<ContentReflectionProperty> properties = new List<ContentReflectionProperty>();
                 PropertyInfo[] propertyInfos = type.GetProperties();
@@ -121,22 +108,22 @@ namespace Core.Engine.Resource
 
                         if (attribute.PrimaryKey != PrimaryKeyMode.None)
                         {
-                            if (primaryKeyPropertyLookupCache.ContainsKey(type))
+                            if (PrimaryKeyPropertyLookupCache.ContainsKey(type))
                             {
                                 throw new DataException("Only one primary key is currently supported for type " + type);
                             }
 
-                            primaryKeyPropertyLookupCache.Add(type, propertyInfo);
+                            PrimaryKeyPropertyLookupCache.Add(type, propertyInfo);
                         }
                     }
                 }
 
-                if (!primaryKeyPropertyLookupCache.ContainsKey(type))
+                if (!PrimaryKeyPropertyLookupCache.ContainsKey(type))
                 {
                     throw new DataException("Type does not have a primary key defined: " + type);
                 }
 
-                propertyLookupCache.Add(type, properties);
+                PropertyLookupCache.Add(type, properties);
             }
         }
     }

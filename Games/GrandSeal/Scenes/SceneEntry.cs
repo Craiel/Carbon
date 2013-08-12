@@ -1,22 +1,19 @@
-﻿using System;
-
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Rendering;
-using Core.Engine.Logic;
-using Core.Engine.Logic.Scripting;
-using Core.Engine.Resource.Resources;
-using Core.Engine.Scene;
-using Core.Utils;
-using Core.Utils.Contracts;
-
-using GrandSeal.Contracts;
-
-namespace GrandSeal.Scenes
+﻿namespace GrandSeal.Scenes
 {
-    /// <summary>
-    /// Entry Point scene for GrandSeal
-    /// </summary>
+    using System;
+
+    using Contracts;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Logic;
+    using Core.Engine.Logic.Scripting;
+    using Core.Engine.Resource.Resources;
+    using Core.Engine.Scene;
+    using Core.Utils;
+    using Core.Utils.Contracts;
+
     public class SceneEntry : Scene, ISceneEntry
     {
         private readonly IEngineFactory factory;

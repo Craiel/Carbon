@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace Core.Utils
+﻿namespace Core.Utils
 {
-    /// <summary>
-    /// Simple limited list which discards oldest entries while still allowing for sequential and random access
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
+    using System.Collections.Generic;
+
+    // Simple limited list which discards oldest entries while still allowing for sequential and random access
     public class LimitedList<T>
     {
         private readonly List<T> list;

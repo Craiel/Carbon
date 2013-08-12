@@ -1,10 +1,9 @@
-﻿using System;
-
-using Core.Engine.Logic.Scripting;
-using GrandSeal.Contracts;
-
-namespace GrandSeal.Logic
+﻿namespace GrandSeal.Logic
 {
+    using Contracts;
+
+    using Core.Engine.Logic.Scripting;
+
     public class GrandSealScriptingProvider : ScriptingGameProvider, IGrandSealScriptingProvider
     {
         private readonly IGrandSeal game;

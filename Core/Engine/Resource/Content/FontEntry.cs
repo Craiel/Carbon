@@ -1,5 +1,7 @@
 ﻿namespace Core.Engine.Resource.Content
 {
+    using System;
+
     [ContentEntry("Font")]
     public class FontEntry : ContentEntry
     {
@@ -50,6 +52,11 @@
         public override void LoadFrom(Contracts.Resource.ICarbonContent source)
         {
             var other = source as FontEntry;
+            if (other == null)
+            {
+                throw new ArgumentException("Argument is null or invalid type");
+            }
+
             this.CharactersPerRow = other.CharactersPerRow;
 
             if (other.Resource != null)

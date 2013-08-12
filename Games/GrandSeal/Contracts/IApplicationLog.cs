@@ -1,7 +1,7 @@
-﻿using Core.Utils.Contracts;
-
-namespace GrandSeal.Contracts
+﻿namespace GrandSeal.Contracts
 {
+    using Core.Utils.Contracts;
+
     public interface IApplicationLog : ILogBase
     {
     }

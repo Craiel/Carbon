@@ -40,6 +40,11 @@
             }
         }
 
+        public static CarbonDirectory GetTempDirectory()
+        {
+            return TempDirectory.ToDirectory(System.IO.Path.GetRandomFileName());
+        }
+
         public void Create()
         {
             if (this.Exists)
@@ -63,11 +68,6 @@
         public CarbonFile ToFile<T>(params T[] other)
         {
             return new CarbonFile(this.CombineBefore(other));
-        }
-
-        public static CarbonDirectory GetTempDirectory()
-        {
-            return TempDirectory.ToDirectory(System.IO.Path.GetRandomFileName());
         }
     }
 }

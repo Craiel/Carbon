@@ -1,26 +1,5 @@
-﻿using System;
-using System.Data;
-using System.IO;
-
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Contracts.Scene;
-using Core.Engine.Logic;
-using Core.Engine.Logic.Scripting;
-using Core.Engine.Rendering;
-using Core.Engine.Rendering.Primitives;
-using Core.Engine.Resource;
-using Core.Engine.Resource.Content;
-using Core.Engine.Resource.Resources;
-
-using Core.Utils;
-
-using SlimDX;
-
-namespace Core.Engine.Scene
+﻿namespace Core.Engine.Scene
 {
-    using System.Collections.Generic;
-
     /*using Core.Engine.Resource.Resources.Model;
 
     public class SceneEntityFactory : EngineComponent, ISceneEntityFactory

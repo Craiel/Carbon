@@ -1,8 +1,8 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace Core.Processing.Resource.Collada.Effect
+﻿namespace Core.Processing.Resource.Collada.Effect
 {
+    using System;
+    using System.Xml.Serialization;
+
     [Serializable]
     public class EffectLambert
     {
@@ -10,7 +10,7 @@ namespace Core.Processing.Resource.Collada.Effect
         public EffectEmission Emission { get; set; }
 
         [XmlElement("ambient")]
-        public EffectAmbinet Ambient { get; set; }
+        public EffectAmbient Ambient { get; set; }
 
         [XmlElement("diffuse")]
         public EffectDiffuse Diffuse { get; set; }

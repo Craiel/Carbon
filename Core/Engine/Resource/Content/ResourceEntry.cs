@@ -1,5 +1,7 @@
 ﻿namespace Core.Engine.Resource.Content
 {
+    using System;
+
     public enum ResourceType
     {
         Unknown = 0,
@@ -67,6 +69,11 @@
         public override void LoadFrom(Contracts.Resource.ICarbonContent source)
         {
             var other = source as ResourceEntry;
+            if (other == null)
+            {
+                throw new ArgumentException("Argument is null or invalid type");
+            }
+
             this.Type = other.Type;
         }
     }

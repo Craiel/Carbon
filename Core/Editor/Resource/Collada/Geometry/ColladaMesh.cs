@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace Core.Processing.Resource.Collada.Geometry
+﻿namespace Core.Processing.Resource.Collada.Geometry
 {
+    using System;
     using System.Xml.Serialization;
 
     using Core.Processing.Resource.Collada.Data;

@@ -1,80 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-
-using Core.Engine.Contracts.Resource;
-
-using Core.Utils;
-
-namespace Core.Engine.Resource
+﻿namespace Core.Engine.Resource
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+
+    using Core.Utils;
+
     public enum CriterionType
     {
         Equals,
         Contains
-    }
-
-    public class ContentCriterion
-    {
-        public ContentReflectionProperty PropertyInfo { get; set; }
-        public CriterionType Type { get; set; }
-        public object[] Values { get; set; }
-        public bool Negate { get; set; }
-
-        public override int GetHashCode()
-        {
-            return Tuple.Create(this.PropertyInfo, this.Type, HashUtils.CombineObjectHashes(this.Values), this.Negate).GetHashCode();
-        }
-    }
-
-    public class ContentOrder
-    {
-        public ContentReflectionProperty PropertyInfo { get; set; }
-        public bool Ascending { get; set; }
-
-        public override int GetHashCode()
-        {
-            return Tuple.Create(this.PropertyInfo, this.Ascending).GetHashCode();
-        }
-    }
-
-    public sealed class ContentQuery<T> : ContentQuery where T : ICarbonContent
-    {
-        // -------------------------------------------------------------------
-        // Constructor
-        // -------------------------------------------------------------------
-        public ContentQuery()
-            : base(typeof(T))
-        {
-        }
-
-        // -------------------------------------------------------------------
-        // Public
-        // -------------------------------------------------------------------
-        public new ContentQuery<T> IsEqual(string property, object value)
-        {
-            base.IsEqual(property, value);
-            return this;
-        }
-
-        public new ContentQuery<T> Contains(string property, object[] values)
-        {
-            base.Contains(property, values);
-            return this;
-        }
-
-        public new ContentQuery<T> Not()
-        {
-            base.Not();
-            return this;
-        }
-
-        public new ContentQuery<T> OrderBy(string property, bool ascending = true)
-        {
-            base.OrderBy(property, ascending);
-            return this;
-        }
     }
 
     public class ContentQuery
@@ -160,6 +96,7 @@ namespace Core.Engine.Resource
             {
                 throw new ArgumentException("Criterion was already added");
             }
+
             if (this.negateNext)
             {
                 criterion.Negate = true;

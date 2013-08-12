@@ -1,9 +1,9 @@
-﻿using System.IO;
-
-using Core.Engine.Contracts.Resource;
-
-namespace Core.Engine.Resource.Resources
+﻿namespace Core.Engine.Resource.Resources
 {
+    using System.IO;
+
+    using Core.Engine.Contracts.Resource;
+
     public abstract class ProtocolResource : ICarbonResource
     {
         // -------------------------------------------------------------------

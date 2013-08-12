@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Xml.Serialization;
-
-namespace Core.Processing.Resource.Collada
+﻿namespace Core.Processing.Resource.Collada
 {
+    using System;
+    using System.IO;
+    using System.Xml.Serialization;
+
     using Core.Processing.Resource.Collada.Effect;
     using Core.Processing.Resource.Collada.General;
     using Core.Processing.Resource.Collada.Geometry;

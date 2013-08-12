@@ -1,10 +1,10 @@
-﻿using System;
-using System.Xml.Serialization;
-
-using Core.Processing.Resource.Generic.Data;
-
-namespace Core.Processing.Resource.Xcd.Scene
+﻿namespace Core.Processing.Resource.Xcd.Scene
 {
+    using System;
+    using System.Xml.Serialization;
+
+    using Core.Processing.Resource.Generic.Data;
+
     [Serializable]
     public class XcdElement
     {

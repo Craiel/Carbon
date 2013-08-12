@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Core.Engine.Scene
+﻿namespace Core.Engine.Scene
 {
+    using System.Collections.Generic;
+
     using Core.Engine.Contracts.Scene;
 
     public class SceneEntityCollection<T> : SceneEntity
@@ -38,7 +38,7 @@ namespace Core.Engine.Scene
             this.list.Remove(entry);
         }
 
-        public override bool Update(Core.Utils.Contracts.ITimer gameTime)
+        public override bool Update(Utils.Contracts.ITimer gameTime)
         {
             if (!base.Update(gameTime))
             {

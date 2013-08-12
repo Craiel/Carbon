@@ -1,9 +1,10 @@
-﻿using Core.Utils.Contracts;
-
-using Ninject.Modules;
+﻿using Ninject.Modules;
 
 namespace Core.Utils.Ninject
 {
+    using Core.Utils.Contracts;
+    using Core.Utils.Formatting;
+
     public static class NinjectModuleManager
     {
         public class UtilsModule : NinjectModule

@@ -1,9 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using Core.Utils.Contracts;
-
-namespace Core.Utils
+﻿namespace Core.Utils
 {
+    using System;
+    using System.Diagnostics;
+
+    using Core.Utils.Contracts;
+
     public class Timer : ITimer
     {
         public static readonly Timer CoreTimer = new Timer { AutoUpdate = true };
@@ -29,11 +30,6 @@ namespace Core.Utils
         // Public
         // -------------------------------------------------------------------
         public float TimeModifier { get; set; }
-
-        public static TimeSpan CounterToTimeSpan(float delta)
-        {
-            return TimeSpan.FromTicks((long)(delta * 10000000.0f) / Frequency);
-        }
 
         public TimeSpan ElapsedTime
         {
@@ -71,6 +67,11 @@ namespace Core.Utils
 
         public bool AutoUpdate { get; set; }
         public bool IsPaused { get; set; }
+
+        public static TimeSpan CounterToTimeSpan(float delta)
+        {
+            return TimeSpan.FromTicks((long)(delta * 10000000.0f) / Frequency);
+        }
 
         public void Reset()
         {

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-
-using SlimDX;
-
-namespace Core.Processing.Resource.Generic.Data
+﻿namespace Core.Processing.Resource.Generic.Data
 {
+    using System;
+    using System.Diagnostics;
+    using System.Globalization;
+
+    using SlimDX;
+
     public static class DataConversion
     {
         public static float[] ConvertFloat(string rawData)
@@ -16,7 +16,7 @@ namespace Core.Processing.Resource.Generic.Data
             }
 
             string[] rawValues = rawData.Trim().Split(' ');
-            float[] values = new float[rawValues.Length];
+            var values = new float[rawValues.Length];
             for (int i = 0; i < rawValues.Length; i++)
             {
                 values[i] = float.Parse(rawValues[i]);
@@ -33,7 +33,7 @@ namespace Core.Processing.Resource.Generic.Data
             }
 
             string[] rawValues = rawData.Trim().Split(' ');
-            int[] values = new int[rawValues.Length];
+            var values = new int[rawValues.Length];
             for (int i = 0; i < rawValues.Length; i++)
             {
                 values[i] = int.Parse(rawValues[i]);

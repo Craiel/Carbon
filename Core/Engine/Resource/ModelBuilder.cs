@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-using Core.Engine.Resource.Resources.Model;
-
-using SlimDX;
-
-namespace Core.Engine.Resource
+﻿namespace Core.Engine.Resource
 {
-    /// <summary>
-    /// Helper class to construct Mesh Structures from Vectors and indices
-    /// Todo: 
-    ///  - Check vertex duplication
-    ///  - Generate Normals with MathExtension.CalculateSurfaceNormal()
-    /// </summary>
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+
+    using Core.Engine.Resource.Resources.Model;
+
+    using SlimDX;
+
+    /*
+     Helper class to construct Mesh Structures from Vectors and indices
+     Todo: 
+      - Check vertex duplication
+      - Generate Normals with MathExtension.CalculateSurfaceNormal()
+    */
     public class ModelBuilder
     {
         private readonly IList<ModelResourceElement> pendingElements;
@@ -126,7 +126,7 @@ namespace Core.Engine.Resource
             {
                 if (indices[i] >= this.pendingElements.Count)
                 {
-                    throw new InvalidDataException("Index outside of element range "+indices[i]);
+                    throw new InvalidDataException("Index outside of element range " + indices[i]);
                 }
 
                 this.elementIndices.Add(indices[i]);

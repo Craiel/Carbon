@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.UserInterface;
-using Core.Engine.Logic;
-using Core.Engine.Resource.Resources;
-
-namespace Core.Engine.UserInterface
+﻿namespace Core.Engine.UserInterface
 {
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.IO;
 
+    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Scene;
+    using Core.Engine.Contracts.UserInterface;
+    using Core.Engine.Logic;
+    using Core.Engine.Resource.Resources;
     using Core.Protocol.Resource;
 
     public class UserInterface : EngineComponent, IUserInterface

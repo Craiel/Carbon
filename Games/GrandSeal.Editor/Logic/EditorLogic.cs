@@ -22,6 +22,7 @@ namespace GrandSeal.Editor.Logic
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
 
+    using Core.Engine.Resource.Generic;
     using Core.Utils.IO;
 
     using GrandSeal.Editor.Properties;

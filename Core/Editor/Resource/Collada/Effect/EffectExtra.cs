@@ -1,8 +1,8 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace Core.Processing.Resource.Collada.Effect
+﻿namespace Core.Processing.Resource.Collada.Effect
 {
+    using System;
+    using System.Xml.Serialization;
+
     [Serializable]
     public class EffectExtra
     {

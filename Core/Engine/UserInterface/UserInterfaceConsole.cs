@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.UserInterface;
-using Core.Engine.Logic;
-
-using Core.Utils.Contracts;
-
-namespace Core.Engine.UserInterface
+﻿namespace Core.Engine.UserInterface
 {
+    using System;
+    using System.Collections.Generic;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.UserInterface;
+    using Core.Engine.Logic;
+
+    using Core.Utils.Contracts;
+    
     public class UserInterfaceConsole : UserInterfaceControl, IUserInterfaceConsole
     {
         private readonly ITypingController controller;

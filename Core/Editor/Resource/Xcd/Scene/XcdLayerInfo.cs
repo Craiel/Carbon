@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Core.Processing.Resource.Xcd.Scene
+﻿namespace Core.Processing.Resource.Xcd.Scene
 {
+    using System;
+
     using Core.Processing.Resource.Generic.Data;
 
     [Serializable]

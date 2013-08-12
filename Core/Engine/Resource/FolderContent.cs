@@ -1,13 +1,13 @@
-﻿using System.IO;
-using System.IO.Compression;
-
-using Core.Engine.Contracts.Resource;
-
-using Core.Utils;
-using Core.Utils.IO;
-
-namespace Core.Engine.Resource
+﻿namespace Core.Engine.Resource
 {
+    using System.IO;
+    using System.IO.Compression;
+
+    using Core.Engine.Contracts.Resource;
+
+    using Core.Utils;
+    using Core.Utils.IO;
+
     public class FolderContent : ResourceContent
     {
         private readonly CarbonDirectory folder;
@@ -59,9 +59,9 @@ namespace Core.Engine.Resource
             CarbonFile file = this.GetFileName(hash);
             file.DeleteIfExists();
 
-            long size;
             using (FileStream stream = file.OpenWrite())
             {
+                long size;
                 using (var compression = new GZipStream(stream, CompressionLevel.Optimal, true))
                 {
                     size = data.Save(compression);
@@ -81,10 +81,10 @@ namespace Core.Engine.Resource
                 return false;
             }
 
-            long size;
             file.Delete();
             using (FileStream stream = file.OpenWrite())
             {
+                long size;
                 using (var compression = new GZipStream(stream, CompressionLevel.Optimal, true))
                 {
                     size = data.Save(compression);

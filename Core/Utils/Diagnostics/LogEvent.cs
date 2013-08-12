@@ -1,7 +1,7 @@
-﻿using Core.Utils.Contracts;
-
-namespace Core.Utils.Diagnostics
+﻿namespace Core.Utils.Diagnostics
 {
+    using Core.Utils.Contracts;
+
     public class LogEvent : ILogEvent
     {
         // -------------------------------------------------------------------

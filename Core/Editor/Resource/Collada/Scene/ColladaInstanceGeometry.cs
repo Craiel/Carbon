@@ -1,8 +1,8 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace Core.Processing.Resource.Collada.Scene
+﻿namespace Core.Processing.Resource.Collada.Scene
 {
+    using System;
+    using System.Xml.Serialization;
+
     [Serializable]
     public class ColladaInstanceGeometry
     {

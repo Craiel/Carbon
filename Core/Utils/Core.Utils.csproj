@@ -82,6 +82,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationExtension.cs" />
+    <Compile Include="Diagnostics\ContextualLog.cs" />
+    <Compile Include="Formatting\FormatHandler.cs" />
     <Compile Include="IO\CarbonFile.cs" />
     <Compile Include="IO\CarbonPath.cs" />
     <Compile Include="Contracts\IEventRelay.cs" />
@@ -97,7 +99,7 @@
     <Compile Include="Diagnostics\ProfileStatistics.cs" />
     <Compile Include="EventRelay.cs" />
     <Compile Include="FNV.cs" />
-    <Compile Include="Formatter.cs" />
+    <Compile Include="Formatting\Formatter.cs" />
     <Compile Include="Diagnostics\Profiler.cs" />
     <Compile Include="Diagnostics\ProfileRegion.cs" />
     <Compile Include="HashUtils.cs" />

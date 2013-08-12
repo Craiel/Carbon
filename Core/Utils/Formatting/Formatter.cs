@@ -1,59 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Threading;
-
-using Core.Utils.Contracts;
-using Core.Utils.Diagnostics;
-
-namespace Core.Utils
+﻿namespace Core.Utils.Formatting
 {
-    public class FormatHandler
-    {
-        private string cachedValue;
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Text.RegularExpressions;
+    using System.Threading;
 
-        public FormatHandler()
-        {
-            this.AllowCaching = false;
-        }
+    using Core.Utils;
+    using Core.Utils.Contracts;
 
-        public bool AllowCaching { get; set; }
-        public string DefaultParameter { get; set; }
-        public Func<string, string> HandlerFunction { get; set; }
-
-        public void ClearCache()
-        {
-            this.cachedValue = null;
-        }
-
-        public string Evaluate(string parameter)
-        {
-            if (this.cachedValue != null && this.AllowCaching)
-            {
-                return this.cachedValue;
-            }
-
-            if (this.HandlerFunction != null)
-            {
-                this.cachedValue = this.HandlerFunction.Invoke(parameter ?? this.DefaultParameter);
-            }
-
-            return this.cachedValue;
-        }
-    }
-
-    /// <summary>
-    /// Formats a string using a dictionary approach
-    /// </summary>
+    // Formats a string using a dictionary approach
     public class Formatter : IFormatter
     {
+        private static readonly IDictionary<string, object> GlobalCustomDictionary = new Dictionary<string, object>();
+
         private static readonly Regex ParserExpression = new Regex(@"\{([^\}]+)\}", RegexOptions.Compiled);
 
         private readonly IDictionary<string, object> defaultDictionary;
         private readonly IDictionary<string, object> dictionary;
-
-        private readonly static IDictionary<string, object> globalCustomDictionary = new Dictionary<string, object>();
 
         // -------------------------------------------------------------------
         // Constructor
@@ -76,6 +40,19 @@ namespace Core.Utils
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public static void SetGlobal(string rawKey, string value)
+        {
+            string key = rawKey.Trim().ToUpper();
+            if (!GlobalCustomDictionary.ContainsKey(key))
+            {
+                GlobalCustomDictionary.Add(key, value);
+            }
+            else
+            {
+                GlobalCustomDictionary[key] = value;
+            }
+        }
+
         public void Clear()
         {
             this.dictionary.Clear();
@@ -91,20 +68,7 @@ namespace Core.Utils
         {
             return ParserExpression.Replace(template, this.FormatEvaluator);
         }
-
-        public static void SetGlobal(string rawKey, string value)
-        {
-            string key = rawKey.Trim().ToUpper();
-            if (!globalCustomDictionary.ContainsKey(key))
-            {
-                globalCustomDictionary.Add(key, value);
-            }
-            else
-            {
-                globalCustomDictionary[key] = value;
-            }
-        }
-
+        
         public void Set(string rawKey, string value)
         {
             string key = rawKey.Trim().ToUpper();
@@ -134,9 +98,9 @@ namespace Core.Utils
                 return this.GetFormattedValue(key, parameter, this.defaultDictionary[key]);
             }
 
-            if (globalCustomDictionary.ContainsKey(key))
+            if (GlobalCustomDictionary.ContainsKey(key))
             {
-                return this.GetFormattedValue(key, parameter, globalCustomDictionary[key]);
+                return this.GetFormattedValue(key, parameter, GlobalCustomDictionary[key]);
             }
 
             return rawKey;
@@ -181,7 +145,7 @@ namespace Core.Utils
 
         private string HandleFormatCoreTime(string parameter)
         {
-            return Timer.CoreTimer.ElapsedTime.ToString(parameter);
+            return Utils.Timer.CoreTimer.ElapsedTime.ToString(parameter);
         }
 
         private string HandleFormatThreadId(string parameter)

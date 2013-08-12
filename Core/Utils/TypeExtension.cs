@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-
-namespace Core.Utils
+﻿namespace Core.Utils
 {
+    using System;
+    using System.IO;
+
     public static class TypeExtension
     {
         public static bool Implements<T>(this Type type) where T : class

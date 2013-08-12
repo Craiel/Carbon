@@ -1,13 +1,13 @@
-﻿using Core.Engine.Contracts.Scene;
-using Core.Engine.Logic;
-using Core.Engine.Rendering;
-
-using Core.Utils;
-
-using SlimDX;
-
-namespace Core.Engine.Scene
+﻿namespace Core.Engine.Scene
 {
+    using Core.Engine.Contracts.Scene;
+    using Core.Engine.Logic;
+    using Core.Engine.Rendering;
+
+    using Core.Utils;
+
+    using SlimDX;
+
     public abstract class SceneEntity : EngineComponent, ISceneEntity
     {
         // -------------------------------------------------------------------
@@ -39,7 +39,7 @@ namespace Core.Engine.Scene
         public BoundingSphere BoundingSphere { get; set; }
         public BoundingBox BoundingBox { get; set; }
         
-        public override bool Update(Core.Utils.Contracts.ITimer gameTime)
+        public override bool Update(Utils.Contracts.ITimer gameTime)
         {
             this.Local = Matrix.Scaling(this.Scale) * Matrix.RotationQuaternion(this.Rotation)
                          * Matrix.Translation(new Vector3(this.Position.X, this.Position.Y, this.Position.Z));

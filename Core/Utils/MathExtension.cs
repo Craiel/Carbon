@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-
-using SlimDX;
-
-namespace Core.Utils
+﻿namespace Core.Utils
 {
+    using System;
+    using System.Collections.Generic;
+
+    using SlimDX;
+
     public static class MathExtension
     {
-        public static double PiOver2 = Math.PI / 2;
-        public static double TwoPi = Math.PI * 2;
+        public static readonly double PiOver2 = Math.PI / 2;
+        public static readonly double TwoPi = Math.PI * 2;
 
         public static float DegreesToRadians(float degree)
         {
@@ -32,8 +32,8 @@ namespace Core.Utils
 
         public static float Distance(Vector3 a, Vector3 b)
         {
-            Vector3 distance = new Vector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-            return (float)Math.Sqrt(distance.X * distance.X + distance.Y * distance.Y + distance.Z * distance.Z);
+            var distance = new Vector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+            return (float)Math.Sqrt((distance.X * distance.X) + (distance.Y * distance.Y) + (distance.Z * distance.Z));
         }
 
         public static BoundingBox Transform(this BoundingBox box, Matrix matrix)
@@ -48,12 +48,7 @@ namespace Core.Utils
             return (point.X * plane.Normal.X) + (point.Y * plane.Normal.Y) + (point.Z * plane.Normal.Z) + plane.D;
         }
 
-        /// <summary>
-        /// Returns the perpendicular distance from a point to a plane
-        /// </summary>
-        /// <param name="point">The point to check</param>
-        /// <param name="plane">The place to check</param>
-        /// <returns>The perpendicular distance from the point to the plane</returns>
+        // Returns the perpendicular distance from a point to a plane
         public static float PerpendicularDistance(this Plane plane, ref Vector3 point)
         {
             // dist = (ax + by + cz + d) / sqrt(a*a + b*b + c*c)
@@ -77,27 +72,27 @@ namespace Core.Utils
 
         public static IList<int> ComputePrimes(int max)
         {
-            bool[] primes = new bool[max + 1];
-            int sqrt = (int)Math.Sqrt(max);
+            var primes = new bool[max + 1];
+            var sqrt = (int)Math.Sqrt(max);
             for (int x = 1; x < sqrt; x++)
             {
-                var xSquare = x * x;
+                var squareX = x * x;
                 for (int y = 1; y <= sqrt; y++)
                 {
-                    var ySquare = y * y;
-                    var n = 4 * xSquare + ySquare;
+                    var squareY = y * y;
+                    var n = (4 * squareX) + squareY;
                     if (n <= max && (n % 12 == 1 || n % 12 == 5))
                     {
                         primes[n] ^= true;
                     }
 
-                    n = 3 * xSquare + ySquare;
+                    n = (3 * squareX) + squareY;
                     if (n <= max && n % 12 == 7)
                     {
                         primes[n] ^= true;
                     }
 
-                    n = 3 * xSquare - ySquare;
+                    n = (3 * squareX) - squareY;
                     if (x > y && n <= max && n % 12 == 11)
                     {
                         primes[n] ^= true;
@@ -111,8 +106,8 @@ namespace Core.Utils
                 if (primes[i])
                 {
                     primeList.Add(i);
-                    int iSquare = i * i;
-                    for (int k = iSquare; k < max; k += iSquare)
+                    int square = i * i;
+                    for (int k = square; k < max; k += square)
                     {
                         primes[k] = false;
                     }
@@ -126,6 +121,7 @@ namespace Core.Utils
                     primeList.Add(i);
                 }
             }
+
             return primeList;
         }
     }

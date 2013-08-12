@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SQLite;
-using System.Text;
-
-using Core.Engine.Contracts.Logic;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Resource.Content;
-
-using Core.Utils.Contracts;
-
-namespace Core.Engine.Resource
+﻿namespace Core.Engine.Resource
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.SQLite;
+    using System.Globalization;
+    using System.Text;
+
+    using Core.Engine.Contracts.Logic;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource.Content;
+    using Core.Engine.Resource.Generic;
+    using Core.Utils.Contracts;
     using Core.Utils.IO;
 
     public class ContentManager : IContentManager
@@ -162,7 +162,7 @@ namespace Core.Engine.Resource
             int affected = command.ExecuteNonQuery();
             if (affected != 1)
             {
-                throw new InvalidOperationException("Expected 1 row affected but got "+ affected);
+                throw new InvalidOperationException("Expected 1 row affected but got " + affected);
             }
 
             content.Invalidate();
@@ -261,7 +261,7 @@ namespace Core.Engine.Resource
                 builder.AppendFormat(" WHERE {0}", where);
             }
 
-            if(!string.IsNullOrEmpty(order))
+            if (!string.IsNullOrEmpty(order))
             {
                 builder.AppendFormat(" ORDER BY {0}", order);
             }
@@ -414,12 +414,12 @@ namespace Core.Engine.Resource
 
             if (type == typeof(DateTime))
             {
-                return ((DateTime)value).Ticks.ToString();
+                return ((DateTime)value).Ticks.ToString(CultureInfo.InvariantCulture);
             }
 
             if (type.IsEnum)
             {
-                return ((int)value).ToString();
+                return ((int)value).ToString(CultureInfo.InvariantCulture);
             }
 
             return string.Format("'{0}'", value);
@@ -447,8 +447,15 @@ namespace Core.Engine.Resource
             // - Load the database from the resource manager
             // - Pull the data into the memory database
             // - Release the resource
-            this.connection = (SQLiteConnection)this.factory.CreateConnection();
-            //this.connection.ConnectionString = "Data Source=:memory:";
+            // 
+            // this.connection.ConnectionString = "Data Source=:memory:";
+            this.connection = this.factory.CreateConnection() as SQLiteConnection;
+            if (this.connection == null)
+            {
+                this.log.Error("Could not create connection");
+                return;
+            }
+
             this.connection.ConnectionString = string.Format("Data Source={0}", this.file);
             this.connection.Open();
         }
@@ -480,7 +487,7 @@ namespace Core.Engine.Resource
             {
                 while (reader.Read())
                 {
-                    object[] data = new object[reader.FieldCount];
+                    var data = new object[reader.FieldCount];
                     if (reader.GetValues(data) != reader.FieldCount)
                     {
                         throw new InvalidOperationException("GetValues returned unexpected field count");

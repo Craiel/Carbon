@@ -1,12 +1,10 @@
-﻿using System;
-using System.IO;
-
-using Core.Engine.Resource.Resources;
-
-namespace Core.Processing.Processors
+﻿namespace Core.Processing.Processors
 {
+    using System;
+    using System.IO;
     using System.Text.RegularExpressions;
 
+    using Core.Engine.Resource.Resources;
     using Core.Utils;
     using Core.Utils.IO;
 

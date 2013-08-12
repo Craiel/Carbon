@@ -1,8 +1,8 @@
-﻿using Core.Engine.Contracts.Scene;
-using Core.Engine.Rendering;
-
-namespace Core.Engine.Scene
+﻿namespace Core.Engine.Scene
 {
+    using Core.Engine.Contracts.Scene;
+    using Core.Engine.Rendering;
+
     public interface IModelEntity : ISceneEntity
     {
         Mesh Mesh { get; set; }

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace Core.Engine.Resource.Resources.Stage
+﻿namespace Core.Engine.Resource.Resources.Stage
 {
+    using System.Collections.Generic;
+    using System.IO;
+
     public class StageResource : ProtocolResource
     {
         internal const int Version = 1;

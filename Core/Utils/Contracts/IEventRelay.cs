@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Core.Utils.Contracts
+﻿namespace Core.Utils.Contracts
 {
+    using System;
+
     public interface IEventRelay
     {
         void Subscribe<T>(Action<T> action);

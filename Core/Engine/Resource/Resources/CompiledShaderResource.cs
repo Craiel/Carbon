@@ -1,9 +1,9 @@
-﻿using System.IO;
-
-using Google.ProtocolBuffers;
-
-namespace Core.Engine.Resource.Resources
+﻿namespace Core.Engine.Resource.Resources
 {
+    using System.IO;
+
+    using Google.ProtocolBuffers;
+
     public class CompiledShaderResource : ProtocolResource
     {
         internal const int Version = 1;

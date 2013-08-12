@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-
-namespace Core.Utils
+﻿namespace Core.Utils
 {
+    using System.Diagnostics;
+    using System.Reflection;
+
     public static class RuntimeInfo
     {
         private static int processId;

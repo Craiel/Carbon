@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-
-namespace Core.Processing.Resource.Collada
+﻿namespace Core.Processing.Resource.Collada
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.IO;
+
     using Core.Engine.Resource.Resources.Model;
 
     using Core.Processing.Resource.Collada.Effect;
@@ -254,7 +254,7 @@ namespace Core.Processing.Resource.Collada
                         }
                         else
                         {
-                            if (!normalImages.Contains(normalTexture))
+                            if (!this.normalImages.Contains(normalTexture))
                             {
                                 this.normalImages.Add(normalTexture);
                             }
@@ -273,7 +273,7 @@ namespace Core.Processing.Resource.Collada
                         AlphaTexture = alphaTexture
                     };
 
-                    materialInfo.Add(material.Name, material);
+                    this.materialInfo.Add(material.Name, material);
                 }
             }
         }

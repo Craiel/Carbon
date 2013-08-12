@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Xml.Serialization;
-
-namespace Core.Processing.Resource.Xcd
+﻿namespace Core.Processing.Resource.Xcd
 {
+    using System;
+    using System.IO;
+    using System.Xml.Serialization;
+
     [Serializable]
     [XmlRoot(ElementName = "xcd", IsNullable = false)]
     public class Xcd

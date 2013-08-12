@@ -1,8 +1,8 @@
-﻿using System;
-using System.Security.Cryptography;
-
-namespace Core.Utils
+﻿namespace Core.Utils
 {
+    using System;
+    using System.Security.Cryptography;
+
     public class FNV : HashAlgorithm
     {
         private const int P = 16777619;
@@ -19,7 +19,7 @@ namespace Core.Utils
         {
             unchecked
             {
-                int hash = (int)P2;
+                var hash = (int)P2;
                 for (int i = 0; i < data.Length; i++)
                 {
                     hash = Compute(hash, data[i]);

@@ -1,10 +1,10 @@
-﻿using Core.Engine.Contracts.Rendering;
-using Core.Engine.Contracts.Scene;
-using Core.Engine.Logic;
-using System.Collections.Generic;
-
-namespace Core.Engine.Scene
+﻿namespace Core.Engine.Scene
 {
+    using System.Collections.Generic;
+
+    using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Contracts.Scene;
+    using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Rendering;
 
@@ -113,7 +113,7 @@ namespace Core.Engine.Scene
             this.entityRenderLists[targetList].Add(entity);
         }
 
-        public override bool Update(Core.Utils.Contracts.ITimer gameTime)
+        public override bool Update(Utils.Contracts.ITimer gameTime)
         {
             if (!base.Update(gameTime))
             {

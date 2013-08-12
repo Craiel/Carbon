@@ -1,7 +1,7 @@
-﻿using Core.Engine.Contracts.Scene;
-
-namespace Core.Engine.Scene
+﻿namespace Core.Engine.Scene
 {
+    using Core.Engine.Contracts.Scene;
+
     public class SceneGraph
     {
         private readonly INode root;

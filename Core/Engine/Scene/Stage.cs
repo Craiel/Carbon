@@ -11,7 +11,6 @@
     public class Stage : EngineComponent, IStage
     {
         private readonly IEngineFactory factory;
-
         private readonly StageResource data;
 
         private readonly List<ISceneEntity> entities;
@@ -30,16 +29,16 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public void Initialize()
-        {
-        }
-
         public ReadOnlyCollection<ISceneEntity> Entities
         {
             get
             {
                 return this.entities.AsReadOnly();
             }
+        }
+
+        public void Initialize()
+        {
         }
     }
 }

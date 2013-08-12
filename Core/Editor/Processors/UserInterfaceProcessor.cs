@@ -1,14 +1,12 @@
-﻿using System;
-using System.IO;
-
-using Core.Engine.Resource.Resources;
-
-namespace Core.Processing.Processors
+﻿namespace Core.Processing.Processors
 {
+    using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Text.RegularExpressions;
     using System.Xml;
 
+    using Core.Engine.Resource.Resources;
     using Core.Protocol.Resource;
     using Core.Utils;
     using Core.Utils.IO;
@@ -293,19 +291,6 @@ namespace Core.Processing.Processors
             catch (Exception e)
             {
                 throw new InvalidDataException(string.Format("Format for Attribute {0} was invalid (int): {1}", target.Type, source), e);
-            }
-        }
-
-        private static void SetFloatValue(string source, CsamlAttribute.Builder target)
-        {
-            try
-            {
-                target.ValueType = CsamlAttribute.Types.CsamlAttributeValueType.Float;
-                target.ValueFloat = float.Parse(source);
-            }
-            catch (Exception e)
-            {
-                throw new InvalidDataException(string.Format("Format for Attribute {0} was invalid (float): {1}", target.Type, source), e);
             }
         }
 

@@ -1,36 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-using Core.Engine.Contracts.Resource;
-using Core.Utils.IO;
-
-namespace Core.Engine.Resource
+﻿namespace Core.Engine.Resource
 {
-    public abstract class ResourceContent
-    {
-        public abstract Stream Load(string hash);
-        public abstract bool Store(string hash, ICarbonResource data);
-        public abstract bool Replace(string hash, ICarbonResource data);
-        public abstract bool Delete(string hash);
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
 
-        public abstract ResourceInfo GetInfo(string hash);
-    }
-
-    public class ResourceInfo
-    {
-        public ResourceInfo(string hash, long size, byte[] md5)
-        {
-            this.Hash = hash;
-            this.Size = size;
-            this.Md5 = md5;
-        }
-
-        public string Hash { get; private set; }
-        public long Size { get; private set; }
-        public byte[] Md5 { get; private set; }
-    }
-
+    using Core.Engine.Contracts.Resource;
+    using Core.Utils.IO;
+    
     public class ResourceManager : IResourceManager
     {
         private readonly IList<ResourceContent> content;
@@ -69,7 +45,7 @@ namespace Core.Engine.Resource
                     if (dataStream != null)
                     {
                         dataStream.Position = 0;
-                        T resource = (T)Activator.CreateInstance(typeof(T));
+                        var resource = (T)Activator.CreateInstance(typeof(T));
                         resource.Load(dataStream);
                         this.cache.Add(hash, resource);
                         return resource;
@@ -184,6 +160,7 @@ namespace Core.Engine.Resource
                     {
                         this.infoCache.Add(hash, info);
                     }
+
                     return info;
                 }
             }
