@@ -1,15 +1,14 @@
-﻿using GrandSeal.Editor.Contracts;
-
-using Core.Engine.Contracts;
-using Core.Engine.Resource.Content;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
     using System.Windows;
 
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource.Content;
     using Core.Processing.Contracts;
     using Core.Processing.Resource.Xcd;
-    using Core.Engine.Contracts.Resource;
+
+    using GrandSeal.Editor.Contracts;
 
     public class ResourceStageViewModel : ResourceViewModel, IResourceStageViewModel
     {
@@ -51,7 +50,7 @@ namespace GrandSeal.Editor.ViewModels
         
         protected override void DoSave(IContentManager target, IResourceManager resourceTarget)
         {
-            var options = new XcdProcessingOptions();
+            var options = new XcdProcessingOptions { ReferenceResolver = this.OnResolveReference };
             ICarbonResource resource = this.resourceProcessor.ProcessStage(this.SourceFile, options);
             if (resource != null)
             {
@@ -62,6 +61,13 @@ namespace GrandSeal.Editor.ViewModels
             {
                 this.Log.Error("Failed to export Stage resource {0}", null, this.SourcePath);
             }
+        }
+
+        private string OnResolveReference(string reference)
+        {
+            // Todo
+
+            return reference;
         }
     }
 }

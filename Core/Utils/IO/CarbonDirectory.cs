@@ -15,13 +15,16 @@
                 // Check if we are creating from a File
                 if (System.IO.File.Exists(path))
                 {
-                    this.DirectoryName = System.IO.Path.GetDirectoryName(path);
+                    this.Path = System.IO.Path.GetDirectoryName(path);
                 }
-                else
+
+                if (!this.EndsWithSeperator)
                 {
-                    this.DirectoryName = path;   
+                    this.Path += System.IO.Path.DirectorySeparatorChar;
                 }
             }
+
+            this.DirectoryName = this.Path;
         }
 
         public CarbonDirectory(CarbonFile file)
@@ -36,7 +39,7 @@
         {
             get
             {
-                return System.IO.Directory.Exists(this.Path);
+                return System.IO.Directory.Exists(this.DirectoryName);
             }
         }
 
@@ -52,12 +55,12 @@
                 return;
             }
 
-            System.IO.Directory.CreateDirectory(this.Path);
+            System.IO.Directory.CreateDirectory(this.DirectoryName);
         }
 
         public void Delete(bool recursive = false)
         {
-            System.IO.Directory.Delete(this.Path, recursive);
+            System.IO.Directory.Delete(this.DirectoryName, recursive);
         }
         
         public CarbonDirectory ToDirectory<T>(params T[] other)

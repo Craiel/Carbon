@@ -6,20 +6,17 @@
 
     public abstract class CarbonPath
     {
-        private static readonly string DirectorySeparator = System.IO.Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
-        private readonly string path;
+        public static readonly string DirectorySeparator = System.IO.Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
+        public static readonly string DirectorySeparatorAlternative = System.IO.Path.AltDirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
+
+        private string path;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
         protected CarbonPath(string path)
         {
-            this.path = path;
-
-            if (string.IsNullOrEmpty(path))
-            {
-                this.IsNull = true;
-            }
+            this.Path = path;
         }
 
         // -------------------------------------------------------------------
@@ -28,6 +25,8 @@
         public string DirectoryName { get; protected set; }
 
         public bool IsNull { get; private set; }
+
+        public bool EndsWithSeperator { get; private set; }
 
         public abstract bool Exists { get; }
 
@@ -88,6 +87,21 @@
             get
             {
                 return this.path;
+            }
+
+            set
+            {
+                this.path = value;
+
+                if (string.IsNullOrEmpty(this.path))
+                {
+                    this.IsNull = true;
+                }
+                else
+                {
+                    this.EndsWithSeperator = this.path.EndsWith(DirectorySeparator)
+                                             || this.path.EndsWith(DirectorySeparatorAlternative);
+                }
             }
         }
 
