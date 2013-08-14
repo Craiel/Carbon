@@ -10,6 +10,6 @@
     {
         IDictionary<string, ICamera> Cameras { get; }
         IDictionary<string, ILight> Lights { get; }
-        IDictionary<string, IModelEntity> Models { get; }
+        IDictionary<string, IList<IModelEntity>> Models { get; }
     }
 }

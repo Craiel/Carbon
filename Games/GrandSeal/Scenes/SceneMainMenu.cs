@@ -1,6 +1,8 @@
 ﻿namespace GrandSeal.Scenes
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     using Contracts;
 
@@ -91,11 +93,17 @@
                 this.stage = new Stage(this.factory, this.gameState, this.stageResource);
                 this.stage.Initialize(this.graphics);
 
+                // Todo: for testing we Activate first camera
+                this.activeCamera = this.stage.Cameras.Values.FirstOrDefault();
+
                 // Register the stage's entities and add them to the rendering list
-                foreach (IModelEntity entity in this.stage.Models.Values)
+                foreach (IList<IModelEntity> entityList in this.stage.Models.Values)
                 {
-                    this.RegisterEntity(entity);
-                    this.AddSceneEntityToRenderingList(entity);
+                    foreach (IModelEntity entity in entityList)
+                    {
+                        this.RegisterEntity(entity);
+                        this.AddSceneEntityToRenderingList(entity);   
+                    }
                 }
             }
         }

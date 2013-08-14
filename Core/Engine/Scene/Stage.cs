@@ -8,7 +8,6 @@
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
-    using Core.Engine.Rendering;
     using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
     using Core.Engine.Resource.Resources.Stage;
@@ -21,7 +20,7 @@
 
         private readonly IDictionary<string, ICamera> cameras;
         private readonly IDictionary<string, ILight> lights;
-        private readonly IDictionary<string, IModelEntity> models; 
+        private readonly IDictionary<string, IList<IModelEntity>> models;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -39,7 +38,7 @@
 
             this.cameras = new Dictionary<string, ICamera>();
             this.lights = new Dictionary<string, ILight>();
-            this.models = new Dictionary<string, IModelEntity>();
+            this.models = new Dictionary<string, IList<IModelEntity>>();
         }
 
         // -------------------------------------------------------------------
@@ -61,7 +60,7 @@
             }
         }
 
-        public IDictionary<string, IModelEntity> Models
+        public IDictionary<string, IList<IModelEntity>> Models
         {
             get
             {
@@ -91,8 +90,8 @@
             {
                 foreach (StageLightElement lightElement in this.data.Lights)
                 {
-                    //ILight light = this.entityFactory.BuildLight(lightElement);
-                    //this.lights.Add(lightElement.Id, light);
+                    ILight light = this.entityFactory.BuildLight(lightElement);
+                    this.lights.Add(lightElement.Id, light);
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Stage loaded {0} lights", this.lights.Count);
@@ -149,14 +148,20 @@
                             continue;
                         }
 
-                        model.Mesh = new Mesh(gameState.ResourceManager.Load<ModelResource>(reference.Hash));
+                        var resource = this.gameState.ResourceManager.Load<ModelResourceGroup>(reference.Hash);
+                        // model.Mesh = new Mesh();
                         if (unusedReferences.Contains(reference))
                         {
                             unusedReferences.Remove(reference);
                         }
                     }
 
-                    this.models.Add(modelElement.Id, model);
+                    if (!this.models.ContainsKey(modelElement.Id))
+                    {
+                        this.models.Add(modelElement.Id, new List<IModelEntity>());
+                    }
+
+                    this.models[modelElement.Id].Add(model);
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Stage loaded {0} models", this.models.Count);

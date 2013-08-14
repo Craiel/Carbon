@@ -39,7 +39,7 @@
 
         public ILight BuildLight(StageLightElement lightElement)
         {
-            var light = this.factory.Get<ILight>();
+            var light = new Light();
             if (lightElement.Location != null)
             {
                 light.Position = new Vector4((Vector3)lightElement.Location, 1);
@@ -92,10 +92,16 @@
 
         public IModelEntity BuildModel(StageModelElement modelElement)
         {
-            var model = this.factory.Get<IModelEntity>();
-            model.Position = new Vector4(modelElement.Translation, 1);
-            model.Scale = modelElement.Scale;
-            model.Rotation = Quaternion.RotationYawPitchRoll(modelElement.Rotation.X, modelElement.Rotation.Y, modelElement.Rotation.Z);
+            var model = new ModelEntity
+                            {
+                                Position = new Vector4(modelElement.Translation, 1),
+                                Scale = modelElement.Scale,
+                                Rotation =
+                                    Quaternion.RotationYawPitchRoll(
+                                        modelElement.Rotation.X,
+                                        modelElement.Rotation.Y,
+                                        modelElement.Rotation.Z)
+                            };
             return model;
         }
     }
