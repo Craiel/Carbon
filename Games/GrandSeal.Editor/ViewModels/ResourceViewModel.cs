@@ -1,26 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Resource;
-using Core.Engine.Resource.Content;
-using Core.Utils;
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Logic.MVVM;
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using Microsoft.Win32;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Windows;
+    using System.Windows.Input;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource;
+    using Core.Engine.Resource.Content;
     using Core.Processing.Contracts;
+    using Core.Utils;
     using Core.Utils.IO;
+
+    using GrandSeal.Editor.Contracts;
+    using GrandSeal.Editor.Logic.MVVM;
+    using ICSharpCode.AvalonEdit.CodeCompletion;
+    using Microsoft.Win32;
 
     public abstract class ResourceViewModel : ContentViewModel, IResourceViewModel
     {
@@ -288,7 +287,6 @@ namespace GrandSeal.Editor.ViewModels
                 }
 
                 return this.previewImage;
-                
             }
 
             protected set

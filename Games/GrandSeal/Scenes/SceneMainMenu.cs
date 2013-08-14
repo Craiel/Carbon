@@ -34,7 +34,7 @@
         private IUserInterface userInterface;
         private IStage stage;
 
-        private IProjectionCamera camera;
+        private ICamera activeCamera;
         private IOrthographicCamera userInterfaceCamera;
 
         // --------------------------------------------------------------------
@@ -62,8 +62,6 @@
             this.graphics = graphic;
 
             // Initialize our camera's
-            this.camera = this.factory.Get<IProjectionCamera>();
-            this.camera.Initialize(graphic);
             this.userInterfaceCamera = this.factory.Get<IOrthographicCamera>();
             this.userInterfaceCamera.Initialize(graphic);
 
@@ -90,11 +88,11 @@
 
             if (this.stageResource != null)
             {
-                this.stage = new Stage(this.factory, this.stageResource);
+                this.stage = new Stage(this.factory, this.gameState, this.stageResource);
                 this.stage.Initialize(this.graphics);
 
                 // Register the stage's entities and add them to the rendering list
-                foreach (ISceneEntity entity in this.stage.Entities)
+                foreach (IModelEntity entity in this.stage.Models.Values)
                 {
                     this.RegisterEntity(entity);
                     this.AddSceneEntityToRenderingList(entity);
@@ -104,11 +102,16 @@
 
         public override void Render(IFrameManager frameManager)
         {
+            FrameInstructionSet set;
+
             // The scene to deferred
-            FrameInstructionSet set = frameManager.BeginSet(this.camera);
-            set.Technique = FrameTechnique.Deferred;
-            this.RenderList(1, set);
-            frameManager.RenderSet(set);
+            if (this.activeCamera != null)
+            {
+                set = frameManager.BeginSet(this.activeCamera);
+                set.Technique = FrameTechnique.Deferred;
+                this.RenderList(1, set);
+                frameManager.RenderSet(set);
+            }
 
             // User Interface as overlay on top
             set = frameManager.BeginSet(this.userInterfaceCamera);
@@ -121,7 +124,11 @@
         public override void Resize(TypedVector2<int> size)
         {
             // Update the camera perspectives
-            this.camera.SetPerspective(size, 0.05f, 200.0f);
+            if (this.activeCamera != null)
+            {
+                this.activeCamera.SetPerspective(size, 0.05f, 200.0f);
+            }
+
             this.userInterfaceCamera.SetPerspective(size, 0.05f, 200.0f);
         }
 
@@ -130,7 +137,6 @@
             base.Unload();
 
             // release Camera's
-            this.camera.Dispose();
             this.userInterfaceCamera.Dispose();
 
             // release the components of the scene

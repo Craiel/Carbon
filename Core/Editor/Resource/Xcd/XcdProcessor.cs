@@ -215,6 +215,11 @@
                                              ? currentOptions.ReferenceResolver(sourceReference)
                                              : sourceReference;
 
+            if (string.IsNullOrEmpty(resolved))
+            {
+                return -1;
+            }
+
             if (ReferenceDictionary.Contains(resolved))
             {
                 return ReferenceDictionary.IndexOf(resolved);

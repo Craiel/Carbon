@@ -61,9 +61,9 @@ namespace GrandSeal.Editor.Contracts
 
         IFolderViewModel LocateFolder(string hash);
 
-        // Todo: Need to optimize and refactor this:
         IResourceViewModel LocateResource(int id);
         IResourceViewModel LocateResource(string hash);
+        IResourceViewModel LocateResource(CarbonFile file);
 
         IList<IResourceViewModel> LocateResources(string filter);
 

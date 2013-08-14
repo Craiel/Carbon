@@ -7,6 +7,7 @@
     using Core.Engine.Resource.Content;
     using Core.Processing.Contracts;
     using Core.Processing.Resource.Xcd;
+    using Core.Utils.IO;
 
     using GrandSeal.Editor.Contracts;
 
@@ -65,9 +66,17 @@
 
         private string OnResolveReference(string reference)
         {
-            // Todo
+            var resolveRoot = this.SourcePath.ToAbsolute<CarbonDirectory>(this.logic.ProjectLocation);
+            var referenceFile = new CarbonFile(reference).ToAbsolute<CarbonFile>(resolveRoot);
+            IResourceViewModel resource = this.logic.LocateResource(referenceFile);
+            if (resource == null)
+            {
+                this.Log.Warning("Reference could not be resolved: " + reference);
+                return null;
+            }
 
-            return reference;
+            this.Log.Info("Resolved reference {0} as {1}", reference, resource.Name);
+            return resource.Hash;
         }
     }
 }

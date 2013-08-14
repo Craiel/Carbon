@@ -1,31 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Xml;
-
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Resource;
-using Core.Engine.Resource.Content;
-using Core.Utils.Contracts;
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Views;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-
 namespace GrandSeal.Editor.Logic
 {
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Xml;
 
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource.Content;
     using Core.Engine.Resource.Generic;
+    using Core.Utils.Contracts;
     using Core.Utils.IO;
 
+    using GrandSeal.Editor.Contracts;
     using GrandSeal.Editor.Properties;
+    using GrandSeal.Editor.Views;
+    using ICSharpCode.AvalonEdit.Highlighting;
+    using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 
     public class EditorLogic : EditorBase, IEditorLogic
     {
@@ -40,6 +37,8 @@ namespace GrandSeal.Editor.Logic
         private readonly ObservableCollection<IFontViewModel> fonts;
         private readonly ObservableCollection<IFolderViewModel> folders;
         private readonly ObservableCollection<CarbonDirectory> recentProjects;
+
+        private readonly IList<IResourceViewModel> resourceViewModels;  
 
         private CarbonDirectory projectPath;
         private IContentManager projectContent;
@@ -59,6 +58,8 @@ namespace GrandSeal.Editor.Logic
             this.fonts = new ObservableCollection<IFontViewModel>();
             this.folders = new ObservableCollection<IFolderViewModel>();
             this.recentProjects = new ObservableCollection<CarbonDirectory>();
+
+            this.resourceViewModels = new List<IResourceViewModel>();
 
             this.LoadSyntaxHightlighting();
         }
@@ -291,37 +292,51 @@ namespace GrandSeal.Editor.Logic
         
         public IResourceTextureViewModel AddResourceTexture()
         {
-            return this.viewModelFactory.GetResourceTextureViewModel(new ResourceEntry { Type = ResourceType.Texture });
+            var vm = this.viewModelFactory.GetResourceTextureViewModel(new ResourceEntry { Type = ResourceType.Texture });
+            this.resourceViewModels.Add(vm);
+            return vm;
         }
 
         public IResourceModelViewModel AddResourceModel()
         {
-            return this.viewModelFactory.GetResourceModelViewModel(new ResourceEntry { Type = ResourceType.Model });
+            var vm = this.viewModelFactory.GetResourceModelViewModel(new ResourceEntry { Type = ResourceType.Model });
+            this.resourceViewModels.Add(vm);
+            return vm;
         }
 
         public IResourceScriptViewModel AddResourceScript()
         {
-            return this.viewModelFactory.GetResourceScriptViewModel(new ResourceEntry { Type = ResourceType.Script });
+            var vm = this.viewModelFactory.GetResourceScriptViewModel(new ResourceEntry { Type = ResourceType.Script });
+            this.resourceViewModels.Add(vm);
+            return vm;
         }
 
         public IResourceFontViewModel AddResourceFont()
         {
-            return this.viewModelFactory.GetResourceFontViewModel(new ResourceEntry { Type = ResourceType.Font });
+            var vm = this.viewModelFactory.GetResourceFontViewModel(new ResourceEntry { Type = ResourceType.Font });
+            this.resourceViewModels.Add(vm);
+            return vm;
         }
 
         public IResourceRawViewModel AddResourceRaw()
         {
-            return this.viewModelFactory.GetResourceRawViewModel(new ResourceEntry { Type = ResourceType.Raw });
+            var vm = this.viewModelFactory.GetResourceRawViewModel(new ResourceEntry { Type = ResourceType.Raw });
+            this.resourceViewModels.Add(vm);
+            return vm;
         }
 
         public IResourceStageViewModel AddResourceStage()
         {
-            return this.viewModelFactory.GetResourceStageViewModel(new ResourceEntry { Type = ResourceType.Stage });
+            var vm = this.viewModelFactory.GetResourceStageViewModel(new ResourceEntry { Type = ResourceType.Stage });
+            this.resourceViewModels.Add(vm);
+            return vm;
         }
 
         public IResourceUserInterfaceViewModel AddResourceUserInterface()
         {
-            return this.viewModelFactory.GetResourceUserInterfaceViewModel(new ResourceEntry { Type = ResourceType.UserInterface });
+            var vm = this.viewModelFactory.GetResourceUserInterfaceViewModel(new ResourceEntry { Type = ResourceType.UserInterface });
+            this.resourceViewModels.Add(vm);
+            return vm;
         }
 
         public void Save(IResourceViewModel resource)
@@ -342,6 +357,7 @@ namespace GrandSeal.Editor.Logic
             }
 
             resource.Delete(this.projectContent, this.projectResources);
+            this.resourceViewModels.Remove(resource);
         }
 
         public IResourceViewModel Clone(IResourceViewModel source)
@@ -386,6 +402,7 @@ namespace GrandSeal.Editor.Logic
                             results.Add(this.viewModelFactory.GetResourceTextureViewModel(entry));
                             break;
                         }
+
                     case ResourceType.Model:
                         {
                             results.Add(this.viewModelFactory.GetResourceModelViewModel(entry));
@@ -429,6 +446,11 @@ namespace GrandSeal.Editor.Logic
                 }
             }
 
+            foreach (IResourceViewModel resourceViewModel in results)
+            {
+                this.resourceViewModels.Add(resourceViewModel);
+            }
+
             return results;
         }
 
@@ -448,26 +470,21 @@ namespace GrandSeal.Editor.Logic
 
         public IResourceViewModel LocateResource(int id)
         {
-            foreach (IFolderViewModel folder in this.folders)
-            {
-                var result = this.LocateResource(folder, id);
-                if (result != null)
-                {
-                    return result;
-                }
-            }
-
-            return null;
+            return this.resourceViewModels.FirstOrDefault(x => x.Id == id);
         }
 
         public IResourceViewModel LocateResource(string hash)
         {
-            foreach (IFolderViewModel folder in this.folders)
+            return this.resourceViewModels.FirstOrDefault(x => x.Hash.Equals(hash, StringComparison.Ordinal));
+        }
+
+        public IResourceViewModel LocateResource(CarbonFile file)
+        {
+            foreach (IResourceViewModel resource in this.resourceViewModels)
             {
-                var result = this.LocateResource(folder, hash);
-                if (result != null)
+                if (resource.SourceFile.EqualsPath(file, this.projectPath))
                 {
-                    return result;
+                    return resource;
                 }
             }
 
@@ -501,7 +518,7 @@ namespace GrandSeal.Editor.Logic
         public void SaveSettings()
         {
             var history = new StringCollection();
-            foreach (CarbonPath path in this.recentProjects)
+            foreach (CarbonDirectory path in this.recentProjects)
             {
                 history.Add(path.ToString());
             }
@@ -634,71 +651,7 @@ namespace GrandSeal.Editor.Logic
 
             return null;
         }
-
-        private IResourceViewModel LocateResource(IFolderViewModel current, string hash)
-        {
-            if (current.Content == null || current.Content.Count <= 0)
-            {
-                return null;
-            }
-
-            foreach (IEditorDocument document in current.Content)
-            {
-                if (document as IResourceViewModel != null)
-                {
-                    if (((IResourceViewModel)document).Hash.Equals(hash, StringComparison.Ordinal))
-                    {
-                        return document as IResourceViewModel;
-                    }
-
-                    continue;
-                }
-
-                if (document as IFolderViewModel != null)
-                {
-                    var result = this.LocateResource(document as IFolderViewModel, hash);
-                    if (result != null)
-                    {
-                        return result;
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        private IResourceViewModel LocateResource(IFolderViewModel current, int id)
-        {
-            if (current.Content == null || current.Content.Count <= 0)
-            {
-                return null;
-            }
-
-            foreach (IEditorDocument document in current.Content)
-            {
-                if (document as IResourceViewModel != null)
-                {
-                    if (((IResourceViewModel)document).Id == id)
-                    {
-                        return document as IResourceViewModel;
-                    }
-
-                    continue;
-                }
-
-                if (document as IFolderViewModel != null)
-                {
-                    var result = this.LocateResource(document as IFolderViewModel, id);
-                    if (result != null)
-                    {
-                        return result;
-                    }
-                }
-            }
-
-            return null;
-        }
-
+        
         private void LocateResources(IList<IResourceViewModel> target, IFolderViewModel current, string filter)
         {
             if (current.Content == null || current.Content.Count <= 0)

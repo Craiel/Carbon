@@ -51,6 +51,9 @@ namespace Core.Engine.Ninject
             this.Bind<IContentManager>().To<ContentManager>();
             this.Bind<IResourceManager>().To<ResourceManager>();
 
+            // Scene
+            this.Bind<ISceneEntityFactory>().To<SceneEntityFactory>().InSingletonScope();
+
             // User Interface
             this.Bind<IUserInterfaceConsole>().To<UserInterfaceConsole>();
         }
