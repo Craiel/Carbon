@@ -48,7 +48,7 @@
             this.providers.Remove(provider);
         }
 
-        public void Execute(CarbonScript script)
+        public void ExecuteOneshot(CarbonScript script)
         {
             if (script == null || string.IsNullOrEmpty(script.Script))
             {

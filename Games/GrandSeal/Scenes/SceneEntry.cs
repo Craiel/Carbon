@@ -20,7 +20,7 @@
         private readonly ILog log;
         private readonly IGrandSealGameState gameState;
 
-        private ICarbonGraphics graphics;
+        private CarbonScript runtimeScript;
         
         // --------------------------------------------------------------------
         // Constructor
@@ -40,14 +40,12 @@
             base.Initialize(graphic);
 
             this.log.Info("Entry scene initializing...");
-
-            this.graphics = graphic;
-
+            
             // Load the init script for the scene, we only register the scene in the script environment temporary for this
             this.gameState.ScriptingEngine.Register(this);
             var resource = this.gameState.ResourceManager.Load<ScriptResource>(HashUtils.BuildResourceHash(@"Scripts\SceneEntry.lua"));
             var script = new CarbonScript(resource);
-            this.gameState.ScriptingEngine.Execute(script);
+            this.gameState.ScriptingEngine.ExecuteOneshot(script);
             this.gameState.ScriptingEngine.Unregister(this);
         }
 
@@ -58,7 +56,20 @@
         public override void Resize(TypedVector2<int> size)
         {
         }
-        
+
+        [ScriptingMethod]
+        public void SetRuntime(string scriptHash)
+        {
+            var resource = this.gameState.ResourceManager.Load<ScriptResource>(scriptHash);
+            if (resource == null)
+            {
+                this.log.Error("Could find runtime script: " + scriptHash);
+                return;
+            }
+
+            this.runtimeScript = new CarbonScript(resource);
+        }
+
         [ScriptingMethod]
         public void SceneTransition(string target, string initializeScriptHash)
         {

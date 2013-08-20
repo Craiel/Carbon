@@ -9,7 +9,7 @@
         void Register(IScriptingProvider provider);
         void Unregister(IScriptingProvider provider);
 
-        void Execute(CarbonScript script);
+        void ExecuteOneshot(CarbonScript script);
 
         Lua GetContext();
     }

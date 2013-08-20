@@ -7,6 +7,8 @@
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Rendering;
+    using Core.Engine.Resource.Resources;
+    using Core.Utils;
 
     public abstract class Scene : EngineComponent, IScene
     {
@@ -62,7 +64,7 @@
 
         public abstract void Render(IFrameManager frameManager);
         public abstract void Resize(TypedVector2<int> size);
-
+        
         [ScriptingMethod]
         public void RegisterEntity(ISceneEntity entity)
         {

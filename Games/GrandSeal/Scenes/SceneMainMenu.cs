@@ -71,7 +71,7 @@
             this.gameState.ScriptingEngine.Register(this);
             var resource = this.gameState.ResourceManager.Load<ScriptResource>(this.SceneScriptHash);
             var script = new CarbonScript(resource);
-            this.gameState.ScriptingEngine.Execute(script);
+            this.gameState.ScriptingEngine.ExecuteOneshot(script);
             this.gameState.ScriptingEngine.Unregister(this);
 
             // Now all the user data should be loaded and set so proceed initializing
