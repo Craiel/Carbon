@@ -7,11 +7,13 @@
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Rendering;
-    using Core.Engine.Resource.Resources;
-    using Core.Utils;
+
+    using LuaInterface;
 
     public abstract class Scene : EngineComponent, IScene
     {
+        private const string FunctionHookUpdate = "Update";
+
         private const int DefaultSceneEntityStack = 1;
         private const int DefaultSceneEntityRenderingList = 1;
 
@@ -20,6 +22,11 @@
         private readonly IDictionary<int, RenderableList<ISceneEntity>> entityRenderLists;
 
         private bool isActive;
+
+        private CarbonScript runtimeScript;
+
+        private Lua runtime;
+        private LuaFunction functionUpdate;
 
         // -------------------------------------------------------------------
         // Public
@@ -64,7 +71,13 @@
 
         public abstract void Render(IFrameManager frameManager);
         public abstract void Resize(TypedVector2<int> size);
-        
+
+        [ScriptingMethod]
+        public void SetRuntime(string scriptHash)
+        {
+            this.runtimeScript = this.LoadRuntimeScript(scriptHash);
+        }
+
         [ScriptingMethod]
         public void RegisterEntity(ISceneEntity entity)
         {
@@ -122,6 +135,11 @@
                 return false;
             }
 
+            if (this.functionUpdate != null)
+            {
+                this.functionUpdate.Call(gameTime);
+            }
+
             foreach (int stack in this.entityStacks.Keys)
             {
                 if (!this.entityStacks[stack].Update(gameTime))
@@ -131,6 +149,14 @@
             }
 
             return true;
+        }
+
+        public virtual void CheckState()
+        {
+            if (this.runtimeScript == null)
+            {
+                throw new InvalidSceneStateException("Runtime script is missing");
+            }
         }
 
         // -------------------------------------------------------------------
@@ -149,11 +175,31 @@
 
         protected virtual void Activate()
         {
+            this.CheckState();
+
+            this.runtime = this.LoadRuntime(this.runtimeScript);
+            if (this.runtime == null)
+            {
+                throw new InvalidSceneStateException("Runtime was not loaded properly");
+            }
+
+            this.functionUpdate = this.runtime.GetFunction(FunctionHookUpdate);
         }
 
         protected virtual void Deactivate()
         {
+            if (this.runtime != null)
+            {
+                this.functionUpdate.Dispose();
+                this.functionUpdate = null;
+
+                this.runtime.Dispose();
+                this.runtime = null;
+            }
         }
+
+        protected abstract CarbonScript LoadRuntimeScript(string scriptHash);
+        protected abstract Lua LoadRuntime(CarbonScript script);
 
         // Invalidate a node in all update lists
         // Invalidate a node in specific update lists

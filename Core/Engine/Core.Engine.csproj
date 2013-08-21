@@ -248,6 +248,7 @@
     <Compile Include="Resource\Resources\Stage\StageModelElement.cs" />
     <Compile Include="Resource\Resources\Stage\StagePropertyElement.cs" />
     <Compile Include="Resource\Resources\Stage\StageResource.cs" />
+    <Compile Include="Scene\Exceptions.cs" />
     <Compile Include="Scene\SceneEntity.cs" />
     <Compile Include="Scene\LightEntity.cs" />
     <Compile Include="Scene\ModelEntity.cs" />

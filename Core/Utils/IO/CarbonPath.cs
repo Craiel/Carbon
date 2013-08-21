@@ -165,12 +165,12 @@
 
         protected string GetRelativePath(CarbonPath other)
         {
-            if (!this.IsRelative)
+            if (this.IsRelative)
             {
                 return this.path;
             }
 
-            return this.GetUri(UriKind.Absolute).MakeRelativeUri(other.GetUri(UriKind.Absolute)).LocalPath;
+            return other.GetUri(UriKind.Absolute).MakeRelativeUri(this.GetUri(UriKind.Absolute)).OriginalString;
         }
 
         protected string GetAbsolutePath(CarbonPath other)

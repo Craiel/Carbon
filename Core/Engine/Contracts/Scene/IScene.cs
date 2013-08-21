@@ -9,5 +9,7 @@
         bool IsVisible { get; set; }
 
         string SceneScriptHash { get; set; }
+
+        void CheckState();
     }
 }

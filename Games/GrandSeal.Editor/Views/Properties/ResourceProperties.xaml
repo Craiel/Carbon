@@ -38,7 +38,7 @@
                 <TextBlock Text="Source" Margin="4" VerticalAlignment="Center" Grid.Row="1"/>
                 <DockPanel Grid.Column="1" Margin="2" Grid.Row="1">
                     <Button Command="{Binding Path=CommandSelectFile}" Content="..." DockPanel.Dock="Right" Width="20" Height="20"/>
-                    <TextBox Text="{Binding Path=SourcePath, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding Path=SourceFile, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center"/>
                 </DockPanel>
 
                 <TextBlock Text="Force Export" Visibility="{Binding Path=Type, Converter={StaticResource EnumEqualsToVisibilityConverterInverted}, ConverterParameter={x:Static content:ResourceType.Script}}" Grid.Row="2" Margin="4"/>

@@ -97,7 +97,7 @@
 
             // Setup the entry scene
             var entryScene = this.factory.Get<ISceneEntry>();
-            entryScene.SceneScriptHash = HashUtils.BuildResourceHash(@"Scripts\SceneEntry.lua");
+            entryScene.SceneScriptHash = HashUtils.BuildResourceHash(@"Scripts\Entry\Init.lua");
             this.gameState.SceneManager.Register((int)SceneKey.Entry, entryScene);
            
             // Activate the entry scene

@@ -13,6 +13,9 @@
         private readonly IDictionary<int, IScene> registeredScenes;
         private readonly IList<int> preparedScenes;
 
+        private readonly object updateSynch = new object();
+        private readonly object renderSynch = new object();
+
         private ICarbonGraphics currentGraphics;
 
         private int? activeScene;
@@ -125,6 +128,9 @@
                 this.preparedScenes.Add(key);
             }
 
+            // Call checkstate to see if everything is proper for activation
+            scene.CheckState();
+
             scene.IsActive = true;
             scene.IsVisible = true;
             this.activeScene = key;
@@ -193,19 +199,22 @@
 
         public override bool Update(Utils.Contracts.ITimer gameTime)
         {
-            if (!base.Update(gameTime))
+            lock (this.updateSynch)
             {
-                return false;
-            }
+                if (!base.Update(gameTime))
+                {
+                    return false;
+                }
 
-            if (this.suspendedScene != null)
-            {
-                this.registeredScenes[(int)this.suspendedScene].Update(gameTime);
-            }
+                if (this.suspendedScene != null)
+                {
+                    this.registeredScenes[(int)this.suspendedScene].Update(gameTime);
+                }
 
-            if (this.activeScene != null)
-            {
-                this.registeredScenes[(int)this.activeScene].Update(gameTime);
+                if (this.activeScene != null)
+                {
+                    this.registeredScenes[(int)this.activeScene].Update(gameTime);
+                }
             }
 
             return true;
@@ -213,23 +222,30 @@
 
         public void Render(IFrameManager frameManager)
         {
-            if (this.suspendedScene != null && this.registeredScenes[(int)this.suspendedScene].IsVisible)
+            lock (this.renderSynch)
             {
-                // Todo: We probably need to act here to get this rendered as a inactive backend
-                this.registeredScenes[(int)this.suspendedScene].Render(frameManager);
-            }
+                if (this.suspendedScene != null && this.registeredScenes[(int)this.suspendedScene].IsVisible)
+                {
+                    // Todo: We probably need to act here to get this rendered as a inactive backend
+                    this.registeredScenes[(int)this.suspendedScene].Render(frameManager);
+                }
 
-            if (this.activeScene != null)
-            {
-                this.registeredScenes[(int)this.activeScene].Render(frameManager);
+                if (this.activeScene != null)
+                {
+                    this.registeredScenes[(int)this.activeScene].Render(frameManager);
+                }
             }
         }
 
         public void Resize(TypedVector2<int> size)
         {
-            foreach (int key in this.preparedScenes)
+            // Synchronize with the render thread
+            lock (this.renderSynch)
             {
-                this.registeredScenes[key].Resize(size);
+                foreach (int key in this.preparedScenes)
+                {
+                    this.registeredScenes[key].Resize(size);
+                }
             }
         }
     }

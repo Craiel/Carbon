@@ -1,6 +1,7 @@
 ﻿namespace GrandSeal.Scenes
 {
     using System;
+    using System.Data;
 
     using Contracts;
 
@@ -10,26 +11,23 @@
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Resource.Resources;
-    using Core.Engine.Scene;
-    using Core.Utils;
     using Core.Utils.Contracts;
 
-    public class SceneEntry : Scene, ISceneEntry
+    using LuaInterface;
+
+    public class SceneEntry : SceneBase, ISceneEntry
     {
         private readonly IEngineFactory factory;
         private readonly ILog log;
-        private readonly IGrandSealGameState gameState;
 
-        private CarbonScript runtimeScript;
-        
         // --------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
         public SceneEntry(IEngineFactory factory)
+            : base(factory)
         {
             this.factory = factory;
             this.log = factory.Get<IApplicationLog>().AquireContextLog("EntryScene");
-            this.gameState = factory.Get<IGrandSealGameState>();
         }
 
         // -------------------------------------------------------------------
@@ -42,11 +40,13 @@
             this.log.Info("Entry scene initializing...");
             
             // Load the init script for the scene, we only register the scene in the script environment temporary for this
-            this.gameState.ScriptingEngine.Register(this);
-            var resource = this.gameState.ResourceManager.Load<ScriptResource>(HashUtils.BuildResourceHash(@"Scripts\SceneEntry.lua"));
+            this.GameState.ScriptingEngine.Register(this);
+            var resource = this.GameState.ResourceManager.Load<ScriptResource>(this.SceneScriptHash);
             var script = new CarbonScript(resource);
-            this.gameState.ScriptingEngine.ExecuteOneshot(script);
-            this.gameState.ScriptingEngine.Unregister(this);
+            this.GameState.ScriptingEngine.ExecuteOneshot(script);
+            this.GameState.ScriptingEngine.Unregister(this);
+
+            this.CheckState();
         }
 
         public override void Render(IFrameManager frameManager)
@@ -55,19 +55,6 @@
 
         public override void Resize(TypedVector2<int> size)
         {
-        }
-
-        [ScriptingMethod]
-        public void SetRuntime(string scriptHash)
-        {
-            var resource = this.gameState.ResourceManager.Load<ScriptResource>(scriptHash);
-            if (resource == null)
-            {
-                this.log.Error("Could find runtime script: " + scriptHash);
-                return;
-            }
-
-            this.runtimeScript = new CarbonScript(resource);
         }
 
         [ScriptingMethod]
@@ -87,9 +74,9 @@
                         this.log.Info("Transition into MainMenu Scene...");
                         var scene = this.factory.Get<ISceneMainMenu>();
                         scene.SceneScriptHash = initializeScriptHash;
-                        this.gameState.SceneManager.Register((int)SceneKey.MainMenu, scene);
-                        this.gameState.SceneManager.Prepare((int)SceneKey.MainMenu);
-                        this.gameState.SceneManager.Activate((int)SceneKey.MainMenu, suspendCurrent: true);
+                        this.GameState.SceneManager.Register((int)SceneKey.MainMenu, scene);
+                        this.GameState.SceneManager.Prepare((int)SceneKey.MainMenu);
+                        this.GameState.SceneManager.Activate((int)SceneKey.MainMenu, suspendCurrent: true);
                         break;
                     }
 
@@ -99,23 +86,6 @@
                         break;
                     }
             }
-        }
-
-        // -------------------------------------------------------------------
-        // Protected
-        // -------------------------------------------------------------------
-        protected override void Activate()
-        {
-            base.Activate();
-
-            this.gameState.ScriptingEngine.Register(this);
-        }
-
-        protected override void Deactivate()
-        {
-            this.gameState.ScriptingEngine.Unregister(this);
-
-            base.Deactivate();
         }
     }
 

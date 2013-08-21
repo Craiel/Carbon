@@ -15,6 +15,7 @@
 *.ilk
 *.db
 *.manifest
+*.application
 Data
 
 # To specifically include use the ! to negate

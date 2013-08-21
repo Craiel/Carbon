@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Linq;
 
     using Contracts;
@@ -19,12 +20,13 @@
     using Core.Engine.Scene;
     using Core.Engine.UserInterface;
     using Core.Utils.Contracts;
-    
-    public class SceneMainMenu : Scene, ISceneMainMenu
+
+    using LuaInterface;
+
+    public class SceneMainMenu : SceneBase, ISceneMainMenu
     {
         private readonly IEngineFactory factory;
         private readonly ILog log;
-        private readonly IGrandSealGameState gameState;
 
         private ICarbonGraphics graphics;
 
@@ -43,10 +45,10 @@
         // Constructor
         // -------------------------------------------------------------------
         public SceneMainMenu(IEngineFactory factory)
+            : base(factory)
         {
             this.factory = factory;
-            this.log = factory.Get<IApplicationLog>().AquireContextLog("EntryScene");
-            this.gameState = factory.Get<IGrandSealGameState>();
+            this.log = factory.Get<IApplicationLog>().AquireContextLog("MainMenuScene");
         }
 
         // -------------------------------------------------------------------
@@ -68,11 +70,11 @@
             this.userInterfaceCamera.Initialize(graphic);
 
             // Load the init script for the scene
-            this.gameState.ScriptingEngine.Register(this);
-            var resource = this.gameState.ResourceManager.Load<ScriptResource>(this.SceneScriptHash);
+            this.GameState.ScriptingEngine.Register(this);
+            var resource = this.GameState.ResourceManager.Load<ScriptResource>(this.SceneScriptHash);
             var script = new CarbonScript(resource);
-            this.gameState.ScriptingEngine.ExecuteOneshot(script);
-            this.gameState.ScriptingEngine.Unregister(this);
+            this.GameState.ScriptingEngine.ExecuteOneshot(script);
+            this.GameState.ScriptingEngine.Unregister(this);
 
             // Now all the user data should be loaded and set so proceed initializing
             if (this.userInterfaceResource != null)
@@ -90,7 +92,7 @@
 
             if (this.stageResource != null)
             {
-                this.stage = new Stage(this.factory, this.gameState, this.stageResource);
+                this.stage = new Stage(this.factory, this.GameState, this.stageResource);
                 this.stage.Initialize(this.graphics);
 
                 // Todo: for testing we Activate first camera
@@ -178,7 +180,7 @@
                 this.log.Warning("UserInterface resource changed without unloading!");
             }
 
-            this.userInterfaceResource = this.gameState.ResourceManager.Load<UserInterfaceResource>(hash);
+            this.userInterfaceResource = this.GameState.ResourceManager.Load<UserInterfaceResource>(hash);
         }
 
         [ScriptingMethod]
@@ -189,24 +191,7 @@
                 this.log.Warning("Stage resource changed without unloading!");
             }
 
-            this.stageResource = this.gameState.ResourceManager.Load<StageResource>(hash);
-        }
-
-        // -------------------------------------------------------------------
-        // Protected
-        // -------------------------------------------------------------------
-        protected override void Activate()
-        {
-            base.Activate();
-
-            this.gameState.ScriptingEngine.Register(this);
-        }
-
-        protected override void Deactivate()
-        {
-            this.gameState.ScriptingEngine.Unregister(this);
-
-            base.Deactivate();
+            this.stageResource = this.GameState.ResourceManager.Load<StageResource>(hash);
         }
     }
 }
