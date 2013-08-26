@@ -2,7 +2,7 @@
 {
     using Core.Engine.Contracts.Logic;
 
-    public class ScriptingGameProvider : IScriptingProvider
+    public class ScriptingGameProvider : ScriptingProvider
     {
         private readonly ICarbonGame game;
 

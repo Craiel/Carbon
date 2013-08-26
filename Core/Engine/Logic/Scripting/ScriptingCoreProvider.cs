@@ -9,7 +9,7 @@
 
     using SlimDX;
 
-    public class ScriptingCoreProvider : IScriptingProvider
+    public class ScriptingCoreProvider : ScriptingProvider, IScriptingCoreProvider
     {
         private readonly ILog log;
 

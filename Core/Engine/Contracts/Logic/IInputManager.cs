@@ -13,7 +13,7 @@
         void ReceiveAxisChange(string axis, float value);
     }
 
-    public interface IInputManager : IEngineComponent, IScriptingProvider
+    public interface IInputManager : IScriptingProvider
     {
         void RegisterReceiver(IInputReceiver receiver);
         void UnregisterReceiver(IInputReceiver receiver);

@@ -103,37 +103,43 @@
                 throw new InvalidOperationException("Scene is already active: " + key);
             }
 
-            if (this.activeScene != null)
+            lock (this.updateSynch)
             {
-                IScene lastActive = this.registeredScenes[(int)this.activeScene];
-                lastActive.IsActive = false;
-                if (suspendActive)
+                lock (this.renderSynch)
                 {
-                    this.suspendedScene = this.activeScene;
+                    if (this.activeScene != null)
+                    {
+                        IScene lastActive = this.registeredScenes[(int)this.activeScene];
+                        lastActive.IsActive = false;
+                        if (suspendActive)
+                        {
+                            this.suspendedScene = this.activeScene;
+                        }
+                        else
+                        {
+                            lastActive.IsVisible = false;
+                            lastActive.Unload();
+                            this.preparedScenes.Remove((int)this.activeScene);
+                        }
+
+                        this.activeScene = null;
+                    }
+
+                    IScene scene = this.registeredScenes[key];
+                    if (!this.preparedScenes.Contains(key))
+                    {
+                        scene.Initialize(this.currentGraphics);
+                        this.preparedScenes.Add(key);
+                    }
+
+                    // Call checkstate to see if everything is proper for activation
+                    scene.CheckState();
+
+                    scene.IsActive = true;
+                    scene.IsVisible = true;
+                    this.activeScene = key;
                 }
-                else
-                {
-                    lastActive.IsVisible = false;
-                    lastActive.Unload();
-                    this.preparedScenes.Remove((int)this.activeScene);
-                }
-
-                this.activeScene = null;
             }
-
-            IScene scene = this.registeredScenes[key];
-            if (!this.preparedScenes.Contains(key))
-            {
-                scene.Initialize(this.currentGraphics);
-                this.preparedScenes.Add(key);
-            }
-
-            // Call checkstate to see if everything is proper for activation
-            scene.CheckState();
-
-            scene.IsActive = true;
-            scene.IsVisible = true;
-            this.activeScene = key;
         }
 
         public void Deactivate()
@@ -143,19 +149,25 @@
                 throw new InvalidOperationException("No active scene to deactivate");
             }
 
-            IScene active = this.registeredScenes[(int)this.activeScene];
-            active.Unload();
-            this.preparedScenes.Remove((int)this.activeScene);
-            active.IsActive = false;
-            active.IsVisible = false;
-            this.activeScene = null;
-
-            if (this.suspendedScene != null)
+            lock (this.updateSynch)
             {
-                this.activeScene = this.suspendedScene;
-                active = this.registeredScenes[(int)this.activeScene];
-                active.IsActive = true;
-                active.IsVisible = true;
+                lock (this.renderSynch)
+                {
+                    IScene active = this.registeredScenes[(int)this.activeScene];
+                    active.Unload();
+                    this.preparedScenes.Remove((int)this.activeScene);
+                    active.IsActive = false;
+                    active.IsVisible = false;
+                    this.activeScene = null;
+
+                    if (this.suspendedScene != null)
+                    {
+                        this.activeScene = this.suspendedScene;
+                        active = this.registeredScenes[(int)this.activeScene];
+                        active.IsActive = true;
+                        active.IsVisible = true;
+                    }
+                }
             }
         }
 
@@ -186,14 +198,12 @@
             {
                 foreach (int preparedKey in this.preparedScenes)
                 {
-                    this.registeredScenes[preparedKey].Unload();
-                    this.registeredScenes[preparedKey].Initialize(this.currentGraphics);
+                    this.ReloadScene(this.registeredScenes[preparedKey]);
                 }
             }
             else
             {
-                this.registeredScenes[(int)key].Unload();
-                this.registeredScenes[(int)key].Initialize(this.currentGraphics);
+                this.ReloadScene(this.registeredScenes[(int)key]);
             }
         }
 
@@ -245,6 +255,30 @@
                 foreach (int key in this.preparedScenes)
                 {
                     this.registeredScenes[key].Resize(size);
+                }
+            }
+        }
+
+        // -------------------------------------------------------------------
+        // Public
+        // -------------------------------------------------------------------
+        private void ReloadScene(IScene scene)
+        {
+            // If the scene is not active we can just reload plain
+            if (!scene.IsActive)
+            {
+                scene.Unload();
+                scene.Initialize(this.currentGraphics);
+                return;
+            }
+
+            // For active scenes we have to synchronize with the update and render thread to avoid crashing
+            lock (this.updateSynch)
+            {
+                lock (this.renderSynch)
+                {
+                    scene.Unload();
+                    scene.Initialize(this.currentGraphics);
                 }
             }
         }

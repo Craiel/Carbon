@@ -18,14 +18,14 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public static IList<ScriptingMethodInfo> GetMethods<T>() where T : IScriptingProvider
+        public static IList<ScriptingMethodInfo> GetMethods<T>() where T : IScriptingCoreProvider
         {
             return DoGetMethods(typeof(T));
         }
 
         public static IList<ScriptingMethodInfo> GetMethods(Type type)
         {
-            if (type.GetInterface(typeof(IScriptingProvider).Name) == null)
+            if (type.GetInterface(typeof(IScriptingCoreProvider).Name) == null)
             {
                 throw new ArgumentException("Type is not implementing provider interface");
             }
@@ -33,14 +33,14 @@
             return DoGetMethods(type);
         }
 
-        public static IList<ScriptingPropertyInfo> GetProperties<T>() where T : IScriptingProvider
+        public static IList<ScriptingPropertyInfo> GetProperties<T>() where T : IScriptingCoreProvider
         {
             return DoGetProperties(typeof(T));
         }
 
         public static IList<ScriptingPropertyInfo> GetProperties(Type type)
         {
-            if (type.GetInterface(typeof(IScriptingProvider).Name) == null)
+            if (type.GetInterface(typeof(IScriptingCoreProvider).Name) == null)
             {
                 throw new ArgumentException("Type is not implementing provider interface");
             }

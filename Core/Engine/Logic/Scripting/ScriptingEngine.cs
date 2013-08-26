@@ -89,7 +89,7 @@
             runtime.DoString("function enum(o)\nif o == nil then return nil end\nlocal e = o:GetEnumerator()\nreturn function()\nif e:MoveNext() then return e.Current end end end");
 
             IList<IScriptingProvider> providerList = new List<IScriptingProvider>(this.providers);
-            foreach (IScriptingProvider provider in providerList)
+            foreach (IScriptingCoreProvider provider in providerList)
             {
                 Type providerType = provider.GetType();
                 IList<ScriptingMethodInfo> methods = ScriptingProviderReflection.GetMethods(providerType);

@@ -10,7 +10,7 @@
 
     using LuaInterface;
 
-    public abstract class Scene : EngineComponent, IScene
+    public abstract class Scene : ScriptingProvider, IScene
     {
         private const string FunctionHookUpdate = "Update";
 
@@ -20,6 +20,8 @@
         private readonly IList<ISceneEntity> sceneEntities; 
         private readonly IDictionary<int, EngineComponentStack<ISceneEntity>> entityStacks;
         private readonly IDictionary<int, RenderableList<ISceneEntity>> entityRenderLists;
+
+        private readonly object runtimeLock = new object();
 
         private bool isActive;
 
@@ -135,9 +137,13 @@
                 return false;
             }
 
-            if (this.functionUpdate != null)
+            lock (this.runtimeLock)
             {
-                this.functionUpdate.Call(gameTime);
+                if (this.functionUpdate != null)
+                {
+                    System.Diagnostics.Debug.Write("Update -> function call");
+                    this.functionUpdate.Call(gameTime);
+                }
             }
 
             foreach (int stack in this.entityStacks.Keys)
@@ -177,24 +183,32 @@
         {
             this.CheckState();
 
-            this.runtime = this.LoadRuntime(this.runtimeScript);
-            if (this.runtime == null)
+            lock (this.runtimeLock)
             {
-                throw new InvalidSceneStateException("Runtime was not loaded properly");
-            }
+                this.runtime = this.LoadRuntime(this.runtimeScript);
+                if (this.runtime == null)
+                {
+                    throw new InvalidSceneStateException("Runtime was not loaded properly");
+                }
 
-            this.functionUpdate = this.runtime.GetFunction(FunctionHookUpdate);
+                this.functionUpdate = this.runtime.GetFunction(FunctionHookUpdate);
+            }
         }
 
         protected virtual void Deactivate()
         {
-            if (this.runtime != null)
+            lock (this.runtimeLock)
             {
-                this.functionUpdate.Dispose();
-                this.functionUpdate = null;
+                if (this.runtime != null)
+                {
+                    System.Diagnostics.Debug.Write("Deactivating Scene");
 
-                this.runtime.Dispose();
-                this.runtime = null;
+                    this.functionUpdate.Dispose();
+                    this.functionUpdate = null;
+
+                    this.runtime.Dispose();
+                    this.runtime = null;
+                }
             }
         }
 

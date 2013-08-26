@@ -92,6 +92,7 @@
     <Compile Include="Contracts\Logic\ICarbonConsole.cs" />
     <Compile Include="Contracts\Logic\IGameState.cs" />
     <Compile Include="Contracts\Logic\IScriptingEngine.cs" />
+    <Compile Include="Contracts\Logic\IScriptingCoreProvider.cs" />
     <Compile Include="Contracts\Logic\IScriptingProvider.cs" />
     <Compile Include="Contracts\Network\INetworkClient.cs" />
     <Compile Include="Contracts\IEngineFactory.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Logic\BoundController.cs" />
     <Compile Include="Logic\GameState.cs" />
     <Compile Include="Logic\InputBindings.cs" />
+    <Compile Include="Logic\Scripting\ScriptingProvider.cs" />
     <Compile Include="Logic\TextureReference.cs" />
     <Compile Include="Logic\TypedVectors.cs" />
     <Compile Include="Logic\Scripting\ScriptingGameProvider.cs" />

@@ -11,7 +11,7 @@
     using SlimDX;
     using SlimDX.DirectInput;
 
-    public class InputManager : EngineComponent, IInputManager
+    public class InputManager : ScriptingProvider, IInputManager
     {
         private static readonly TimeSpan UpdateCycle = TimeSpan.FromMilliseconds(10);
 

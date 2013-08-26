@@ -1,7 +1,6 @@
 ﻿namespace GrandSeal.Scenes
 {
     using System;
-    using System.Data;
 
     using Contracts;
 
@@ -12,9 +11,7 @@
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Resource.Resources;
     using Core.Utils.Contracts;
-
-    using LuaInterface;
-
+    
     public class SceneEntry : SceneBase, ISceneEntry
     {
         private readonly IEngineFactory factory;
