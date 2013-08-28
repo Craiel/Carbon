@@ -105,6 +105,11 @@
 
         public override bool Update(Utils.Contracts.ITimer gameTime)
         {
+            if (!base.Update(gameTime))
+            {
+                return false;
+            }
+
             if (this.Entity != null)
             {
                 this.Entity.World = this.Entity.Local * this.Parent.Entity.Local;

@@ -41,6 +41,11 @@
         
         public override bool Update(Utils.Contracts.ITimer gameTime)
         {
+            if (!base.Update(gameTime))
+            {
+                return false;
+            }
+
             this.Local = Matrix.Scaling(this.Scale) * Matrix.RotationQuaternion(this.Rotation)
                          * Matrix.Translation(new Vector3(this.Position.X, this.Position.Y, this.Position.Z));
 

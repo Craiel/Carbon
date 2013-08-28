@@ -8,5 +8,5 @@
 ]]--
 
 function Update(gameTime)
-	Log:Debug("MainMenu - Update")
+	--Log:Debug("MainMenu - Update", nil)
 end
