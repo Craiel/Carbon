@@ -179,13 +179,13 @@ class XCDExporter:
         self._fileWriter('<meta name="filename" content=%s />' % self._filePath)
         self._fileWriter('<meta name="generator" content=%s />' % blenderVersion)
         self._fileWriter('</head><scene>')
-        
-        self._dump(self)
     
     def _WriteFooter(self):
         self._fileWriter('</scene></xcd>')
     
     def _WriteCamera(self, obj, matrix, scene):
+        print("Writing camera %s" % obj.name)
+		
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheView, clean_func=self._Clean, sep="_"))
     
         location, rotation, scale = matrix.decompose()
@@ -205,6 +205,8 @@ class XCDExporter:
         self._fileWriter('</camera>')
         
     def _WriteMesh(self, obj, matrix, scene):
+        print("Writing mesh %s" % obj.name)
+		
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheObjects, clean_func=self._Clean, sep="_"))
         
         location, rotation, scale = matrix.decompose()
@@ -225,6 +227,7 @@ class XCDExporter:
         self._fileWriter('</mesh>')
         
     def _WriteStageElement(self, obj, matrix, scene):
+        print("Writing stage element %s" % obj.name)
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheObjects, clean_func=self._Clean, sep="_"))
         
         location, rotation, scale = matrix.decompose()
@@ -246,6 +249,8 @@ class XCDExporter:
         self._fileWriter('</element>')
     
     def _WriteFog(self, world):
+        print("Writing fog")
+        
         if world:
             mtype = world.mist_settings.falloff
             mparam = world.mist_settings
@@ -264,6 +269,8 @@ class XCDExporter:
             return
     
     def _WriteSpotLight(self, obj, matrix, lamp, world):
+        print("Writing spot light %s" % obj.name)
+        
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheLights, clean_func=self._Clean, sep="_"))
     
         if world:
@@ -300,6 +307,8 @@ class XCDExporter:
         
     
     def _WriteDirectionalLight(self, obj, matrix, lamp, world):
+        print("Writing directional light %s" % obj.name)
+        
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheLights, clean_func=self._Clean, sep="_"))
     
         if world:
@@ -326,6 +335,8 @@ class XCDExporter:
         self._fileWriter('</light>')
     
     def _WritePointLight(self, obj, matrix, lamp, world):
+        print("Writing point light %s" % obj.name)
+        
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheLights, clean_func=self._Clean, sep="_"))
     
         if world:
