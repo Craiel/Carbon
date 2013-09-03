@@ -1,7 +1,5 @@
 ﻿namespace Core.Engine.Scene
 {
-    using System;
-
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
@@ -27,7 +25,7 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public ICamera BuildCamera(StageCameraElement cameraElement)
+        public IProjectionCamera BuildCamera(StageCameraElement cameraElement)
         {
             var camera = this.factory.Get<IProjectionCamera>();
             camera.Position = new Vector4(cameraElement.Position, 1);
@@ -37,7 +35,7 @@
             return camera;
         }
 
-        public ILight BuildLight(StageLightElement lightElement)
+        public ILightEntity BuildLight(StageLightElement lightElement)
         {
             var light = new Light();
             if (lightElement.Location != null)
@@ -87,7 +85,19 @@
             // lightElement.SpotSize
             // lightElement.Intensity;
             // lightElement.AmbientIntensity
-            return light;
+            var entity = new LightEntity { Light = light, Name = lightElement.Id };
+            if (lightElement.Location != null)
+            {
+                entity.Position = new Vector4(lightElement.Location.Value, 1);
+            }
+
+            if (lightElement.Direction != null)
+            {
+                entity.Rotation = Quaternion.RotationYawPitchRoll(
+                    lightElement.Direction.Value.X, lightElement.Direction.Value.Y, lightElement.Direction.Value.Z);
+            }
+
+            return entity;
         }
 
         public IModelEntity BuildModel(StageModelElement modelElement)

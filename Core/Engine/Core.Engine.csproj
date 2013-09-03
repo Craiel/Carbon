@@ -119,6 +119,8 @@
     <Compile Include="Contracts\Resource\ICarbonResource.cs" />
     <Compile Include="Contracts\Resource\IContentManager.cs" />
     <Compile Include="Contracts\Resource\IResourceManager.cs" />
+    <Compile Include="Contracts\Scene\ILightEntity.cs" />
+    <Compile Include="Contracts\Scene\IModelEntity.cs" />
     <Compile Include="Contracts\Scene\ISceneEntity.cs" />
     <Compile Include="Contracts\Scene\IScene.cs" />
     <Compile Include="Contracts\Scene\ISceneEntityFactory.cs" />

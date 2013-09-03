@@ -96,11 +96,11 @@ message StageLight {
 	
 	required StageLightType Type = 2;
 	
-	required float Radius = 3;
-	required float Intensity = 4;
-	required float AmbientIntensity = 5;
-	required float SpotSize = 6;
-	required float Angle = 7;
+	optional float Radius = 3;
+	optional float Intensity = 4;
+	optional float AmbientIntensity = 5;
+	optional float SpotSize = 6;
+	optional float Angle = 7;
 
 	optional int32 LayerFlags = 10;
 	repeated StageProperty Properties = 11;

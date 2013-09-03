@@ -236,33 +236,37 @@
         // -------------------------------------------------------------------
         private void RenderInstruction(DeviceContext context, RenderParameters parameters, RenderInstruction instruction)
         {
-                Type neededVertexBufferType = this.ApplyShader(context, parameters, instruction);
+            Type neededVertexBufferType = this.ApplyShader(context, parameters, instruction);
 
-                // Check if we have to update the mesh data
-                if (this.activeMesh != instruction.Mesh)
+            // Check if we have to update the mesh data
+            if (this.activeMesh != instruction.Mesh)
+            {
+                this.activeMesh = instruction.Mesh;
+                this.UploadMesh(neededVertexBufferType, this.activeMesh);
+            }
+
+            context.InputAssembler.PrimitiveTopology = parameters.Topology;
+
+            // Render the instruction
+            if (instruction.InstanceCount > 1)
+            {
+                if (instruction.Mesh.IndexCount > 0)
                 {
-                    this.activeMesh = instruction.Mesh;
-                    this.UploadMesh(neededVertexBufferType, this.activeMesh);
-                }
-
-                context.InputAssembler.PrimitiveTopology = parameters.Topology;
-
-                // Render the instruction
-                if (instruction.InstanceCount > 1)
-                {
-                    if (instruction.Mesh.IndexCount > 0)
-                    {
-                        this.RenderIndexedInstanced(context, instruction);
-                    }
-                    else
-                    {
-                        this.RenderInstanced(context, instruction);
-                    }
+                    this.RenderIndexedInstanced(context, instruction);
                 }
                 else
                 {
-                    this.RenderIndexed(context);
+                    this.RenderInstanced(context, instruction);
                 }
+            }
+            else if (this.activeMesh.IndexCount > 0)
+            {
+                this.RenderIndexed(context);
+            }
+            else
+            {
+                this.Render(context);
+            }
         }
 
         private Type ApplyShader(DeviceContext context, RenderParameters parameters, RenderInstruction instruction)
@@ -374,6 +378,15 @@
             context.DrawIndexed(this.activeMesh.IndexCount, 0, 0);
             this.currentFrameStatistic.DrawIndexedCalls++;
             this.currentFrameStatistic.Triangles += (uint)(this.activeMesh.IndexCount / 3);
+        }
+
+        private void Render(DeviceContext context)
+        {
+            context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(this.vertexBuffer.Buffer, this.vertexBufferStride, 0));
+
+            context.Draw(this.activeMesh.ElementCount, 0);
+            this.currentFrameStatistic.DrawCalls++;
+            this.currentFrameStatistic.Triangles += (uint)this.activeMesh.ElementCount;
         }
 
         private void UploadMesh(Type neededVertexBufferType, Mesh mesh)

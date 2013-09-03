@@ -30,6 +30,7 @@
         public ulong InstanceCount { get; set; }
         public ulong MeshSwitches { get; set; }
         public ulong ShaderSwitches { get; set; }
+        public ulong DrawCalls { get; set; }
         public ulong DrawIndexedCalls { get; set; }
         public ulong DrawInstancedCalls { get; set; }
         public ulong DrawIndexedInstancedCalls { get; set; }
@@ -64,6 +65,7 @@
             this.InstanceCount = 0;
             this.MeshSwitches = 0;
             this.ShaderSwitches = 0;
+            this.DrawCalls = 0;
             this.DrawIndexedCalls = 0;
             this.DrawInstancedCalls = 0;
             this.DrawIndexedInstancedCalls = 0;

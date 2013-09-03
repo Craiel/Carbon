@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Linq;
 
     using Contracts;
@@ -15,13 +14,14 @@
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Rendering;
+    using Core.Engine.Rendering.Primitives;
     using Core.Engine.Resource.Resources;
     using Core.Engine.Resource.Resources.Stage;
     using Core.Engine.Scene;
     using Core.Engine.UserInterface;
     using Core.Utils.Contracts;
 
-    using LuaInterface;
+    using SlimDX;
 
     public class SceneMainMenu : SceneBase, ISceneMainMenu
     {
@@ -38,8 +38,12 @@
         private IUserInterface userInterface;
         private IStage stage;
 
-        private ICamera activeCamera;
+        private IProjectionCamera activeCamera;
         private IOrthographicCamera userInterfaceCamera;
+
+        private ICamera debugCamera;
+        private IFirstPersonController debugController;
+        private IModelEntity debugModel;
 
         // --------------------------------------------------------------------
         // Constructor
@@ -95,8 +99,14 @@
                 this.stage = new Stage(this.factory, this.GameState, this.stageResource);
                 this.stage.Initialize(this.graphics);
 
-                // Todo: for testing we Activate first camera
-                this.activeCamera = this.stage.Cameras.Values.FirstOrDefault();
+                // Todo: for testing use debug camera and controller for now
+                this.activeCamera = this.stage.Cameras.FirstOrDefault().Value;
+                //this.activeCamera = this.factory.Get<IProjectionCamera>();
+                this.debugController = this.factory.Get<IFirstPersonController>();
+                this.debugController.Initialize(graphic);
+                this.debugController.SetInputBindings("debugController");
+                this.debugController.IsActive = true;
+                this.debugController.Position = this.activeCamera.Position;
 
                 // Register the stage's entities and add them to the rendering list
                 foreach (IList<IModelEntity> entityList in this.stage.Models.Values)
@@ -104,10 +114,28 @@
                     foreach (IModelEntity entity in entityList)
                     {
                         this.RegisterEntity(entity);
-                        this.AddSceneEntityToRenderingList(entity);   
+                        this.AddSceneEntityToRenderingList(entity);
+                        this.InvalidateSceneEntity(entity);
                     }
                 }
+
+                foreach (ILightEntity light in this.stage.Lights.Values)
+                {
+                    this.RegisterEntity(light);
+                    this.AddSceneEntityToRenderingList(light);
+                    this.InvalidateSceneEntity(light);
+                }
             }
+        }
+
+        public override bool Update(ITimer gameTime)
+        {
+            this.debugController.Update(gameTime);
+            this.activeCamera.Position = this.debugController.Position;
+            this.activeCamera.Rotation = this.debugController.Rotation;
+            this.activeCamera.Update(gameTime);
+
+            return base.Update(gameTime);
         }
 
         public override void Render(IFrameManager frameManager)
@@ -118,17 +146,19 @@
             if (this.activeCamera != null)
             {
                 set = frameManager.BeginSet(this.activeCamera);
-                set.Technique = FrameTechnique.Deferred;
+                set.Technique = FrameTechnique.Forward;
+                set.LightingEnabled = true;
                 this.RenderList(1, set);
+                
                 frameManager.RenderSet(set);
             }
 
             // User Interface as overlay on top
-            set = frameManager.BeginSet(this.userInterfaceCamera);
+            /*set = frameManager.BeginSet(this.userInterfaceCamera);
             set.LightingEnabled = false;
             set.Technique = FrameTechnique.Forward;
             this.RenderList(2, set);
-            frameManager.RenderSet(set);
+            frameManager.RenderSet(set);*/
         }
 
         public override void Resize(TypedVector2<int> size)

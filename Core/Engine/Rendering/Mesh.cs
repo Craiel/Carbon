@@ -14,7 +14,7 @@
     */
     public class Mesh : IDisposable
     {
-        private readonly WeakReference<ModelResource> resourceReference; 
+        private readonly ModelResource resourceReference; 
  
         private readonly IDictionary<Type, DataContainer> uploadCache;
         private readonly StaticDataContainer<uint> indexUploadCache;
@@ -23,7 +23,7 @@
         
         public Mesh(ModelResource resource)
         {
-            this.resourceReference = new WeakReference<ModelResource>(resource);
+            this.resourceReference = resource;
 
             this.Name = resource.Name;
 
@@ -134,11 +134,13 @@
 
         private void RefreshUploadCache(Type type)
         {
-            ModelResource resource;
-            if (!this.resourceReference.TryGetTarget(out resource))
+            ModelResource resource = this.resourceReference;
+
+            // Todo:
+            /*if (!this.resourceReference.TryGetTarget(out resource))
             {
                 throw new InvalidOperationException("Model resource is no longer valid");
-            }
+            }*/
 
             DataContainer container = this.SelectCacheContainer(type);
 

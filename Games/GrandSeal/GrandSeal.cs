@@ -14,6 +14,8 @@
 
     using Ninject;
 
+    using SlimDX;
+
     public enum SceneKey
     {
         Entry = 0,
@@ -148,6 +150,7 @@
                 frameManager.ClearCache();
             }
 
+            frameManager.BackgroundColor = new Vector4(0.6f, 0.7f, 0.8f, 1);
             renderer.BeginFrame();
             frameManager.BeginFrame();
 

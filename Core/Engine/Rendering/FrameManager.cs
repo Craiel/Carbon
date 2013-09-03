@@ -59,11 +59,12 @@
         // Public
         // -------------------------------------------------------------------
         public bool EnableDebugOverlay { get; set; }
+        public Vector4 BackgroundColor { get; set; }
 
         public void BeginFrame()
         {
-            this.backBufferRenderTarget.Clear(this.graphics, Vector4.Zero);
-            this.gBufferTarget.Clear(this.graphics, Vector4.Zero);
+            this.backBufferRenderTarget.Clear(this.graphics, this.BackgroundColor);
+            this.gBufferTarget.Clear(this.graphics, this.BackgroundColor);
             this.deferredLightTarget.Clear(this.graphics, Vector4.Zero);
         }
 
@@ -538,7 +539,7 @@
             }
             else
             {
-                // Set a material to indicate this is error nous
+                // Set a material to indicate this is has an error
                 instruction.Color = new Vector4(1, 0, 0, 1);
             }
 

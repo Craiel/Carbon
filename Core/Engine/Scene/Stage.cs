@@ -8,18 +8,20 @@
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
+    using Core.Engine.Rendering;
     using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
     using Core.Engine.Resource.Resources.Stage;
-    
+    using Core.Protocol.Resource;
+
     public class Stage : EngineComponent, IStage
     {
         private readonly ISceneEntityFactory entityFactory;
         private readonly IGameState gameState;
         private readonly StageResource data;
 
-        private readonly IDictionary<string, ICamera> cameras;
-        private readonly IDictionary<string, ILight> lights;
+        private readonly IDictionary<string, IProjectionCamera> cameras;
+        private readonly IDictionary<string, ILightEntity> lights;
         private readonly IDictionary<string, IList<IModelEntity>> models;
 
         // -------------------------------------------------------------------
@@ -36,15 +38,15 @@
             this.gameState = gameState;
             this.data = data;
 
-            this.cameras = new Dictionary<string, ICamera>();
-            this.lights = new Dictionary<string, ILight>();
+            this.cameras = new Dictionary<string, IProjectionCamera>();
+            this.lights = new Dictionary<string, ILightEntity>();
             this.models = new Dictionary<string, IList<IModelEntity>>();
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public IDictionary<string, ICamera> Cameras
+        public IDictionary<string, IProjectionCamera> Cameras
         {
             get
             {
@@ -52,7 +54,7 @@
             }
         }
 
-        public IDictionary<string, ILight> Lights
+        public IDictionary<string, ILightEntity> Lights
         {
             get
             {
@@ -75,7 +77,7 @@
             {
                 foreach (StageCameraElement cameraElement in this.data.Cameras)
                 {
-                    ICamera camera = this.entityFactory.BuildCamera(cameraElement);
+                    IProjectionCamera camera = this.entityFactory.BuildCamera(cameraElement);
                     this.cameras.Add(cameraElement.Id, camera);
                 }
 
@@ -85,13 +87,13 @@
             {
                 System.Diagnostics.Trace.TraceWarning("Warning! Stage has no cameras");
             }
-
+            
             if (this.data.Lights != null)
             {
                 foreach (StageLightElement lightElement in this.data.Lights)
                 {
-                    ILight light = this.entityFactory.BuildLight(lightElement);
-                    this.lights.Add(lightElement.Id, light);
+                    ILightEntity light = this.entityFactory.BuildLight(lightElement);
+                    this.lights.Add(light.Name, light);
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Stage loaded {0} lights", this.lights.Count);
@@ -108,7 +110,7 @@
                 referenceInfos = new ResourceInfo[this.data.References.Count];
                 for (int i = 0; i < this.data.References.Count; i++)
                 {
-                    ResourceInfo info = gameState.ResourceManager.GetInfo(this.data.References[i]);
+                    ResourceInfo info = this.gameState.ResourceManager.GetInfo(this.data.References[i]);
                     if (info == null)
                     {
                         System.Diagnostics.Trace.TraceError("Could not get info for reference: ");
@@ -148,8 +150,9 @@
                             continue;
                         }
 
+                        // Todo: Model groups are not handled properly!!!
                         var resource = this.gameState.ResourceManager.Load<ModelResourceGroup>(reference.Hash);
-                        // model.Mesh = new Mesh();
+                        model.Mesh = new Mesh(resource.Models[0]);
                         if (unusedReferences.Contains(reference))
                         {
                             unusedReferences.Remove(reference);

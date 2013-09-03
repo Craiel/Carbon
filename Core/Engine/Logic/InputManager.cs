@@ -242,6 +242,13 @@
             binding.BindEx("F9", "ToggleDepth", "PressAndRelease", "And");
             binding.BindEx("F10", "ToggleWireframe", "PressAndRelease", "And");
 
+            binding = this.RegisterBinding("debugController");
+            binding.BindEx("W", "MoveForward", "Always", "And");
+            binding.BindEx("A", "MoveLeft", "Always", "And");
+            binding.BindEx("S", "MoveBackward", "Always", "And");
+            binding.BindEx("D", "MoveRight", "Always", "And");
+            binding.BindEx("Mouse1", "ToggleRotation", "Always", "And");
+
             binding = this.RegisterBinding("console");
             var capsModifiers = new[] { (object)"RightShift", "LeftShift" };
 

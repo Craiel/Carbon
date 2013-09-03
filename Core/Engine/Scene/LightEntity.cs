@@ -4,11 +4,7 @@
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Rendering;
 
-    public interface ILightNode : ISceneEntity
-    {
-    }
-
-    public class LightEntity : SceneEntity, ILightNode
+    public class LightEntity : SceneEntity, ILightEntity
     {
         public ILight Light { get; set; }
 

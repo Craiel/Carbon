@@ -4,9 +4,12 @@
     using Core.Engine.Logic;
     using Core.Engine.Rendering;
 
+    using SlimDX;
+
     public interface IFrameManager : IEngineComponent
     {
         bool EnableDebugOverlay { get; set; }
+        Vector4 BackgroundColor { get; set; }
 
         void Resize(TypedVector2<int> size);
 
