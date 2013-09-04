@@ -2,7 +2,7 @@
 {
     using System;
 
-    using SlimDX.Direct3D11;
+    using SharpDX.Direct3D11;
 
     public enum TextureDataType
     {
@@ -143,7 +143,15 @@
             {
                 case TextureDataType.Texture2D:
                     {
-                        this.Texture2D = this.loadInformation != null ? Texture2D.FromMemory(graphics, this.data, (ImageLoadInformation)this.loadInformation) : Texture2D.FromMemory(graphics, this.data);
+                        if (this.loadInformation != null)
+                        {
+                            this.Texture2D = Resource.FromMemory<Texture2D>(graphics, this.data, (ImageLoadInformation)this.loadInformation);
+                        }
+                        else
+                        {
+                            this.Texture2D = Resource.FromMemory<Texture2D>(graphics, this.data);
+                        }
+
                         break;
                     }
 

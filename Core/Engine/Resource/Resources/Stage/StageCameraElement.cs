@@ -1,6 +1,6 @@
 ﻿using Core.Utils;
 
-using SlimDX;
+using SharpDX;
 
 namespace Core.Engine.Resource.Resources.Stage
 {

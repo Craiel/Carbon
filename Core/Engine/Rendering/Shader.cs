@@ -10,10 +10,11 @@
     using Core.Utils;
     using Core.Utils.Diagnostics;
 
-    using SlimDX;
-    using SlimDX.D3DCompiler;
-    using SlimDX.Direct3D11;
-
+    using SharpDX;
+    using SharpDX.D3DCompiler;
+    using SharpDX.Direct3D;
+    using SharpDX.Direct3D11;
+    
     public abstract class CarbonShader : EngineComponent, ICarbonShader
     {
         internal readonly int DefaultConstantBufferSize = Marshal.SizeOf(typeof(DefaultConstantBuffer));
@@ -34,7 +35,7 @@
         private ShaderSignature signature;
         private InputLayout inputLayout;
 
-        private SlimDX.Direct3D11.Buffer[] constantBuffers;
+        private SharpDX.Direct3D11.Buffer[] constantBuffers;
         private DataStream[] constantBufferData;
         private bool[] constantBufferDataState;
         private SamplerState[] samplerStates;
@@ -223,7 +224,7 @@
             this.uploadSamplers = states != null;
         }
 
-        protected void SetConstantBuffers(SlimDX.Direct3D11.Buffer[] buffers)
+        protected void SetConstantBuffers(SharpDX.Direct3D11.Buffer[] buffers)
         {
             this.constantBuffers = buffers;
             if (buffers != null)
@@ -279,7 +280,7 @@
         {
             for (int i = 0; i < macros.Length; i++)
             {
-                macros[i].Value = "0";
+                macros[i].Definition = "0";
             }
         }
 
@@ -329,8 +330,8 @@
 
             if (this.uploadBuffers)
             {
-                context.VertexShader.SetConstantBuffers(this.constantBuffers, 0, this.constantBuffers.Length);
-                context.PixelShader.SetConstantBuffers(this.constantBuffers, 0, this.constantBuffers.Length);
+                context.VertexShader.SetConstantBuffers(0, this.constantBuffers.Length, this.constantBuffers);
+                context.PixelShader.SetConstantBuffers(0, this.constantBuffers.Length, this.constantBuffers);
                 this.uploadBuffers = false;
             }
 
@@ -339,22 +340,22 @@
             {
                 if (this.constantBufferDataState[i])
                 {
-                    context.UpdateSubresource(new DataBox(0, 0, this.constantBufferData[i]), this.constantBuffers[i], 0);
+                    context.UpdateSubresource(new DataBox(this.constantBufferData[i].DataPointer), this.constantBuffers[i]);
                     this.constantBufferDataState[i] = false;
                 }
             }
 
             if (this.uploadSamplers)
             {
-                context.VertexShader.SetSamplers(this.samplerStates, 0, this.samplerStates.Length);
-                context.PixelShader.SetSamplers(this.samplerStates, 0, this.samplerStates.Length);
+                context.VertexShader.SetSamplers(0, this.samplerStates.Length, this.samplerStates);
+                context.PixelShader.SetSamplers(0, this.samplerStates.Length, this.samplerStates);
                 this.uploadSamplers = false;
             }
 
             if (this.uploadResources)
             {
-                context.VertexShader.SetShaderResources(this.resources, 0, this.resources.Length);
-                context.PixelShader.SetShaderResources(this.resources, 0, this.resources.Length);
+                context.VertexShader.SetShaderResources(0, this.resources.Length, this.resources);
+                context.PixelShader.SetShaderResources(0, this.resources.Length, this.resources);
                 this.uploadResources = false;
             }
         }
@@ -363,8 +364,8 @@
         {
             this.SetMacroDefaults(this.globalMacros);
 
-            this.globalMacros[0].Value = instruction.InstanceCount <= 1 ? "0" : "1";
-            this.globalMacros[1].Value = this.LightingEnabled ? "1" : "0";
+            this.globalMacros[0].Definition = instruction.InstanceCount <= 1 ? "0" : "1";
+            this.globalMacros[1].Definition = this.LightingEnabled ? "1" : "0";
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

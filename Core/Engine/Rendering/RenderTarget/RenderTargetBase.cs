@@ -4,8 +4,8 @@
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Logic;
 
-    using SlimDX;
-    using SlimDX.Direct3D11;
+    using SharpDX;
+    using SharpDX.Direct3D11;
 
     public enum RendertargetBlendMode
     {
@@ -27,14 +27,18 @@
         protected RenderTargetBase()
         {
             this.desiredBlendState = new BlendStateDescription();
-            this.desiredBlendState.RenderTargets[0].BlendEnable = true;
-            this.desiredBlendState.RenderTargets[0].SourceBlend = BlendOption.One;
-            this.desiredBlendState.RenderTargets[0].DestinationBlend = BlendOption.One;
-            this.desiredBlendState.RenderTargets[0].BlendOperation = BlendOperation.Add;
-            this.desiredBlendState.RenderTargets[0].SourceBlendAlpha = BlendOption.One;
-            this.desiredBlendState.RenderTargets[0].DestinationBlendAlpha = BlendOption.One;
-            this.desiredBlendState.RenderTargets[0].BlendOperationAlpha = BlendOperation.Add;
-            this.desiredBlendState.RenderTargets[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
+            this.desiredBlendState.RenderTarget[0] = new RenderTargetBlendDescription
+                                                         {
+                                                             IsBlendEnabled = true,
+                                                             SourceBlend = BlendOption.One,
+                                                             DestinationBlend = BlendOption.One,
+                                                             BlendOperation = BlendOperation.Add,
+                                                             SourceAlphaBlend = BlendOption.One,
+                                                             DestinationAlphaBlend = BlendOption.One,
+                                                             AlphaBlendOperation = BlendOperation.Add,
+                                                             RenderTargetWriteMask = ColorWriteMaskFlags.All
+                                                         };
+
 
             /*this.desiredBlendState = new BlendStateDescription();
             this.desiredBlendState.RenderTargets[0].BlendEnable = this.isBlending;
@@ -127,14 +131,17 @@
                 case RendertargetBlendMode.Alpha:
                     {
                         var blendDescription = new BlendStateDescription();
-                        blendDescription.RenderTargets[0].BlendEnable = true;
-                        blendDescription.RenderTargets[0].SourceBlend = BlendOption.SourceAlpha;
-                        blendDescription.RenderTargets[0].DestinationBlend = BlendOption.InverseSourceAlpha;
-                        blendDescription.RenderTargets[0].BlendOperation = BlendOperation.Add;
-                        blendDescription.RenderTargets[0].SourceBlendAlpha = BlendOption.One;
-                        blendDescription.RenderTargets[0].DestinationBlendAlpha = BlendOption.Zero;
-                        blendDescription.RenderTargets[0].BlendOperationAlpha = BlendOperation.Add;
-                        blendDescription.RenderTargets[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
+                        blendDescription.RenderTarget[0] = new RenderTargetBlendDescription
+                                                               {
+                                                                   IsBlendEnabled = true,
+                                                                   SourceBlend = BlendOption.SourceAlpha,
+                                                                   DestinationBlend = BlendOption.InverseSourceAlpha,
+                                                                   BlendOperation = BlendOperation.Add,
+                                                                   SourceAlphaBlend = BlendOption.One,
+                                                                   DestinationAlphaBlend = BlendOption.Zero,
+                                                                   AlphaBlendOperation = BlendOperation.Add,
+                                                                   RenderTargetWriteMask = ColorWriteMaskFlags.All
+                                                               };
                         this.blendState = graphics.StateManager.GetBlendState(blendDescription);
                         break;
                     }
@@ -142,14 +149,17 @@
                 case RendertargetBlendMode.Additive:
                     {
                         var blendDescription = new BlendStateDescription();
-                        blendDescription.RenderTargets[0].BlendEnable = true;
-                        blendDescription.RenderTargets[0].SourceBlend = BlendOption.One;
-                        blendDescription.RenderTargets[0].DestinationBlend = BlendOption.One;
-                        blendDescription.RenderTargets[0].BlendOperation = BlendOperation.Add;
-                        blendDescription.RenderTargets[0].SourceBlendAlpha = BlendOption.One;
-                        blendDescription.RenderTargets[0].DestinationBlendAlpha = BlendOption.One;
-                        blendDescription.RenderTargets[0].BlendOperationAlpha = BlendOperation.Add;
-                        blendDescription.RenderTargets[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
+                        blendDescription.RenderTarget[0] = new RenderTargetBlendDescription
+                                                               {
+                                                                   IsBlendEnabled = true,
+                                                                   SourceBlend = BlendOption.One,
+                                                                   DestinationBlend = BlendOption.One,
+                                                                   BlendOperation = BlendOperation.Add,
+                                                                   SourceAlphaBlend = BlendOption.One,
+                                                                   DestinationAlphaBlend = BlendOption.One,
+                                                                   AlphaBlendOperation = BlendOperation.Add,
+                                                                   RenderTargetWriteMask = ColorWriteMaskFlags.All
+                                                               };
                         this.blendState = graphics.StateManager.GetBlendState(blendDescription);
                         break;
                     }

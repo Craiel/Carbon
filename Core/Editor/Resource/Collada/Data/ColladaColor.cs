@@ -5,7 +5,7 @@
 
     using Core.Processing.Resource.Generic.Data;
 
-    using SlimDX;
+    using SharpDX;
 
     [Serializable]
     public class ColladaColor

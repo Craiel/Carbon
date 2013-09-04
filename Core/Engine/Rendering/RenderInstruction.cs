@@ -2,8 +2,9 @@
 {
     using System;
 
-    using SlimDX;
-    using SlimDX.Direct3D11;
+    using SharpDX;
+    using SharpDX.Direct3D;
+    using SharpDX.Direct3D11;
 
     public enum RenderMode
     {
@@ -19,7 +20,7 @@
 
     public struct RenderParameters
     {
-        public Vector4 CameraPosition;
+        public Vector3 CameraPosition;
 
         public Matrix View;
         public Matrix Projection;

@@ -12,9 +12,9 @@
 
     using Core.Utils;
 
-    using SlimDX;
-    using SlimDX.Direct3D11;
-    using SlimDX.DXGI;
+    using SharpDX;
+    using SharpDX.Direct3D11;
+    using SharpDX.DXGI;
 
     public class Renderer : EngineComponent, IRenderer
     {

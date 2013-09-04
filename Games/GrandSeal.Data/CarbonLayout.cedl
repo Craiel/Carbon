@@ -5,7 +5,7 @@
       <LayoutAnchorablePane FloatingWidth="200" FloatingHeight="763" FloatingLeft="409" FloatingTop="408">
         <LayoutAnchorable AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Fonts 0 / 0" ContentId="Tool|GrandSeal.Editor.ViewModels.FontExplorerViewModel" FloatingLeft="409" FloatingTop="408" FloatingWidth="200" FloatingHeight="763" LastActivationTimeStamp="07/11/2013 23:08:49" />
         <LayoutAnchorable AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Materials 0 / 0" ContentId="Tool|GrandSeal.Editor.ViewModels.MaterialExplorerViewModel" FloatingLeft="409" FloatingTop="408" FloatingWidth="200" FloatingHeight="763" LastActivationTimeStamp="07/11/2013 23:08:49" />
-        <LayoutAnchorable AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Resources" IsSelected="True" ContentId="Tool|GrandSeal.Editor.ViewModels.ResourceExplorerViewModel" FloatingLeft="409" FloatingTop="408" FloatingWidth="200" FloatingHeight="763" LastActivationTimeStamp="09/02/2013 22:06:35" />
+        <LayoutAnchorable AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Resources" IsSelected="True" ContentId="Tool|GrandSeal.Editor.ViewModels.ResourceExplorerViewModel" FloatingLeft="409" FloatingTop="408" FloatingWidth="200" FloatingHeight="763" LastActivationTimeStamp="09/03/2013 21:25:26" />
       </LayoutAnchorablePane>
     </LayoutAnchorablePaneGroup>
     <LayoutDocumentPane />

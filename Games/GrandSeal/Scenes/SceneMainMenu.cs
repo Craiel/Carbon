@@ -14,14 +14,11 @@
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Rendering;
-    using Core.Engine.Rendering.Primitives;
     using Core.Engine.Resource.Resources;
     using Core.Engine.Resource.Resources.Stage;
     using Core.Engine.Scene;
     using Core.Engine.UserInterface;
     using Core.Utils.Contracts;
-
-    using SlimDX;
 
     public class SceneMainMenu : SceneBase, ISceneMainMenu
     {

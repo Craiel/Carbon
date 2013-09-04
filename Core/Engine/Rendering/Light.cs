@@ -6,7 +6,7 @@
     using Core.Engine.Logic;
     using Core.Engine.Rendering.Camera;
 
-    using SlimDX;
+    using SharpDX;
 
     public enum LightType
     {
@@ -30,7 +30,7 @@
 
         private Matrix projection;
 
-        private Vector4 position;
+        private Vector3 position;
 
         private bool isCastingShadow;
 
@@ -84,7 +84,7 @@
 
         public Vector4 Color { get; set; }
 
-        public Vector4 Position
+        public Vector3 Position
         {
             get
             {

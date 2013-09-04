@@ -3,7 +3,7 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Rendering;
 
-    using SlimDX;
+    using SharpDX;
 
     public interface ILight : IEngineComponent
     {
@@ -13,7 +13,7 @@
         LightType Type { get; set; }
 
         Vector4 Color { get; set; }
-        Vector4 Position { get; set; }
+        Vector3 Position { get; set; }
 
         Vector3 Direction { get; set; }
 

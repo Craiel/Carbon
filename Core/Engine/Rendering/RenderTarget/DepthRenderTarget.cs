@@ -5,9 +5,10 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Logic;
 
-    using SlimDX;
-    using SlimDX.Direct3D11;
-    using SlimDX.DXGI;
+    using SharpDX;
+    using SharpDX.Direct3D;
+    using SharpDX.Direct3D11;
+    using SharpDX.DXGI;
 
     internal class DepthRenderTarget : RenderTargetBase
     {
@@ -76,7 +77,7 @@
 
             // Set the target views and viewport
             graphics.ImmediateContext.OutputMerger.SetTargets(this.targetView);
-            graphics.ImmediateContext.Rasterizer.SetViewports(this.Viewport);
+            graphics.ImmediateContext.Rasterizer.SetViewport(this.Viewport);
 
             base.Set(graphics);
         }
@@ -85,7 +86,7 @@
         {
             if (!this.isResizing && this.texture != null)
             {
-                Texture2D.ToStream(context, this.texture.Texture2D, format, target);
+                SharpDX.Direct3D11.Resource.ToStream(context, this.texture.Texture2D, format, target);
             }
         }
         
@@ -128,15 +129,18 @@
             {
                 Format = Format.D24_UNorm_S8_UInt,
                 Dimension = DepthStencilViewDimension.Texture2D,
-                MipSlice = 0
+                Texture2D = new DepthStencilViewDescription.Texture2DResource { MipSlice = 0 }
             };
 
             this.desiredShaderResourceView = new ShaderResourceViewDescription
             {
                 Format = Format.R24_UNorm_X8_Typeless,
                 Dimension = ShaderResourceViewDimension.Texture2D,
-                MipLevels = this.desiredTexture.MipLevels,
-                MostDetailedMip = 0
+                Texture2D = new ShaderResourceViewDescription.Texture2DResource
+                                {
+                                    MipLevels = this.desiredTexture.MipLevels,
+                                    MostDetailedMip = 0
+                                }
             };
             
             Texture2D data = graphics.StateManager.GetTexture(this.desiredTexture);

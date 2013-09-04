@@ -3,13 +3,13 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
 
-    using SlimDX;
+    using SharpDX;
 
     public interface ISceneEntity : IEngineComponent, IRenderable
     {
         string Name { get; set; }
 
-        Vector4 Position { get; set; }
+        Vector3 Position { get; set; }
         Vector3 Scale { get; set; }
         Quaternion Rotation { get; set; }
 

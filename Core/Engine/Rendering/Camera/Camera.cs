@@ -3,14 +3,14 @@
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Logic;
 
-    using SlimDX;
+    using SharpDX;
 
     public abstract class BaseCamera : EngineComponent, ICamera
     {
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public abstract Vector4 Position { get; set; }
+        public abstract Vector3 Position { get; set; }
         public abstract Matrix View { get; }
         public abstract Matrix Projection { get; }
         public abstract BoundingFrustum Frustum { get; }

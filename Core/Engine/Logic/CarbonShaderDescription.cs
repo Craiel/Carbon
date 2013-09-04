@@ -4,7 +4,8 @@
 
     using Core.Utils;
 
-    using SlimDX.D3DCompiler;
+    using SharpDX.D3DCompiler;
+    using SharpDX.Direct3D;
 
     public sealed class CarbonShaderDescription
     {

@@ -6,7 +6,7 @@
     using Core.Engine.Logic;
     using Core.Utils.Contracts;
 
-    using SlimDX;
+    using SharpDX;
 
     public class ProjectionCamera : BaseCamera, IProjectionCamera
     {
@@ -28,7 +28,7 @@
 
         private Quaternion rotation;
 
-        private Vector4 position;
+        private Vector3 position;
 
         private bool needUpdate = true;
         
@@ -91,7 +91,7 @@
             }
         }
 
-        public override Vector4 Position
+        public override Vector3 Position
         {
             get
             {
@@ -155,7 +155,7 @@
                     new Vector3(rotatedTarget.X, rotatedTarget.Y, rotatedTarget.Z),
                     new Vector3(rotatedUp.X, rotatedUp.Y, rotatedUp.Z));
 
-                this.frustum = new BoundingFrustum(this.View, this.Projection, this.Far);
+                this.frustum = new BoundingFrustum(this.View * this.Projection);
                 
                 this.needUpdate = false;
             }

@@ -70,9 +70,20 @@
     <Reference Include="Ninject">
       <HintPath>..\..\External\Ninject\3.0.0.15\Ninject.dll</HintPath>
     </Reference>
-    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\SlimDX Jan 2012\x64\SlimDX.dll</HintPath>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\External\SharpDX\2.5.0\Bin\DirectX11-net40\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.D3DCompiler">
+      <HintPath>..\..\External\SharpDX\2.5.0\Bin\DirectX11-net40\SharpDX.D3DCompiler.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11">
+      <HintPath>..\..\External\SharpDX\2.5.0\Bin\DirectX11-net40\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DirectInput">
+      <HintPath>..\..\External\SharpDX\2.5.0\Bin\DirectX11-net40\SharpDX.DirectInput.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI">
+      <HintPath>..\..\External\SharpDX\2.5.0\Bin\DirectX11-net40\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -139,6 +150,7 @@
     <Compile Include="Logic\BoundController.cs" />
     <Compile Include="Logic\GameState.cs" />
     <Compile Include="Logic\InputBindings.cs" />
+    <Compile Include="Logic\ShaderIncludeHandler.cs" />
     <Compile Include="Logic\TextureReference.cs" />
     <Compile Include="Logic\TypedVectors.cs" />
     <Compile Include="Logic\Scripting\ScriptingGameProvider.cs" />

@@ -8,8 +8,9 @@
     using Core.Engine.Rendering;
     using Core.Utils.Contracts;
 
-    using SlimDX.Direct3D11;
-    using SlimDX.DXGI;
+    using SharpDX;
+    using SharpDX.Direct3D11;
+    using SharpDX.DXGI;
 
     public class CarbonGraphics : ICarbonGraphics
     {
@@ -216,7 +217,7 @@
                     this.context.SwapChain.Description.ModeDescription.Format,
                     this.context.SwapChain.Description.Flags);
 
-                this.backBuffer = SlimDX.Direct3D11.Resource.FromSwapChain<Texture2D>(this.context.SwapChain, 0);
+                this.backBuffer = SharpDX.Direct3D11.Resource.FromSwapChain<Texture2D>(this.context.SwapChain, 0);
                 this.backBufferView = new RenderTargetView(this.context.Device, this.backBuffer);
             }
 

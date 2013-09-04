@@ -4,7 +4,7 @@
     using Core.Engine.Logic;
     using Core.Engine.Rendering;
 
-    using SlimDX;
+    using SharpDX;
 
     public interface IFrameManager : IEngineComponent
     {

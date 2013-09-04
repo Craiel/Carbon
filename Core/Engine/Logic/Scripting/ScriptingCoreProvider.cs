@@ -7,7 +7,7 @@
     using Core.Engine.Contracts.Logic;
     using Core.Utils.Contracts;
 
-    using SlimDX;
+    using SharpDX;
 
     public class ScriptingCoreProvider : IScriptingProvider
     {

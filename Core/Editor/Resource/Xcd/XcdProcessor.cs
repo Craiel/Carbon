@@ -12,7 +12,7 @@
     using Core.Utils;
     using Core.Utils.IO;
 
-    using SlimDX;
+    using SharpDX;
 
     public struct XcdProcessingOptions
     {

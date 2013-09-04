@@ -7,27 +7,27 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
 
-    using SlimDX;
-    using SlimDX.D3DCompiler;
-    using SlimDX.Direct3D11;
+    using SharpDX;
+    using SharpDX.Direct3D;
+    using SharpDX.Direct3D11;
 
     public class DeferredLightShader : CarbonShader, IDeferredLightShader
     {
         private readonly ICarbonGraphics graphics;
 
-        private readonly SlimDX.Direct3D11.Buffer[] buffers;
+        private readonly SharpDX.Direct3D11.Buffer[] buffers;
         private readonly SamplerState[] samplerStates;
-        private readonly SamplerDescription[] samplerStateCache;
+        private readonly SamplerStateDescription[] samplerStateCache;
         private readonly ShaderResourceView[] resources;
         private readonly ShaderMacro[] macros;
 
         private readonly int lightConstantBufferSize = Marshal.SizeOf(typeof(LightConstantBuffer));
         private readonly int cameraConstantBufferSize = Marshal.SizeOf(typeof(CameraConstantBuffer));
 
-        private readonly SamplerDescription diffuseSamplerDescription;
-        private readonly SamplerDescription normalSamplerDescription;
-        private readonly SamplerDescription specularSamplerDescription;
-        private readonly SamplerDescription shadowMapSamplerDescription;
+        private readonly SamplerStateDescription diffuseSamplerDescription;
+        private readonly SamplerStateDescription normalSamplerDescription;
+        private readonly SamplerStateDescription specularSamplerDescription;
+        private readonly SamplerStateDescription shadowMapSamplerDescription;
 
         private DefaultConstantBuffer defaultConstantBuffer;
         private InstanceConstantBuffer instanceConstantBuffer;
@@ -54,10 +54,10 @@
         {
             this.graphics = graphics;
 
-            this.buffers = new SlimDX.Direct3D11.Buffer[4];
+            this.buffers = new SharpDX.Direct3D11.Buffer[4];
             this.resources = new ShaderResourceView[5];
             this.samplerStates = new SamplerState[4];
-            this.samplerStateCache = new SamplerDescription[4];
+            this.samplerStateCache = new SamplerStateDescription[4];
             this.macros = new ShaderMacro[7];
             this.macros[0].Name = "INSTANCED";
             this.macros[1].Name = "VOLUMERENDERING";
@@ -73,7 +73,7 @@
             
             this.instanceConstantBuffer = new InstanceConstantBuffer { World = new Matrix[RenderInstruction.MaxInstanceCount] };
 
-            this.diffuseSamplerDescription = new SamplerDescription
+            this.diffuseSamplerDescription = new SamplerStateDescription
             {
                 Filter = Filter.MinMagMipLinear,
                 AddressU = TextureAddressMode.Wrap,
@@ -84,7 +84,7 @@
                 MaximumLod = float.MaxValue
             };
 
-            this.normalSamplerDescription = new SamplerDescription
+            this.normalSamplerDescription = new SamplerStateDescription
             {
                 Filter = Filter.MinMagMipLinear,
                 AddressU = TextureAddressMode.Wrap,
@@ -95,7 +95,7 @@
                 MaximumLod = float.MaxValue
             };
 
-            this.specularSamplerDescription = new SamplerDescription
+            this.specularSamplerDescription = new SamplerStateDescription
             {
                 Filter = Filter.MinMagMipLinear,
                 AddressU = TextureAddressMode.Wrap,
@@ -106,7 +106,7 @@
                 MaximumLod = float.MaxValue
             };
 
-            this.shadowMapSamplerDescription = new SamplerDescription
+            this.shadowMapSamplerDescription = new SamplerStateDescription
             {
                 Filter = Filter.MinMagMipPoint,
                 AddressU = TextureAddressMode.Clamp,
@@ -129,7 +129,7 @@
             this.lightConstantBuffer.Color = color;
         }
 
-        public void SetDirectional(Vector4 position, Vector3 direction, Vector4 color)
+        public void SetDirectional(Vector3 position, Vector3 direction, Vector4 color)
         {
             this.ClearLight();
             this.isDirectional = true;
@@ -140,7 +140,7 @@
             this.needLightPositionUpdate = true;
         }
 
-        public void SetPoint(Vector4 position, Vector4 color, float range, Matrix lightViewProjection)
+        public void SetPoint(Vector3 position, Vector4 color, float range, Matrix lightViewProjection)
         {
             this.ClearLight();
             this.isPoint = true;
@@ -151,7 +151,7 @@
             this.needLightPositionUpdate = true;
         }
 
-        public void SetSpot(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles, bool useShadowMapping, Matrix lightViewProjection)
+        public void SetSpot(Vector3 position, Vector3 direction, Vector4 color, float range, Vector2 angles, bool useShadowMapping, Matrix lightViewProjection)
         {
             this.ClearLight();
             this.isSpot = true;
@@ -219,7 +219,7 @@
 
             this.SetConstantBufferData(2, this.lightConstantBufferSize, this.lightConstantBuffer);
 
-            this.cameraConstantBuffer.CameraPosition = parameters.CameraPosition;
+            this.cameraConstantBuffer.CameraPosition = new Vector4(parameters.CameraPosition, 1.0f);
             this.SetConstantBufferData(3, this.cameraConstantBufferSize, this.cameraConstantBuffer);
         }
 
@@ -230,28 +230,28 @@
         {
             // Configure the Sampling State
             bool samplerStateChanged = false;
-            if (this.diffuseSamplerDescription != this.samplerStateCache[0])
+            if (this.diffuseSamplerDescription.Equals(this.samplerStateCache[0]))
             {
                 this.samplerStateCache[0] = this.diffuseSamplerDescription;
                 this.samplerStates[0] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[0]);
                 samplerStateChanged = true;
             }
 
-            if (this.normalSamplerDescription != this.samplerStateCache[1])
+            if (this.normalSamplerDescription.Equals(this.samplerStateCache[1]))
             {
                 this.samplerStateCache[1] = this.normalSamplerDescription;
                 this.samplerStates[1] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[1]);
                 samplerStateChanged = true;
             }
 
-            if (this.specularSamplerDescription != this.samplerStateCache[2])
+            if (this.specularSamplerDescription.Equals(this.samplerStateCache[2]))
             {
                 this.samplerStateCache[2] = this.specularSamplerDescription;
                 this.samplerStates[2] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[2]);
                 samplerStateChanged = true;
             }
 
-            if (this.shadowMapSamplerDescription != this.samplerStateCache[3])
+            if (this.shadowMapSamplerDescription.Equals(this.samplerStateCache[3]))
             {
                 this.samplerStateCache[3] = this.shadowMapSamplerDescription;
                 this.samplerStates[3] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[3]);
@@ -379,7 +379,7 @@
         {
             for (int i = 0; i < this.macros.Length; i++)
             {
-                this.macros[i].Value = "0";
+                this.macros[i].Definition = "0";
             }
         }
 
@@ -387,12 +387,12 @@
         {
             this.SetMacroDefaults();
 
-            this.macros[0].Value = instruction.InstanceCount <= 1 ? "0" : "1";
-            this.macros[2].Value = this.isPoint ? "1" : "0";
-            this.macros[3].Value = this.isSpot ? "1" : "0";
-            this.macros[4].Value = this.isDirectional ? "1" : "0";
-            this.macros[5].Value = this.isAmbient ? "1" : "0";
-            this.macros[6].Value = this.isShadowMapping ? "1" : "0";
+            this.macros[0].Definition = instruction.InstanceCount <= 1 ? "0" : "1";
+            this.macros[2].Definition = this.isPoint ? "1" : "0";
+            this.macros[3].Definition = this.isSpot ? "1" : "0";
+            this.macros[4].Definition = this.isDirectional ? "1" : "0";
+            this.macros[5].Definition = this.isAmbient ? "1" : "0";
+            this.macros[6].Definition = this.isShadowMapping ? "1" : "0";
             
             this.SetMacros(this.macros);
         }

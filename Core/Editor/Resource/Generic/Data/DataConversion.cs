@@ -4,7 +4,7 @@
     using System.Diagnostics;
     using System.Globalization;
 
-    using SlimDX;
+    using SharpDX;
 
     public static class DataConversion
     {

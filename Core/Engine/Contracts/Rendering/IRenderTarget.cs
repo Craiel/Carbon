@@ -5,8 +5,8 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Logic;
 
-    using SlimDX;
-    using SlimDX.Direct3D11;
+    using SharpDX;
+    using SharpDX.Direct3D11;
 
 
     public interface IRenderTarget : IDisposable

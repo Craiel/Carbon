@@ -7,11 +7,11 @@
     using Core.Engine.Logic;
 
     using Core.Utils.Contracts;
-    using SlimDX;
+    using SharpDX;
 
     public class OrthographicCamera : BaseCamera, IOrthographicCamera
     {
-        private readonly Vector4 position = new Vector4(-Vector3.UnitZ, 1.0f);
+        private readonly Vector3 position = -Vector3.UnitZ;
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
         private readonly Vector3 upVector = Vector3.UnitY;
@@ -31,7 +31,7 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override Vector4 Position
+        public override Vector3 Position
         {
             get
             {
@@ -106,7 +106,7 @@
                     this.targetVector,
                     this.upVector);
 
-                this.frustum = new BoundingFrustum(this.View, this.Projection, this.Far);
+                this.frustum = new BoundingFrustum(this.View * this.Projection);
 
                 this.needUpdate = false;
             }

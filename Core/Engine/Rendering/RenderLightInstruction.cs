@@ -2,7 +2,7 @@
 {
     using System;
 
-    using SlimDX;
+    using SharpDX;
 
     public sealed class RenderLightInstruction
     {
@@ -11,7 +11,7 @@
 
         public LightType Type { get; set; }
 
-        public Vector4 Position { get; set; }
+        public Vector3 Position { get; set; }
         public Vector4 Color { get; set; }
 
         public Vector3 Direction { get; set; }

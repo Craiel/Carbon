@@ -3,9 +3,9 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Logic;
 
-    using SlimDX;
-    using SlimDX.Direct3D11;
-    using SlimDX.DXGI;
+    using SharpDX;
+    using SharpDX.Direct3D11;
+    using SharpDX.DXGI;
 
     internal class BackBufferRenderTarget : RenderTargetBase
     {
@@ -47,7 +47,7 @@
 
             // Set the target views and viewport
             graphics.ImmediateContext.OutputMerger.SetTargets(this.depthStencilView, graphics.BackBufferView);
-            graphics.ImmediateContext.Rasterizer.SetViewports(this.Viewport);
+            graphics.ImmediateContext.Rasterizer.SetViewport(this.Viewport);
 
             base.Set(graphics);
         }
@@ -80,7 +80,7 @@
             {
                 Format = this.desiredDepthStencil.Format,
                 Dimension = DepthStencilViewDimension.Texture2D,
-                MipSlice = 0,
+                Texture2D = new DepthStencilViewDescription.Texture2DResource { MipSlice = 0 }
             };
 
             this.depthStencil = graphics.StateManager.GetTexture(this.desiredDepthStencil);

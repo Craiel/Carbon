@@ -3,9 +3,8 @@
     using System;
     using System.Diagnostics.CodeAnalysis;
 
-    using SlimDX;
-    using SlimDX.Direct3D11;
-    using SlimDX.DXGI;
+    using SharpDX.Direct3D;
+    using SharpDX.DXGI;
 
     public abstract class CarbonDeviceContext
     {
@@ -19,7 +18,7 @@
             this.TargetHandle = targetHandle;
         }
 
-        public abstract SlimDX.Direct3D11.Device Device { get; }
+        public abstract SharpDX.Direct3D11.Device Device { get; }
 
         protected IntPtr TargetHandle { get; private set; }
         
@@ -33,7 +32,7 @@
 
         private Factory factory;
         private SwapChain swapChain;
-        private SlimDX.Direct3D11.Device device;
+        private SharpDX.Direct3D11.Device device;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -75,7 +74,7 @@
             }
         }
 
-        public override SlimDX.Direct3D11.Device Device
+        public override SharpDX.Direct3D11.Device Device
         {
             get
             {
@@ -113,9 +112,8 @@
                 SwapEffect = SwapEffect.Discard
             };
 
-            SlimDX.Direct3D11.Device.CreateWithSwapChain(DriverType.Hardware, this.settings.CreationFlags, description, out this.device, out this.swapChain);
-
-            this.factory.SetWindowAssociation(this.TargetHandle, WindowAssociationFlags.IgnoreAll | WindowAssociationFlags.IgnoreAltEnter);
+            SharpDX.Direct3D11.Device.CreateWithSwapChain(DriverType.Hardware, this.settings.CreationFlags, description, out this.device, out this.swapChain);
+            this.factory.MakeWindowAssociation(this.TargetHandle, WindowAssociationFlags.IgnoreAll | WindowAssociationFlags.IgnoreAltEnter);
         }
 
         private void Dispose(bool disposeManaged)

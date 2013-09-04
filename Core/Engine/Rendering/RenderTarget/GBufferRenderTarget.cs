@@ -3,9 +3,10 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Logic;
 
-    using SlimDX;
-    using SlimDX.Direct3D11;
-    using SlimDX.DXGI;
+    using SharpDX;
+    using SharpDX.Direct3D;
+    using SharpDX.Direct3D11;
+    using SharpDX.DXGI;
 
     internal class GBufferRenderTarget : RenderTargetBase
     {
@@ -91,7 +92,7 @@
 
             // Set the target views and viewport
             graphics.ImmediateContext.OutputMerger.SetTargets(this.depthStencilView, this.targetViews);
-            graphics.ImmediateContext.Rasterizer.SetViewports(this.Viewport);
+            graphics.ImmediateContext.Rasterizer.SetViewport(this.Viewport);
 
             base.Set(graphics);
         }
@@ -128,7 +129,7 @@
             this.desiredTargetView = new RenderTargetViewDescription
                 {
                     Dimension = RenderTargetViewDimension.Texture2D,
-                    MipSlice = 0
+                    Texture2D = new RenderTargetViewDescription.Texture2DResource { MipSlice = 0 }
                 };
 
             // Recreate the Depth Stencil
@@ -151,14 +152,17 @@
             {
                 Format = Format.D24_UNorm_S8_UInt,
                 Dimension = DepthStencilViewDimension.Texture2D,
-                MipSlice = 0,
+                Texture2D = new DepthStencilViewDescription.Texture2DResource { MipSlice = 0 }
             };
 
             var desiredDepthView = new ShaderResourceViewDescription
             {
                 Dimension = ShaderResourceViewDimension.Texture2D,
-                MipLevels = this.desiredDepthStencil.MipLevels,
-                MostDetailedMip = 0,
+                Texture2D = new ShaderResourceViewDescription.Texture2DResource
+                                {
+                                    MipLevels = this.desiredDepthStencil.MipLevels,
+                                    MostDetailedMip = 0
+                                },
                 Format = Format.R24_UNorm_X8_Typeless
             };
             

@@ -5,8 +5,8 @@
 
     using Core.Engine.Rendering;
 
-    using SlimDX.D3DCompiler;
-    using SlimDX.Direct3D11;
+    using SharpDX.D3DCompiler;
+    using SharpDX.Direct3D11;
 
     public class DeviceStateManager : IDisposable
     {
@@ -83,7 +83,7 @@
 
             this.depthStencilStateCache.Clear();
 
-            foreach (SlimDX.Direct3D11.Buffer buffer in this.bufferCache.Values)
+            foreach (SharpDX.Direct3D11.Buffer buffer in this.bufferCache.Values)
             {
                 buffer.Dispose();
             }
@@ -98,24 +98,24 @@
             this.inputLayoutCache.Clear();
         }
         
-        public SamplerState GetSamplerState(SamplerDescription description)
+        public SamplerState GetSamplerState(SamplerStateDescription description)
         {
             if (!this.samplingStateCache.ContainsKey(description))
             {
-                this.samplingStateCache.Add(description, SamplerState.FromDescription(this.device, description));
+                this.samplingStateCache.Add(description, new SamplerState(this.device, description));
             }
 
             return (SamplerState)this.samplingStateCache[description];
         }
 
-        public SlimDX.Direct3D11.Buffer GetBuffer(BufferDescription description)
+        public SharpDX.Direct3D11.Buffer GetBuffer(BufferDescription description)
         {
             if (!this.bufferCache.ContainsKey(description))
             {
-                this.bufferCache.Add(description, new SlimDX.Direct3D11.Buffer(this.device, description));
+                this.bufferCache.Add(description, new SharpDX.Direct3D11.Buffer(this.device, description));
             }
 
-            return (SlimDX.Direct3D11.Buffer)this.bufferCache[description];
+            return (SharpDX.Direct3D11.Buffer)this.bufferCache[description];
         }
 
         public InputLayout GetInputLayout(ShaderInputLayoutDescription description, ShaderSignature signature)
@@ -139,7 +139,7 @@
         {
             if (!this.rasterStateCache.ContainsKey(description))
             {
-                this.rasterStateCache.Add(description, RasterizerState.FromDescription(this.device, description));
+                this.rasterStateCache.Add(description, new RasterizerState(this.device, description));
             }
 
             return (RasterizerState)this.rasterStateCache[description];
@@ -149,7 +149,7 @@
         {
             if (!this.depthStencilStateCache.ContainsKey(description))
             {
-                this.depthStencilStateCache.Add(description, DepthStencilState.FromDescription(this.device, description));
+                this.depthStencilStateCache.Add(description, new DepthStencilState(this.device, description));
             }
 
             return (DepthStencilState)this.depthStencilStateCache[description];
@@ -177,7 +177,7 @@
 
         public BlendState GetBlendState(BlendStateDescription description)
         {
-            return BlendState.FromDescription(this.device, description);
+            return new BlendState(this.device, description);
         }
     }
 }

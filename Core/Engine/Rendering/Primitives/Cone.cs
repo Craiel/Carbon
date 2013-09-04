@@ -7,7 +7,7 @@
     using Core.Engine.Resource.Resources.Model;
     using Core.Utils;
 
-    using SlimDX;
+    using SharpDX;
 
     public static class Cone
     {

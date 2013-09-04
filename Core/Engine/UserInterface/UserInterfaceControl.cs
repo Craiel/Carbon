@@ -3,7 +3,7 @@
     using Core.Engine.Contracts.UserInterface;
     using Core.Engine.Logic;
 
-    using SlimDX;
+    using SharpDX;
 
     public class UserInterfaceControl : EngineComponent, IUserInterfaceControl
     {

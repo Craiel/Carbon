@@ -6,7 +6,7 @@
     using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
 
-    using SlimDX;
+    using SharpDX;
 
     public static class Sphere
     {

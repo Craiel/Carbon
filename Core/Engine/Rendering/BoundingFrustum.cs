@@ -1,11 +1,14 @@
 ﻿namespace Core.Engine.Rendering
 {
-    using System;
+    // Note: Scheduled to remove, sharpdx contains this
+
+
+    /*using System;
     using System.Text;
 
     using Core.Utils;
 
-    using SlimDX;
+    using SharpDX;
 
     // Taken from Mono.XNA implementation
     public class BoundingFrustum : IEquatable<BoundingFrustum>
@@ -463,12 +466,11 @@
 
         private static Vector3 IntersectionPoint(ref Plane a, ref Plane b, ref Plane c)
         {
-            /* Formula used
             //                d1 ( N2 * N3 ) + d2 ( N3 * N1 ) + d3 ( N1 * N2 )
             // P =       -------------------------------------------------------------------------
             //                             N1 . ( N2 * N3 )
             //
-            // Note: N refers to the normal, d refers to the displacement. '.' means dot product. '*' means cross product*/
+            // Note: N refers to the normal, d refers to the displacement. '.' means dot product. '*' means cross product
 
             Vector3 v1, v2, v3;
             float f = -Vector3.Dot(a.Normal, Vector3.Cross(b.Normal, c.Normal));
@@ -489,5 +491,5 @@
             p.Normal.Z *= factor;
             p.D *= factor;
         }
-    }
+    }*/
 }

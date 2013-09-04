@@ -6,7 +6,7 @@
 
     using Core.Engine.Resource.Resources.Model;
 
-    using SlimDX;
+    using SharpDX;
 
     /*
      Helper class to construct Mesh Structures from Vectors and indices

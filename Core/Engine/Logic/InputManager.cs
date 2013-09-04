@@ -8,8 +8,8 @@
     using Core.Engine.Logic.Scripting;
     using Core.Utils.Contracts;
 
-    using SlimDX;
-    using SlimDX.DirectInput;
+    using SharpDX;
+    using SharpDX.DirectInput;
 
     public class InputManager : EngineComponent, IInputManager
     {
@@ -84,8 +84,8 @@
 
             IList<string> previouslyPressed = this.pressedState.Keys.Where(entry => this.pressedState[entry]).ToList();
             IList<string> currentPressed = keyState.PressedKeys.Select(key => key.ToString()).ToList();
-
-            bool[] buttons = mouseState.GetButtons();
+            
+            bool[] buttons = mouseState.Buttons;
             for (int i = 0; i < buttons.Length; i++)
             {
                 if (buttons[i])

@@ -5,7 +5,7 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
 
-    using SlimDX.Direct3D11;
+    using SharpDX.Direct3D11;
 
     public interface IDebugController : IBoundController
     {

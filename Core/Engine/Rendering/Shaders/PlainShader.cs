@@ -5,9 +5,9 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
 
-    using SlimDX;
-    using SlimDX.D3DCompiler;
-    using SlimDX.Direct3D11;
+    using SharpDX;
+    using SharpDX.Direct3D;
+    using SharpDX.Direct3D11;
 
     public class PlainShader : CarbonShader, IPlainShader
     {
@@ -15,11 +15,11 @@
 
         private readonly Buffer[] buffers;
         private readonly SamplerState[] samplerStates;
-        private readonly SamplerDescription[] samplerStateCache;
+        private readonly SamplerStateDescription[] samplerStateCache;
         private readonly ShaderResourceView[] resources;
         private readonly ShaderMacro[] macros;
 
-        private readonly SamplerDescription diffuseSamplerDescription;
+        private readonly SamplerStateDescription diffuseSamplerDescription;
 
         private DefaultConstantBuffer defaultConstantBuffer;
         private InstanceConstantBuffer instanceConstantBuffer;
@@ -37,7 +37,7 @@
             this.buffers = new Buffer[2];
             this.resources = new ShaderResourceView[1];
             this.samplerStates = new SamplerState[1];
-            this.samplerStateCache = new SamplerDescription[1];
+            this.samplerStateCache = new SamplerStateDescription[1];
             this.macros = new ShaderMacro[1];
             this.macros[0].Name = "INSTANCED";
 
@@ -47,7 +47,7 @@
 
             this.instanceConstantBuffer = new InstanceConstantBuffer { World = new Matrix[RenderInstruction.MaxInstanceCount] };
 
-            this.diffuseSamplerDescription = new SamplerDescription
+            this.diffuseSamplerDescription = new SamplerStateDescription
             {
                 Filter = Filter.MinMagMipPoint,
                 AddressU = TextureAddressMode.Wrap,
@@ -107,7 +107,7 @@
         {
             // Configure the Sampling State
             bool samplerStateChanged = false;
-            if (this.diffuseSamplerDescription != this.samplerStateCache[0])
+            if (this.diffuseSamplerDescription.Equals(this.samplerStateCache[0]))
             {
                 this.samplerStateCache[0] = this.diffuseSamplerDescription;
                 this.samplerStates[0] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[0]);
@@ -171,7 +171,7 @@
         {
             for (int i = 0; i < this.macros.Length; i++)
             {
-                this.macros[i].Value = "0";
+                this.macros[i].Definition = "0";
             }
         }
 
@@ -179,7 +179,7 @@
         {
             this.SetMacroDefaults();
 
-            this.macros[0].Value = instruction.InstanceCount <= 1 ? "0" : "1";
+            this.macros[0].Definition = instruction.InstanceCount <= 1 ? "0" : "1";
 
             this.SetMacros(this.macros);
         }

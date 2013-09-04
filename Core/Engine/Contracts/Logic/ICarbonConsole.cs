@@ -2,7 +2,7 @@
 {
     using Core.Engine.Contracts.Rendering;
 
-    using SlimDX;
+    using SharpDX;
 
     public interface ICarbonConsole : IEngineComponent, IRenderable
     {

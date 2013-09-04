@@ -5,7 +5,7 @@
 
     using Core.Engine.Resource.Resources.Model;
 
-    using SlimDX;
+    using SharpDX;
 
     /* Todo:
      - this will only deal with a single resource

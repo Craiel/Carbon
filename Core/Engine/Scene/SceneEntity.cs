@@ -6,7 +6,7 @@
 
     using Core.Utils;
 
-    using SlimDX;
+    using SharpDX;
 
     public abstract class SceneEntity : EngineComponent, ISceneEntity
     {
@@ -27,7 +27,7 @@
         // -------------------------------------------------------------------
         public string Name { get; set; }
 
-        public Vector4 Position { get; set; }
+        public Vector3 Position { get; set; }
 
         public Vector3 Scale { get; set; }
 

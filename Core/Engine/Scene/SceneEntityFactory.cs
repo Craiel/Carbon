@@ -8,7 +8,7 @@
     using Core.Engine.Resource.Resources.Stage;
     using Core.Protocol.Resource;
 
-    using SlimDX;
+    using SharpDX;
 
     public class SceneEntityFactory : EngineComponent, ISceneEntityFactory
     {
@@ -28,7 +28,7 @@
         public IProjectionCamera BuildCamera(StageCameraElement cameraElement)
         {
             var camera = this.factory.Get<IProjectionCamera>();
-            camera.Position = new Vector4(cameraElement.Position, 1);
+            camera.Position = cameraElement.Position;
             camera.Rotation = Quaternion.RotationYawPitchRoll(cameraElement.Orientation.X, cameraElement.Orientation.Y, cameraElement.Orientation.Z);
 
             // Todo: near / far plane and fov
@@ -40,7 +40,7 @@
             var light = new Light();
             if (lightElement.Location != null)
             {
-                light.Position = new Vector4((Vector3)lightElement.Location, 1);
+                light.Position = (Vector3)lightElement.Location;
             }
 
             light.Range = lightElement.Radius;
@@ -88,7 +88,7 @@
             var entity = new LightEntity { Light = light, Name = lightElement.Id };
             if (lightElement.Location != null)
             {
-                entity.Position = new Vector4(lightElement.Location.Value, 1);
+                entity.Position = lightElement.Location.Value;
             }
 
             if (lightElement.Direction != null)
@@ -104,7 +104,7 @@
         {
             var model = new ModelEntity
                             {
-                                Position = new Vector4(modelElement.Translation, 1),
+                                Position = modelElement.Translation,
                                 Scale = modelElement.Scale,
                                 Rotation =
                                     Quaternion.RotationYawPitchRoll(

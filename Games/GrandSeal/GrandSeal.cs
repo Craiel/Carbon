@@ -14,7 +14,7 @@
 
     using Ninject;
 
-    using SlimDX;
+    using SharpDX;
 
     public enum SceneKey
     {

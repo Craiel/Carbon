@@ -5,8 +5,9 @@
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Rendering.RenderTarget;
 
-    using SlimDX;
-    using SlimDX.Direct3D11;
+    using SharpDX;
+    using SharpDX.Direct3D;
+    using SharpDX.Direct3D11;
 
     public enum FrameTechnique
     {

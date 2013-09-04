@@ -1,5 +1,5 @@
-﻿using SlimDX.Windows;
-using SlimDX;
+﻿using SharpDX.Windows;
+using SharpDX;
 
 namespace Core.Engine.Logic
 {

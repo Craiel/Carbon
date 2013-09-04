@@ -3,8 +3,10 @@
     using System;
 
     using Core.Engine.Logic;
-    using SlimDX.Direct3D11;
-    using SlimDX.DXGI;
+
+    using SharpDX;
+    using SharpDX.DXGI;
+    using SharpDX.Direct3D11;
 
     public interface ICarbonGraphics : IDisposable
     {

@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    using SlimDX;
+    using SharpDX;
 
     public static class QuaternionExtension
     {

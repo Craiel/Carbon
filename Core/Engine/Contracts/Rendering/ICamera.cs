@@ -4,12 +4,11 @@
 
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Logic;
-    using Core.Engine.Rendering;
-    using SlimDX;
+    using SharpDX;
 
     public interface ICamera : IEngineComponent
     {
-        Vector4 Position { get; set; }
+        Vector3 Position { get; set; }
 
         Matrix View { get; }
         Matrix Projection { get; }

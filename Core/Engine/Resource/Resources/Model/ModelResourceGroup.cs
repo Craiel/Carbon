@@ -5,7 +5,7 @@
 
     using Core.Utils;
 
-    using SlimDX;
+    using SharpDX;
 
     public class ModelResourceGroup : ProtocolResource
     {

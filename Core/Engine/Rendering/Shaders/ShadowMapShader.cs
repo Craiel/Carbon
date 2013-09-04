@@ -5,9 +5,9 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
 
-    using SlimDX;
-    using SlimDX.D3DCompiler;
-    using SlimDX.Direct3D11;
+    using SharpDX;
+    using SharpDX.Direct3D;
+    using SharpDX.Direct3D11;
 
     public class ShadowMapShader : CarbonShader, IShadowMapShader
     {
@@ -114,7 +114,7 @@
         {
             for (int i = 0; i < this.macros.Length; i++)
             {
-                this.macros[i].Value = "0";
+                this.macros[i].Definition = "0";
             }
         }
 
@@ -122,7 +122,7 @@
         {
             this.SetMacroDefaults();
 
-            this.macros[0].Value = instruction.InstanceCount <= 1 ? "0" : "1";
+            this.macros[0].Definition = instruction.InstanceCount <= 1 ? "0" : "1";
 
             this.SetMacros(this.macros);
         }

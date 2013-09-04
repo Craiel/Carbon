@@ -13,7 +13,7 @@
     using Core.Utils.Formatting;
     using Core.Utils.IO;
 
-    using SlimDX.Windows;
+    using SharpDX.Windows;
 
     public struct EngineContent
     {
@@ -131,7 +131,7 @@
             this.log.Debug("------------------------------------------------------");
             this.log.Debug("Main Loop");
 
-            MessagePump.Run(this.window, this.MainLoop);
+            RenderLoop.Run(this.window, this.MainLoop);
         }
 
         public void ClearCache()

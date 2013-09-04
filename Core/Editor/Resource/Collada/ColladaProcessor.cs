@@ -15,8 +15,8 @@
     using Core.Utils;
     using Core.Utils.IO;
 
-    using SlimDX;
-
+    using SharpDX;
+    
     /* <summary>
      Todo:
      - Clean up the general process

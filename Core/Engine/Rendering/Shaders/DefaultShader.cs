@@ -7,9 +7,9 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
 
-    using SlimDX;
-    using SlimDX.D3DCompiler;
-    using SlimDX.Direct3D11;
+    using SharpDX;
+    using SharpDX.Direct3D;
+    using SharpDX.Direct3D11;
 
     public class DefaultShader : CarbonShader, IDefaultShader
     {
@@ -19,9 +19,9 @@
 
         private readonly ICarbonGraphics graphics;
 
-        private readonly SlimDX.Direct3D11.Buffer[] buffers;
+        private readonly SharpDX.Direct3D11.Buffer[] buffers;
         private readonly SamplerState[] samplerStates;
-        private readonly SamplerDescription[] samplerStateCache;
+        private readonly SamplerStateDescription[] samplerStateCache;
         private readonly ShaderResourceView[] resources;
         private readonly ShaderMacro[] macros;
 
@@ -33,10 +33,10 @@
                                                        (Marshal.SizeOf(typeof(SpotLightData)) * MaxSpotLights);
 
         private readonly int materialConstantBufferSize = Marshal.SizeOf(typeof(MaterialConstantBuffer));
-        
-        private readonly SamplerDescription diffuseSamplerDescription;
-        private readonly SamplerDescription normalSamplerDescription;
-        private readonly SamplerDescription specularSamplerDescription;
+
+        private readonly SamplerStateDescription diffuseSamplerDescription;
+        private readonly SamplerStateDescription normalSamplerDescription;
+        private readonly SamplerStateDescription specularSamplerDescription;
 
         private DefaultConstantBuffer defaultConstantBuffer;
         private InstanceConstantBuffer instanceConstantBuffer;
@@ -53,10 +53,10 @@
         {
             this.graphics = graphics;
 
-            this.buffers = new SlimDX.Direct3D11.Buffer[4];
+            this.buffers = new SharpDX.Direct3D11.Buffer[4];
             this.resources = new ShaderResourceView[6];
             this.samplerStates = new SamplerState[3];
-            this.samplerStateCache = new SamplerDescription[3];
+            this.samplerStateCache = new SamplerStateDescription[3];
             this.macros = new ShaderMacro[5];
             this.macros[0].Name = "DIFFUSEMAP";
             this.macros[1].Name = "NORMALMAP";
@@ -81,7 +81,7 @@
                 SpotData = new SpotLightData[MaxSpotLights]
             };
 
-            this.diffuseSamplerDescription = new SamplerDescription
+            this.diffuseSamplerDescription = new SamplerStateDescription
             {
                 Filter = Filter.MinMagMipLinear,
                 AddressU = TextureAddressMode.Wrap,
@@ -92,7 +92,7 @@
                 MaximumLod = float.MaxValue
             };
 
-            this.normalSamplerDescription = new SamplerDescription
+            this.normalSamplerDescription = new SamplerStateDescription
             {
                 Filter = Filter.MinMagMipLinear,
                 AddressU = TextureAddressMode.Wrap,
@@ -103,7 +103,7 @@
                 MaximumLod = float.MaxValue
             };
 
-            this.specularSamplerDescription = new SamplerDescription
+            this.specularSamplerDescription = new SamplerStateDescription
             {
                 Filter = Filter.MinMagMipLinear,
                 AddressU = TextureAddressMode.Wrap,
@@ -160,7 +160,7 @@
             this.lightConstantBuffer.DirectionalLights++;
         }
 
-        public void AddPointLight(Vector4 position, Vector4 color, float range, float specularPower = 1.0f)
+        public void AddPointLight(Vector3 position, Vector4 color, float range, float specularPower = 1.0f)
         {
             if (this.lightConstantBuffer.PointLights >= MaxPointLights)
             {
@@ -169,13 +169,13 @@
 
             var index = (int)this.lightConstantBuffer.PointLights;
             this.lightConstantBuffer.PointData[index].DiffuseColor = color;
-            this.lightConstantBuffer.PointData[index].Position = position;
+            this.lightConstantBuffer.PointData[index].Position = new Vector4(position, 1.0f);
             this.lightConstantBuffer.PointData[index].Range = range;
             this.lightConstantBuffer.PointData[index].SpecularPower = specularPower;
             this.lightConstantBuffer.PointLights++;
         }
 
-        public void AddSpotLight(Vector4 position, Vector3 direction, Vector4 color, float range, Vector2 angles, float specularPower = 1.0f)
+        public void AddSpotLight(Vector3 position, Vector3 direction, Vector4 color, float range, Vector2 angles, float specularPower = 1.0f)
         {
             if (this.lightConstantBuffer.SpotLights >= MaxSpotLights)
             {
@@ -184,7 +184,7 @@
 
             var index = (int)this.lightConstantBuffer.SpotLights;
             this.lightConstantBuffer.SpotData[index].DiffuseColor = color;
-            this.lightConstantBuffer.SpotData[index].Position = position;
+            this.lightConstantBuffer.SpotData[index].Position = new Vector4(position, 1.0f);
             this.lightConstantBuffer.SpotData[index].Direction = new Vector4(direction, 1);
             this.lightConstantBuffer.SpotData[index].Range = range;
             this.lightConstantBuffer.SpotData[index].SpecularPower = specularPower;
@@ -241,7 +241,7 @@
             }
 
             DataStream stream = this.BeginSetConstantBufferData(2);
-            stream.Write(parameters.CameraPosition);
+            stream.Write(new Vector4(parameters.CameraPosition, 1));
             stream.Write(this.AmbientLight);
             stream.Write(this.lightConstantBuffer.DirectionalLights);
             stream.Write(this.lightConstantBuffer.PointLights);
@@ -264,21 +264,21 @@
 
             // Configure the Sampling State
             bool samplerStateChanged = false;
-            if (this.diffuseSamplerDescription != this.samplerStateCache[0])
+            if (this.diffuseSamplerDescription.Equals(this.samplerStateCache[0]))
             {
                 this.samplerStateCache[0] = this.diffuseSamplerDescription;
                 this.samplerStates[0] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[0]);
                 samplerStateChanged = true;
             }
 
-            if (this.normalSamplerDescription != this.samplerStateCache[1])
+            if (this.normalSamplerDescription.Equals(this.samplerStateCache[1]))
             {
                 this.samplerStateCache[1] = this.normalSamplerDescription;
                 this.samplerStates[1] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[1]);
                 samplerStateChanged = true;
             }
 
-            if (this.specularSamplerDescription != this.samplerStateCache[2])
+            if (this.specularSamplerDescription.Equals(this.samplerStateCache[2]))
             {
                 this.samplerStateCache[2] = this.specularSamplerDescription;
                 this.samplerStates[2] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[2]);
@@ -395,7 +395,7 @@
         {
             for (int i = 0; i < this.macros.Length; i++)
             {
-                this.macros[i].Value = "0";
+                this.macros[i].Definition = "0";
             }
         }
 
@@ -403,11 +403,11 @@
         {
             this.SetMacroDefaults();
 
-            this.macros[0].Value = instruction.DiffuseTexture == null ? "0" : "1";
-            this.macros[1].Value = instruction.NormalTexture == null || !this.NormalMapEnabled ? "0" : "1";
-            this.macros[2].Value = instruction.Color == null ? "0" : "1";
-            this.macros[3].Value = instruction.SpecularTexture == null || !this.SpecularEnabled ? "0" : "1";
-            this.macros[4].Value = instruction.AlphaTexture == null || !this.AlphaEnabled ? "0" : "1";
+            this.macros[0].Definition = instruction.DiffuseTexture == null ? "0" : "1";
+            this.macros[1].Definition = instruction.NormalTexture == null || !this.NormalMapEnabled ? "0" : "1";
+            this.macros[2].Definition = instruction.Color == null ? "0" : "1";
+            this.macros[3].Definition = instruction.SpecularTexture == null || !this.SpecularEnabled ? "0" : "1";
+            this.macros[4].Definition = instruction.AlphaTexture == null || !this.AlphaEnabled ? "0" : "1";
 
             this.SetMacros(this.macros);
         }

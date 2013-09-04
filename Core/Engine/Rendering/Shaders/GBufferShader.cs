@@ -5,9 +5,9 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
 
-    using SlimDX;
-    using SlimDX.D3DCompiler;
-    using SlimDX.Direct3D11;
+    using SharpDX;
+    using SharpDX.Direct3D;
+    using SharpDX.Direct3D11;
 
     public class GBufferShader : CarbonShader, IGBufferShader
     {
@@ -15,12 +15,12 @@
 
         private readonly Buffer[] buffers;
         private readonly SamplerState[] samplerStates;
-        private readonly SamplerDescription[] samplerStateCache;
+        private readonly SamplerStateDescription[] samplerStateCache;
         private readonly ShaderResourceView[] resources;
         private readonly ShaderMacro[] macros;
 
-        private readonly SamplerDescription diffuseSamplerDescription;
-        private readonly SamplerDescription normalSamplerDescription;
+        private readonly SamplerStateDescription diffuseSamplerDescription;
+        private readonly SamplerStateDescription normalSamplerDescription;
 
         private DefaultConstantBuffer defaultConstantBuffer;
         private InstanceConstantBuffer instanceConstantBuffer;
@@ -38,7 +38,7 @@
             this.buffers = new Buffer[2];
             this.resources = new ShaderResourceView[2];
             this.samplerStates = new SamplerState[2];
-            this.samplerStateCache = new SamplerDescription[2];
+            this.samplerStateCache = new SamplerStateDescription[2];
             this.macros = new ShaderMacro[2];
             this.macros[0].Name = "INSTANCED";
             this.macros[1].Name = "NORMALMAP";
@@ -51,7 +51,7 @@
 
             this.instanceConstantBuffer = new InstanceConstantBuffer { World = new Matrix[RenderInstruction.MaxInstanceCount] };
 
-            this.diffuseSamplerDescription = new SamplerDescription
+            this.diffuseSamplerDescription = new SamplerStateDescription
                 {
                     Filter = Filter.MinMagMipLinear,
                     AddressU = TextureAddressMode.Wrap,
@@ -62,7 +62,7 @@
                     MaximumLod = float.MaxValue
                 };
 
-            this.normalSamplerDescription = new SamplerDescription
+            this.normalSamplerDescription = new SamplerStateDescription
                 {
                     Filter = Filter.MinMagMipLinear,
                     AddressU = TextureAddressMode.Wrap,
@@ -127,14 +127,14 @@
         {
             // Configure the Sampling State
             bool samplerStateChanged = false;
-            if (this.diffuseSamplerDescription != this.samplerStateCache[0])
+            if (this.diffuseSamplerDescription.Equals(this.samplerStateCache[0]))
             {
                 this.samplerStateCache[0] = this.diffuseSamplerDescription;
                 this.samplerStates[0] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[0]);
                 samplerStateChanged = true;
             }
 
-            if (this.normalSamplerDescription != this.samplerStateCache[1])
+            if (this.normalSamplerDescription.Equals(this.samplerStateCache[1]))
             {
                 this.samplerStateCache[1] = this.normalSamplerDescription;
                 this.samplerStates[1] = this.graphics.StateManager.GetSamplerState(this.samplerStateCache[1]);
@@ -209,7 +209,7 @@
         {
             for (int i = 0; i < this.macros.Length; i++)
             {
-                this.macros[i].Value = "0";
+                this.macros[i].Definition = "0";
             }
         }
 
@@ -217,8 +217,8 @@
         {
             this.SetMacroDefaults();
 
-            this.macros[0].Value = instruction.InstanceCount <= 1 ? "0" : "1";
-            this.macros[1].Value = instruction.NormalTexture == null ? "0" : "1";
+            this.macros[0].Definition = instruction.InstanceCount <= 1 ? "0" : "1";
+            this.macros[1].Definition = instruction.NormalTexture == null ? "0" : "1";
 
             this.SetMacros(this.macros);
         }

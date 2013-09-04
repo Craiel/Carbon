@@ -2,7 +2,7 @@
 {
     using Core.Engine.Logic;
 
-    using SlimDX.Direct3D11;
+    using SharpDX.Direct3D11;
 
     public class DeviceSettings
     {

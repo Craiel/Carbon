@@ -8,7 +8,7 @@
     using Core.Engine.Resource.Content;
     using Core.Engine.Resource.Resources.Model;
 
-    using SlimDX;
+    using SharpDX;
 
     internal struct FontBuilderLine
     {

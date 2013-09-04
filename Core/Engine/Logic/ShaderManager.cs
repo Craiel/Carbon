@@ -10,23 +10,8 @@
     using Core.Engine.Resource.Resources;
     using Core.Utils;
 
-    using SlimDX;
-    using SlimDX.D3DCompiler;
-    using SlimDX.Direct3D11;
-
-    internal class ShaderIncludeHandler : Include
-    {
-        public void Open(IncludeType type, string fileName, Stream parentStream, out Stream stream)
-        {
-            string sourceFile = Path.Combine(ShaderManager.ShaderLocation, fileName);
-            stream = File.OpenRead(sourceFile);
-        }
-
-        public void Close(Stream stream)
-        {
-            stream.Dispose();
-        }
-    }
+    using SharpDX.D3DCompiler;
+    using SharpDX.Direct3D11;
 
     public class ShaderManager
     {
@@ -78,14 +63,11 @@
             }
 
             CompiledShaderResource data = this.GetData(description);
-            using (var stream = new DataStream(data.Data, true, false))
+            using (var byteCode = new ShaderBytecode(data.Data))
             {
-                using (var byteCode = new ShaderBytecode(stream))
-                {
-                    var shader = new VertexShader(this.device, byteCode);
-                    this.vertexShaderCache.Add(key, shader);
-                    return shader;
-                }
+                var shader = new VertexShader(this.device, byteCode);
+                this.vertexShaderCache.Add(key, shader);
+                return shader;
             }
         }
 
@@ -98,14 +80,11 @@
             }
 
             CompiledShaderResource data = this.GetData(description);
-            using (var stream = new DataStream(data.Data, true, false))
+            using (var byteCode = new ShaderBytecode(data.Data))
             {
-                using (var byteCode = new ShaderBytecode(stream))
-                {
-                    var signature = ShaderSignature.GetInputSignature(byteCode);
-                    this.signatureCache.Add(key, signature);
-                    return signature;
-                }
+                var signature = ShaderSignature.GetInputSignature(byteCode);
+                this.signatureCache.Add(key, signature);
+                return signature;
             }
         }
 
@@ -118,14 +97,11 @@
             }
 
             CompiledShaderResource data = this.GetData(description);
-            using (var stream = new DataStream(data.Data, true, false))
+            using (var byteCode = new ShaderBytecode(data.Data))
             {
-                using (var byteCode = new ShaderBytecode(stream))
-                {
-                    var shader = new PixelShader(this.device, byteCode);
-                    this.pixelShaderCache.Add(key, shader);
-                    return shader;
-                }
+                var shader = new PixelShader(this.device, byteCode);
+                this.pixelShaderCache.Add(key, shader);
+                return shader;
             }
         }
 
@@ -182,11 +158,7 @@
                         description.Macros,
                         this.includeHandler))
                 {
-                    var data = new byte[shaderBytecode.Data.Length];
-                    shaderBytecode.Data.Position = 0;
-                    shaderBytecode.Data.Read(data, 0, data.Length);
-
-                    shader = new CompiledShaderResource { Md5 = md5, Data = data };
+                    shader = new CompiledShaderResource { Md5 = md5, Data = shaderBytecode.Data };
                     this.resourceManager.Replace(hash, shader);
                 }
             }
@@ -202,11 +174,7 @@
                         description.Macros,
                         this.includeHandler))
                 {
-                    var data = new byte[shaderBytecode.Data.Length];
-                    shaderBytecode.Data.Position = 0;
-                    shaderBytecode.Data.Read(data, 0, data.Length);
-
-                    shader = new CompiledShaderResource { Md5 = md5, Data = data };
+                    shader = new CompiledShaderResource { Md5 = md5, Data = shaderBytecode.Data };
                     this.resourceManager.Store(hash, shader);
                 }
             }

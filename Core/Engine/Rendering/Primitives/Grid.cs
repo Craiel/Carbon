@@ -2,7 +2,7 @@
 {
     using Core.Engine.Logic;
 
-    using SlimDX;
+    using SharpDX;
 
     public static class Grid
     {

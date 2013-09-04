@@ -2,15 +2,15 @@
 {
     using System;
 
-    using SlimDX;
-    using SlimDX.Direct3D11;
+    using SharpDX;
+    using SharpDX.Direct3D11;
 
     public class DynamicBuffer : IDisposable
     {
         private readonly Device device;
 
         private BufferDescription description;
-        private SlimDX.Direct3D11.Buffer buffer;
+        private SharpDX.Direct3D11.Buffer buffer;
 
         private DataBox box;
 
@@ -44,7 +44,7 @@
             }
         }
 
-        public SlimDX.Direct3D11.Buffer Buffer
+        public SharpDX.Direct3D11.Buffer Buffer
         {
             get
             {
@@ -59,14 +59,11 @@
                 this.Size = dataSize;
             }
 
-            this.box = this.device.ImmediateContext.MapSubresource(this.buffer, MapMode.WriteDiscard, MapFlags.None);
-            stream = this.box.Data;
+            this.box = this.device.ImmediateContext.MapSubresource(this.buffer, MapMode.WriteDiscard, MapFlags.None, out stream);
         }
 
         public void EndUpdate()
         {
-            // Wind the stream back to beginning
-            this.box.Data.Position = 0;
             this.device.ImmediateContext.UnmapSubresource(this.buffer, 0);
         }
 
@@ -85,7 +82,7 @@
                 this.buffer.Dispose();
             }
 
-            this.buffer = new SlimDX.Direct3D11.Buffer(this.device, this.description);
+            this.buffer = new SharpDX.Direct3D11.Buffer(this.device, this.description);
         }
     }
 }

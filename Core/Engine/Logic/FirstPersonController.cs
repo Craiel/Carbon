@@ -3,7 +3,7 @@
     using System;
 
     using Core.Engine.Contracts.Logic;
-    using SlimDX;
+    using SharpDX;
 
     public interface IFirstPersonController : IBoundController
     {
@@ -11,14 +11,14 @@
 
         float RotationSpeed { get; set; }
 
-        Vector4 Position { get; set; }
+        Vector3 Position { get; set; }
 
         Quaternion Rotation { get; }
     }
     
     public class FirstPersonController : BoundController, IFirstPersonController
     {
-        private Vector4 position;
+        private Vector3 position;
 
         private float yaw;
         private float pitch;
@@ -61,7 +61,7 @@
 
         public Vector3 Forward { get; set; }
         
-        public Vector4 Position
+        public Vector3 Position
         {
             get
             {
@@ -142,7 +142,7 @@
                 FirstPersonControllerAction action;
                 if (Enum.TryParse(binding.Value, out action))
                 {
-                    Vector4 side;
+                    Vector3 side;
                     switch (action)
                     {
                         case FirstPersonControllerAction.MoveForward:

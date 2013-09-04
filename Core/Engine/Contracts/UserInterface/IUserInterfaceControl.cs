@@ -2,7 +2,7 @@
 {
     using Core.Engine.Contracts.Logic;
 
-    using SlimDX;
+    using SharpDX;
 
     public interface IUserInterfaceControl : IEngineComponent
     {

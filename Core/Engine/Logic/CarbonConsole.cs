@@ -4,8 +4,8 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Rendering;
 
-    using SlimDX;
-    using SlimDX.DirectInput;
+    using SharpDX;
+    using SharpDX.DirectInput;
 
     public class CarbonConsole : EngineComponent, ICarbonConsole
     {
