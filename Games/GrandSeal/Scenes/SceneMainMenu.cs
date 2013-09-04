@@ -38,10 +38,6 @@
         private IProjectionCamera activeCamera;
         private IOrthographicCamera userInterfaceCamera;
 
-        private ICamera debugCamera;
-        private IFirstPersonController debugController;
-        private IModelEntity debugModel;
-
         // --------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -98,12 +94,6 @@
 
                 // Todo: for testing use debug camera and controller for now
                 this.activeCamera = this.stage.Cameras.FirstOrDefault().Value;
-                //this.activeCamera = this.factory.Get<IProjectionCamera>();
-                this.debugController = this.factory.Get<IFirstPersonController>();
-                this.debugController.Initialize(graphic);
-                this.debugController.SetInputBindings("debugController");
-                this.debugController.IsActive = true;
-                this.debugController.Position = this.activeCamera.Position;
 
                 // Register the stage's entities and add them to the rendering list
                 foreach (IList<IModelEntity> entityList in this.stage.Models.Values)
@@ -127,10 +117,10 @@
 
         public override bool Update(ITimer gameTime)
         {
-            this.debugController.Update(gameTime);
+            /*this.debugController.Update(gameTime);
             this.activeCamera.Position = this.debugController.Position;
             this.activeCamera.Rotation = this.debugController.Rotation;
-            this.activeCamera.Update(gameTime);
+            this.activeCamera.Update(gameTime);*/
 
             return base.Update(gameTime);
         }

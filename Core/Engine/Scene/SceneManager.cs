@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading;
 
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
@@ -15,6 +14,7 @@
     {
         private readonly IDictionary<int, IScene> registeredScenes;
         private readonly IList<int> preparedScenes;
+        private readonly IList<int> activeOverlays; 
 
         private ICarbonGraphics currentGraphics;
 
@@ -32,6 +32,7 @@
         {
             this.registeredScenes = new Dictionary<int, IScene>();
             this.preparedScenes = new List<int>();
+            this.activeOverlays = new List<int>();
         }
 
         // -------------------------------------------------------------------
@@ -101,9 +102,21 @@
             this.QueueOperation(x => this.ActivateScene(payload), this.lastUpdateTime);
         }
 
+        public void ActivateOverlay(int key)
+        {
+            IThreadQueueOperationPayload payload = new ThreadQueuePayload { Data = key };
+            this.QueueOperation(x => this.ActivateSceneOverlay(payload), this.lastUpdateTime);
+        }
+
         public void Deactivate()
         {
             this.QueueOperation(this.DeactivateScene, this.lastUpdateTime);
+        }
+
+        public void DeactivateOverlay(int key)
+        {
+            IThreadQueueOperationPayload payload = new ThreadQueuePayload { Data = key };
+            this.QueueOperation(x => this.DeactivateSceneOverlay(payload), this.lastUpdateTime);
         }
 
         public void Prepare(int key)
@@ -219,6 +232,11 @@
                 throw new InvalidOperationException("Scene is already active: " + key);
             }
 
+            if (this.activeOverlays.Contains(key))
+            {
+                throw new ArgumentException("Can not activate scene while it is set as overlay: " + key);
+            }
+
             if (this.activeScene != null)
             {
                 IScene lastActive = this.registeredScenes[(int)this.activeScene];
@@ -276,6 +294,64 @@
                 active.IsVisible = true;
             }
 
+            return true;
+        }
+
+        private bool ActivateSceneOverlay(IThreadQueueOperationPayload payload)
+        {
+            var key = (int)payload.Data;
+
+            if (!this.registeredScenes.ContainsKey(key))
+            {
+                throw new ArgumentException();
+            }
+
+            if (this.activeScene == key)
+            {
+                throw new ArgumentException("Can not set the active scene as overlay: " + key);
+            }
+
+            if (this.activeOverlays.Contains(key))
+            {
+                throw new InvalidOperationException("Scene overlay is already active: " + key);
+            }
+
+            IScene scene = this.registeredScenes[key];
+            if (!this.preparedScenes.Contains(key))
+            {
+                scene.Initialize(this.currentGraphics);
+                this.preparedScenes.Add(key);
+            }
+
+            // Call checkstate to see if everything is proper for activation
+            scene.CheckState();
+
+            scene.IsActive = true;
+            scene.IsVisible = true;
+
+            return true;
+        }
+
+        private bool DeactivateSceneOverlay(IThreadQueueOperationPayload payload)
+        {
+            var key = (int)payload.Data;
+
+            if (!this.registeredScenes.ContainsKey(key))
+            {
+                throw new ArgumentException();
+            }
+
+            if (!this.activeOverlays.Contains(key))
+            {
+                throw new InvalidOperationException("Scene overlay is not active: " + key);
+            }
+
+            IScene active = this.registeredScenes[key];
+            active.Unload();
+            this.preparedScenes.Remove(key);
+            active.IsActive = false;
+            active.IsVisible = false;
+            
             return true;
         }
     }

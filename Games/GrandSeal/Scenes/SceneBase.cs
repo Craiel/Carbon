@@ -27,6 +27,14 @@
         // -------------------------------------------------------------------
         protected IGrandSealGameState GameState { get; private set; }
 
+        protected override bool HasRuntime
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         protected override void Activate()
         {
             this.GameState.ScriptingEngine.Register(this);

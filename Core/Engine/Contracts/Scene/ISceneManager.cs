@@ -22,7 +22,10 @@
         void Register(int key, IScene scene);
 
         void Activate(int key, bool suspendCurrent = false);
+        void ActivateOverlay(int key);
+
         void Deactivate();
+        void DeactivateOverlay(int key);
 
         void Prepare(int key);
 

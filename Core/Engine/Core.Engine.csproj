@@ -132,6 +132,7 @@
     <Compile Include="Contracts\Resource\IResourceManager.cs" />
     <Compile Include="Contracts\Scene\ILightEntity.cs" />
     <Compile Include="Contracts\Scene\IModelEntity.cs" />
+    <Compile Include="Contracts\Scene\ISceneDebugOverlay.cs" />
     <Compile Include="Contracts\Scene\ISceneEntity.cs" />
     <Compile Include="Contracts\Scene\IScene.cs" />
     <Compile Include="Contracts\Scene\ISceneEntityFactory.cs" />
@@ -272,6 +273,7 @@
     <Compile Include="Scene\Scene.cs" />
     <Compile Include="Logic\EngineComponentStack.cs" />
     <Compile Include="Scene\SceneGraph.cs" />
+    <Compile Include="Scene\SceneDebugOverlay.cs" />
     <Compile Include="Scene\SceneManager.cs" />
     <Compile Include="Scene\Stage.cs" />
     <Compile Include="UserInterface\UserInterface.cs" />

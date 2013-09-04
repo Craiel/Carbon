@@ -7,7 +7,7 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Resource;
-
+    using Core.Engine.Contracts.Scene;
     using Core.Utils.Contracts;
     using Core.Utils.Diagnostics;
     using Core.Utils.Formatting;
@@ -58,6 +58,7 @@
         private readonly IRenderer mainRenderer;
         private readonly IScriptingEngine scriptingEngine;
         private readonly IDebugController debugController;
+        private readonly ISceneDebugOverlay debugOverlay;
 
         private CarbonWindow window;
 
@@ -87,6 +88,7 @@
             this.mainFrameManager = factory.Get<IFrameManager>();
             this.mainRenderer = factory.Get<IRenderer>();
             this.scriptingEngine = factory.Get<IScriptingEngine>();
+            this.debugOverlay = factory.Get<ISceneDebugOverlay>();
             this.log = factory.Get<IEngineLog>().AquireContextLog("CarbonGame");
 
             this.gameTimer = new Utils.Timer();

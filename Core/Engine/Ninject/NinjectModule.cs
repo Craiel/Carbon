@@ -53,6 +53,7 @@ namespace Core.Engine.Ninject
 
             // Scene
             this.Bind<ISceneEntityFactory>().To<SceneEntityFactory>().InSingletonScope();
+            this.Bind<ISceneDebugOverlay>().To<SceneDebugOverlay>().InSingletonScope();
 
             // User Interface
             this.Bind<IUserInterfaceConsole>().To<UserInterfaceConsole>();

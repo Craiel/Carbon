@@ -153,7 +153,7 @@
 
         public virtual void CheckState()
         {
-            if (this.runtimeScript == null)
+            if (this.runtimeScript == null && this.HasRuntime)
             {
                 throw new InvalidSceneStateException("Runtime script is missing");
             }
@@ -162,6 +162,8 @@
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
+        protected abstract bool HasRuntime { get; }
+
         protected void RenderList(int list, FrameInstructionSet activeSet)
         {
             if (!this.entityRenderLists.ContainsKey(list))
@@ -177,13 +179,16 @@
         {
             this.CheckState();
 
-            this.runtime = this.LoadRuntime(this.runtimeScript);
-            if (this.runtime == null)
+            if (this.HasRuntime)
             {
-                throw new InvalidSceneStateException("Runtime was not loaded properly");
-            }
+                this.runtime = this.LoadRuntime(this.runtimeScript);
+                if (this.runtime == null)
+                {
+                    throw new InvalidSceneStateException("Runtime was not loaded properly");
+                }
 
-            this.functionUpdate = this.runtime.GetFunction(FunctionHookUpdate);
+                this.functionUpdate = this.runtime.GetFunction(FunctionHookUpdate);
+            }
         }
 
         protected virtual void Deactivate()
