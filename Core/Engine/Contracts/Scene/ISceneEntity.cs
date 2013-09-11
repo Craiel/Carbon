@@ -17,7 +17,7 @@
 
         Matrix World { get; set; }
 
-        BoundingSphere BoundingSphere { get; }
-        BoundingBox BoundingBox { get; }
+        BoundingSphere? BoundingSphere { get; }
+        BoundingBox? BoundingBox { get; }
     }
 }

@@ -268,6 +268,7 @@
     <Compile Include="Scene\ModelEntity.cs" />
     <Compile Include="Scene\Node.cs" />
     <Compile Include="Scene\SceneEntityCollection.cs" />
+    <Compile Include="Scene\SceneEntityDebugEntry.cs" />
     <Compile Include="Scene\SceneEntityFactory.cs" />
     <Compile Include="Scene\Scene.cs" />
     <Compile Include="Logic\EngineComponentStack.cs" />

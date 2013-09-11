@@ -27,6 +27,9 @@
 
             this.Name = resource.Name;
 
+            this.BoundingBox = resource.BoundingBox;
+            this.BoundingSphere = resource.BoundingSphere;
+
             this.uploadCache = new Dictionary<Type, DataContainer>();
             this.indexUploadCache = new StaticDataContainer<uint>();
 
@@ -52,6 +55,9 @@
         public int IndexSize { get; private set; }
 
         public int ElementCount { get; private set; }
+
+        public BoundingBox? BoundingBox { get; private set; }
+        public BoundingSphere? BoundingSphere { get; private set; }
 
         public void Dispose()
         {

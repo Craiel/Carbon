@@ -104,7 +104,7 @@
                 // Register the UI entities and add them to the rendering list
                 foreach (ISceneEntity entity in this.userInterface.Entities)
                 {
-                    this.RegisterEntity(entity);
+                    this.RegisterAndInvalidate(entity);
                     this.AddSceneEntityToRenderingList(entity, 2);
                 }
             }
@@ -122,17 +122,15 @@
                 {
                     foreach (IModelEntity entity in entityList)
                     {
-                        this.RegisterEntity(entity);
+                        this.RegisterAndInvalidate(entity);
                         this.AddSceneEntityToRenderingList(entity);
-                        this.InvalidateSceneEntity(entity);
                     }
                 }
 
                 foreach (ILightEntity light in this.stage.Lights.Values)
                 {
-                    this.RegisterEntity(light);
+                    this.RegisterAndInvalidate(light);
                     this.AddSceneEntityToRenderingList(light);
-                    this.InvalidateSceneEntity(light);
                 }
             }
         }
@@ -254,6 +252,17 @@
         {
             switch (obj)
             {
+                case GrandSealSystemAction.ToggleDebugOverlay:
+                    {
+                        // Not active means it is in the process of being activated
+                        if (!this.debugOverlay.IsActive)
+                        {
+                            this.RefreshDebugData();
+                        }
+
+                        break;
+                    }
+
                 case GrandSealSystemAction.ToggleDebugCamera:
                     {
                         if (!this.debugOverlay.IsActive)
@@ -280,6 +289,34 @@
                         break;
                     }
             }
+        }
+
+        private void RefreshDebugData()
+        {
+            // refresh and upload our entity information to the debug overlay
+            IList<SceneEntityDebugEntry> entityData = new List<SceneEntityDebugEntry>();
+            foreach (string key in this.stage.Models.Keys)
+            {
+                foreach (IModelEntity entity in this.stage.Models[key])
+                {
+                    var entry = new SceneEntityDebugEntry(
+                    key,
+                    EntityDebugType.Model,
+                    new WeakReference<ISceneEntity>(entity));
+                    entityData.Add(entry);
+                }
+            }
+
+            foreach (string key in this.stage.Lights.Keys)
+            {
+                var entry = new SceneEntityDebugEntry(
+                    key,
+                    EntityDebugType.Light,
+                    new WeakReference<ISceneEntity>(this.stage.Lights[key]));
+                entityData.Add(entry);
+            }
+
+            this.debugOverlay.UpdateEntityData(entityData);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿namespace Core.Engine.Scene
 {
     using System;
+    using System.Collections.Generic;
 
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
@@ -10,18 +11,28 @@
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Rendering;
+    using Core.Engine.Rendering.Primitives;
     using Core.Engine.Resource.Resources;
+    using Core.Engine.Resource.Resources.Model;
     using Core.Engine.UserInterface;
     using Core.Utils.Contracts;
 
     using LuaInterface;
 
     using SharpDX;
+    using SharpDX.Direct3D;
 
     public class SceneDebugOverlay : Scene, ISceneDebugOverlay
     {
+        private const int EntityRenderingList = 10;
+
+        private static readonly Vector4 ColorModelEntity = new Vector4(0, 1, 0, 0.5f);
+        private static readonly Vector4 ColorLightEntity = new Vector4(1, 1, 0, 0.5f);
+
         private readonly IEngineFactory factory;
         private readonly ILog log;
+
+        private readonly ModelResource lightEntityModel;
 
         private ICarbonGraphics graphics;
 
@@ -42,6 +53,8 @@
         {
             this.factory = factory;
             this.log = factory.Get<IEngineLog>().AquireContextLog("SceneDebugOverlay");
+
+            this.lightEntityModel = Sphere.Create(0, ColorLightEntity);
         }
 
         // -------------------------------------------------------------------
@@ -63,6 +76,8 @@
             }
         }
 
+        public bool EnableRendering { get; set; }
+
         public IProjectionCamera Camera
         {
             get
@@ -70,7 +85,29 @@
                 return this.debugCamera;
             }
         }
-        
+
+        public void UpdateEntityData(IEnumerable<SceneEntityDebugEntry> entities)
+        {
+            this.ClearRenderingList(EntityRenderingList);
+            foreach (SceneEntityDebugEntry entry in entities)
+            {
+                switch (entry.Type)
+                {
+                    case EntityDebugType.Model:
+                        {
+                            this.AddModelEntity(entry);
+                            break;
+                        }
+
+                    case EntityDebugType.Light:
+                        {
+                            this.AddLightEntity(entry);
+                            break;
+                        }
+                }
+            }
+        }
+
         public override void Initialize(ICarbonGraphics graphic)
         {
             base.Initialize(graphic);
@@ -129,19 +166,25 @@
 
         public override void Render(IFrameManager frameManager)
         {
-            // The scene to deferred
+            if (!this.EnableRendering)
+            {
+                return;
+            }
+
+            // Render the entity data
             FrameInstructionSet set = frameManager.BeginSet(this.debugCamera);
-            set.Technique = FrameTechnique.Forward;
-            set.LightingEnabled = true;
-            this.RenderList(1, set);
+            set.Technique = FrameTechnique.Plain;
+            set.LightingEnabled = false;
+            set.Topology = PrimitiveTopology.LineList;
+            this.RenderList(EntityRenderingList, set);
             frameManager.RenderSet(set);
 
             // User Interface as overlay on top
-            set = frameManager.BeginSet(this.userInterfaceCamera);
+            /*set = frameManager.BeginSet(this.userInterfaceCamera);
             set.LightingEnabled = false;
             set.Technique = FrameTechnique.Forward;
             this.RenderList(2, set);
-            frameManager.RenderSet(set);
+            frameManager.RenderSet(set);*/
         }
 
         public override void Resize(TypedVector2<int> size)
@@ -190,6 +233,56 @@
         protected override Lua LoadRuntime(CarbonScript script)
         {
             throw new NotSupportedException();
+        }
+
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private void AddModelEntity(SceneEntityDebugEntry entry)
+        {
+            ISceneEntity source;
+            if (!entry.Source.TryGetTarget(out source))
+            {
+                return;
+            }
+
+            // Todo: handle this case
+            if (source.BoundingBox == null)
+            {
+                return;
+            }
+            
+            ModelResource resource = Cube.CreateBoundingBoxLines(source.BoundingBox.Value, ColorModelEntity);
+            var entity = new ModelEntity
+            {
+                Position = source.Position,
+                Scale = new Vector3(1.1f),
+                Rotation = source.Rotation,
+                Mesh = new Mesh(resource)
+            };
+
+            this.RegisterAndInvalidate(entity);
+            this.AddSceneEntityToRenderingList(entity, EntityRenderingList);
+        }
+
+        private void AddLightEntity(SceneEntityDebugEntry entry)
+        {
+            ISceneEntity source;
+            if (!entry.Source.TryGetTarget(out source))
+            {
+                return;
+            }
+
+            var entity = new ModelEntity
+            {
+                Position = source.Position,
+                Scale = new Vector3(0.5f),
+                Rotation = source.Rotation,
+                Mesh = new Mesh(this.lightEntityModel)
+            };
+
+            this.RegisterAndInvalidate(entity);
+            this.AddSceneEntityToRenderingList(entity, EntityRenderingList);
         }
     }
 }

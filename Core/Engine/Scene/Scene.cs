@@ -128,6 +128,22 @@
             this.entityRenderLists[targetList].Add(entity);
         }
 
+        [ScriptingMethod]
+        public void ClearRenderingList(int targetList = DefaultSceneEntityRenderingList)
+        {
+            if (this.entityRenderLists.ContainsKey(targetList))
+            {
+                this.entityRenderLists[targetList].Clear();
+            }
+        }
+
+        // Convenience function for internal use, do not expose!
+        public void RegisterAndInvalidate(ISceneEntity entity, int targetStack = DefaultSceneEntityStack)
+        {
+            this.RegisterEntity(entity);
+            this.InvalidateSceneEntity(entity, targetStack);
+        }
+
         public override bool Update(Utils.Contracts.ITimer gameTime)
         {
             if (!base.Update(gameTime))

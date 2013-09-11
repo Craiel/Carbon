@@ -54,6 +54,7 @@
             var binding = inputManager.RegisterBinding(BindingSystemController);
             binding.BindEx("F3", "ToggleDebugOverlay", "PressAndRelease", "And");
             binding.BindEx("F4", "ToggleDebugCamera", "PressAndRelease", "And");
+            binding.BindEx("F5", "ToggleDebugDisplay", "PressAndRelease", "And");
             binding.BindEx("F9", "ToggleDepth", "PressAndRelease", "And");
             binding.BindEx("F10", "ToggleWireframe", "PressAndRelease", "And");
         }

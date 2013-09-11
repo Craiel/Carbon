@@ -12,6 +12,7 @@ namespace GrandSeal.Logic
     {
         ToggleDebugOverlay,
         ToggleDebugCamera,
+        ToggleDebugDisplay,
         ToggleDepth,
         ToggleWireframe,
     }

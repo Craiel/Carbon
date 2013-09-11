@@ -29,6 +29,9 @@
         // -------------------------------------------------------------------
         public string Name { get; set; }
 
+        public BoundingBox? BoundingBox { get; set; }
+        public BoundingSphere? BoundingSphere { get; set; }
+
         public bool HasTangents { get; private set; }
         
         public IList<ModelResourceElement> Elements { get; set; }
@@ -87,6 +90,28 @@
             CalculateTangents(ref elements, ref indices);
         }
 
+        public void CalculateBoundingBox()
+        {
+            var points = new Vector3[this.Elements.Count];
+            for (int i = 0; i < this.Elements.Count; i++)
+            {
+                points[i] = this.Elements[i].Position;
+            }
+
+            this.BoundingBox = SharpDX.BoundingBox.FromPoints(points);
+        }
+
+        public void CalculateBoundingSphere()
+        {
+            var points = new Vector3[this.Elements.Count];
+            for (int i = 0; i < this.Elements.Count; i++)
+            {
+                points[i] = this.Elements[i].Position;
+            }
+
+            this.BoundingSphere = SharpDX.BoundingSphere.FromPoints(points);
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
@@ -116,7 +141,7 @@
                 float y2 = e3.Position.Y - e1.Position.Y;
                 float z1 = e2.Position.Z - e1.Position.Z;
                 float z2 = e3.Position.Z - e1.Position.Z;
-
+                
                 float s1 = e2.Texture.Value.X - e1.Texture.Value.X;
                 float s2 = e3.Texture.Value.X - e1.Texture.Value.X;
                 float t1 = e2.Texture.Value.Y - e1.Texture.Value.Y;

@@ -34,6 +34,7 @@
         private readonly IGrandSealScriptingProvider scriptingProvider;
         private readonly IGrandSealSystemController systemController;
         private readonly IGrandSealSettings settings;
+        private readonly ISceneDebugOverlay debugOverlay;
 
         private bool clearCacheOnNextPass;
         private bool isDebugOverlayEnabled;
@@ -51,6 +52,7 @@
             this.scriptingProvider = factory.GetScriptingProvider(this);
             this.systemController = factory.Get<IGrandSealSystemController>();
             this.settings = factory.Get<IGrandSealSettings>();
+            this.debugOverlay = factory.Get<ISceneDebugOverlay>();
         }
 
         // -------------------------------------------------------------------
@@ -211,6 +213,12 @@
 
                         this.isDebugOverlayEnabled = !this.isDebugOverlayEnabled;
 
+                        break;
+                    }
+
+                case GrandSealSystemAction.ToggleDebugDisplay:
+                    {
+                        this.debugOverlay.EnableRendering = !this.debugOverlay.EnableRendering;
                         break;
                     }
             }

@@ -71,7 +71,7 @@
             return i;
         }
 
-        public static ModelResource Create(int recursionLevel)
+        public static ModelResource Create(int recursionLevel, Vector4? color = null)
         {
             pointList.Clear();
             middlePointIndexCache.Clear();
@@ -156,7 +156,7 @@
                 float v = (float)(Math.Atan2(pointList[i].Z, pointList[i].X) / Math.PI + 1.0f) * 0.5f;
 
                 // Todo: fix normal
-                builder.AddVertex(pointList[i], pointList[i], new Vector2(u, v));
+                builder.AddVertex(pointList[i], pointList[i], new Vector2(u, v), color);
 
                 /*vertices[i].Position = pointList[i];
                 vertices[i].Normal = pointList[i]; // Todo: fix normal

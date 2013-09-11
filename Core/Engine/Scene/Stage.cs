@@ -151,7 +151,9 @@
                         }
 
                         // Todo: Model groups are not handled properly!!!
+                        // Todo: Bounding box generation should probably be on editor for this
                         var resource = this.gameState.ResourceManager.Load<ModelResourceGroup>(reference.Hash);
+                        resource.Models[0].CalculateBoundingBox();
                         model.Mesh = new Mesh(resource.Models[0]);
                         if (unusedReferences.Contains(reference))
                         {
