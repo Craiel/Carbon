@@ -25,9 +25,11 @@ namespace GrandSeal.Ninject
             {
                 this.Bind<IGrandSeal>().To<GrandSeal>().InSingletonScope();
 
-                this.Bind<IApplicationLog>().To<ApplicationLog>();
+                this.Bind<IGrandSealLog>().To<GrandSealLog>();
                 this.Bind<IGrandSealScriptingProvider>().To<GrandSealScriptingProvider>().InSingletonScope();
                 this.Bind<IGrandSealGameState>().To<GrandSealGameState>().InSingletonScope();
+                this.Bind<IGrandSealSystemController>().To<GrandSealSystemController>().InSingletonScope();
+                this.Bind<IGrandSealSettings>().To<GrandSealSettings>().InSingletonScope();
 
                 this.Bind<ISceneEntry>().To<SceneEntry>().InSingletonScope();
                 this.Bind<ISceneMainMenu>().To<SceneMainMenu>().InSingletonScope();

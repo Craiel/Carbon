@@ -8,9 +8,12 @@
 
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
     using Core.Utils;
     using Core.Utils.Contracts;
+
+    using Logic;
 
     using Ninject;
 
@@ -20,6 +23,7 @@
     {
         Entry = 0,
         MainMenu = 1,
+        DebugOverlay = 1000
     }
 
     public class GrandSeal : CarbonGame, IGrandSeal
@@ -28,8 +32,11 @@
         private readonly ILog log;
         private readonly IGrandSealGameState gameState;
         private readonly IGrandSealScriptingProvider scriptingProvider;
+        private readonly IGrandSealSystemController systemController;
+        private readonly IGrandSealSettings settings;
 
         private bool clearCacheOnNextPass;
+        private bool isDebugOverlayEnabled;
         
         // -------------------------------------------------------------------
         // Constructor
@@ -38,10 +45,12 @@
             : base(factory)
         {
             this.factory = factory;
-            this.log = factory.Get<IApplicationLog>().AquireContextLog("GrandSeal");
+            this.log = factory.Get<IGrandSealLog>().AquireContextLog("GrandSeal");
 
             this.gameState = factory.Get<IGrandSealGameState>();
             this.scriptingProvider = factory.GetScriptingProvider(this);
+            this.systemController = factory.Get<IGrandSealSystemController>();
+            this.settings = factory.Get<IGrandSealSettings>();
         }
 
         // -------------------------------------------------------------------
@@ -86,12 +95,20 @@
 
             base.Initialize();
 
+            // Settings come very early so we have everything setup we need from there
+            this.settings.Initialize(this.Graphics);
+
             this.gameState.Initialize(this.Graphics);
 
             this.gameState.ScriptingEngine.Register(this.scriptingProvider);
             
             var content = new EngineContent { FallbackTexture = HashUtils.BuildResourceHash(@"Textures\default.dds") };
             this.SetEngineContent(content);
+
+            // Initialize the system controller and hook into the trigger
+            this.systemController.Initialize(this.Graphics);
+            this.systemController.IsActive = true;
+            this.systemController.ActionTriggered += this.OnSystemAction;
 
             // Set our initial size
             var size = new TypedVector2<int>(1024, 768);
@@ -101,6 +118,10 @@
             var entryScene = this.factory.Get<ISceneEntry>();
             entryScene.SceneScriptHash = HashUtils.BuildResourceHash(@"Scripts\Entry\Init.lua");
             this.gameState.SceneManager.Register((int)SceneKey.Entry, entryScene);
+
+            // Setup the debug overlay
+            var debugOverlay = this.factory.Get<ISceneDebugOverlay>();
+            this.gameState.SceneManager.Register((int)SceneKey.DebugOverlay, debugOverlay);
            
             // Activate the entry scene
             this.gameState.SceneManager.Activate((int)SceneKey.Entry);
@@ -130,6 +151,8 @@
 
             // Some useful debug output next
             this.Window.Text = string.Format("GrandSeal GameTime: {0:hh\\:mm\\:ss\\:fff}, FPS: {1}", gameTime.ElapsedTime, this.FramesPerSecond);
+
+            this.systemController.Update(gameTime);
 
             // Lock the cursor to the screencenter after everyone is done with the updates
             // this.cursor.Position = this.Window.Center;
@@ -164,6 +187,33 @@
             this.gameState.Dispose();
 
             base.OnClose(sender, e);
+        }
+
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private void OnSystemAction(GrandSealSystemAction obj)
+        {
+            switch (obj)
+            {
+                case GrandSealSystemAction.ToggleDebugOverlay:
+                    {
+                        this.log.Info("Setting debug overlay: " + !this.isDebugOverlayEnabled);
+
+                        if (this.isDebugOverlayEnabled)
+                        {
+                            this.gameState.SceneManager.DeactivateOverlay((int)SceneKey.DebugOverlay);
+                        }
+                        else
+                        {
+                            this.gameState.SceneManager.ActivateOverlay((int)SceneKey.DebugOverlay);
+                        }
+
+                        this.isDebugOverlayEnabled = !this.isDebugOverlayEnabled;
+
+                        break;
+                    }
+            }
         }
     }
 }

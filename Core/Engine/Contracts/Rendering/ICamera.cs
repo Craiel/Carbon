@@ -14,10 +14,15 @@
         Matrix Projection { get; }
         BoundingFrustum Frustum { get; }
 
+        TypedVector2<int> ViewPort { get; }
+
         float Near { get; }
         float Far { get; }
+        float FieldOfView { get; }
 
         void SetPerspective(TypedVector2<int> size, float near, float far, float fov = CameraConstants.DefaultFoV);
+
+        void CopyFrom(ICamera source);
     }
 
     public interface IOrthographicCamera : ICamera

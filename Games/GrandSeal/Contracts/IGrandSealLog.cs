@@ -2,7 +2,7 @@
 {
     using Core.Utils.Contracts;
 
-    public interface IApplicationLog : ILogBase
+    public interface IGrandSealLog : ILogBase
     {
     }
 }

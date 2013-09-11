@@ -4,9 +4,9 @@
 
     using Core.Utils.Diagnostics;
 
-    public class ApplicationLog : LogBase, IApplicationLog
+    public class GrandSealLog : LogBase, IGrandSealLog
     {
-        public ApplicationLog()
+        public GrandSealLog()
             : base("GrandSeal")
         {
         }

@@ -20,10 +20,14 @@
     using Core.Engine.UserInterface;
     using Core.Utils.Contracts;
 
+    using Logic;
+
     public class SceneMainMenu : SceneBase, ISceneMainMenu
     {
         private readonly IEngineFactory factory;
         private readonly ILog log;
+        private readonly ISceneDebugOverlay debugOverlay;
+        private readonly IGrandSealSystemController systemController;
 
         private ICarbonGraphics graphics;
 
@@ -38,19 +42,37 @@
         private IProjectionCamera activeCamera;
         private IOrthographicCamera userInterfaceCamera;
 
+        private bool useDebugCamera;
+
+        private IProjectionCamera activeSceneCamera;
+
         // --------------------------------------------------------------------
         // Constructor
-        // -------------------------------------------------------------------
+        // --------------------------------------------------------------------
         public SceneMainMenu(IEngineFactory factory)
             : base(factory)
         {
             this.factory = factory;
-            this.log = factory.Get<IApplicationLog>().AquireContextLog("MainMenuScene");
+            this.debugOverlay = this.factory.Get<ISceneDebugOverlay>();
+
+            this.systemController = this.factory.Get<IGrandSealSystemController>();
+            
+            this.log = factory.Get<IGrandSealLog>().AquireContextLog("MainMenuScene");
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public override void Dispose()
+        {
+            if (this.IsActive)
+            {
+                this.systemController.ActionTriggered -= this.OnSystemAction;
+            }
+
+            base.Dispose();
+        }
+
         public override void Initialize(ICarbonGraphics graphic)
         {
             if (string.IsNullOrEmpty(this.SceneScriptHash))
@@ -117,10 +139,7 @@
 
         public override bool Update(ITimer gameTime)
         {
-            /*this.debugController.Update(gameTime);
-            this.activeCamera.Position = this.debugController.Position;
-            this.activeCamera.Rotation = this.debugController.Rotation;
-            this.activeCamera.Update(gameTime);*/
+            this.activeCamera.Update(gameTime);
 
             return base.Update(gameTime);
         }
@@ -209,6 +228,58 @@
             }
 
             this.stageResource = this.GameState.ResourceManager.Load<StageResource>(hash);
+        }
+
+        // --------------------------------------------------------------------
+        // Protected
+        // --------------------------------------------------------------------
+        protected override void Activate()
+        {
+            this.systemController.ActionTriggered += this.OnSystemAction;
+
+            base.Activate();
+        }
+
+        protected override void Deactivate()
+        {
+            base.Deactivate();
+
+            this.systemController.ActionTriggered -= this.OnSystemAction;
+        }
+
+        // --------------------------------------------------------------------
+        // Private
+        // --------------------------------------------------------------------
+        private void OnSystemAction(GrandSealSystemAction obj)
+        {
+            switch (obj)
+            {
+                case GrandSealSystemAction.ToggleDebugCamera:
+                    {
+                        if (!this.debugOverlay.IsActive)
+                        {
+                            return;
+                        }
+
+                        if (this.useDebugCamera)
+                        {
+                            // Switch back to the scene camera
+                            this.debugOverlay.EnableController = false;
+                            this.activeCamera = this.activeSceneCamera;
+                        }
+                        else
+                        {
+                            this.activeSceneCamera = this.activeCamera;
+
+                            this.activeCamera = this.debugOverlay.Camera;
+                            this.activeCamera.CopyFrom(this.activeSceneCamera);
+                            this.debugOverlay.EnableController = true;
+                        }
+
+                        this.useDebugCamera = !this.useDebugCamera;
+                        break;
+                    }
+            }
         }
     }
 }

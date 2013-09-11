@@ -14,7 +14,7 @@
     {
         private readonly IDictionary<int, IScene> registeredScenes;
         private readonly IList<int> preparedScenes;
-        private readonly IList<int> activeOverlays; 
+        private readonly IList<int> activeOverlays;
 
         private ICarbonGraphics currentGraphics;
 
@@ -110,6 +110,11 @@
 
         public void Deactivate()
         {
+            if (this.activeScene == null)
+            {
+                throw new InvalidOperationException("No scene active");
+            }
+
             this.QueueOperation(this.DeactivateScene, this.lastUpdateTime);
         }
 
@@ -163,6 +168,12 @@
                 this.registeredScenes[(int)this.activeScene].Update(gameTime);
             }
 
+            IList<int> overlays = new List<int>(this.activeOverlays);
+            foreach (int key in overlays)
+            {
+                this.registeredScenes[key].Update(gameTime);
+            }
+
             return true;
         }
 
@@ -177,6 +188,12 @@
             if (this.activeScene != null)
             {
                 this.registeredScenes[(int)this.activeScene].Render(frameManager);
+            }
+
+            IList<int> overlays = new List<int>(this.activeOverlays);
+            foreach (int key in overlays)
+            {
+                this.registeredScenes[key].Render(frameManager);
             }
         }
 
@@ -276,12 +293,13 @@
         {
             if (this.activeScene == null)
             {
-                throw new InvalidOperationException("No active scene to deactivate");
+                throw new InvalidOperationException();
             }
 
-            IScene active = this.registeredScenes[(int)this.activeScene];
+            var key = (int)this.activeScene;
+            IScene active = this.registeredScenes[key];
             active.Unload();
-            this.preparedScenes.Remove((int)this.activeScene);
+            this.preparedScenes.Remove(key);
             active.IsActive = false;
             active.IsVisible = false;
             this.activeScene = null;
@@ -289,7 +307,7 @@
             if (this.suspendedScene != null)
             {
                 this.activeScene = this.suspendedScene;
-                active = this.registeredScenes[(int)this.activeScene];
+                active = this.registeredScenes[key];
                 active.IsActive = true;
                 active.IsVisible = true;
             }
@@ -300,7 +318,6 @@
         private bool ActivateSceneOverlay(IThreadQueueOperationPayload payload)
         {
             var key = (int)payload.Data;
-
             if (!this.registeredScenes.ContainsKey(key))
             {
                 throw new ArgumentException();
@@ -329,13 +346,14 @@
             scene.IsActive = true;
             scene.IsVisible = true;
 
+            this.activeOverlays.Add(key);
+
             return true;
         }
 
         private bool DeactivateSceneOverlay(IThreadQueueOperationPayload payload)
         {
             var key = (int)payload.Data;
-
             if (!this.registeredScenes.ContainsKey(key))
             {
                 throw new ArgumentException();
@@ -351,7 +369,8 @@
             this.preparedScenes.Remove(key);
             active.IsActive = false;
             active.IsVisible = false;
-            
+
+            this.activeOverlays.Remove(key);
             return true;
         }
     }

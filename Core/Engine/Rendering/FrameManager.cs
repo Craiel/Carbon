@@ -58,7 +58,6 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public bool EnableDebugOverlay { get; set; }
         public Vector4 BackgroundColor { get; set; }
 
         public void BeginFrame()

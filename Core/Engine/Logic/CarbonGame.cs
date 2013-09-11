@@ -7,7 +7,6 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Resource;
-    using Core.Engine.Contracts.Scene;
     using Core.Utils.Contracts;
     using Core.Utils.Diagnostics;
     using Core.Utils.Formatting;
@@ -57,9 +56,7 @@
         private readonly IFrameManager mainFrameManager;
         private readonly IRenderer mainRenderer;
         private readonly IScriptingEngine scriptingEngine;
-        private readonly IDebugController debugController;
-        private readonly ISceneDebugOverlay debugOverlay;
-
+        
         private CarbonWindow window;
 
         private bool isClosing;
@@ -83,12 +80,10 @@
         {
             this.coreResourceManager = factory.GetResourceManager(new CarbonDirectory("Data"));
             this.graphics = factory.GetGraphics(this.coreResourceManager);
-            this.debugController = factory.Get<IDebugController>();
             this.inputManager = factory.Get<IInputManager>();
             this.mainFrameManager = factory.Get<IFrameManager>();
             this.mainRenderer = factory.Get<IRenderer>();
             this.scriptingEngine = factory.Get<IScriptingEngine>();
-            this.debugOverlay = factory.Get<ISceneDebugOverlay>();
             this.log = factory.Get<IEngineLog>().AquireContextLog("CarbonGame");
 
             this.gameTimer = new Utils.Timer();
@@ -188,8 +183,6 @@
             this.inputManager.Initialize(this.graphics);
             this.mainRenderer.Initialize(this.graphics);
             this.mainFrameManager.Initialize(this.graphics);
-
-            this.debugController.IsActive = true;
         }
         
         protected virtual void Update(ITimer gameTime)

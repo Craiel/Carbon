@@ -13,7 +13,7 @@
 
         Vector3 Position { get; set; }
 
-        Quaternion Rotation { get; }
+        Quaternion Rotation { get; set; }
     }
     
     public class FirstPersonController : BoundController, IFirstPersonController
@@ -79,6 +79,11 @@
             get
             {
                 return this.rotation;
+            }
+
+            set
+            {
+                this.rotation = value;
             }
         }
 

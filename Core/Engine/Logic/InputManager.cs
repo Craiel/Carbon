@@ -13,6 +13,9 @@
 
     public class InputManager : EngineComponent, IInputManager
     {
+        public const string DefaultBindingDebugController = "_defaultDebugController";
+        public const string DefaultBindingConsole = "_defaultConsole";
+
         private static readonly TimeSpan UpdateCycle = TimeSpan.FromMilliseconds(10);
 
         private readonly IList<IInputReceiver> receivers;
@@ -237,19 +240,14 @@
 
         private void SetupDefaultBindings()
         {
-            var binding = this.RegisterBinding("debug");
-            binding.BindEx("F3", "ToggleDebugOverlay", "PressAndRelease", "And");
-            binding.BindEx("F9", "ToggleDepth", "PressAndRelease", "And");
-            binding.BindEx("F10", "ToggleWireframe", "PressAndRelease", "And");
-
-            binding = this.RegisterBinding("debugController");
+            var binding = this.RegisterBinding(DefaultBindingDebugController);
             binding.BindEx("W", "MoveForward", "Always", "And");
             binding.BindEx("A", "MoveLeft", "Always", "And");
             binding.BindEx("S", "MoveBackward", "Always", "And");
             binding.BindEx("D", "MoveRight", "Always", "And");
             binding.BindEx("Mouse1", "ToggleRotation", "Always", "And");
 
-            binding = this.RegisterBinding("console");
+            binding = this.RegisterBinding(DefaultBindingConsole);
             var capsModifiers = new[] { (object)"RightShift", "LeftShift" };
 
             binding.BindEx("A", "a", "Always", "And");

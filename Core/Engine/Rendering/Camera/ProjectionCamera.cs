@@ -17,15 +17,7 @@
         private readonly Vector3 upVector = Vector3.UnitY;
 
         private Vector3 targetVector = Vector3.UnitZ;
-
-        private Matrix view;
-        private Matrix projection;
-        private BoundingFrustum frustum;
-
-        private TypedVector2<int> viewPort;
-        private float near;
-        private float far;
-
+        
         private Quaternion rotation;
 
         private Vector3 position;
@@ -35,6 +27,8 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+
+        // Static camera used for shadowmapping
         public static IProjectionCamera Camera
         {
             get
@@ -42,55 +36,7 @@
                 return StaticCamera;
             }
         }
-
-        public override Matrix View
-        {
-            get
-            {
-                return this.view;
-            }
-        }
-
-        public override Matrix Projection
-        {
-            get
-            {
-                return this.projection;
-            }
-        }
-
-        public override BoundingFrustum Frustum
-        {
-            get
-            {
-                return this.frustum;
-            }
-        }
-
-        public override TypedVector2<int> ViewPort
-        {
-            get
-            {
-                return this.viewPort;
-            }
-        }
-
-        public override float Near
-        {
-            get
-            {
-                return this.near;
-            }
-        }
-
-        public override float Far
-        {
-            get
-            {
-                return this.far;
-            }
-        }
-
+        
         public override Vector3 Position
         {
             get
@@ -150,12 +96,12 @@
                 Vector4 rotatedTarget = Vector3.Transform(this.targetVector, rotationMatrix * Matrix.Translation(positionVector));
                 Vector4 rotatedUp = Vector3.Transform(this.upVector, rotationMatrix);
 
-                this.view = Matrix.LookAtLH(
+                this.View = Matrix.LookAtLH(
                     positionVector,
                     new Vector3(rotatedTarget.X, rotatedTarget.Y, rotatedTarget.Z),
                     new Vector3(rotatedUp.X, rotatedUp.Y, rotatedUp.Z));
 
-                this.frustum = new BoundingFrustum(this.View * this.Projection);
+                this.Frustum = new BoundingFrustum(this.View * this.Projection);
                 
                 this.needUpdate = false;
             }
@@ -165,10 +111,24 @@
 
         public override void SetPerspective(TypedVector2<int> newViewPort, float newNear, float newFar, float fov = CameraConstants.DefaultFoV)
         {
-            this.viewPort = newViewPort;
-            this.near = newNear;
-            this.far = newFar;
-            this.projection = Matrix.PerspectiveFovLH(fov, (float)this.viewPort.X / this.viewPort.Y, this.near, this.far);
+            this.ViewPort = newViewPort;
+            this.Near = newNear;
+            this.Far = newFar;
+            this.FieldOfView = fov;
+            this.Projection = Matrix.PerspectiveFovLH(fov, (float)this.ViewPort.X / this.ViewPort.Y, this.Near, this.Far);
+            this.needUpdate = true;
+        }
+
+        public override void CopyFrom(ICamera source)
+        {
+            base.CopyFrom(source);
+
+            var typed = source as IProjectionCamera;
+            if (typed != null)
+            {
+                this.rotation = typed.Rotation;
+            }
+
             this.needUpdate = true;
         }
     }

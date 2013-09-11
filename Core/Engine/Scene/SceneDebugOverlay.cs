@@ -16,6 +16,8 @@
 
     using LuaInterface;
 
+    using SharpDX;
+
     public class SceneDebugOverlay : Scene, ISceneDebugOverlay
     {
         private readonly IEngineFactory factory;
@@ -45,6 +47,30 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public bool EnableController
+        {
+            get
+            {
+                return this.debugController.IsActive;
+            }
+
+            set
+            {
+                // Push the camera values and activate the controller
+                this.debugController.Position = this.Camera.Position;
+                this.debugController.Rotation = this.Camera.Rotation;
+                this.debugController.IsActive = value;
+            }
+        }
+
+        public IProjectionCamera Camera
+        {
+            get
+            {
+                return this.debugCamera;
+            }
+        }
+        
         public override void Initialize(ICarbonGraphics graphic)
         {
             base.Initialize(graphic);
@@ -69,8 +95,7 @@
             this.debugCamera = this.factory.Get<IProjectionCamera>();
             this.debugController = this.factory.Get<IFirstPersonController>();
             this.debugController.Initialize(graphic);
-            this.debugController.SetInputBindings("debugController");
-            this.debugController.IsActive = true;
+            this.debugController.SetInputBindings(InputManager.DefaultBindingDebugController);
             
             // Todo: Register the stage's entities and add them to the rendering list
             /*foreach (IList<IModelEntity> entityList in this.stage.Models.Values)
@@ -94,9 +119,10 @@
         public override bool Update(ITimer gameTime)
         {
             this.debugController.Update(gameTime);
+
+            // We are explicitly not calling update on this, will be done by the active scene if desired
             this.debugCamera.Position = this.debugController.Position;
             this.debugCamera.Rotation = this.debugController.Rotation;
-            this.debugCamera.Update(gameTime);
 
             return base.Update(gameTime);
         }

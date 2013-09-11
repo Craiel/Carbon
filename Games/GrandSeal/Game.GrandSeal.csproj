@@ -81,17 +81,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contracts\IApplicationLog.cs" />
+    <Compile Include="Contracts\IGrandSealLog.cs" />
+    <Compile Include="Contracts\IGrandSealSettings.cs" />
+    <Compile Include="Contracts\IGrandSealSystemController.cs" />
     <Compile Include="Contracts\ISceneEntry.cs" />
     <Compile Include="Contracts\IGrandSeal.cs" />
     <Compile Include="Contracts\IGrandSealGameState.cs" />
     <Compile Include="Contracts\IGrandSealScriptingProvider.cs" />
     <Compile Include="Contracts\ISceneMainMenu.cs" />
-    <Compile Include="Logic\ApplicationLog.cs" />
+    <Compile Include="Logic\GrandSealLog.cs" />
     <Compile Include="Logic\GrandSealScriptingProvider.cs" />
     <Compile Include="GrandSeal.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="Logic\GrandSealGameState.cs" />
+    <Compile Include="Logic\GrandSealSettings.cs" />
+    <Compile Include="Logic\GrandSealSystemController.cs" />
     <Compile Include="Ninject\FactoryExtension.cs" />
     <Compile Include="Ninject\NinjectModuleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

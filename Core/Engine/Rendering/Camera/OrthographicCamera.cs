@@ -18,14 +18,6 @@
 
         private readonly Vector3 targetVector = Vector3.UnitZ;
 
-        private Matrix view;
-        private Matrix projection;
-        private BoundingFrustum frustum;
-
-        private TypedVector2<int> viewPort;
-        private float near;
-        private float far;
-
         private bool needUpdate = true;
         
         // -------------------------------------------------------------------
@@ -43,55 +35,7 @@
                 throw new InvalidOperationException("Setting position is not allowed for Orthographic Camera");
             }
         }
-
-        public override Matrix View
-        {
-            get
-            {
-                return this.view;
-            }
-        }
-
-        public override Matrix Projection
-        {
-            get
-            {
-                return this.projection;
-            }
-        }
-
-        public override BoundingFrustum Frustum
-        {
-            get
-            {
-                return this.frustum;
-            }
-        }
-
-        public override TypedVector2<int> ViewPort
-        {
-            get
-            {
-                return this.viewPort;
-            }
-        }
-
-        public override float Near
-        {
-            get
-            {
-                return this.near;
-            }
-        }
-
-        public override float Far
-        {
-            get
-            {
-                return this.far;
-            }
-        }
-
+        
         public override bool Update(ITimer gameTime)
         {
             if (!base.Update(gameTime))
@@ -101,12 +45,12 @@
 
             if (this.needUpdate)
             {
-                this.view = Matrix.LookAtLH(
+                this.View = Matrix.LookAtLH(
                     new Vector3(this.position.X, this.position.Y, this.position.Z), 
                     this.targetVector,
                     this.upVector);
 
-                this.frustum = new BoundingFrustum(this.View * this.Projection);
+                this.Frustum = new BoundingFrustum(this.View * this.Projection);
 
                 this.needUpdate = false;
             }
@@ -116,10 +60,18 @@
 
         public override void SetPerspective(TypedVector2<int> newViewPort, float newNear, float newFar, float fov = CameraConstants.DefaultFoV)
         {
-            this.viewPort = newViewPort;
-            this.near = newNear;
-            this.far = newFar;
-            this.projection = Matrix.OrthoOffCenterLH(0, this.viewPort.X, 0, this.viewPort.Y, this.near, this.far);
+            this.ViewPort = newViewPort;
+            this.Near = newNear;
+            this.Far = newFar;
+            this.FieldOfView = fov;
+            this.Projection = Matrix.OrthoOffCenterLH(0, this.ViewPort.X, 0, this.ViewPort.Y, this.Near, this.Far);
+            this.needUpdate = true;
+        }
+
+        public override void CopyFrom(ICamera source)
+        {
+            base.CopyFrom(source);
+
             this.needUpdate = true;
         }
     }

@@ -156,7 +156,6 @@
     <Compile Include="Logic\TypedVectors.cs" />
     <Compile Include="Logic\Scripting\ScriptingGameProvider.cs" />
     <Compile Include="Logic\TypingController.cs" />
-    <Compile Include="Logic\DebugController.cs" />
     <Compile Include="Logic\EngineComponent.cs" />
     <Compile Include="Contracts\Logic\ICarbonGame.cs" />
     <Compile Include="Logic\CarbonGame.cs" />

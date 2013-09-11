@@ -8,7 +8,6 @@
 
     public interface IFrameManager : IEngineComponent
     {
-        bool EnableDebugOverlay { get; set; }
         Vector4 BackgroundColor { get; set; }
 
         void Resize(TypedVector2<int> size);

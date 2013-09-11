@@ -32,7 +32,7 @@
             this.controller = controller;
             this.controller.OnReturnPressed += this.ControllerOnReturnPressed;
             this.controller.OnCompletionRequested += this.ControllerOnCompletionRequested;
-            this.controller.SetInputBindings("console");
+            this.controller.SetInputBindings(InputManager.DefaultBindingConsole);
 
             this.formatter = factory.Get<IFormatter>();
 

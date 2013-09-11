@@ -29,7 +29,6 @@ namespace Core.Engine.Ninject
             // Logic
             this.Bind<IInputManager>().To<InputManager>().InSingletonScope();
             this.Bind<IFirstPersonController>().To<FirstPersonController>();
-            this.Bind<IDebugController>().To<DebugController>();
             this.Bind<ITypingController>().To<TypingController>();
             this.Bind<IScriptingEngine>().To<ScriptingEngine>();
             this.Bind<ISceneManager>().To<SceneManager>();

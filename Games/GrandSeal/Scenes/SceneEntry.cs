@@ -24,7 +24,7 @@
             : base(factory)
         {
             this.factory = factory;
-            this.log = factory.Get<IApplicationLog>().AquireContextLog("EntryScene");
+            this.log = factory.Get<IGrandSealLog>().AquireContextLog("EntryScene");
         }
 
         // -------------------------------------------------------------------
