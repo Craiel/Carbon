@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.IO;
 
     using Core.Engine.Contracts.Resource;
@@ -331,7 +332,7 @@
 
                 default:
                     {
-                        throw new NotImplementedException();
+                        throw new DataException("Resource reference type is not implemented: " + reference.Type);
                     }
             }
 

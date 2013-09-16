@@ -143,6 +143,11 @@
     <Compile Include="Contracts\UserInterface\IUserInterfaceControl.cs" />
     <Compile Include="Contracts\UserInterface\IUserInterfaceFrame.cs" />
     <Compile Include="Contracts\UserInterface\IUserInterfaceImage.cs" />
+    <Compile Include="Engine.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Engine.settings</DependentUpon>
+    </Compile>
     <Compile Include="Logic\CarbonConsole.cs" />
     <Compile Include="Logic\CarbonGraphics.cs" />
     <Compile Include="Logic\CarbonWindow.cs">
@@ -175,7 +180,6 @@
     <Compile Include="Ninject\EngineFactory.cs" />
     <Compile Include="Ninject\NinjectModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rendering\BoundingFrustum.cs" />
     <Compile Include="Rendering\Camera\Camera.cs" />
     <Compile Include="Logic\DeviceStateManager.cs" />
     <Compile Include="Rendering\Camera\OrthographicCamera.cs" />
@@ -340,6 +344,13 @@
     <Content Include="Data\Shaders\ShadowMap.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Engine.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Engine.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

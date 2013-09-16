@@ -19,30 +19,6 @@
         public string FallbackTexture;
     }
 
-    /// <summary>
-    /// Base class for a carbon based game
-    /// 
-    /// Todo:
-    /// - Cleanup           !!!!!
-    /// - 2D Rendering
-    /// - Cleanup
-    /// - Fonts
-    /// - Debug overlay
-    /// - Cleanup
-    /// 
-    /// NEXT!
-    /// - Change Shader to material, have renderer choose shader based on parameters
-    /// - Sort models by material to avoid shader switching
-    /// - Render debug overlay:
-    ///   * axis arrows using cone and torus (cube?)
-    ///   * Bounding Box spheres
-    /// 
-    /// - Fix Grid to be Quad texture instead of mesh
-    /// 
-    /// 
-    /// Later:
-    /// - Deferred Rendering: http://www.gamedev.net/topic/589695-directx11-and-deferred-rendering/
-    /// </summary>
     public abstract class CarbonGame : ICarbonGame
     {
         private static readonly TimeSpan FrameTime = TimeSpan.FromSeconds(1);
@@ -222,11 +198,6 @@
             this.graphics.TextureManager.SetFallback(content.FallbackTexture);
         }
 
-        protected void SetupDefaultProviders(IScriptingEngine engine)
-        {
-            // Todo: Register the default providers
-        }
-
         protected virtual void DoClearCache()
         {
             this.graphics.ClearCache();
@@ -338,9 +309,6 @@
             this.window.Resize += this.OnWindowResize;
             this.window.FormClosing += this.OnClosing;
             this.window.FormClosed += this.OnClose;
-
-            // Setup the scripting
-            this.SetupDefaultProviders(this.scriptingEngine);
         }
 
         private void OnClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)

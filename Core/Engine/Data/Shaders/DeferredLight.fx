@@ -83,13 +83,13 @@ float4 PS(PS_INPUT input) : SV_Target
     float2 shadowMapCoordinates = (positionLightCS.xy * 0.5 + 0.5f);
     shadowMapCoordinates.y = 1.0f - shadowMapCoordinates.y; // Hack to invert it properly
     float shadowMapDepth = ShadowMap.Sample(ShadowMapSampler, shadowMapCoordinates).r;
-		
-	shadowTerm = 0;
-	if((saturate(shadowMapCoordinates.x) == shadowMapCoordinates.x) && (saturate(shadowMapCoordinates.y) == shadowMapCoordinates.y))
-	{
-		shadowTerm = CalcShadowTermPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize);
-		//shadowTerm = CalcShadowTermSoftPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize, 4);
-	}
+        
+    shadowTerm = 0;
+    if((saturate(shadowMapCoordinates.x) == shadowMapCoordinates.x) && (saturate(shadowMapCoordinates.y) == shadowMapCoordinates.y))
+    {
+        shadowTerm = CalcShadowTermPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize);
+        //shadowTerm = CalcShadowTermSoftPCF(positionLightCS.z, shadowMapCoordinates, ShadowMapSize, 4);
+    }
 #endif
     
 #if AMBIENTLIGHT

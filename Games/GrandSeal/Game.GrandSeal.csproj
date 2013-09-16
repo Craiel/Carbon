@@ -89,6 +89,11 @@
     <Compile Include="Contracts\IGrandSealGameState.cs" />
     <Compile Include="Contracts\IGrandSealScriptingProvider.cs" />
     <Compile Include="Contracts\ISceneMainMenu.cs" />
+    <Compile Include="Config.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Config.settings</DependentUpon>
+    </Compile>
     <Compile Include="Logic\GrandSealLog.cs" />
     <Compile Include="Logic\GrandSealScriptingProvider.cs" />
     <Compile Include="GrandSeal.cs" />
@@ -107,7 +112,10 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="GrandSeal.config" />
+    <None Include="Config.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Config.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Utils\Core.Utils.csproj">

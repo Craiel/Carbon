@@ -11,7 +11,7 @@
 
         public Stream Open(IncludeType type, string fileName, Stream parentStream)
         {
-            string sourceFile = Path.Combine(ShaderManager.ShaderLocation, fileName);
+            string sourceFile = Path.Combine(Engine.Default.ShaderLocation, fileName);
             return File.OpenRead(sourceFile);
         }
 

@@ -15,10 +15,6 @@
 
     public class ShaderManager
     {
-        // Todo: Yeah right, hard coded path's...
-        internal const string ShaderLocation = @"Data\Shaders";
-        internal const string ShaderCacheKeyPrefix = @"_ShaderCache";
-
         private readonly IResourceManager resourceManager;
         private readonly IDictionary<int, VertexShader> vertexShaderCache;
         private readonly IDictionary<int, PixelShader> pixelShaderCache;
@@ -134,8 +130,8 @@
         // -------------------------------------------------------------------
         private CompiledShaderResource GetData(CarbonShaderDescription description)
         {
-            string cachedKey = Path.Combine(ShaderCacheKeyPrefix, description.GetCacheFileName());
-            string sourceFile = Path.Combine(ShaderLocation, description.File);
+            string cachedKey = Path.Combine(Engine.Default.ShaderCachePrefix, description.GetCacheFileName());
+            string sourceFile = Path.Combine(Engine.Default.ShaderLocation, description.File);
 
             byte[] md5;
             string sourceData = this.ReadSource(sourceFile, out md5);

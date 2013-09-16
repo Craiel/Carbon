@@ -113,7 +113,7 @@
             this.systemController.ActionTriggered += this.OnSystemAction;
 
             // Set our initial size
-            var size = new TypedVector2<int>(1024, 768);
+            var size = new TypedVector2<int>(Config.Default.ResolutionX, Config.Default.ResolutionY);
             this.Window.Size = new Size(size.X, size.Y);
 
             // Setup the entry scene
