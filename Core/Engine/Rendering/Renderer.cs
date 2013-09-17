@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Diagnostics.CodeAnalysis;
 
     using Core.Engine.Contracts;
@@ -95,11 +96,6 @@
 
         public void AddForwardLighting(IList<RenderLightInstruction> instructions)
         {
-            /* Todo
-             - Clear all shaders that can support lights of light info
-             - Set the new Lighting information to all shaders that support it
-             */
-
             this.defaultShader.ClearLight();
             foreach (RenderLightInstruction instruction in instructions)
             {
@@ -335,7 +331,7 @@
 
                 default:
                     {
-                        throw new NotImplementedException("RenderMode not implemented: " + parameters.Mode);
+                        throw new DataException("RenderMode not implemented: " + parameters.Mode);
                     }
             }   
         }

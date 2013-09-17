@@ -101,7 +101,7 @@
 
                 default:
                     {
-                        throw new NotImplementedException();
+                        throw new DataException("Unknown content link type: " + link.Type);
                     }
             }
 
@@ -553,7 +553,7 @@
 
             if (needRecreate && pragmaInfo.Count > 0)
             {
-                throw new NotImplementedException("Table was inconsistent but re-creation is not yet supported!");
+                throw new InvalidOperationException("Table was inconsistent but re-creation is not yet supported!");
             }
 
             if (needRecreate)
@@ -609,7 +609,7 @@
                 return string.Concat("BLOB", arguments);
             }
 
-            throw new NotImplementedException("Type for value is not implemented: " + internalType);
+            throw new DataException("Type for value is not implemented: " + internalType);
         }
     }
 }

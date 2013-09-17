@@ -102,7 +102,7 @@
 
                 default:
                     {
-                        throw new NotImplementedException();
+                        throw new NotSupportedException();
                     }
             }
         }
@@ -132,7 +132,7 @@
 
                 default:
                     {
-                        throw new NotImplementedException();
+                        throw new NotSupportedException();
                     }
             }
         }
@@ -157,7 +157,7 @@
 
                 default:
                     {
-                        throw new NotImplementedException();
+                        throw new NotSupportedException();
                     }
             }
         }

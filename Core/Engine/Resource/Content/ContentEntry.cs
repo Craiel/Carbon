@@ -35,12 +35,12 @@ namespace Core.Engine.Resource.Content
 
         public virtual ICarbonContent Clone(bool fullCopy = false)
         {
-            throw new NotImplementedException("Clone is not implemented for " + this.GetType());
+            throw new InvalidOperationException("Clone is not implemented for " + this.GetType());
         }
 
         public virtual void LoadFrom(ICarbonContent source)
         {
-            throw new NotImplementedException("LoadFrom is not implemented for " + this.GetType());
+            throw new InvalidOperationException("LoadFrom is not implemented for " + this.GetType());
         }
 
         public void LockChangeState()

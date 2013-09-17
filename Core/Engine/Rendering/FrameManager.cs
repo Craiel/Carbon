@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
 
@@ -309,14 +310,6 @@
                 }
             }
             
-            // Todo:
-            // - Set the Lighting target
-            // - change the parameters
-            // - Render the lights into the light target
-            // - Join the targets together with blending
-            // - Render the final result into the backbuffer or texture depending on desired target
-            // - Render transparent objects over with forward rendering
-
             // Compose onto the desired target
             RenderTargetBase compositionTarget;
             if (set.DesiredTarget.Type == RenderTargetType.Texture)
@@ -627,7 +620,7 @@
 
                     default:
                         {
-                            throw new NotImplementedException("Light type not implemented: " + instruction.Light.Type);
+                            throw new DataException("Light type not implemented: " + instruction.Light.Type);
                         }
                 }
 

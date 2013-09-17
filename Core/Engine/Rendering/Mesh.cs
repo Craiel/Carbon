@@ -2,16 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
 
     using Core.Engine.Resource.Resources.Model;
 
     using SharpDX;
 
-    /* Todo:
-     - this will only deal with a single resource
-     - sub parts will be evaluated before and put into a container mesh holder which will deal with transformations and rendering
-     - Merge meshes with same material together
-    */
     public class Mesh : IDisposable
     {
         private readonly ModelResource resourceReference; 
@@ -129,7 +125,7 @@
                 }
                 else
                 {
-                    throw new NotImplementedException("Vertex Format not implemented to write yet for " + this.Name);
+                    throw new DataException("Vertex Format not implemented to write yet for " + this.Name);
                 }
 
                 this.uploadCache.Add(type, container);
@@ -142,7 +138,7 @@
         {
             ModelResource resource = this.resourceReference;
 
-            // Todo:
+            // Todo: this reference disappears somewhere
             /*if (!this.resourceReference.TryGetTarget(out resource))
             {
                 throw new InvalidOperationException("Model resource is no longer valid");

@@ -185,10 +185,12 @@ class XCDExporter:
     
     def _WriteCamera(self, obj, matrix, scene):
         print("Writing camera %s" % obj.name)
-		
+        
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheView, clean_func=self._Clean, sep="_"))
-    
-        location, rotation, scale = matrix.decompose()
+        if obj.rotation_mode != "QUATERNION":
+            print("ERROR: Rotation mode has to be quaternion but was " + obj.rotation_mode)
+            return
+        location, rotation, scale = matrix.decompose()        
         rotation = rotation.to_axis_angle()
         rotation = rotation[0].normalized()[:] + (rotation[1], )
     
@@ -208,7 +210,7 @@ class XCDExporter:
         print("Writing mesh %s" % obj.name)
 		
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheObjects, clean_func=self._Clean, sep="_"))
-        
+                    
         location, rotation, scale = matrix.decompose()
         rotation = rotation.to_axis_angle()
         rotation = rotation[0][:] + (rotation[1], )
@@ -229,7 +231,6 @@ class XCDExporter:
     def _WriteStageElement(self, obj, matrix, scene):
         print("Writing stage element %s" % obj.name)
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheObjects, clean_func=self._Clean, sep="_"))
-        
         location, rotation, scale = matrix.decompose()
         rotation = rotation.to_axis_angle()
         rotation = rotation[0][:] + (rotation[1], )
