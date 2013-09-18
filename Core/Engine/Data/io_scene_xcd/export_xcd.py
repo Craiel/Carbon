@@ -17,6 +17,8 @@ import bpy_extras
 from bpy_extras.io_utils import unique_name, create_derived_objects, free_derived_objects
 from xml.sax.saxutils import quoteattr, escape
 
+print("Version 0.1")
+
 class XCDExporter:
     # -------------------------------------------------------------------------
     # Globals
@@ -31,6 +33,8 @@ class XCDExporter:
     _fileName = None
     _fileWriter = None
     _globalMatrix = None
+
+    _debugIndent = 0
     
     # -------------------------------------------------------------------------
     # Constructor
@@ -51,7 +55,7 @@ class XCDExporter:
         bpy.data.materials.tag(False)
         bpy.data.images.tag(False)
     
-        print('Info: starting XCD export to %r...' % self._fileName)
+        self._p('Info: starting XCD export to %r...' % self._fileName)
         self._WriteHeader()
         self._WriteFog(scene.world)
     
@@ -61,12 +65,12 @@ class XCDExporter:
             objects = [obj for obj in scene.objects if obj.is_visible(scene)]
     
         hierarchy = self._BuildHierarchy(objects)
-    
-        for objectMain, children in hierarchy:
-            self._ExportObject(scene, None, objectMain, children)
+        self._p(hierarchy)
+        for object, children in hierarchy:
+            self._ExportObject(scene, object, children)
     
         self._WriteFooter()
-        print('Info: finished XCD export')
+        self._p('Info: finished XCD export')
         
     # -------------------------------------------------------------------------
     # Misc helper functions
@@ -102,7 +106,7 @@ class XCDExporter:
             return parent
     
         for obj in objects:
-            print('Info: TestParent: %s' % obj.name)
+            self._p('Info: TestParent: %s' % obj.name)
             parentLookup.setdefault(testParent(obj.parent), []).append((obj, []))
     
         for parent, children in parentLookup.items():
@@ -167,10 +171,29 @@ class XCDExporter:
                               0x7b: "_",  # {
                               0x7d: "_",  # }
                               })
+
+    def _GetDebugIndent(self):
+        indent = ""
+        for i in range(0, self._debugIndent):
+            indent = indent + " -- "
+        return indent
+
+    def _dump(self, obj):
+        for attr in dir(obj):
+            try:
+                self._p("obj.%s = %s" % (attr, getattr(obj, attr)))
+            except:
+                self._p("Could not get attribute for %s " % attr)
+    
+    def _p(self, m):
+        print("%s %s" % (self._GetDebugIndent(), m))
     
     # -------------------------------------------------------------------------
     # File Writing Functions
     # -------------------------------------------------------------------------
+    def _QuaternionToData(self, quaternion):
+        return "%f %f %f %f" % (quaternion.x, quaternion.y, quaternion.z, quaternion.w)
+
     def _WriteHeader(self):
         blenderVersion = quoteattr('Blender %s' % bpy.app.version_string)
     
@@ -183,74 +206,51 @@ class XCDExporter:
     def _WriteFooter(self):
         self._fileWriter('</scene></xcd>')
     
-    def _WriteCamera(self, obj, matrix, scene):
-        print("Writing camera %s" % obj.name)
+    def _WriteCamera(self, obj):
+        self._p("Writing camera %s" % obj.name)
         
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheView, clean_func=self._Clean, sep="_"))
         if obj.rotation_mode != "QUATERNION":
-            print("ERROR: Rotation mode has to be quaternion but was " + obj.rotation_mode)
+            self._p("ERROR: Rotation mode has to be quaternion but was " + obj.rotation_mode)
             return
-        location, rotation, scale = matrix.decompose()        
-        rotation = rotation.to_axis_angle()
-        rotation = rotation[0].normalized()[:] + (rotation[1], )
-    
+        location, rotation, scale = obj.matrix_local.decompose()
+        self._p(rotation)
         self._fileWriter('<camera id=%s' % id)
         self._fileWriter(' fov="%.3f"' % obj.data.angle)
         self._fileWriter('>')
         
         self._fileWriter('<position>%3.2f %3.2f %3.2f</position>' % location[:])
-        self._fileWriter('<orientation>%3.2f %3.2f %3.2f %3.2f</orientation>' % rotation)
+        self._fileWriter('<rotation>%s</rotation>' % self._QuaternionToData(rotation))
         
         self._WriteLayers(obj.layers)
         self._WriteCustomProperties(obj)
         
         self._fileWriter('</camera>')
-        
-    def _WriteMesh(self, obj, matrix, scene):
-        print("Writing mesh %s" % obj.name)
-		
+                
+    def _BeginStageElement(self, obj):
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheObjects, clean_func=self._Clean, sep="_"))
-                    
-        location, rotation, scale = matrix.decompose()
-        rotation = rotation.to_axis_angle()
-        rotation = rotation[0][:] + (rotation[1], )
+        self._p("Writing stage element %s as %s" % (obj.name, id))
         
-        self._fileWriter('<mesh id=%s' % id)
-        self._fileWriter('>')
-        
-        self._fileWriter('<translation>%.6f %.6f %.6f</translation>' % location[:])
-        self._fileWriter('<rotation>%.6f %.6f %.6f %.6f</rotation>' % rotation)
-        self._fileWriter('<scale>%.6f %.6f %.6f</scale>' % scale[:])
-        
-        self._WriteBoundingBox(obj.bound_box)
-        self._WriteLayers(obj.layers)
-        self._WriteCustomProperties(obj)
-        
-        self._fileWriter('</mesh>')
-        
-    def _WriteStageElement(self, obj, matrix, scene):
-        print("Writing stage element %s" % obj.name)
-        id = quoteattr(unique_name(obj, obj.name, self._uuidCacheObjects, clean_func=self._Clean, sep="_"))
-        location, rotation, scale = matrix.decompose()
-        rotation = rotation.to_axis_angle()
-        rotation = rotation[0][:] + (rotation[1], )
-        
+        location, rotation, scale = object.matrix_local.decompose()
+        rotation = obj.rotation_quaternion
+                
         link = obj.library.filepath.replace("//", "").replace(".blend", ".dae");
         self._fileWriter('<element id=%s link="%s"' % (id, link))
         self._fileWriter('>')
         
         self._fileWriter('<translation>%.6f %.6f %.6f</translation>' % location[:])
-        self._fileWriter('<rotation>%.6f %.6f %.6f %.6f</rotation>' % rotation)
+        self._fileWriter('<rotation>%s</rotation>' % self._QuaternionToData(rotation))
         self._fileWriter('<scale>%.6f %.6f %.6f</scale>' % scale[:])
         
         self._WriteBoundingBox(obj.bound_box)
         self._WriteLayers(obj.layers)
         self._WriteCustomProperties(obj)
-        
+
+    def _EndStageElement(self, obj):
         self._fileWriter('</element>')
     
     def _WriteFog(self, world):
-        print("Writing fog")
+        self._p("Writing fog")
         
         if world:
             mtype = world.mist_settings.falloff
@@ -269,29 +269,22 @@ class XCDExporter:
         else:
             return
     
-    def _WriteSpotLight(self, obj, matrix, lamp, world):
-        print("Writing spot light %s" % obj.name)
+    def _WriteSpotLight(self, obj):
+        self._p("Writing spot light %s" % obj.name)
+        lamp = obj.data
         
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheLights, clean_func=self._Clean, sep="_"))
-    
-        if world:
-            ambientColor = world.ambient_color
-            ambientIntensity = ((ambientColor[0] + ambientColor[1] + ambientColor[2]) / 3.0) / 2.5
-            del ambientColor
-        else:
-            ambientIntensity = 0.0
-    
+        
         # compute cutoff and beam width
         intensity = min(lamp.energy / 1.75, 1.0)
         spotSize = lamp.spot_size * 0.37
         angle = spotSize * 1.3
         orientation = self._MatrixNegateZ(matrix)
-        location = matrix.to_translation()[:]
+        location = obj.matrix_local.to_translation()[:]
         radius = lamp.distance * math.cos(spotSize)
     
         self._fileWriter('<light type="Spot" id=%s' % id)
         self._fileWriter(' radius="%.4f"' % radius)
-        self._fileWriter(' ambientintensity="%.4f"' % ambientIntensity)
         self._fileWriter(' intensity="%.4f"' % intensity)        
         self._fileWriter(' spotsize="%.4f"' % spotSize)
         self._fileWriter(' angle="%.4f"' % angle)        
@@ -307,23 +300,16 @@ class XCDExporter:
         self._fileWriter('</light>')
         
     
-    def _WriteDirectionalLight(self, obj, matrix, lamp, world):
-        print("Writing directional light %s" % obj.name)
+    def _WriteDirectionalLight(self, obj):
+        self._p("Writing directional light %s" % obj.name)
+        lamp = obj.data
         
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheLights, clean_func=self._Clean, sep="_"))
-    
-        if world:
-            ambientColor = world.ambient_color
-            ambientIntensity = ((float(ambientColor[0] + ambientColor[1] + ambientColor[2])) / 3.0) / 2.5
-        else:
-            ambientColor = 0
-            ambientIntensity = 0.0
-    
+        
         intensity = min(lamp.energy / 1.75, 1.0)
         orientation = self._MatrixNegateZ(matrix)
     
         self._fileWriter('<light type="Directional" id=%s' % id)
-        self._fileWriter(' ambientintensity="%.4f"' % ambientIntensity)
         self._fileWriter(' intensity="%.4f"' % intensity)        
         self._fileWriter('>')
         
@@ -335,23 +321,16 @@ class XCDExporter:
         
         self._fileWriter('</light>')
     
-    def _WritePointLight(self, obj, matrix, lamp, world):
-        print("Writing point light %s" % obj.name)
+    def _WritePointLight(self, obj):
+        self._p("Writing point light %s" % obj.name)
+        lamp = obj.data
         
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheLights, clean_func=self._Clean, sep="_"))
-    
-        if world:
-            ambientColor = world.ambient_color
-            ambientIntensity = ((float(ambientColor[0] + ambientColor[1] + ambientColor[2])) / 3.0) / 2.5
-        else:
-            ambientColor = 0.0
-            ambientIntensity = 0.0
-    
+
         intensity = min(lamp.energy / 1.75, 1.0)
-        location = matrix.to_translation()[:]
+        location = obj.matrix_local.to_translation()[:]
     
-        self._fileWriter('<light type="Point" id=%s' % id)
-        self._fileWriter(' ambientintensity="%.4f"' % ambientIntensity)        
+        self._fileWriter('<light type="Point" id=%s' % id)     
         self._fileWriter(' intensity="%.4f"' % intensity)
         self._fileWriter(' radius="%.4f"' % lamp.distance)        
         self._fileWriter('>')
@@ -405,7 +384,7 @@ class XCDExporter:
         elif isinstance(property, str):
             self._fileWriter(' type="String" Value="%s"' % property)
         else:
-            print("Uknown type for custom property %s" % name)
+            self._p("Uknown type for custom property %s" % name)
         self._fileWriter('/>')
         
     def _WriteCustomProperties(self, hash):
@@ -425,63 +404,55 @@ class XCDExporter:
     # -------------------------------------------------------------------------
     # Export Object Hierarchy (recursively called)
     # -------------------------------------------------------------------------
-    def _dump(self, obj):
-        for attr in dir(obj):
-            try:
-                print ("obj.%s = %s" % (attr, getattr(obj, attr)))
-            except:
-                print("Could not get attribute for %s " % attr)
+    def _ExportObject(self, scene, object, children):        
+        self._p("-> Exporting %s" % object.name)
+        self._p(" ROT: %s" % object.rotation_quaternion)
+        objectType = object.type
+        
+        if objectType == 'CAMERA':
+            self._WriteCamera(object)
                 
-    def _ExportObject(self, scene, parent, object, children):
-        world = scene.world
-        free, derived = create_derived_objects(scene, object)
-    
-        objectWorldMatrix = object.matrix_world
-        if parent:
-            objectMainMatrix = parent.matrix_world.inverted() * objectWorldMatrix
-        else:
-            objectMainMatrix = objectWorldMatrix
-        #objectMainMatrixInvert = objectMainMatrix.inverted()
-                             
-        for obj, objectMatrix in (() if derived is None else derived):
-            objectType = obj.type
-           
-            # make transform node relative
-            # objectMatrix = objectMainMatrixInvert * objectMatrix
-    
-            if objectType == 'CAMERA':
-                self._WriteCamera(obj, objectMainMatrix, scene)
-                
-            elif objectType == 'MESH':
-                continue # skip meshes for now, dont think we need em here until later
-                #    self._WriteMesh(obj, objectMainMatrix, scene)
-    
-            elif objectType == 'LAMP':
-                data = obj.data
-                type = data.type
-                if type == 'POINT':
-                    self._WritePointLight(object, objectMainMatrix, data, world)
-                elif type == 'SPOT':
-                    self._WriteSpotLight(object, objectMainMatrix, data, world)
-                elif type == 'SUN':
-                    self._WriteDirectionalLight(object, objectMainMatrix, data, world)
-                else:
-                    self._WriteDirectionalLight(object, objectMainMatrix, data, world)                    
-            elif obj.library:
-                self._WriteStageElement(obj, objectMainMatrix, scene)
+        elif objectType == 'MESH':
+            self._p("Ignoring mesh %s, currently not supported by xcd" % object.name)
+            return
+
+        elif objectType == 'LAMP':
+            data = object.data
+            type = data.type
+            if type == 'POINT':
+                self._WritePointLight(object)
+            elif type == 'SPOT':
+                self._WriteSpotLight(object)
+            elif type == 'SUN':
+                self._WriteDirectionalLight(object)
             else:
-                print("Info: Not exporting Extended info for [%s], object type [%s] has no explicit handling." % (object.name, objectType))
-                pass
-    
+                self._WriteDirectionalLight(object)
+        else:
+            self._ExportDerived(scene, object)
+                           
+        for child, objectChildren in children:
+            self._p(" CHILD: %s" % child.name)
+            self._debugIndent = self._debugIndent + 1
+            self._ExportObject(scene, child, objectChildren)
+            self._debugIndent = self._debugIndent - 1
+
+    def _ExportDerived(self, scene, object):
+        free, derived = create_derived_objects(scene, object)
+        if derived:
+            prefabNodes = {}
+            for derivedObject, derivedMatrix in derived:
+                if derivedObject == object:
+                    self._p("Derived is same!")
+                    continue
+                if derivedObject.library.filepath not in prefabNodes then:
+                    prefabNodes[derivedObject.library.filepath] = {}
+                self._p(" DERIV: %s %s %s" % (derivedObject.name, derivedObject.library.filepath, derivedObject.type))
+                self._debugIndent = self._debugIndent + 1
+                #self._ExportObject(scene, derivedObject, derivedObject.matrix_local, children)
+                self._debugIndent = self._debugIndent - 1
         if free:
             free_derived_objects(object)
-    
-        # ---------------------------------------------------------------------
-        # write out children recursively
-        # ---------------------------------------------------------------------
-        for child, objectChildren in children:
-            self._ExportObject(scene, object, child, objectChildren)
-
+        
 
 ##########################################################
 # Callbacks, needed before Main

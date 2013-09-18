@@ -12,7 +12,6 @@
     using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
     using Core.Engine.Resource.Resources.Stage;
-    using Core.Protocol.Resource;
 
     public class Stage : EngineComponent, IStage
     {

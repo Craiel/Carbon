@@ -1,0 +1,1 @@
+"C:\Program Files\Blender Foundation\Blender\blender.exe" C:\Dev\Carbon\Assets\GrandSeal.Source\Stages\MenuScene.blend --python "C:\Dev\Carbon\Core\Engine\Data\export.py" -- C:\Dev\Carbon\Assets\GrandSeal.Intermediate\Stages\MenuScene.xcd"
