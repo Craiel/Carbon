@@ -227,15 +227,17 @@ class XCDExporter:
         
         self._fileWriter('</camera>')
                 
-    def _BeginStageElement(self, obj):
+    def _BeginStageElement(self, obj, writeLink = True):
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheObjects, clean_func=self._Clean, sep="_"))
         self._p("Writing stage element %s as %s" % (obj.name, id))
         
-        location, rotation, scale = object.matrix_local.decompose()
+        location, rotation, scale = obj.matrix_local.decompose()
         rotation = obj.rotation_quaternion
                 
-        link = obj.library.filepath.replace("//", "").replace(".blend", ".dae");
-        self._fileWriter('<element id=%s link="%s"' % (id, link))
+        self._fileWriter('<element id=%s' % id)
+        if writeLink:
+            link = obj.library.filepath.replace("//", "").replace(".blend", ".dae")
+            self._fileWriter(' link="%s"' % link)
         self._fileWriter('>')
         
         self._fileWriter('<translation>%.6f %.6f %.6f</translation>' % location[:])
@@ -246,7 +248,7 @@ class XCDExporter:
         self._WriteLayers(obj.layers)
         self._WriteCustomProperties(obj)
 
-    def _EndStageElement(self, obj):
+    def _EndStageElement(self):
         self._fileWriter('</element>')
     
     def _WriteFog(self, world):
@@ -279,7 +281,7 @@ class XCDExporter:
         intensity = min(lamp.energy / 1.75, 1.0)
         spotSize = lamp.spot_size * 0.37
         angle = spotSize * 1.3
-        orientation = self._MatrixNegateZ(matrix)
+        orientation = self._MatrixNegateZ(obj.matrix_local)
         location = obj.matrix_local.to_translation()[:]
         radius = lamp.distance * math.cos(spotSize)
     
@@ -307,7 +309,7 @@ class XCDExporter:
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheLights, clean_func=self._Clean, sep="_"))
         
         intensity = min(lamp.energy / 1.75, 1.0)
-        orientation = self._MatrixNegateZ(matrix)
+        orientation = self._MatrixNegateZ(obj.matrix_local)
     
         self._fileWriter('<light type="Directional" id=%s' % id)
         self._fileWriter(' intensity="%.4f"' % intensity)        
@@ -440,16 +442,68 @@ class XCDExporter:
         free, derived = create_derived_objects(scene, object)
         if derived:
             prefabNodes = {}
+            meshNodes = {}
+            currentContent = []
+            currentFile = ""
+            
             for derivedObject, derivedMatrix in derived:
                 if derivedObject == object:
                     self._p("Derived is same!")
                     continue
-                if derivedObject.library.filepath not in prefabNodes then:
-                    prefabNodes[derivedObject.library.filepath] = {}
+                
                 self._p(" DERIV: %s %s %s" % (derivedObject.name, derivedObject.library.filepath, derivedObject.type))
+                
+                file = derivedObject.library.filepath
+                
+                # add to the current content list
+                currentContent.append(derivedObject)
+                
+                # check if this file is already registered as a mesh container
+                isPotentialPrefab = meshNodes.get(file) is None
+                
+                # check if we have a different file than the current
+                if currentFile != file: 
+                    # if we have a prefab
+                    if isPotentialPrefab:              
+                        # if we have not seen this file at all yet
+                        if not prefabNodes.get(file):
+                            prefabNodes[file] = []
+                    else:
+                        
+                    
+                    
+                # if we have a mesh then this node is not part of a prefab
+                if derivedObject.type == "MESH":
+                    isPotentialPrefab = False
+                    # move the entire node collection into the mesh space
+                    if prefabNodes.get(file):
+                        meshNodes[file] = prefabNodes[file]
+                        del prefabNodes[file]
+                    else:
+                        meshNodes[file] = []
+                        
+                if isPotentialPrefab:
+                    prefabNodes[file].append(derivedObject)
+                else:
+                    meshNodes[file].append(derivedObject)
+                                        
+                
                 self._debugIndent = self._debugIndent + 1
                 #self._ExportObject(scene, derivedObject, derivedObject.matrix_local, children)
                 self._debugIndent = self._debugIndent - 1
+                
+            self._p(" Prefabs: ")
+            self._p(prefabNodes)
+            
+            self._p(" Meshes: ")
+            self._p(meshNodes)
+            
+            if len(prefabNodes) <= 0 and len(meshNodes) <= 0:
+                self._p("Warning: Nothing to export")
+                return
+            
+            self._BeginStageElement(object, False)
+            self._EndStageElement()
         if free:
             free_derived_objects(object)
         
