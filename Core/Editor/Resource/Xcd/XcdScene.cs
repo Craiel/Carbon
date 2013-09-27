@@ -14,9 +14,6 @@
         [XmlElement(ElementName = "light")]
         public XcdLight[] Lights { get; set; }
 
-        [XmlElement(ElementName = "mesh")]
-        public XcdMesh[] Meshes { get; set; }
-
         [XmlElement(ElementName = "element")]
         public XcdElement[] Elements { get; set; }
     }

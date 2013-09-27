@@ -139,7 +139,6 @@
     <Compile Include="Resource\Xcd\Scene\XcdCustomProperties.cs" />
     <Compile Include="Resource\Xcd\Scene\XcdLayerInfo.cs" />
     <Compile Include="Resource\Xcd\Scene\XcdLight.cs" />
-    <Compile Include="Resource\Xcd\Scene\XcdMesh.cs" />
     <Compile Include="Resource\Xcd\Scene\XcdProperty.cs" />
     <Compile Include="Resource\Xcd\Xcd.cs" />
     <Compile Include="Resource\Xcd\XcdHead.cs" />

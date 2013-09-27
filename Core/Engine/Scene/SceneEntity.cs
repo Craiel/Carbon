@@ -21,6 +21,9 @@
         {
             this.Scale = VectorExtension.Vector3Identity;
             this.Rotation = Quaternion.Identity;
+
+            this.Local = Matrix.Identity;
+            this.World = Matrix.Identity;
         }
 
         // -------------------------------------------------------------------
@@ -72,11 +75,8 @@
                 this.needBoundingUpdate = false;
             }
 
-            this.Local = Matrix.Scaling(this.Scale) * Matrix.RotationQuaternion(this.Rotation)
-                         * Matrix.Translation(new Vector3(this.Position.X, this.Position.Y, this.Position.Z));
+            this.Local = MatrixExtension.GetLocalMatrix(this.scale, this.Rotation, this.Position);
 
-            // Todo: check if this is not obsolete
-            this.World = this.Local;
             return true;
         }
 

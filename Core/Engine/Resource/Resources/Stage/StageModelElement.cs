@@ -1,5 +1,8 @@
 ﻿namespace Core.Engine.Resource.Resources.Stage
 {
+    using System.Collections.Generic;
+
+    using Core.Protocol.Resource;
     using Core.Utils;
 
     using SharpDX;
@@ -13,7 +16,7 @@
         {
         }
 
-        public StageModelElement(Protocol.Resource.StageModel data)
+        public StageModelElement(StageModel data)
             : this()
         {
             System.Diagnostics.Debug.Assert(data.TranslationCount == 3, "Translation data has invalid count");
@@ -36,6 +39,15 @@
             {
                 this.LoadProperties(data.PropertiesList);
             }
+
+            if (data.ChildrenCount > 0)
+            {
+                this.Children = new StageModelElement[data.ChildrenCount];
+                for (int i = 0; i < data.ChildrenList.Count; i++)
+                {
+                    this.Children[i] = new StageModelElement(data.ChildrenList[i]);
+                }
+            }
         }
 
         // -------------------------------------------------------------------
@@ -47,9 +59,11 @@
         public Vector4 Rotation { get; set; }
         public Vector3 Scale { get; set; }
 
-        public Protocol.Resource.StageModel.Builder GetBuilder()
+        public IList<StageModelElement> Children { get; set; }
+
+        public StageModel.Builder GetBuilder()
         {
-            var builder = new Protocol.Resource.StageModel.Builder { Id = this.Id, ReferenceId = this.ReferenceId };
+            var builder = new StageModel.Builder { Id = this.Id, ReferenceId = this.ReferenceId };
 
             builder.AddRangeTranslation(this.Translation.ToList());
             builder.AddRangeRotation(this.Rotation.ToList());
@@ -63,6 +77,14 @@
             if (this.Properties != null)
             {
                 builder.AddRangeProperties(this.SaveProperties());
+            }
+
+            if (this.Children != null)
+            {
+                foreach (StageModelElement child in this.Children)
+                {
+                    builder.AddChildren(child.GetBuilder().Build());
+                }
             }
 
             return builder;

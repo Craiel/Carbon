@@ -7,6 +7,7 @@
     using Core.Engine.Rendering;
     using Core.Engine.Resource.Resources.Stage;
     using Core.Protocol.Resource;
+    using Core.Utils;
 
     using SharpDX;
 
@@ -29,7 +30,7 @@
         {
             var camera = this.factory.Get<IProjectionCamera>();
             camera.Position = cameraElement.Position;
-            camera.Rotation = Quaternion.RotationYawPitchRoll(cameraElement.Orientation.X, cameraElement.Orientation.Y, cameraElement.Orientation.Z);
+            camera.Rotation = QuaternionExtension.RotationYawPitchRoll(cameraElement.Rotation.XYZ());
 
             // Todo: near / far plane and fov
             return camera;
@@ -93,8 +94,7 @@
 
             if (lightElement.Direction != null)
             {
-                entity.Rotation = Quaternion.RotationYawPitchRoll(
-                    lightElement.Direction.Value.X, lightElement.Direction.Value.Y, lightElement.Direction.Value.Z);
+                entity.Rotation = QuaternionExtension.RotationYawPitchRoll(lightElement.Direction.Value);
             }
 
             return entity;

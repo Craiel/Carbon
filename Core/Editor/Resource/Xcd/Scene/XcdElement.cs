@@ -31,5 +31,8 @@
 
         [XmlElement(ElementName = "customproperties")]
         public XcdCustomProperties CustomProperties { get; set; }
+
+        [XmlElement(ElementName = "element")]
+        public XcdElement[] Elements { get; set; }
     }
 }

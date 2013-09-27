@@ -137,6 +137,8 @@
 
         public override bool Update(ITimer gameTime)
         {
+            this.stage.Update(gameTime);
+
             this.activeCamera.Update(gameTime);
 
             return base.Update(gameTime);

@@ -12,6 +12,7 @@
     using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
     using Core.Engine.Resource.Resources.Stage;
+    using Core.Utils;
 
     public class Stage : EngineComponent, IStage
     {
@@ -22,6 +23,8 @@
         private readonly IDictionary<string, IProjectionCamera> cameras;
         private readonly IDictionary<string, ILightEntity> lights;
         private readonly IDictionary<string, IList<IModelEntity>> models;
+        
+        private readonly IList<ResourceInfo> unusedReferences;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -40,6 +43,8 @@
             this.cameras = new Dictionary<string, IProjectionCamera>();
             this.lights = new Dictionary<string, ILightEntity>();
             this.models = new Dictionary<string, IList<IModelEntity>>();
+            
+            this.unusedReferences = new List<ResourceInfo>();
         }
 
         // -------------------------------------------------------------------
@@ -68,7 +73,7 @@
                 return this.models;
             }
         }
-
+        
         public override void Initialize(ICarbonGraphics graphics)
         {
             // Build and initialize all the scene components
@@ -102,7 +107,6 @@
                 System.Diagnostics.Trace.TraceWarning("Warning! Stage has no lights");
             }
 
-            IList<ResourceInfo> unusedReferences = new List<ResourceInfo>();
             ResourceInfo[] referenceInfos = null;
             if (this.data.References != null)
             {
@@ -127,45 +131,7 @@
             {
                 foreach (StageModelElement modelElement in this.data.Models)
                 {
-                    IModelEntity model = this.entityFactory.BuildModel(modelElement);
-                    if (modelElement.ReferenceId >= 0)
-                    {
-                        if (referenceInfos == null)
-                        {
-                            System.Diagnostics.Trace.TraceError("Error! Model had reference but no references where loaded");
-                            continue;
-                        }
-
-                        if (modelElement.ReferenceId >= referenceInfos.Length)
-                        {
-                            System.Diagnostics.Trace.TraceWarning("Error! Model reference does not match with reference count");
-                            continue;
-                        }
-
-                        ResourceInfo reference = referenceInfos[modelElement.ReferenceId];
-                        if (reference == null)
-                        {
-                            // We already warned about this earlier so just skip here
-                            continue;
-                        }
-
-                        // Todo: Model groups are not handled properly!!!
-                        // Todo: Bounding box generation should probably be on editor for this
-                        var resource = this.gameState.ResourceManager.Load<ModelResourceGroup>(reference.Hash);
-                        resource.Models[0].CalculateBoundingBox();
-                        model.Mesh = new Mesh(resource.Models[0]);
-                        if (unusedReferences.Contains(reference))
-                        {
-                            unusedReferences.Remove(reference);
-                        }
-                    }
-
-                    if (!this.models.ContainsKey(modelElement.Id))
-                    {
-                        this.models.Add(modelElement.Id, new List<IModelEntity>());
-                    }
-
-                    this.models[modelElement.Id].Add(model);
+                    this.LoadModelElement(modelElement, null, referenceInfos);
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Stage loaded {0} models", this.models.Count);
@@ -178,6 +144,64 @@
             foreach (ResourceInfo unusedReference in unusedReferences)
             {
                 System.Diagnostics.Trace.TraceWarning("Warning! Reference in stage was not used: {0}", unusedReference.Hash);
+            }
+        }
+
+        private void LoadModelElement(StageModelElement element, IModelEntity parent, ResourceInfo[] referenceInfos)
+        {
+            IModelEntity model = this.entityFactory.BuildModel(element);
+
+            // Todo: Have the scene graph handle this!
+            if (element.ReferenceId >= 0)
+            {
+                if (referenceInfos == null)
+                {
+                    System.Diagnostics.Trace.TraceError("Error! Model had reference but no references where loaded");
+                    return;
+                }
+
+                if (element.ReferenceId >= referenceInfos.Length)
+                {
+                    System.Diagnostics.Trace.TraceWarning("Error! Model reference does not match with reference count");
+                    return;
+                }
+
+                ResourceInfo reference = referenceInfos[element.ReferenceId];
+                if (reference == null)
+                {
+                    // We already warned about this earlier so just skip here
+                    return;
+                }
+
+                // Todo: Model groups are not handled properly!!!
+                // Todo: Bounding box generation should probably be on editor for this
+                var resource = this.gameState.ResourceManager.Load<ModelResourceGroup>(reference.Hash);
+                resource.Models[0].CalculateBoundingBox();
+                model.Mesh = new Mesh(resource.Models[0]);
+                if (unusedReferences.Contains(reference))
+                {
+                    unusedReferences.Remove(reference);
+                }
+            }
+
+            if (!this.models.ContainsKey(element.Id))
+            {
+                this.models.Add(element.Id, new List<IModelEntity>());
+            }
+
+            this.models[element.Id].Add(model);
+
+            if (parent != null)
+            {
+                model.World = MatrixExtension.GetLocalMatrix(parent.Scale, parent.Rotation, parent.Position);
+            }
+
+            if (element.Children != null)
+            {
+                foreach (StageModelElement child in element.Children)
+                {
+                    this.LoadModelElement(child, model, referenceInfos);
+                }
             }
         }
     }

@@ -227,7 +227,7 @@ class XCDExporter:
         
         self._fileWriter('</camera>')
                 
-    def _BeginStageElement(self, obj, writeLink = True):
+    def _BeginStageElement(self, obj, link = None):
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheObjects, clean_func=self._Clean, sep="_"))
         self._p("Writing stage element %s as %s" % (obj.name, id))
         
@@ -235,7 +235,7 @@ class XCDExporter:
         rotation = obj.rotation_quaternion
                 
         self._fileWriter('<element id=%s' % id)
-        if writeLink:
+        if link:
             link = obj.library.filepath.replace("//", "").replace(".blend", ".dae")
             self._fileWriter(' link="%s"' % link)
         self._fileWriter('>')
@@ -430,7 +430,9 @@ class XCDExporter:
             else:
                 self._WriteDirectionalLight(object)
         else:
+            self._BeginStageElement(object, None)
             self._ExportDerived(scene, object)
+            self._EndStageElement()
                            
         for child, objectChildren in children:
             self._p(" CHILD: %s" % child.name)
@@ -443,9 +445,7 @@ class XCDExporter:
         if derived:
             prefabNodes = {}
             meshNodes = {}
-            currentContent = []
-            currentFile = ""
-            
+                        
             for derivedObject, derivedMatrix in derived:
                 if derivedObject == object:
                     self._p("Derived is same!")
@@ -455,55 +455,54 @@ class XCDExporter:
                 
                 file = derivedObject.library.filepath
                 
-                # add to the current content list
-                currentContent.append(derivedObject)
-                
                 # check if this file is already registered as a mesh container
-                isPotentialPrefab = meshNodes.get(file) is None
-                
-                # check if we have a different file than the current
-                if currentFile != file: 
-                    # if we have a prefab
-                    if isPotentialPrefab:              
-                        # if we have not seen this file at all yet
-                        if not prefabNodes.get(file):
-                            prefabNodes[file] = []
-                    else:
-                        
-                    
+                isPotentialPrefab = meshNodes.get(file) is None                
+                if isPotentialPrefab and not prefabNodes.get(file):
+                    prefabNodes[file] = True
                     
                 # if we have a mesh then this node is not part of a prefab
                 if derivedObject.type == "MESH":
-                    isPotentialPrefab = False
-                    # move the entire node collection into the mesh space
-                    if prefabNodes.get(file):
-                        meshNodes[file] = prefabNodes[file]
-                        del prefabNodes[file]
-                    else:
-                        meshNodes[file] = []
-                        
-                if isPotentialPrefab:
-                    prefabNodes[file].append(derivedObject)
-                else:
-                    meshNodes[file].append(derivedObject)
-                                        
+                    meshNodes[file] = True
+                    prefabNodes[file] = False
+                   
+            lastObject = None
+            allNodes = []
+            for derivedObject, derivedMatrix in reversed(derived):
+                if derivedObject == object:
+                    self._p("Derived is same!")
+                    continue
                 
-                self._debugIndent = self._debugIndent + 1
-                #self._ExportObject(scene, derivedObject, derivedObject.matrix_local, children)
-                self._debugIndent = self._debugIndent - 1
+                file = derivedObject.library.filepath
                 
+                if derivedObject.type == "EMPTY" and prefabNodes.get(file):
+                    node = {}
+                    node["Data"] = derivedObject
+                    node["File"] = lastObject.library.filepath
+                    allNodes.append(node)
+                    print("Writing content into prefab node")
+                    
+                lastObject = derivedObject
+                                
             self._p(" Prefabs: ")
             self._p(prefabNodes)
             
             self._p(" Meshes: ")
             self._p(meshNodes)
             
-            if len(prefabNodes) <= 0 and len(meshNodes) <= 0:
-                self._p("Warning: Nothing to export")
+            self._p(" Nodes: ")
+            self._p(allNodes)
+            
+            if len(allNodes) <= 0:
+                if lastObject:
+                    self._BeginStageElement(lastObject, lastObject.library.filepath)
+                    self._EndStageElement()
+                else:
+                    self._p("Warning: Nothing to export and no child nodes!");
                 return
             
-            self._BeginStageElement(object, False)
-            self._EndStageElement()
+            for entry in allNodes:
+                self._BeginStageElement(entry["Data"], entry["File"])
+                self._EndStageElement()
         if free:
             free_derived_objects(object)
         

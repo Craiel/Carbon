@@ -14,8 +14,8 @@
         [XmlElement("position")]
         public FloatArrayType Position { get; set; }
 
-        [XmlElement("orientation")]
-        public FloatArrayType Orientation { get; set; }
+        [XmlElement("rotation")]
+        public FloatArrayType Rotation { get; set; }
 
         [XmlAttribute("fov")]
         public float FieldOfView { get; set; }

@@ -93,7 +93,7 @@
 
             if (this.Mesh != null)
             {
-                frameSet.Instructions.Add(new FrameInstruction { Mesh = this.Mesh, Material = this.Material, World = this.World });
+                frameSet.Instructions.Add(new FrameInstruction { Mesh = this.Mesh, Material = this.Material, World = this.World * this.Local });
             }
         }
     }

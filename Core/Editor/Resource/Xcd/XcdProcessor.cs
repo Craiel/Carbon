@@ -112,7 +112,7 @@
             {
                 foreach (XcdElement element in scene.Elements)
                 {
-                    TranslateElement(element);
+                    TranslateElement(element, null);
                 }
             }
         }
@@ -120,12 +120,12 @@
         private static void TranslateCamera(XcdCamera camera)
         {
             Vector3 position = DataConversion.ToVector3(camera.Position.Data)[0];
-            Vector4 orientation = GetRotation(camera.Orientation.Data);
+            Vector4 rotation = GetRotation(camera.Rotation.Data);
             var element = new StageCameraElement
                        {
                            Id = camera.Id,
                            FieldOfView = camera.FieldOfView,
-                           Orientation = orientation,
+                           Rotation = rotation,
                            Position = position,
                            Properties = TranslateProperties(camera.CustomProperties)
                        };
@@ -183,11 +183,12 @@
             LightElements.Add(element);
         }
 
-        private static void TranslateElement(XcdElement element)
+        private static void TranslateElement(XcdElement element, StageModelElement parent)
         {
             Vector3 translation = DataConversion.ToVector3(element.Translation.Data)[0];
             Vector4 rotation = GetRotation(element.Rotation.Data);
             Vector3 scale = DataConversion.ToVector3(element.Scale.Data)[0];
+            
             var modelElement = new StageModelElement
             {
                 Id = element.Id,
@@ -207,7 +208,27 @@
                 modelElement.LayerFlags = new List<bool>(element.LayerInfo.Data);
             }
 
-            ModelElements.Add(modelElement);
+            if (element.Elements != null)
+            {
+                foreach (XcdElement xcdElement in element.Elements)
+                {
+                    TranslateElement(xcdElement, modelElement);
+                }
+            }
+
+            if (parent != null)
+            {
+                if (parent.Children == null)
+                {
+                    parent.Children = new List<StageModelElement>();
+                }
+
+                parent.Children.Add(modelElement);
+            }
+            else
+            {
+                ModelElements.Add(modelElement);   
+            }
         }
 
         private static Vector4 GetRotation(float[] data)

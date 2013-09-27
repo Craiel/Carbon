@@ -1,7 +1,5 @@
 ﻿namespace Core.Engine.Scene
 {
-    using Core.Engine.Contracts.Scene;
-
     public class SceneGraph
     {
         private readonly INode root;
@@ -17,7 +15,7 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public INode Add(ISceneEntity entity, INode parent = null)
+        public INode Add(INode entity, INode parent = null)
         {
             return null;
         }

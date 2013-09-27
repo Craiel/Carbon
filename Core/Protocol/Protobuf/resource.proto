@@ -80,7 +80,7 @@ message StageCamera {
 	repeated StageProperty Properties = 11;
 	
 	repeated float Position = 20 [packed=true];
-	repeated float Orientation = 21 [packed=true];
+	repeated float Rotation = 21 [packed=true];
 }
 
 message StageLight {
@@ -120,6 +120,8 @@ message StageModel {
 	repeated float Translation = 20 [packed=true];
 	repeated float Rotation = 21 [packed=true];
 	repeated float Scale = 22 [packed=true];
+	
+	repeated StageModel Children = 30;
 }
 
 message Stage {
