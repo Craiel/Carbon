@@ -236,7 +236,7 @@ class XCDExporter:
                 
         self._fileWriter('<element id=%s' % id)
         if link:
-            link = obj.library.filepath.replace("//", "").replace(".blend", ".dae")
+            link = link.replace("//", "").replace(".blend", ".dae")
             self._fileWriter(' link="%s"' % link)
         self._fileWriter('>')
         
@@ -479,7 +479,7 @@ class XCDExporter:
                     node["Data"] = derivedObject
                     node["File"] = lastObject.library.filepath
                     allNodes.append(node)
-                    print("Writing content into prefab node")
+                    print("Writing content into prefab node: %s %s" % (file, node["File"]))
                     
                 lastObject = derivedObject
                                 
