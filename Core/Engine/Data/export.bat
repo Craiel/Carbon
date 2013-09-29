@@ -1,2 +1,2 @@
 xcopy /Y io_scene_xcd\* "C:\Users\Patrick\AppData\Roaming\Blender Foundation\Blender\2.67\scripts\addons\io_scene_xcd\"
-"C:\Program Files\Blender Foundation\Blender\blender.exe" C:\Dev\Carbon\Assets\GrandSeal.Source\Stages\MenuScene.blend --python "C:\Dev\Carbon\Core\Engine\Data\export.py" -- C:\Dev\Carbon\Assets\GrandSeal.Intermediate\Stages\MenuScene.xcd"
+"C:\Program Files\Blender Foundation\Blender\blender.exe" C:\Dev\Carbon\Assets\GrandSeal.Source\Stages\DebugScene.blend --python "C:\Dev\Carbon\Core\Engine\Data\export.py" -- C:\Dev\Carbon\Assets\GrandSeal.Intermediate\Stages\DebugScene.xcd"

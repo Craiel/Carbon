@@ -53,6 +53,7 @@ message ModelGroup {
 	repeated float Scale = 12 [packed=true];
 	
 	repeated Model Models = 20;
+	repeated ModelGroup Groups = 21;
 }
 
 message StageProperty {

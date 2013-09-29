@@ -126,7 +126,7 @@
                         this.AddSceneEntityToRenderingList(entity);
                     }
                 }
-
+                
                 foreach (ILightEntity light in this.stage.Lights.Values)
                 {
                     this.RegisterAndInvalidate(light);
@@ -141,7 +141,33 @@
 
             this.activeCamera.Update(gameTime);
 
+            foreach (IModelEntity node in this.stage.RootModels)
+            {
+                this.TestUpdate(node, null);
+            }
+
             return base.Update(gameTime);
+        }
+
+        private void TestUpdate(IModelEntity entity, IModelEntity parent)
+        {
+            this.InvalidateSceneEntity(entity);
+            if (parent != null)
+            {
+                entity.World = entity.Local * parent.World;
+            }
+            else
+            {
+                entity.World = entity.Local;
+            }
+
+            if (this.stage.ModelHirarchy.ContainsKey(entity))
+            {
+                foreach (IModelEntity child in this.stage.ModelHirarchy[entity])
+                {
+                    this.TestUpdate(child, entity);
+                }
+            }
         }
 
         public override void Render(IFrameManager frameManager)

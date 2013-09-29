@@ -8,6 +8,5 @@
     {
         IProjectionCamera BuildCamera(StageCameraElement cameraElement);
         ILightEntity BuildLight(StageLightElement lightElement);
-        IModelEntity BuildModel(StageModelElement modelElement);
     }
 }

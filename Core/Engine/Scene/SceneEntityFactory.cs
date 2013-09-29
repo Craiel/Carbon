@@ -99,20 +99,5 @@
 
             return entity;
         }
-
-        public IModelEntity BuildModel(StageModelElement modelElement)
-        {
-            var model = new ModelEntity
-                            {
-                                Position = modelElement.Translation,
-                                Scale = modelElement.Scale,
-                                Rotation =
-                                    Quaternion.RotationYawPitchRoll(
-                                        modelElement.Rotation.X,
-                                        modelElement.Rotation.Y,
-                                        modelElement.Rotation.Z)
-                            };
-            return model;
-        }
     }
 }

@@ -12,7 +12,8 @@
     using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
     using Core.Engine.Resource.Resources.Stage;
-    using Core.Utils;
+
+    using SharpDX;
 
     public class Stage : EngineComponent, IStage
     {
@@ -23,6 +24,8 @@
         private readonly IDictionary<string, IProjectionCamera> cameras;
         private readonly IDictionary<string, ILightEntity> lights;
         private readonly IDictionary<string, IList<IModelEntity>> models;
+        private readonly IDictionary<IModelEntity, IList<IModelEntity>> modelHirarchy;
+        private readonly IList<IModelEntity> rootModels; 
         
         private readonly IList<ResourceInfo> unusedReferences;
 
@@ -43,6 +46,8 @@
             this.cameras = new Dictionary<string, IProjectionCamera>();
             this.lights = new Dictionary<string, ILightEntity>();
             this.models = new Dictionary<string, IList<IModelEntity>>();
+            this.modelHirarchy = new Dictionary<IModelEntity, IList<IModelEntity>>();
+            this.rootModels = new List<IModelEntity>();
             
             this.unusedReferences = new List<ResourceInfo>();
         }
@@ -73,7 +78,23 @@
                 return this.models;
             }
         }
-        
+
+        public IDictionary<IModelEntity, IList<IModelEntity>> ModelHirarchy
+        {
+            get
+            {
+                return this.modelHirarchy;
+            }
+        }
+
+        public IList<IModelEntity> RootModels
+        {
+            get
+            {
+                return this.rootModels;
+            }
+        }
+
         public override void Initialize(ICarbonGraphics graphics)
         {
             // Build and initialize all the scene components
@@ -131,7 +152,7 @@
             {
                 foreach (StageModelElement modelElement in this.data.Models)
                 {
-                    this.LoadModelElement(modelElement, null, referenceInfos);
+                    this.LoadModelElement(modelElement, referenceInfos);
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Stage loaded {0} models", this.models.Count);
@@ -147,10 +168,8 @@
             }
         }
 
-        private void LoadModelElement(StageModelElement element, IModelEntity parent, ResourceInfo[] referenceInfos)
+        private void LoadModelElement(StageModelElement element, ResourceInfo[] referenceInfos)
         {
-            IModelEntity model = this.entityFactory.BuildModel(element);
-
             // Todo: Have the scene graph handle this!
             if (element.ReferenceId >= 0)
             {
@@ -173,34 +192,78 @@
                     return;
                 }
 
-                // Todo: Model groups are not handled properly!!!
-                // Todo: Bounding box generation should probably be on editor for this
                 var resource = this.gameState.ResourceManager.Load<ModelResourceGroup>(reference.Hash);
-                resource.Models[0].CalculateBoundingBox();
-                model.Mesh = new Mesh(resource.Models[0]);
+                this.LoadModelGroup(element, resource, null);
                 if (unusedReferences.Contains(reference))
                 {
                     unusedReferences.Remove(reference);
                 }
             }
 
-            if (!this.models.ContainsKey(element.Id))
-            {
-                this.models.Add(element.Id, new List<IModelEntity>());
-            }
-
-            this.models[element.Id].Add(model);
-
-            if (parent != null)
+            /*if (parent != null)
             {
                 model.World = MatrixExtension.GetLocalMatrix(parent.Scale, parent.Rotation, parent.Position);
-            }
+            }*/
 
             if (element.Children != null)
             {
+                // Todo: Save the hierarchy info
                 foreach (StageModelElement child in element.Children)
                 {
-                    this.LoadModelElement(child, model, referenceInfos);
+                    this.LoadModelElement(child, referenceInfos);
+                }
+            }
+        }
+
+        // Todo: need to put the models into hirarchy
+        private void LoadModelGroup(StageModelElement host, ModelResourceGroup group, IModelEntity parent)
+        {
+            var groupNode = new ModelEntity
+            {
+                Position = group.Offset,
+                Scale = group.Scale,
+                Rotation =
+                    Quaternion.RotationYawPitchRoll(
+                        group.Rotation.X,
+                        group.Rotation.Y,
+                        group.Rotation.Z)
+            };
+
+            this.modelHirarchy.Add(groupNode, new List<IModelEntity>());
+            if (parent != null)
+            {
+                this.modelHirarchy[parent].Add(groupNode);
+            }
+            else
+            {
+                this.rootModels.Add(groupNode);
+            }
+
+            if (group.Models != null)
+            {
+                foreach (ModelResource modelResource in group.Models)
+                {
+                    var model = new ModelEntity();
+
+                    // Todo: Bounding box generation should probably be on editor for this
+                    modelResource.CalculateBoundingBox();
+                    model.Mesh = new Mesh(modelResource);
+                    
+                    if (!this.models.ContainsKey(host.Id))
+                    {
+                        this.models.Add(host.Id, new List<IModelEntity>());
+                    }
+
+                    this.modelHirarchy[groupNode].Add(model);
+                    this.models[host.Id].Add(model);
+                }
+            }
+
+            if (group.Groups != null)
+            {
+                foreach (ModelResourceGroup subGroup in group.Groups)
+                {
+                    this.LoadModelGroup(host, subGroup, groupNode);
                 }
             }
         }

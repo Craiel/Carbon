@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.IO;
 
+    using Core.Protocol.Resource;
     using Core.Utils;
 
     using SharpDX;
@@ -19,7 +20,7 @@
             this.Scale = new Vector3(1);
         }
 
-        public ModelResourceGroup(Protocol.Resource.ModelGroup data)
+        public ModelResourceGroup(ModelGroup data)
             : this()
         {
             this.DoLoad(data);
@@ -35,24 +36,25 @@
         public Quaternion Rotation { get; set; }
 
         public IList<ModelResource> Models { get; set; }
+        public IList<ModelResourceGroup> Groups { get; set; } 
 
         public override void Load(Stream source)
         {
-            Protocol.Resource.ModelGroup entry = Protocol.Resource.ModelGroup.ParseFrom(source);
+            ModelGroup entry = ModelGroup.ParseFrom(source);
             this.DoLoad(entry);
         }
 
         public override long Save(Stream target)
         {
-            Protocol.Resource.ModelGroup.Builder builder = this.GetBuilder();
-            Protocol.Resource.ModelGroup entry = builder.Build();
+            ModelGroup.Builder builder = this.GetBuilder();
+            ModelGroup entry = builder.Build();
             entry.WriteTo(target);
             return entry.SerializedSize;
         }
 
-        public Protocol.Resource.ModelGroup.Builder GetBuilder()
+        public ModelGroup.Builder GetBuilder()
         {
-            var builder = new Protocol.Resource.ModelGroup.Builder
+            var builder = new ModelGroup.Builder
                               {
                                   Name = this.Name,
                                   Version = Version
@@ -69,6 +71,14 @@
                     builder.AddModels(element.GetBuilder());
                 }
             }
+
+            if (this.Groups != null)
+            {
+                foreach (ModelResourceGroup group in this.Groups)
+                {
+                    builder.AddGroups(group.GetBuilder());
+                }
+            }
             
             return builder;
         }
@@ -76,7 +86,7 @@
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void DoLoad(Protocol.Resource.ModelGroup entry)
+        private void DoLoad(ModelGroup entry)
         {
             if (entry.Version != Version)
             {
@@ -95,9 +105,18 @@
             if (entry.ModelsCount > 0)
             {
                 this.Models = new List<ModelResource>(entry.ModelsCount);
-                foreach (Protocol.Resource.Model element in entry.ModelsList)
+                foreach (Model element in entry.ModelsList)
                 {
                     this.Models.Add(new ModelResource(element));
+                }
+            }
+
+            if (entry.GroupsCount > 0)
+            {
+                this.Groups = new List<ModelResourceGroup>(entry.GroupsCount);
+                foreach (ModelGroup group in entry.GroupsList)
+                {
+                    this.Groups.Add(new ModelResourceGroup(group));
                 }
             }
         }

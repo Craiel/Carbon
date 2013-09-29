@@ -237,6 +237,8 @@ class XCDExporter:
         self._fileWriter('<element id=%s' % id)
         if link:
             link = link.replace("//", "").replace(".blend", ".dae")
+            # Todo: This is a hack to deal with different source roots, need to refactor
+            link = link.replace("General.Source", "General.Intermediate")
             self._fileWriter(' link="%s"' % link)
         self._fileWriter('>')
         

@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
 
@@ -29,7 +28,7 @@
         private static readonly IDictionary<string, ModelResourceGroup> MeshLibrary = new Dictionary<string, ModelResourceGroup>();
 
         private static string targetElement;
-        private static string texturePath;
+        private static CarbonDirectory texturePath;
 
         private static ColladaInput[] currentInputs;
         private static ColladaSource[] currentSources;
@@ -46,11 +45,11 @@
         private static Vector3[] positionData;
         private static Vector3[] normalData;
         private static Vector2[] textureData;
-
+        
         public static ModelResourceGroup Process(ColladaInfo info, string element, CarbonDirectory texPath)
         {
             ClearCache();
-
+            texturePath = texPath;
             targetElement = element;
             using (var stream = info.Source.OpenRead())
             {
@@ -63,20 +62,27 @@
                     ApplyNodeTranslations(sceneNode);
                 }
 
-                if (string.IsNullOrEmpty(element))
+                if (!string.IsNullOrEmpty(element))
                 {
-                    Debug.Assert(MeshLibrary.Count == 1, "Mesh library was expected to have only single element");
-                    return MeshLibrary.First().Value;
+                    return MeshLibrary[element];
                 }
-                    
-                return MeshLibrary[element];
+
+                if (MeshLibrary.Count <= 1)
+                {
+                    return MeshLibrary.Values.FirstOrDefault();
+                }
+
+                var joinedGroup = new ModelResourceGroup
+                                      {
+                                          Groups = MeshLibrary.Values.ToList(),
+                                          Name = info.Source.FileName
+                                      };
+                return joinedGroup;
             }
         }
 
         private static void ClearCache()
         {
-            MeshLibrary.Clear();
-
             currentInputs = null;
             currentSources = null;
             polygonData = null;
@@ -95,6 +101,8 @@
 
         private static void BuildGeometryLibrary(ColladaInfo info, ColladaGeometryLibrary library)
         {
+            MeshLibrary.Clear();
+
             foreach (ColladaGeometry colladaGeometry in library.Geometries)
             {
                 ClearCache();
@@ -123,22 +131,22 @@
                         ModelMaterialElement material = info.MaterialInfos[polyList.Material].Clone();
                         if (material.DiffuseTexture != null && texturePath != null)
                         {
-                            material.DiffuseTexture = HashUtils.BuildResourceHash(Path.Combine(texturePath, Uri.UnescapeDataString(material.DiffuseTexture)));
+                            material.DiffuseTexture = HashUtils.BuildResourceHash(texturePath.ToFile(Uri.UnescapeDataString(material.DiffuseTexture)).ToString());
                         }
 
                         if (material.NormalTexture != null && texturePath != null)
                         {
-                            material.NormalTexture = HashUtils.BuildResourceHash(Path.Combine(texturePath, Uri.UnescapeDataString(material.NormalTexture)));
+                            material.NormalTexture = HashUtils.BuildResourceHash(texturePath.ToFile(Uri.UnescapeDataString(material.NormalTexture)).ToString());
                         }
 
                         if (material.SpecularTexture != null && texturePath != null)
                         {
-                            material.SpecularTexture = HashUtils.BuildResourceHash(Path.Combine(texturePath, Uri.UnescapeDataString(material.SpecularTexture)));   
+                            material.SpecularTexture = HashUtils.BuildResourceHash(texturePath.ToFile(Uri.UnescapeDataString(material.SpecularTexture)).ToString());   
                         }
 
                         if (material.AlphaTexture != null && texturePath != null)
                         {
-                            material.AlphaTexture = HashUtils.BuildResourceHash(Path.Combine(texturePath, Uri.UnescapeDataString(material.AlphaTexture)));    
+                            material.AlphaTexture = HashUtils.BuildResourceHash(texturePath.ToFile(Uri.UnescapeDataString(material.AlphaTexture)).ToString());    
                         }
 
                         if (part.Materials == null)
