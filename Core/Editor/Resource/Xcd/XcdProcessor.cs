@@ -230,7 +230,7 @@
                 ModelElements.Add(modelElement);   
             }
         }
-
+        
         private static Vector4 GetRotation(float[] data)
         {
             // Rotation is in floats 0-1 and in format wxyz so we re-order and convert
@@ -240,11 +240,7 @@
             data[2] = data[3];
             data[3] = w;
 
-            Vector4 rawRotation = DataConversion.ToVector4(data)[0];
-            rawRotation.X = MathExtension.DegreesToRadians(360 * rawRotation.X);
-            rawRotation.Y = MathExtension.DegreesToRadians(360 * rawRotation.Y);
-            rawRotation.Z = MathExtension.DegreesToRadians(360 * rawRotation.Z);
-            return rawRotation;
+            return DataConversion.ToVector4(data)[0];
         }
 
         private static int GetReferenceId(string sourceReference)

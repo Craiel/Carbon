@@ -191,8 +191,21 @@ class XCDExporter:
     # -------------------------------------------------------------------------
     # File Writing Functions
     # -------------------------------------------------------------------------
-    def _QuaternionToData(self, quaternion):
-        return "%f %f %f %f" % (quaternion.x, quaternion.y, quaternion.z, quaternion.w)
+    def _RotationToData(self, source, mode):
+        if mode == "AXIS_ANGLE":
+            self._p("Rot: Axis Angle ")
+            return "%d %f %f %f %f" % (1, source.rotation_axis_angle[0], source.rotation_axis_angle[1], source.rotation_axis_angle[2], source.rotation_axis_angle[3])
+        
+        if mode == "XYZ":
+            self._p("Rot: XYZ ")
+            return "%d %f %f %f %f" % (2, source.rotation_euler.x, source.rotation_euler.y, source.rotation_euler.z, 1)
+        
+        if mode == "QUATERNION":
+            self._p("Rot: Quaternion")
+            return "%d %f %f %f %f" % (3, source.rotation_quaternion[0], source.rotation_quaternion[1], source.rotation_quaternion[2], source.rotation_quaternion[3])
+            
+        self._p("ERROR: Rotation mode unknown " + mode)
+        return None
 
     def _WriteHeader(self):
         blenderVersion = quoteattr('Blender %s' % bpy.app.version_string)
@@ -210,9 +223,6 @@ class XCDExporter:
         self._p("Writing camera %s" % obj.name)
         
         id = quoteattr(unique_name(obj, obj.name, self._uuidCacheView, clean_func=self._Clean, sep="_"))
-        if obj.rotation_mode != "QUATERNION":
-            self._p("ERROR: Rotation mode has to be quaternion but was " + obj.rotation_mode)
-            return
         location, rotation, scale = obj.matrix_local.decompose()
         self._p(rotation)
         self._fileWriter('<camera id=%s' % id)
@@ -220,7 +230,7 @@ class XCDExporter:
         self._fileWriter('>')
         
         self._fileWriter('<position>%3.2f %3.2f %3.2f</position>' % location[:])
-        self._fileWriter('<rotation>%s</rotation>' % self._QuaternionToData(rotation))
+        self._fileWriter('<rotation>%s</rotation>' % self._RotationToData(obj, obj.rotation_mode))
         
         self._WriteLayers(obj.layers)
         self._WriteCustomProperties(obj)
@@ -232,7 +242,6 @@ class XCDExporter:
         self._p("Writing stage element %s as %s" % (obj.name, id))
         
         location, rotation, scale = obj.matrix_local.decompose()
-        rotation = obj.rotation_quaternion
                 
         self._fileWriter('<element id=%s' % id)
         if link:
@@ -243,7 +252,7 @@ class XCDExporter:
         self._fileWriter('>')
         
         self._fileWriter('<translation>%.6f %.6f %.6f</translation>' % location[:])
-        self._fileWriter('<rotation>%s</rotation>' % self._QuaternionToData(rotation))
+        self._fileWriter('<rotation>%s</rotation>' % self._RotationToData(obj, obj.rotation_mode))
         self._fileWriter('<scale>%.6f %.6f %.6f</scale>' % scale[:])
         
         self._WriteBoundingBox(obj.bound_box)
