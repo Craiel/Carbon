@@ -24,11 +24,11 @@
             set
             {
                 float[] data = DataConversion.ConvertFloat(value);
-                this.Color = new Vector4(data[0], data[1], data[2], data[3]);
+                this.Value = new Vector4(data[0], data[1], data[2], data[3]);
             }
         }
 
         [XmlIgnore]
-        public Vector4 Color { get; private set; }
+        public Vector4 Value { get; private set; }
     }
 }

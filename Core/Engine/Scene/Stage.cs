@@ -8,13 +8,10 @@
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
-    using Core.Engine.Rendering;
     using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
     using Core.Engine.Resource.Resources.Stage;
-
-    using SharpDX;
-
+    
     public class Stage : EngineComponent, IStage
     {
         private readonly ISceneEntityFactory entityFactory;
@@ -23,11 +20,10 @@
 
         private readonly IDictionary<string, IProjectionCamera> cameras;
         private readonly IDictionary<string, ILightEntity> lights;
-        private readonly IDictionary<string, IList<IModelEntity>> models;
-        private readonly IDictionary<IModelEntity, IList<IModelEntity>> modelHirarchy;
-        private readonly IList<IModelEntity> rootModels; 
         
         private readonly IList<ResourceInfo> unusedReferences;
+
+        private readonly ModelEntityLoader modelLoader;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -45,11 +41,9 @@
 
             this.cameras = new Dictionary<string, IProjectionCamera>();
             this.lights = new Dictionary<string, ILightEntity>();
-            this.models = new Dictionary<string, IList<IModelEntity>>();
-            this.modelHirarchy = new Dictionary<IModelEntity, IList<IModelEntity>>();
-            this.rootModels = new List<IModelEntity>();
             
             this.unusedReferences = new List<ResourceInfo>();
+            this.modelLoader = new ModelEntityLoader();
         }
 
         // -------------------------------------------------------------------
@@ -71,19 +65,11 @@
             }
         }
 
-        public IDictionary<string, IList<IModelEntity>> Models
+        public IList<IModelEntity> Models
         {
             get
             {
-                return this.models;
-            }
-        }
-
-        public IDictionary<IModelEntity, IList<IModelEntity>> ModelHirarchy
-        {
-            get
-            {
-                return this.modelHirarchy;
+                return this.modelLoader.Models;
             }
         }
 
@@ -91,7 +77,15 @@
         {
             get
             {
-                return this.rootModels;
+                return this.modelLoader.RootModels;
+            }
+        }
+
+        public IDictionary<IModelEntity, IList<IModelEntity>> ModelHirarchy
+        {
+            get
+            {
+                return this.modelLoader.ModelHirarchy;
             }
         }
 
@@ -155,7 +149,7 @@
                     this.LoadModelElement(modelElement, referenceInfos);
                 }
 
-                System.Diagnostics.Trace.TraceInformation("Stage loaded {0} models", this.models.Count);
+                System.Diagnostics.Trace.TraceInformation("Stage loaded {0} models", this.modelLoader.Models.Count);
             }
             else
             {
@@ -193,7 +187,7 @@
                 }
 
                 var resource = this.gameState.ResourceManager.Load<ModelResourceGroup>(reference.Hash);
-                this.LoadModelGroup(element, resource, null);
+                this.modelLoader.LoadModelGroup(resource);
                 if (unusedReferences.Contains(reference))
                 {
                     unusedReferences.Remove(reference);
@@ -215,57 +209,6 @@
             }
         }
 
-        // Todo: need to put the models into hirarchy
-        private void LoadModelGroup(StageModelElement host, ModelResourceGroup group, IModelEntity parent)
-        {
-            var groupNode = new ModelEntity
-            {
-                Position = group.Offset,
-                Scale = group.Scale,
-                Rotation =
-                    Quaternion.RotationYawPitchRoll(
-                        group.Rotation.X,
-                        group.Rotation.Y,
-                        group.Rotation.Z)
-            };
-
-            this.modelHirarchy.Add(groupNode, new List<IModelEntity>());
-            if (parent != null)
-            {
-                this.modelHirarchy[parent].Add(groupNode);
-            }
-            else
-            {
-                this.rootModels.Add(groupNode);
-            }
-
-            if (group.Models != null)
-            {
-                foreach (ModelResource modelResource in group.Models)
-                {
-                    var model = new ModelEntity();
-
-                    // Todo: Bounding box generation should probably be on editor for this
-                    modelResource.CalculateBoundingBox();
-                    model.Mesh = new Mesh(modelResource);
-                    
-                    if (!this.models.ContainsKey(host.Id))
-                    {
-                        this.models.Add(host.Id, new List<IModelEntity>());
-                    }
-
-                    this.modelHirarchy[groupNode].Add(model);
-                    this.models[host.Id].Add(model);
-                }
-            }
-
-            if (group.Groups != null)
-            {
-                foreach (ModelResourceGroup subGroup in group.Groups)
-                {
-                    this.LoadModelGroup(host, subGroup, groupNode);
-                }
-            }
-        }
+        
     }
 }

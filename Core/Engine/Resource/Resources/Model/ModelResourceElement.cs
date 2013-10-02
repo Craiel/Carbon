@@ -39,12 +39,6 @@
                 System.Diagnostics.Debug.Assert(data.TangentCount == 4, "Tangent data has invalid count");
                 this.Tangent = VectorExtension.Vector4FromList(data.TangentList);
             }
-
-            if (data.ColorCount > 0)
-            {
-                System.Diagnostics.Debug.Assert(data.ColorCount == 4, "Color data has invalid count");
-                this.Color = VectorExtension.Vector4FromList(data.ColorList);
-            }
         }
 
         // -------------------------------------------------------------------
@@ -54,7 +48,6 @@
         public Vector3? Normal { get; set; }
         public Vector2? Texture { get; set; }
         public Vector4? Tangent { get; set; }
-        public Vector4? Color { get; set; }
 
         public Protocol.Resource.ModelElement.Builder GetBuilder()
         {
@@ -75,11 +68,6 @@
             if (this.Tangent != null)
             {
                 builder.AddRangeTangent(this.Tangent.Value.ToList());
-            }
-
-            if (this.Color != null)
-            {
-                builder.AddRangeColor(this.Color.Value.ToList());
             }
 
             return builder;

@@ -6,4 +6,6 @@
 	 - Setup basic control scheme's
 ]]--
 
+SetDebugCompass("{Resource Models\compass.dae}");
+
 SetRuntime("{Resource Scripts\Entry\Main.lua}");

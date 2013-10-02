@@ -112,7 +112,7 @@
         
         public void AddVertex(Vector3 position, Vector3? normal = null, Vector2? texture = null, Vector4? color = null)
         {
-            this.pendingElements.Add(new ModelResourceElement { Position = position, Normal = normal, Texture = texture, Color = color });
+            this.pendingElements.Add(new ModelResourceElement { Position = position, Normal = normal, Texture = texture });
         }
 
         public void AddIndices(uint[] indices)

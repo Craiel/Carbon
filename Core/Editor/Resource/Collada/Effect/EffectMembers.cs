@@ -9,6 +9,9 @@
     [Serializable]
     public class EffectEmission
     {
+        [XmlElement("texture")]
+        public ColladaTexture Texture { get; set; }
+
         [XmlElement("color")]
         public ColladaColor Color { get; set; }
     }
@@ -19,6 +22,9 @@
     {
         [XmlElement("texture")]
         public ColladaTexture Texture { get; set; }
+
+        [XmlElement("color")]
+        public ColladaColor Color { get; set; }
     }
 
     [Serializable]
@@ -26,11 +32,17 @@
     {
         [XmlElement("texture")]
         public ColladaTexture Texture { get; set; }
+
+        [XmlElement("color")]
+        public ColladaColor Color { get; set; }
     }
 
     [Serializable]
     public class EffectSpecular
     {
+        [XmlElement("texture")]
+        public ColladaTexture Texture { get; set; }
+
         [XmlElement("color")]
         public ColladaColor Color { get; set; }
     }
@@ -60,6 +72,9 @@
     public class EffectTransparent
     {
         [XmlElement("texture")]
-        public ColladaTexture Texture { get; set; } 
+        public ColladaTexture Texture { get; set; }
+
+        [XmlElement("color")]
+        public ColladaColor Color { get; set; }
     }
 }

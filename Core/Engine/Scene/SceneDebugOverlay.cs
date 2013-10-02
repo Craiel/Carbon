@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
 
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
@@ -24,7 +25,11 @@
 
     public class SceneDebugOverlay : Scene, ISceneDebugOverlay
     {
-        private const int EntityRenderingList = 10;
+        internal enum RenderingList
+        {
+            Entity = 10,
+            UserInterface = 20
+        }
 
         private static readonly Vector4 ColorModelEntity = new Vector4(0, 1, 0, 0.5f);
         private static readonly Vector4 ColorLightEntity = new Vector4(1, 1, 0, 0.5f);
@@ -46,6 +51,9 @@
         private IProjectionCamera debugCamera;
         private IFirstPersonController debugController;
 
+        private IModelEntity compass;
+        private IList<IModelEntity> compassElements;
+
         // --------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -55,6 +63,8 @@
             this.log = factory.Get<IEngineLog>().AquireContextLog("SceneDebugOverlay");
 
             this.lightEntityModel = Sphere.Create(0, ColorLightEntity);
+
+            this.compassElements = new List<IModelEntity>();
         }
 
         // -------------------------------------------------------------------
@@ -88,7 +98,7 @@
 
         public void UpdateEntityData(IEnumerable<SceneEntityDebugEntry> entities)
         {
-            this.ClearRenderingList(EntityRenderingList);
+            this.ClearRenderingList((int)RenderingList.Entity);
             foreach (SceneEntityDebugEntry entry in entities)
             {
                 switch (entry.Type)
@@ -133,7 +143,7 @@
             this.debugController = this.factory.Get<IFirstPersonController>();
             this.debugController.Initialize(graphic);
             this.debugController.SetInputBindings(InputManager.DefaultBindingDebugController);
-            
+
             // Todo: Register the stage's entities and add them to the rendering list
             /*foreach (IList<IModelEntity> entityList in this.stage.Models.Values)
             {
@@ -156,10 +166,23 @@
         public override bool Update(ITimer gameTime)
         {
             this.debugController.Update(gameTime);
+            this.userInterfaceCamera.Update(gameTime);
 
             // We are explicitly not calling update on this, will be done by the active scene if desired
             this.debugCamera.Position = this.debugController.Position;
             this.debugCamera.Rotation = this.debugController.Rotation;
+
+            if (this.compass != null)
+            {
+                this.compass.Rotation = this.debugCamera.Rotation;
+                this.InvalidateSceneEntity(this.compass);
+
+                foreach (IModelEntity element in this.compassElements)
+                {
+                    element.World = this.compass.Local;
+                    this.InvalidateSceneEntity(element);
+                }
+            }
 
             return base.Update(gameTime);
         }
@@ -176,15 +199,15 @@
             set.Technique = FrameTechnique.Plain;
             set.LightingEnabled = false;
             set.Topology = PrimitiveTopology.LineList;
-            this.RenderList(EntityRenderingList, set);
+            this.RenderList((int)RenderingList.Entity, set);
             frameManager.RenderSet(set);
 
             // User Interface as overlay on top
-            /*set = frameManager.BeginSet(this.userInterfaceCamera);
+            set = frameManager.BeginSet(this.userInterfaceCamera);
             set.LightingEnabled = false;
             set.Technique = FrameTechnique.Forward;
-            this.RenderList(2, set);
-            frameManager.RenderSet(set);*/
+            this.RenderList((int)RenderingList.UserInterface, set);
+            frameManager.RenderSet(set);
         }
 
         public override void Resize(TypedVector2<int> size)
@@ -210,6 +233,23 @@
             if (this.userInterfaceResource != null)
             {
                 this.userInterfaceResource.Dispose();
+            }
+        }
+
+        public void SetDebugCompass(ModelResourceGroup resource)
+        {
+            var loader = new ModelEntityLoader();
+            loader.LoadModelGroup(resource);
+
+            // Todo: Have to take the whole hirarchy here, use the scene graph code from the other scene once its done
+            // Todo: Multiple calls will keep adding and not replacing right now
+            this.compass = new ModelEntity { Position = new Vector3(100), Scale = new Vector3(50)};
+            this.compassElements = new List<IModelEntity>();
+            foreach (IModelEntity entity in loader.Models)
+            {
+                this.RegisterAndInvalidate(entity);
+                this.AddSceneEntityToRenderingList(entity, (int)RenderingList.UserInterface);
+                this.compassElements.Add(entity);
             }
         }
 
@@ -262,7 +302,7 @@
             };
 
             this.RegisterAndInvalidate(entity);
-            this.AddSceneEntityToRenderingList(entity, EntityRenderingList);
+            this.AddSceneEntityToRenderingList(entity, (int)RenderingList.Entity);
         }
 
         private void AddLightEntity(SceneEntityDebugEntry entry)
@@ -282,7 +322,7 @@
             };
 
             this.RegisterAndInvalidate(entity);
-            this.AddSceneEntityToRenderingList(entity, EntityRenderingList);
+            this.AddSceneEntityToRenderingList(entity, (int)RenderingList.Entity);
         }
     }
 }

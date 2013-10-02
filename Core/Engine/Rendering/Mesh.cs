@@ -168,7 +168,8 @@
                             {
                                 Position = element.Position,
                                 Texture = element.Texture ?? Vector2.Zero,
-                                Color = element.Color ?? Vector4.Zero
+                                // Todo: This needs to come from the model host material
+                                Color = new Vector4(1, 0, 0, 1)
                             });
                 }
                 else if (type == typeof(PositionNormalVertex))

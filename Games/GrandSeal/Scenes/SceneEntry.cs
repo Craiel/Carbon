@@ -1,21 +1,25 @@
 ﻿namespace GrandSeal.Scenes
 {
     using System;
+    using System.Data;
 
     using Contracts;
 
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
+    using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Resource.Resources;
+    using Core.Engine.Resource.Resources.Model;
     using Core.Utils.Contracts;
     
     public class SceneEntry : SceneBase, ISceneEntry
     {
         private readonly IEngineFactory factory;
         private readonly ILog log;
+        private readonly ISceneDebugOverlay debugOverlay;
 
         // --------------------------------------------------------------------
         // Constructor
@@ -25,6 +29,7 @@
         {
             this.factory = factory;
             this.log = factory.Get<IGrandSealLog>().AquireContextLog("EntryScene");
+            this.debugOverlay = factory.Get<ISceneDebugOverlay>();
         }
 
         // -------------------------------------------------------------------
@@ -52,6 +57,18 @@
 
         public override void Resize(TypedVector2<int> size)
         {
+        }
+
+        [ScriptingMethod]
+        public void SetDebugCompass(string resourceHash)
+        {
+            var resource = this.GameState.ResourceManager.Load<ModelResourceGroup>(resourceHash);
+            if (resource == null)
+            {
+                throw new DataException("Resource was not found: " + resourceHash);
+            }
+
+            this.debugOverlay.SetDebugCompass(resource);
         }
 
         [ScriptingMethod]

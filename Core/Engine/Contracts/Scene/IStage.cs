@@ -9,8 +9,8 @@
     {
         IDictionary<string, IProjectionCamera> Cameras { get; }
         IDictionary<string, ILightEntity> Lights { get; }
-        IDictionary<string, IList<IModelEntity>> Models { get; }
+        IList<IModelEntity> Models { get; }
+        IList<IModelEntity> RootModels { get; }
         IDictionary<IModelEntity, IList<IModelEntity>> ModelHirarchy { get; }
-        IList<IModelEntity> RootModels { get; } 
     }
 }

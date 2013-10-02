@@ -23,21 +23,34 @@ message ModelElement {
 	repeated float Normal = 2 [packed=true];
 	repeated float Texture = 3 [packed=true];
 	repeated float Tangent = 4 [packed=true];
-	repeated float Color = 5 [packed=true];
 }
 
 message ModelMaterial {
-	required string Name = 1;
-	optional string DiffuseTexture = 2;
-	optional string NormalTexture = 3;
-	optional string AlphaTexture = 4;
-	optional string SpecularTexture = 5;
+	enum ModelMaterialType
+	{
+		Blinn = 0;
+	}
+	
+	required ModelMaterialType Type = 1;
+	required string Name = 2;
+	optional string DiffuseTexture = 3;
+	optional string NormalTexture = 4;
+	optional string AlphaTexture = 5;
+	optional string SpecularTexture = 6;
+	
+	required float Shinyness = 10;
+	required float Refraction = 11;
+	
+	repeated float ColorDiffuse = 20 [packed=true];
+	repeated float ColorSpecular = 21 [packed=true];
+	repeated float ColorEmission = 22 [packed=true];
+	repeated float ColorAmbient = 23 [packed=true];
 }
 
 message Model {
 	required int32 Version = 1 [default = 1];
 	required string Name = 2;
-	required bool TangentsCalculated = 5;
+	required bool TangentsCalculated = 3 [default = false];
 		
 	repeated ModelElement Elements = 20;
 	repeated ModelMaterial Materials = 21;

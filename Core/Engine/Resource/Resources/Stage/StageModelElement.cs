@@ -27,7 +27,7 @@
             this.ReferenceId = data.ReferenceId;
 
             this.Translation = VectorExtension.Vector3FromList(data.TranslationList);
-            this.Rotation = VectorExtension.Vector4FromList(data.RotationList);
+            this.Rotation = new Quaternion(VectorExtension.Vector4FromList(data.RotationList));
             this.Scale = VectorExtension.Vector3FromList(data.ScaleList);
 
             if (data.HasLayerFlags)
@@ -56,8 +56,9 @@
         public int ReferenceId { get; set; }
 
         public Vector3 Translation { get; set; }
-        public Vector4 Rotation { get; set; }
         public Vector3 Scale { get; set; }
+
+        public Quaternion Rotation { get; set; }
 
         public IList<StageModelElement> Children { get; set; }
 

@@ -1,5 +1,10 @@
 ﻿namespace Core.Engine.Resource.Resources.Model
 {
+    using Core.Protocol.Resource;
+    using Core.Utils;
+
+    using SharpDX;
+
     public class ModelMaterialElement
     {
         // -------------------------------------------------------------------
@@ -9,28 +14,74 @@
         {
         }
 
-        public ModelMaterialElement(Protocol.Resource.ModelMaterial data)
+        public ModelMaterialElement(ModelMaterial data)
             : this()
         {
+            this.Type = data.Type;
+
             this.Name = data.Name;
             this.DiffuseTexture = data.DiffuseTexture;
             this.NormalTexture = data.NormalTexture;
             this.AlphaTexture = data.AlphaTexture;
             this.SpecularTexture = data.SpecularTexture;
+
+            this.Shinyness = data.Shinyness;
+            this.Refraction = data.Refraction;
+
+            if (data.ColorDiffuseCount > 0)
+            {
+                System.Diagnostics.Debug.Assert(data.ColorDiffuseCount == 4, "Color data has invalid count");
+                this.ColorDiffuse = VectorExtension.Vector4FromList(data.ColorDiffuseList);
+            }
+
+            if (data.ColorSpecularCount > 0)
+            {
+                System.Diagnostics.Debug.Assert(data.ColorSpecularCount == 4, "Color data has invalid count");
+                this.ColorSpecular = VectorExtension.Vector4FromList(data.ColorSpecularList);
+            }
+
+            if (data.ColorEmissionCount > 0)
+            {
+                System.Diagnostics.Debug.Assert(data.ColorEmissionCount == 4, "Color data has invalid count");
+                this.ColorEmission = VectorExtension.Vector4FromList(data.ColorEmissionList);
+            }
+
+            if (data.ColorAmbientCount > 0)
+            {
+                System.Diagnostics.Debug.Assert(data.ColorAmbientCount == 4, "Color data has invalid count");
+                this.ColorAmbient = VectorExtension.Vector4FromList(data.ColorAmbientList);
+            }
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public ModelMaterial.Types.ModelMaterialType Type { get; set; }
+
         public string Name { get; set; }
         public string DiffuseTexture { get; set; }
         public string NormalTexture { get; set; }
         public string AlphaTexture { get; set; }
         public string SpecularTexture { get; set; }
 
-        public Protocol.Resource.ModelMaterial.Builder GetBuilder()
+        public float Shinyness { get; set; }
+        public float Refraction { get; set; }
+
+        public Vector4? ColorDiffuse { get; set; }
+        public Vector4? ColorSpecular { get; set; }
+        public Vector4? ColorEmission { get; set; }
+        public Vector4? ColorAmbient { get; set; }
+
+        public ModelMaterial.Builder GetBuilder()
         {
-            var builder = new Protocol.Resource.ModelMaterial.Builder { Name = this.Name };
+            var builder = new ModelMaterial.Builder
+                              {
+                                  Type = this.Type,
+                                  Name = this.Name,
+                                  Shinyness = this.Shinyness,
+                                  Refraction = this.Refraction
+                              };
+
             if (!string.IsNullOrEmpty(this.DiffuseTexture))
             {
                 builder.DiffuseTexture = this.DiffuseTexture;
@@ -49,6 +100,26 @@
             if (!string.IsNullOrEmpty(this.SpecularTexture))
             {
                 builder.SpecularTexture = this.SpecularTexture;
+            }
+
+            if (this.ColorDiffuse != null)
+            {
+                builder.AddRangeColorDiffuse(this.ColorDiffuse.Value.ToList());
+            }
+
+            if (this.ColorSpecular != null)
+            {
+                builder.AddRangeColorSpecular(this.ColorSpecular.Value.ToList());
+            }
+
+            if (this.ColorEmission != null)
+            {
+                builder.AddRangeColorEmission(this.ColorEmission.Value.ToList());
+            }
+
+            if (this.ColorAmbient != null)
+            {
+                builder.AddRangeColorAmbient(this.ColorAmbient.Value.ToList());
             }
 
             return builder;

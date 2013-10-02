@@ -22,7 +22,7 @@ namespace Core.Engine.Resource.Resources.Stage
             this.Id = data.Id;
 
             this.Position = VectorExtension.Vector3FromList(data.PositionList);
-            this.Rotation = VectorExtension.Vector4FromList(data.RotationList);
+            this.Rotation = new Quaternion(VectorExtension.Vector4FromList(data.RotationList));
 
             if (data.HasLayerFlags)
             {
@@ -39,7 +39,7 @@ namespace Core.Engine.Resource.Resources.Stage
         // Public
         // -------------------------------------------------------------------
         public Vector3 Position { get; set; }
-        public Vector4 Rotation { get; set; }
+        public Quaternion Rotation { get; set; }
 
         public float FieldOfView { get; set; }
 

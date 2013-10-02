@@ -118,13 +118,10 @@
                 this.activeCamera = this.stage.Cameras.FirstOrDefault().Value;
 
                 // Register the stage's entities and add them to the rendering list
-                foreach (IList<IModelEntity> entityList in this.stage.Models.Values)
+                foreach (IModelEntity entity in this.stage.Models)
                 {
-                    foreach (IModelEntity entity in entityList)
-                    {
-                        this.RegisterAndInvalidate(entity);
-                        this.AddSceneEntityToRenderingList(entity);
-                    }
+                    this.RegisterAndInvalidate(entity);
+                    this.AddSceneEntityToRenderingList(entity);
                 }
                 
                 foreach (ILightEntity light in this.stage.Lights.Values)
@@ -161,13 +158,13 @@
                 entity.World = entity.Local;
             }
 
-            if (this.stage.ModelHirarchy.ContainsKey(entity))
+            /*if (this.stage.ModelHirarchy.ContainsKey(entity))
             {
                 foreach (IModelEntity child in this.stage.ModelHirarchy[entity])
                 {
                     this.TestUpdate(child, entity);
                 }
-            }
+            }*/
         }
 
         public override void Render(IFrameManager frameManager)
@@ -323,16 +320,10 @@
         {
             // refresh and upload our entity information to the debug overlay
             IList<SceneEntityDebugEntry> entityData = new List<SceneEntityDebugEntry>();
-            foreach (string key in this.stage.Models.Keys)
+            foreach (IModelEntity entity in this.stage.Models)
             {
-                foreach (IModelEntity entity in this.stage.Models[key])
-                {
-                    var entry = new SceneEntityDebugEntry(
-                    key,
-                    EntityDebugType.Model,
-                    new WeakReference<ISceneEntity>(entity));
-                    entityData.Add(entry);
-                }
+                var entry = new SceneEntityDebugEntry("<TODO>", EntityDebugType.Model, new WeakReference<ISceneEntity>(entity));
+                entityData.Add(entry);
             }
 
             foreach (string key in this.stage.Lights.Keys)

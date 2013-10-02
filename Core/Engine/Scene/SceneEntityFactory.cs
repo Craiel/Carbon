@@ -30,7 +30,7 @@
         {
             var camera = this.factory.Get<IProjectionCamera>();
             camera.Position = cameraElement.Position;
-            camera.Rotation = Quaternion.RotationAxis(cameraElement.Rotation.XYZ(), cameraElement.Rotation.W);
+            camera.Rotation = cameraElement.Rotation;
 
             // Todo: near / far plane and fov
             return camera;
