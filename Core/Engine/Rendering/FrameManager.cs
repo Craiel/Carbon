@@ -507,7 +507,7 @@
 
             if (source.Material != null)
             {
-                instruction.Color = source.Material.Color;
+                instruction.Color = source.Material.ColorDiffuse;
 
                 if (source.Material.DiffuseTexture != null)
                 {

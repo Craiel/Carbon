@@ -27,7 +27,6 @@
     */
     public static class ColladaProcessor
     {
-        private static readonly IDictionary<string, ModelMaterialElement> MaterialLibrary = new Dictionary<string, ModelMaterialElement>();
         private static readonly IDictionary<string, ModelResourceGroup> MeshLibrary = new Dictionary<string, ModelResourceGroup>();
 
         private static string targetElement;
@@ -58,7 +57,6 @@
             {
                 var model = ColladaModel.Load(stream);
 
-                BuildMaterialLibrary(info, model.EffectLibrary, model.MaterialLibrary);
                 BuildGeometryLibrary(info, model.GeometryLibrary);
 
                 foreach (ColladaSceneNode sceneNode in model.SceneLibrary.VisualScene.Nodes)
@@ -103,71 +101,7 @@
             textureData = null;
         }
 
-        private static void BuildMaterialLibrary(ColladaInfo info, ColladaEffectLibrary effectLibrary, ColladaMaterialLibrary materialLibrary)
-        {
-            MaterialLibrary.Clear();
-
-            // Read the effects out and sort them
-            IDictionary<string, ModelMaterialElement> effectList = new Dictionary<string, ModelMaterialElement>();
-            if (effectLibrary != null && effectLibrary.Effects != null && effectLibrary.Effects.Length > 0)
-            {
-                foreach (ColladaEffect effect in effectLibrary.Effects)
-                {
-                    var element = new ModelMaterialElement { Name = effect.Id };
-                    if (effect.ProfileCommon.Technique.Blinn != null)
-                    {
-                        LoadEffectFromBlinn(effect.ProfileCommon.Technique.Blinn, ref element);
-                    }
-                    else
-                    {
-                        System.Diagnostics.Trace.TraceWarning("Unhandled effect entry! Check source");
-                        continue;
-                    }
-
-                    effectList.Add(effect.Id, element);
-                }
-            }
-
-            foreach (ColladaMaterial material in materialLibrary.Materials)
-            {
-                string effectId = ColladaInfo.GetUrlValue(material.Effect.Url);
-                if (effectList.ContainsKey(effectId))
-                {
-                    MaterialLibrary.Add(material.Id, effectList[effectId]);
-                }
-            }
-        }
-
-        private static void LoadEffectFromBlinn(EffectBlinn blinn, ref ModelMaterialElement target)
-        {
-            target.Type = ModelMaterial.Types.ModelMaterialType.Blinn;
-
-            target.Shinyness = blinn.Shininess.Float.Value;
-            target.Refraction = blinn.IndexOfRefraction.Float.Value;
-
-            // Todo: Textures
-
-            // Colors
-            if (blinn.Diffuse.Color != null)
-            {
-                target.ColorDiffuse = blinn.Diffuse.Color.Value;
-            }
-
-            if (blinn.Specular.Color != null)
-            {
-                target.ColorSpecular = blinn.Specular.Color.Value;
-            }
-
-            if (blinn.Emission.Color != null)
-            {
-                target.ColorEmission = blinn.Emission.Color.Value;
-            }
-
-            if (blinn.Ambient.Color != null)
-            {
-                target.ColorAmbient = blinn.Ambient.Color.Value;
-            }
-        }
+        /**/
 
         private static void BuildGeometryLibrary(ColladaInfo info, ColladaGeometryLibrary library)
         {

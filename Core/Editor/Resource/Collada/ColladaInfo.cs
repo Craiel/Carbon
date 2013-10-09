@@ -3,13 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.IO;
 
     using Core.Engine.Resource.Resources.Model;
 
     using Core.Processing.Resource.Collada.Effect;
     using Core.Processing.Resource.Collada.General;
     using Core.Processing.Resource.Collada.Geometry;
+    using Core.Protocol.Resource;
     using Core.Utils.IO;
 
     public struct ColladaMeshInfo
@@ -22,10 +22,10 @@
     public class ColladaInfo
     {
         private readonly List<ColladaMeshInfo> meshInfos;
-        private readonly Dictionary<string, ModelMaterialElement> materialInfo;
-        private readonly Dictionary<string, string> imageInfo;
+        private readonly IDictionary<string, ModelMaterialElement> materialInfo;
+        private readonly IDictionary<string, string> imageInfo;
         private readonly List<string> normalImages;
-        private readonly Dictionary<string, string> colorToNormalImages;
+        private readonly IDictionary<string, string> colorToNormalImages;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -49,7 +49,7 @@
             {
                 var model = ColladaModel.Load(stream);
                 this.BuildImageLibrary(model.ImageLibrary);
-                this.BuildMaterialLibrary(model.MaterialLibrary, model.EffectLibrary);
+                this.BuildMaterialLibrary(model.EffectLibrary, model.MaterialLibrary);
                 this.BuildMeshLibrary(model.GeometryLibrary);
             }
         }
@@ -154,7 +154,7 @@
             }
         }
 
-        private string ResolveEffectTexture(ColladaEffect effect, string initFromValue)
+        /*private string ResolveEffectTexture(ColladaEffect effect, string initFromValue)
         {
             foreach (EffectParameter parameter in effect.ProfileCommon.Parameter)
             {
@@ -185,9 +185,115 @@
             }
 
             return initFromValue;
+        }*/
+
+        private void BuildMaterialLibrary(ColladaEffectLibrary effectLibrary, ColladaMaterialLibrary materialLibrary)
+        {
+            this.materialInfo.Clear();
+
+            // Read the effects out and sort them
+            IDictionary<string, ModelMaterialElement> effectList = new Dictionary<string, ModelMaterialElement>();
+            if (effectLibrary != null && effectLibrary.Effects != null && effectLibrary.Effects.Length > 0)
+            {
+                foreach (ColladaEffect effect in effectLibrary.Effects)
+                {
+                    var element = new ModelMaterialElement { Name = effect.Id };
+                    if (effect.ProfileCommon.Technique.Blinn != null)
+                    {
+                        LoadEffectFromBlinn(effect.ProfileCommon.Technique.Blinn, ref element);
+                    }
+                    else if (effect.ProfileCommon.Technique.Phong != null)
+                    {
+                        LoadEffectFromPhong(effect.ProfileCommon.Technique.Phong, ref element);
+                    }
+                    else
+                    {
+                        System.Diagnostics.Trace.TraceWarning("Unhandled effect entry! Check source");
+                        continue;
+                    }
+
+                    effectList.Add(effect.Id, element);
+                }
+            }
+
+            foreach (ColladaMaterial material in materialLibrary.Materials)
+            {
+                string effectId = GetUrlValue(material.Effect.Url);
+                if (effectList.ContainsKey(effectId))
+                {
+                    materialInfo.Add(material.Id, effectList[effectId]);
+                }
+            }
         }
 
-        private void BuildMaterialLibrary(ColladaMaterialLibrary materials, ColladaEffectLibrary effectLibrary)
+        private void LoadEffectFromPhong(EffectPhong phong, ref ModelMaterialElement target)
+        {
+            target.Type = ModelMaterial.Types.ModelMaterialType.Blinn;
+
+            target.Shinyness = phong.Shininess.Float.Value;
+            target.Refraction = phong.IndexOfRefraction.Float.Value;
+
+            if (phong.Transparency != null && phong.Transparency.Float != null)
+            {
+                target.Transparency = phong.Transparency.Float.Value;
+            }
+
+            // Todo: Textures
+
+            // Colors
+            if (phong.Diffuse.Color != null)
+            {
+                target.ColorDiffuse = phong.Diffuse.Color.Value;
+            }
+
+            if (phong.Specular.Color != null)
+            {
+                target.ColorSpecular = phong.Specular.Color.Value;
+            }
+
+            if (phong.Emission.Color != null)
+            {
+                target.ColorEmission = phong.Emission.Color.Value;
+            }
+
+            if (phong.Ambient.Color != null)
+            {
+                target.ColorAmbient = phong.Ambient.Color.Value;
+            }
+        }
+
+        private static void LoadEffectFromBlinn(EffectBlinn blinn, ref ModelMaterialElement target)
+        {
+            target.Type = ModelMaterial.Types.ModelMaterialType.Blinn;
+
+            target.Shinyness = blinn.Shininess.Float.Value;
+            target.Refraction = blinn.IndexOfRefraction.Float.Value;
+
+            // Todo: Textures
+
+            // Colors
+            if (blinn.Diffuse.Color != null)
+            {
+                target.ColorDiffuse = blinn.Diffuse.Color.Value;
+            }
+
+            if (blinn.Specular.Color != null)
+            {
+                target.ColorSpecular = blinn.Specular.Color.Value;
+            }
+
+            if (blinn.Emission.Color != null)
+            {
+                target.ColorEmission = blinn.Emission.Color.Value;
+            }
+
+            if (blinn.Ambient.Color != null)
+            {
+                target.ColorAmbient = blinn.Ambient.Color.Value;
+            }
+        }
+
+        /*private void BuildMaterialLibrary(ColladaMaterialLibrary materials, ColladaEffectLibrary effectLibrary)
         {
             this.materialInfo.Clear();
             if (materials == null || materials.Materials == null || materials.Materials.Length <= 0
@@ -276,6 +382,6 @@
                     this.materialInfo.Add(material.Name, material);
                 }
             }
-        }
+        }*/
     }
 }

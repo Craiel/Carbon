@@ -33,6 +33,19 @@
             this.IndexSize = this.IndexCount * sizeof(int);
             this.ElementCount = resource.Elements.Count;
 
+            if (resource.Materials != null && resource.Materials.Count > 0)
+            {
+                if (resource.Materials.Count > 1)
+                {
+                    System.Diagnostics.Trace.TraceWarning("Mesh has more than one material, currently not supported!");
+                }
+
+                this.DiffuseColor = resource.Materials[0].ColorDiffuse;
+                this.SpecularColor = resource.Materials[0].ColorSpecular;
+                this.AmbientColor = resource.Materials[0].ColorAmbient;
+                this.EmissiveColor = resource.Materials[0].ColorEmission;
+            }
+
             for (int i = 0; i < resource.Indices.Count; i++)
             {
                 this.indexUploadCache.Add(resource.Indices[i]);
@@ -54,6 +67,11 @@
 
         public BoundingBox? BoundingBox { get; private set; }
         public BoundingSphere? BoundingSphere { get; private set; }
+
+        public Vector4? DiffuseColor { get; set; }
+        public Vector4? SpecularColor { get; set; }
+        public Vector4? AmbientColor { get; set; }
+        public Vector4? EmissiveColor { get; set; }
 
         public void Dispose()
         {
@@ -169,7 +187,7 @@
                                 Position = element.Position,
                                 Texture = element.Texture ?? Vector2.Zero,
                                 // Todo: This needs to come from the model host material
-                                Color = new Vector4(1, 0, 0, 1)
+                                Color = this.DiffuseColor ?? new Vector4(1, 0, 0, 1)
                             });
                 }
                 else if (type == typeof(PositionNormalVertex))

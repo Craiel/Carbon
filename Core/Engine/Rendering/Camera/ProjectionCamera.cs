@@ -54,6 +54,22 @@
             }
         }
 
+        public Vector3 Forward
+        {
+            get
+            {
+                return this.targetVector;
+            }
+        }
+
+        public Vector3 Up
+        {
+            get
+            {
+                return this.upVector;
+            }
+        }
+
         public Quaternion Rotation
         {
             get

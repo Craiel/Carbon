@@ -31,6 +31,9 @@
 
     public interface IProjectionCamera : ICamera
     {
+        Vector3 Forward { get; }
+        Vector3 Up { get; }
+
         Quaternion Rotation { get; set; }
 
         void LookAt(Vector3 target);

@@ -21,7 +21,7 @@
         {
             this.graphics = graphics;
 
-            this.Color = new Vector4(content.ColorR, content.ColorG, content.ColorB, content.ColorA);
+            this.ColorDiffuse = new Vector4(content.ColorR, content.ColorG, content.ColorB, content.ColorA);
 
             if (content.DiffuseTexture != null)
             {
@@ -55,6 +55,11 @@
         public Material(ICarbonGraphics graphics, ModelMaterialElement content)
         {
             this.graphics = graphics;
+
+            this.ColorDiffuse = content.ColorDiffuse;
+            this.ColorSpecular = content.ColorSpecular;
+            this.ColorAmbient = content.ColorAmbient;
+            this.ColorEmissive = content.ColorEmission;
 
             if (!string.IsNullOrEmpty(content.DiffuseTexture))
             {
@@ -116,7 +121,10 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public Vector4? Color { get; private set; }
+        public Vector4? ColorDiffuse { get; private set; }
+        public Vector4? ColorSpecular { get; private set; }
+        public Vector4? ColorAmbient { get; private set; }
+        public Vector4? ColorEmissive { get; private set; }
 
         public TextureReference DiffuseTexture { get; set; }
         public TextureReference NormalTexture { get; set; }

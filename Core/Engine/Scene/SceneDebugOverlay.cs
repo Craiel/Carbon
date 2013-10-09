@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
 
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
@@ -39,6 +38,8 @@
 
         private readonly ModelResource lightEntityModel;
 
+        private ModelEntityLoader modelEntityLoader;
+
         private ICarbonGraphics graphics;
 
         // Loaded Resources
@@ -51,6 +52,7 @@
         private IProjectionCamera debugCamera;
         private IFirstPersonController debugController;
 
+        private ModelResourceGroup compassResource;
         private IModelEntity compass;
         private IList<IModelEntity> compassElements;
 
@@ -124,6 +126,10 @@
 
             this.graphics = graphic;
 
+            // Create and initialize the model loader
+            this.modelEntityLoader = new ModelEntityLoader();
+            this.modelEntityLoader.Initialize(graphic);
+
             // Initialize our camera's
             this.userInterfaceCamera = this.factory.Get<IOrthographicCamera>();
             this.userInterfaceCamera.Initialize(graphic);
@@ -143,6 +149,15 @@
             this.debugController = this.factory.Get<IFirstPersonController>();
             this.debugController.Initialize(graphic);
             this.debugController.SetInputBindings(InputManager.DefaultBindingDebugController);
+
+            if (this.compassResource != null)
+            {
+                this.InitializeCompass();
+            }
+            else
+            {
+                this.log.Warning("Debug compass resource is not set");
+            }
 
             // Todo: Register the stage's entities and add them to the rendering list
             /*foreach (IList<IModelEntity> entityList in this.stage.Models.Values)
@@ -238,19 +253,13 @@
 
         public void SetDebugCompass(ModelResourceGroup resource)
         {
-            var loader = new ModelEntityLoader();
-            loader.LoadModelGroup(resource);
-
-            // Todo: Have to take the whole hirarchy here, use the scene graph code from the other scene once its done
-            // Todo: Multiple calls will keep adding and not replacing right now
-            this.compass = new ModelEntity { Position = new Vector3(100), Scale = new Vector3(50)};
-            this.compassElements = new List<IModelEntity>();
-            foreach (IModelEntity entity in loader.Models)
+            if (this.compassResource != null || this.compass != null)
             {
-                this.RegisterAndInvalidate(entity);
-                this.AddSceneEntityToRenderingList(entity, (int)RenderingList.UserInterface);
-                this.compassElements.Add(entity);
+                System.Diagnostics.Trace.TraceError("Error, compass resource set after initialize!");
+                return;
             }
+
+            this.compassResource = resource;
         }
 
         // -------------------------------------------------------------------
@@ -323,6 +332,22 @@
 
             this.RegisterAndInvalidate(entity);
             this.AddSceneEntityToRenderingList(entity, (int)RenderingList.Entity);
+        }
+
+        private void InitializeCompass()
+        {
+            this.modelEntityLoader.LoadModelGroup(this.compassResource);
+
+            // Todo: Have to take the whole hirarchy here, use the scene graph code from the other scene once its done
+            // Todo: Multiple calls will keep adding and not replacing right now
+            this.compass = new ModelEntity { Position = new Vector3(100), Scale = new Vector3(50) };
+            this.compassElements = new List<IModelEntity>();
+            foreach (IModelEntity entity in this.modelEntityLoader.Models)
+            {
+                this.RegisterAndInvalidate(entity);
+                this.AddSceneEntityToRenderingList(entity, (int)RenderingList.UserInterface);
+                this.compassElements.Add(entity);
+            }
         }
     }
 }

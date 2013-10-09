@@ -26,5 +26,8 @@
 
         [XmlElement("transparent")]
         public EffectTransparent Transparent { get; set; }
+
+        [XmlElement("index_of_refraction")]
+        public EffectIndexOfRefraction IndexOfRefraction { get; set; }
     }
 }

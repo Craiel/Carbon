@@ -28,6 +28,11 @@
             this.Shinyness = data.Shinyness;
             this.Refraction = data.Refraction;
 
+            if (data.HasTransparancy)
+            {
+                this.Transparency = data.Transparancy;
+            }
+
             if (data.ColorDiffuseCount > 0)
             {
                 System.Diagnostics.Debug.Assert(data.ColorDiffuseCount == 4, "Color data has invalid count");
@@ -66,6 +71,7 @@
 
         public float Shinyness { get; set; }
         public float Refraction { get; set; }
+        public float? Transparency { get; set; }
 
         public Vector4? ColorDiffuse { get; set; }
         public Vector4? ColorSpecular { get; set; }
@@ -81,6 +87,11 @@
                                   Shinyness = this.Shinyness,
                                   Refraction = this.Refraction
                               };
+
+            if (this.Transparency != null)
+            {
+                builder.SetTransparancy((float)this.Transparency);
+            }
 
             if (!string.IsNullOrEmpty(this.DiffuseTexture))
             {
@@ -133,7 +144,14 @@
                 DiffuseTexture = this.DiffuseTexture,
                 NormalTexture = this.NormalTexture,
                 AlphaTexture = this.AlphaTexture,
-                SpecularTexture = this.SpecularTexture
+                SpecularTexture = this.SpecularTexture,
+                Transparency = this.Transparency,
+                Shinyness = this.Shinyness,
+                Refraction = this.Refraction,
+                ColorDiffuse = this.ColorDiffuse,
+                ColorSpecular = this.ColorSpecular,
+                ColorAmbient = this.ColorAmbient,
+                ColorEmission = this.ColorEmission
             };
         }
     }

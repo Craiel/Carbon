@@ -91,6 +91,11 @@
 
         public override void Initialize(ICarbonGraphics graphics)
         {
+            base.Initialize(graphics);
+
+            // Initialize the model loader for access to textures and other gpu resources
+            this.modelLoader.Initialize(graphics);
+
             // Build and initialize all the scene components
             if (this.data.Cameras != null)
             {

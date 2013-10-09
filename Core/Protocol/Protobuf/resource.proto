@@ -40,6 +40,7 @@ message ModelMaterial {
 	
 	required float Shinyness = 10;
 	required float Refraction = 11;
+	optional float Transparancy = 12;
 	
 	repeated float ColorDiffuse = 20 [packed=true];
 	repeated float ColorSpecular = 21 [packed=true];
