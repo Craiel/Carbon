@@ -3,23 +3,10 @@
     using System;
     using System.Collections.Generic;
 
-    using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
 
-    public interface INode : IEngineComponent
-    {
-        INode Parent { get; set; }
-
-        ISceneEntity Entity { get; set; }
-
-        IReadOnlyCollection<INode> Children { get; }
-        
-        void AddChild(INode node);
-        void RemoveChild(INode node);
-
-        void Clear();
-    }
+    using SharpDX;
 
     /// <summary>
     /// Container class for entities, used by all kinds of system to "bag" entities
@@ -39,6 +26,8 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public Quaternion Rotation { get; set; }
+
         public IReadOnlyCollection<INode> Children
         {
             get
@@ -47,9 +36,13 @@
             }
         }
 
+        public string Name { get; set; }
+
         public INode Parent { get; set; }
 
-        public ISceneEntity Entity { get; set; }
+        public Vector3 Position { get; set; }
+
+        public Vector3 Scale { get; set; }
 
         public override void Dispose()
         {
@@ -110,11 +103,6 @@
                 return false;
             }
 
-            if (this.Entity != null)
-            {
-                this.Entity.World = this.Entity.Local * this.Parent.Entity.Local;
-            }
-            
             return true;
         }
     }

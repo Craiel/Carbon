@@ -1,6 +1,16 @@
 ﻿namespace Core.Engine.Scene
 {
-    public class SceneGraph
+    using Core.Engine.Contracts.Scene;
+
+    public interface ISceneGraph : ISceneSpatialStructure
+    {
+        void Add(INode node, INode parent = null);
+        void Remove(INode child, INode parent = null);
+
+        void Clear(INode parent = null);
+    }
+
+    public class SceneGraph : SceneSpatialStructure, ISceneGraph
     {
         private readonly INode root;
 
@@ -9,30 +19,59 @@
         // -------------------------------------------------------------------
         public SceneGraph()
         {
-            this.root = new Node();
+            this.root = new Node { Name = "Root" };
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public INode Add(INode entity, INode parent = null)
+        public void Add(INode node, INode parent = null)
         {
-            return null;
+            base.Add(node);
+
+            if (parent == null)
+            {
+                this.root.AddChild(node);
+            }
+            else
+            {
+                parent.AddChild(node);
+            }
         }
 
-        public bool Remove(INode child, INode parent = null)
+        public void Remove(INode child, INode parent = null)
         {
-            return false;
+            base.Remove(child);
+
+            if (parent == null)
+            {
+                this.root.RemoveChild(child);
+            }
+            else
+            {
+                parent.RemoveChild(child);
+            }
         }
 
         public void Clear(INode parent = null)
         {
-            if (parent == null)
+            this.DoClear(parent ?? this.root);
+        }
+
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private void DoClear(INode node)
+        {
+            if (node.Children != null)
             {
-                parent = this.root;
+                foreach (INode child in node.Children)
+                {
+                    this.DoClear(child);
+                }
             }
 
-            parent.Clear();
+            base.Remove(node);
         }
     }
 }

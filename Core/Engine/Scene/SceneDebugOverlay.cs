@@ -187,7 +187,7 @@
             this.debugCamera.Position = this.debugController.Position;
             this.debugCamera.Rotation = this.debugController.Rotation;
 
-            if (this.compass != null)
+            /*if (this.compass != null)
             {
                 this.compass.Rotation = this.debugCamera.Rotation;
                 this.InvalidateSceneEntity(this.compass);
@@ -197,7 +197,7 @@
                     element.World = this.compass.Local;
                     this.InvalidateSceneEntity(element);
                 }
-            }
+            }*/
 
             return base.Update(gameTime);
         }
@@ -340,14 +340,14 @@
 
             // Todo: Have to take the whole hirarchy here, use the scene graph code from the other scene once its done
             // Todo: Multiple calls will keep adding and not replacing right now
-            this.compass = new ModelEntity { Position = new Vector3(100), Scale = new Vector3(50) };
+            /*this.compass = new ModelEntity { Position = new Vector3(100), Scale = new Vector3(50) };
             this.compassElements = new List<IModelEntity>();
             foreach (IModelEntity entity in this.modelEntityLoader.Models)
             {
                 this.RegisterAndInvalidate(entity);
                 this.AddSceneEntityToRenderingList(entity, (int)RenderingList.UserInterface);
                 this.compassElements.Add(entity);
-            }
+            }*/
         }
     }
 }

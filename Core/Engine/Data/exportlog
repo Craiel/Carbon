@@ -6,330 +6,48 @@ io_scene_xcd\export_xcd.py
 io_scene_xcd\__init__.py
 4 File(s) copied
 
-C:\Dev\Carbon\Core\Engine\Data>"C:\Program Files\Blender Foundation\Blender\blender.exe" C:\Dev\Carbon\Assets\GrandSeal.Source\Stages\MenuScene.blend --python "C:\Dev\Carbon\Core\Engine\Data\export.py" -- C:\Dev\Carbon\Assets\GrandSeal.Intermediate\Stages\MenuScene.xcd" 
-Exporting XCD to C:\Dev\Carbon\Assets\GrandSeal.Intermediate\Stages\MenuScene.xcd
+C:\Dev\Carbon\Core\Engine\Data>"C:\Program Files\Blender Foundation\Blender\blender.exe" C:\Dev\Carbon\Assets\GrandSeal.Source\Stages\DebugScene.blend --python "C:\Dev\Carbon\Core\Engine\Data\export.py" -- C:\Dev\Carbon\Assets\GrandSeal.Intermediate\Stages\DebugScene.xcd" 
+Exporting XCD to C:\Dev\Carbon\Assets\GrandSeal.Intermediate\Stages\DebugScene.xcd
 Version 0.1
- Info: starting XCD export to 'C:\\Dev\\Carbon\\Assets\\GrandSeal.Intermediate\\Stages\\MenuScene.xcd'...
+ Info: starting XCD export to 'C:\\Dev\\Carbon\\Assets\\GrandSeal.Intermediate\\Stages\\DebugScene.xcd'...
  Writing fog
- Info: TestParent: Bushes
- Info: TestParent: Forrest
  Info: TestParent: Lamp
  Info: TestParent: Camera
- Info: TestParent: Ground
- Info: TestParent: ForrestSegmentA.004
- Info: TestParent: ForrestSegmentA.003
- Info: TestParent: ForrestSegmentA.002
- Info: TestParent: ForrestSegmentA.001
- Info: TestParent: ForrestSegmentA
- Info: TestParent: Bush.008
- Info: TestParent: Bush.007
- Info: TestParent: Bush.003
- Info: TestParent: Bush.006
- Info: TestParent: Bush.005
- Info: TestParent: Bush.004
- Info: TestParent: Bush.002
- Info: TestParent: Bush.001
- Info: TestParent: Bush
- Info: TestParent: House
- [(bpy.data.objects['Bushes'], [(bpy.data.objects['Bush.008'], []), (bpy.data.objects['Bush.007'], []), (bpy.data.objects['Bush.003'], []), (bpy.data.objects['Bush.006'], []), (bpy.data.objects['Bush.005'], []), (bpy.data.objects['Bush.004'], []), (bpy.data.objects['Bush.002'], []), (bpy.data.objects['Bush.001'], []), (bpy.data.objects['Bush'], [])]), (bpy.data.objects['Forrest'], [(bpy.data.objects['ForrestSegmentA.004'], []), (bpy.data.objects['ForrestSegmentA.003'], []), (bpy.data.objects['ForrestSegmentA.002'], []), (bpy.data.objects['ForrestSegmentA.001'], []), (bpy.data.objects['ForrestSegmentA'], [])]), (bpy.data.objects['Lamp'], []), (bpy.data.objects['Camera'], []), (bpy.data.objects['Ground'], []), (bpy.data.objects['House'], [])]
- -> Exporting Bushes
-  ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- Derived is same!
-  Prefabs: 
- {}
-  Meshes: 
- {}
- Warning: Nothing to export
-  CHILD: Bush.008
- --  -> Exporting Bush.008
- --   ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- --   DERIV: Bush //..\Models\Foliage\BushPlaceholder1.blend EMPTY
- --   DERIV: Cube //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   DERIV: BushPlaceHolderA //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': False}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': True}
- --  Writing stage element Bush.008 as "Bush_008"
-  CHILD: Bush.007
- --  -> Exporting Bush.007
- --   ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- --   DERIV: Bush //..\Models\Foliage\BushPlaceholder1.blend EMPTY
- --   DERIV: Cube //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   DERIV: BushPlaceHolderA //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': False}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': True}
- --  Writing stage element Bush.007 as "Bush_007"
-  CHILD: Bush.003
- --  -> Exporting Bush.003
- --   ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- --   DERIV: Bush //..\Models\Foliage\BushPlaceholder1.blend EMPTY
- --   DERIV: Cube //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   DERIV: BushPlaceHolderA //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': False}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': True}
- --  Writing stage element Bush.003 as "Bush_003"
-  CHILD: Bush.006
- --  -> Exporting Bush.006
- --   ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- --   DERIV: Bush //..\Models\Foliage\BushPlaceholder1.blend EMPTY
- --   DERIV: Cube //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   DERIV: BushPlaceHolderA //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': False}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': True}
- --  Writing stage element Bush.006 as "Bush_006"
-  CHILD: Bush.005
- --  -> Exporting Bush.005
- --   ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- --   DERIV: Bush //..\Models\Foliage\BushPlaceholder1.blend EMPTY
- --   DERIV: Cube //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   DERIV: BushPlaceHolderA //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': False}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': True}
- --  Writing stage element Bush.005 as "Bush_005"
-  CHILD: Bush.004
- --  -> Exporting Bush.004
- --   ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- --   DERIV: Bush //..\Models\Foliage\BushPlaceholder1.blend EMPTY
- --   DERIV: Cube //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   DERIV: BushPlaceHolderA //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': False}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': True}
- --  Writing stage element Bush.004 as "Bush_004"
-  CHILD: Bush.002
- --  -> Exporting Bush.002
- --   ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- --   DERIV: Bush //..\Models\Foliage\BushPlaceholder1.blend EMPTY
- --   DERIV: Cube //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   DERIV: BushPlaceHolderA //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': False}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': True}
- --  Writing stage element Bush.002 as "Bush_002"
-  CHILD: Bush.001
- --  -> Exporting Bush.001
- --   ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- --   DERIV: Bush //..\Models\Foliage\BushPlaceholder1.blend EMPTY
- --   DERIV: Cube //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   DERIV: BushPlaceHolderA //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': False}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': True}
- --  Writing stage element Bush.001 as "Bush_001"
-  CHILD: Bush
- --  -> Exporting Bush
- --   ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- --   DERIV: Bush //..\Models\Foliage\BushPlaceholder1.blend EMPTY
- --   DERIV: Cube //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   DERIV: BushPlaceHolderA //..\Models\Foliage\BushPlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': False}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\BushPlaceholder1.blend': True}
- --  Writing stage element Bush as "Bush"
- -> Exporting Forrest
-  ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- Derived is same!
-  Prefabs: 
- {}
-  Meshes: 
- {}
- Warning: Nothing to export
-  CHILD: ForrestSegmentA.004
- --  -> Exporting ForrestSegmentA.004
- --   ROT: <Quaternion (w=0.9969, x=0.0000, y=0.0000, z=0.0785)>
- --   DERIV: PineTree.005 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.004 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.003 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.002 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.001 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\TreePlaceholder1.blend': False, '//..\\Models\\Foliage\\PineTreeSegments.blend': True}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\TreePlaceholder1.blend': True}
- --  Writing stage element ForrestSegmentA.004 as "ForrestSegmentA_004"
-  CHILD: ForrestSegmentA.003
- --  -> Exporting ForrestSegmentA.003
- --   ROT: <Quaternion (w=0.7716, x=0.0000, y=0.0000, z=-0.6361)>
- --   DERIV: PineTree.005 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.004 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.003 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.002 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.001 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\TreePlaceholder1.blend': False, '//..\\Models\\Foliage\\PineTreeSegments.blend': True}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\TreePlaceholder1.blend': True}
- --  Writing stage element ForrestSegmentA.003 as "ForrestSegmentA_003"
-  CHILD: ForrestSegmentA.002
- --  -> Exporting ForrestSegmentA.002
- --   ROT: <Quaternion (w=0.7716, x=0.0000, y=0.0000, z=0.6361)>
- --   DERIV: PineTree.005 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.004 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.003 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.002 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.001 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\TreePlaceholder1.blend': False, '//..\\Models\\Foliage\\PineTreeSegments.blend': True}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\TreePlaceholder1.blend': True}
- --  Writing stage element ForrestSegmentA.002 as "ForrestSegmentA_002"
-  CHILD: ForrestSegmentA.001
- --  -> Exporting ForrestSegmentA.001
- --   ROT: <Quaternion (w=0.9397, x=0.0000, y=0.0000, z=-0.3420)>
- --   DERIV: PineTree.005 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.004 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.003 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.002 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.001 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\TreePlaceholder1.blend': False, '//..\\Models\\Foliage\\PineTreeSegments.blend': True}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\TreePlaceholder1.blend': True}
- --  Writing stage element ForrestSegmentA.001 as "ForrestSegmentA_001"
-  CHILD: ForrestSegmentA
- --  -> Exporting ForrestSegmentA
- --   ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
- --   DERIV: PineTree.005 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.004 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.003 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.002 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree.001 //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTree //..\Models\Foliage\PineTreeSegments.blend EMPTY
- --   DERIV: PineTree //..\Models\Foliage\TreePlaceholder1.blend EMPTY
- --   DERIV: PineTreeBase //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   DERIV: PineTreeTop //..\Models\Foliage\TreePlaceholder1.blend MESH
- --   Prefabs: 
- --  {'//..\\Models\\Foliage\\TreePlaceholder1.blend': False, '//..\\Models\\Foliage\\PineTreeSegments.blend': True}
- --   Meshes: 
- --  {'//..\\Models\\Foliage\\TreePlaceholder1.blend': True}
- --  Writing stage element ForrestSegmentA as "ForrestSegmentA"
+ Info: TestParent: GroupDX
+ Info: TestParent: GroupBlender
+ [(bpy.data.objects['Lamp'], []), (bpy.data.objects['Camera'], []), (bpy.data.objects['GroupDX'], []), (bpy.data.objects['GroupBlender'], [])]
  -> Exporting Lamp
-  ROT: <Quaternion (w=0.5709, x=0.1691, y=0.2722, z=0.7559)>
+  ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
  Writing point light Lamp
  -> Exporting Camera
-  ROT: <Quaternion (w=0.7198, x=0.6040, y=0.2198, z=0.2620)>
- Writing camera Camera
- <Quaternion (w=0.7198, x=0.6040, y=0.2198, z=0.2620)>
- -> Exporting Ground
   ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
-  DERIV: Ground //..\Models\Scene\MainMenu\MenuSceneGround.blend EMPTY
-  DERIV: GroundMesh //..\Models\Scene\MainMenu\MenuSceneGround.blend MESH
+ Writing camera Camera
+ <Quaternion (w=0.7071, x=0.0000, y=0.7071, z=0.0000)>
+ Rot: XYZ 
+ -> Exporting GroupDX
+  ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
+ Writing stage element GroupDX as "GroupDX"
+ Rot: XYZ 
+  DERIV: DirectXCompass //..\..\General.Source\Models\compass.blend MESH
   Prefabs: 
- {'//..\\Models\\Scene\\MainMenu\\MenuSceneGround.blend': False}
+ {'//..\\..\\General.Source\\Models\\compass.blend': False}
   Meshes: 
- {'//..\\Models\\Scene\\MainMenu\\MenuSceneGround.blend': True}
- Writing stage element Ground as "Ground"
- -> Exporting House
-  ROT: <Quaternion (w=-0.7071, x=-0.0000, y=0.0000, z=0.7071)>
-  DERIV: SmallHouse //..\Models\Structures\SmallHouse.blend EMPTY
-  DERIV: Cube //..\Models\Structures\SmallHouse.blend MESH
+ {'//..\\..\\General.Source\\Models\\compass.blend': True}
+  Nodes: 
+ []
+ Writing stage element DirectXCompass as "DirectXCompass"
+ Rot: XYZ 
+ -> Exporting GroupBlender
+  ROT: <Quaternion (w=1.0000, x=0.0000, y=0.0000, z=0.0000)>
+ Writing stage element GroupBlender as "GroupBlender"
+ Rot: XYZ 
+  DERIV: BlenderCompass //..\..\General.Source\Models\compass_blender.blend MESH
   Prefabs: 
- {'//..\\Models\\Structures\\SmallHouse.blend': False}
+ {'//..\\..\\General.Source\\Models\\compass_blender.blend': False}
   Meshes: 
- {'//..\\Models\\Structures\\SmallHouse.blend': True}
- Writing stage element House as "House"
+ {'//..\\..\\General.Source\\Models\\compass_blender.blend': True}
+  Nodes: 
+ []
+ Writing stage element BlenderCompass as "BlenderCompass"
+ Rot: XYZ 
  Info: finished XCD export

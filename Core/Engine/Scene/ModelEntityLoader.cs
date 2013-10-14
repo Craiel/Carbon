@@ -32,51 +32,56 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public IList<IModelEntity> Models
+        public SceneGraph LoadModelGroup(ModelResourceGroup group)
         {
-            get
-            {
-                return this.models;
-            }
-        }
+            this.models.Clear();
+            this.rootModels.Clear();
+            this.modelHirarchy.Clear();
 
-        public IList<IModelEntity> RootModels
-        {
-            get
-            {
-                return this.rootModels;
-            }
-        }
-
-        public IDictionary<IModelEntity, IList<IModelEntity>> ModelHirarchy
-        {
-            get
-            {
-                return this.modelHirarchy;
-            }
-        }
-
-        public void LoadModelGroup(ModelResourceGroup group)
-        {
             if (this.graphics == null)
             {
                 throw new InvalidOperationException("ModelEntityLoader was not initialized properly");
             }
 
-            this.LoadModelGroup(group, null);
+            this.DoLoadModelGroup(group, null);
+            return this.BuildGraph();
         }
 
-        public override void Initialize(ICarbonGraphics graphics)
+        public override void Initialize(ICarbonGraphics graphicsHandler)
         {
-            base.Initialize(graphics);
+            base.Initialize(graphicsHandler);
 
-            this.graphics = graphics;
+            this.graphics = graphicsHandler;
         }
 
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void LoadModelGroup(ModelResourceGroup group, IModelEntity parent)
+        private SceneGraph BuildGraph()
+        {
+            var graph = new SceneGraph();
+            foreach (IModelEntity model in this.rootModels)
+            {
+                this.FillGraph(graph, null, model);
+            }
+
+            return graph;
+        }
+
+        private void FillGraph(SceneGraph graph, INode parent, IModelEntity model)
+        {
+            var node = new EntityNode(model);
+            graph.Add(node, parent);
+            if (this.modelHirarchy.ContainsKey(model))
+            {
+                foreach (IModelEntity child in this.modelHirarchy[model])
+                {
+                    this.FillGraph(graph, node, child);
+                }
+            }
+        }
+
+        private void DoLoadModelGroup(ModelResourceGroup group, IModelEntity parent)
         {
             var groupNode = new ModelEntity
             {
@@ -132,7 +137,7 @@
             {
                 foreach (ModelResourceGroup subGroup in group.Groups)
                 {
-                    this.LoadModelGroup(subGroup, groupNode);
+                    this.DoLoadModelGroup(subGroup, groupNode);
                 }
             }
         }

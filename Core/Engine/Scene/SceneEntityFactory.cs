@@ -26,14 +26,14 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public IProjectionCamera BuildCamera(StageCameraElement cameraElement)
+        public ICameraEntity BuildCamera(StageCameraElement cameraElement)
         {
             var camera = this.factory.Get<IProjectionCamera>();
             camera.Position = cameraElement.Position;
             camera.Rotation = cameraElement.Rotation;
 
             // Todo: near / far plane and fov
-            return camera;
+            return new CameraEntity { Camera = camera };
         }
 
         public ILightEntity BuildLight(StageLightElement lightElement)

@@ -12,11 +12,7 @@
         Vector3 Position { get; set; }
         Vector3 Scale { get; set; }
         Quaternion Rotation { get; set; }
-
-        Matrix Local { get; }
-
-        Matrix World { get; set; }
-
+        
         BoundingSphere? BoundingSphere { get; }
         BoundingBox? BoundingBox { get; }
     }

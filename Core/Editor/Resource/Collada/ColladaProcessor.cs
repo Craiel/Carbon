@@ -8,11 +8,9 @@
     using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
     using Core.Processing.Resource.Collada.Data;
-    using Core.Processing.Resource.Collada.Effect;
     using Core.Processing.Resource.Collada.Geometry;
     using Core.Processing.Resource.Collada.Scene;
     using Core.Processing.Resource.Generic.Data;
-    using Core.Protocol.Resource;
     using Core.Utils;
     using Core.Utils.IO;
 
@@ -100,9 +98,7 @@
             normalData = null;
             textureData = null;
         }
-
-        /**/
-
+        
         private static void BuildGeometryLibrary(ColladaInfo info, ColladaGeometryLibrary library)
         {
             MeshLibrary.Clear();

@@ -5,7 +5,6 @@
 
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
-    using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
     using Core.Engine.Resource;
@@ -18,12 +17,13 @@
         private readonly IGameState gameState;
         private readonly StageResource data;
 
-        private readonly IDictionary<string, IProjectionCamera> cameras;
-        private readonly IDictionary<string, ILightEntity> lights;
+        private readonly IList<ICameraEntity> cameras;
+        private readonly IList<ILightEntity> lights;
         
         private readonly IList<ResourceInfo> unusedReferences;
 
         private readonly ModelEntityLoader modelLoader;
+        private readonly SceneGraph modelGraph;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -39,54 +39,39 @@
             this.gameState = gameState;
             this.data = data;
 
-            this.cameras = new Dictionary<string, IProjectionCamera>();
-            this.lights = new Dictionary<string, ILightEntity>();
+            this.cameras = new List<ICameraEntity>();
+            this.lights = new List<ILightEntity>();
             
             this.unusedReferences = new List<ResourceInfo>();
             this.modelLoader = new ModelEntityLoader();
+
+            this.modelGraph = new SceneGraph();
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public IDictionary<string, IProjectionCamera> Cameras
+        public SceneGraph BuildGraph()
         {
-            get
+            var graph = new SceneGraph();
+            var lightRoot = new Node { Name = "Lights" };
+            graph.Add(lightRoot);
+            foreach (ILightEntity light in this.lights)
             {
-                return this.cameras;
+                graph.Add(new EntityNode(light), lightRoot);
             }
-        }
 
-        public IDictionary<string, ILightEntity> Lights
-        {
-            get
+            var cameraRoot = new Node { Name = "Cameras" };
+            graph.Add(cameraRoot);
+            foreach (ICameraEntity camera in this.cameras)
             {
-                return this.lights;
+                graph.Add(new EntityNode(camera), cameraRoot);
             }
-        }
 
-        public IList<IModelEntity> Models
-        {
-            get
-            {
-                return this.modelLoader.Models;
-            }
-        }
+            var modelRoot = new Node { Name = "Models" };
+            graph.Add(modelRoot);
 
-        public IList<IModelEntity> RootModels
-        {
-            get
-            {
-                return this.modelLoader.RootModels;
-            }
-        }
-
-        public IDictionary<IModelEntity, IList<IModelEntity>> ModelHirarchy
-        {
-            get
-            {
-                return this.modelLoader.ModelHirarchy;
-            }
+            return graph;
         }
 
         public override void Initialize(ICarbonGraphics graphics)
@@ -101,8 +86,8 @@
             {
                 foreach (StageCameraElement cameraElement in this.data.Cameras)
                 {
-                    IProjectionCamera camera = this.entityFactory.BuildCamera(cameraElement);
-                    this.cameras.Add(cameraElement.Id, camera);
+                    ICameraEntity camera = this.entityFactory.BuildCamera(cameraElement);
+                    this.cameras.Add(camera);
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Stage loaded {0} cameras", this.cameras.Count);
@@ -117,7 +102,7 @@
                 foreach (StageLightElement lightElement in this.data.Lights)
                 {
                     ILightEntity light = this.entityFactory.BuildLight(lightElement);
-                    this.lights.Add(light.Name, light);
+                    this.lights.Add(light);
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Stage loaded {0} lights", this.lights.Count);
@@ -151,25 +136,29 @@
             {
                 foreach (StageModelElement modelElement in this.data.Models)
                 {
-                    this.LoadModelElement(modelElement, referenceInfos);
+                    this.LoadModelElement(modelElement, referenceInfos, null);
                 }
 
-                System.Diagnostics.Trace.TraceInformation("Stage loaded {0} models", this.modelLoader.Models.Count);
+                System.Diagnostics.Trace.TraceInformation("Stage loaded models");
             }
             else
             {
                 System.Diagnostics.Trace.TraceWarning("Warning! Stage has no models");
             }
 
-            foreach (ResourceInfo unusedReference in unusedReferences)
+            foreach (ResourceInfo unusedReference in this.unusedReferences)
             {
                 System.Diagnostics.Trace.TraceWarning("Warning! Reference in stage was not used: {0}", unusedReference.Hash);
             }
         }
 
-        private void LoadModelElement(StageModelElement element, ResourceInfo[] referenceInfos)
+        private void LoadModelElement(StageModelElement element, ResourceInfo[] referenceInfos, INode parent)
         {
-            // Todo: Have the scene graph handle this!
+            // Create a plain node first and register in the graph
+            INode elementNode = new Node { Name = element.Id };
+            this.modelGraph.Add(elementNode, parent);
+
+            // See if we have an actual object attached to this
             if (element.ReferenceId >= 0)
             {
                 if (referenceInfos == null)
@@ -192,28 +181,28 @@
                 }
 
                 var resource = this.gameState.ResourceManager.Load<ModelResourceGroup>(reference.Hash);
-                this.modelLoader.LoadModelGroup(resource);
-                if (unusedReferences.Contains(reference))
+                
+                // Create the element and set its local properties
+                SceneGraph modelGraph = this.modelLoader.LoadModelGroup(resource);
+                /*model.Position = element.Translation;
+                model.Rotation = element.Rotation;
+                model.Scale = element.Scale;*/
+                // Todo: join the graphs
+
+                if (this.unusedReferences.Contains(reference))
                 {
-                    unusedReferences.Remove(reference);
+                    this.unusedReferences.Remove(reference);
                 }
             }
-
-            /*if (parent != null)
-            {
-                model.World = MatrixExtension.GetLocalMatrix(parent.Scale, parent.Rotation, parent.Position);
-            }*/
-
+            
             if (element.Children != null)
             {
                 // Todo: Save the hierarchy info
                 foreach (StageModelElement child in element.Children)
                 {
-                    this.LoadModelElement(child, referenceInfos);
+                    this.LoadModelElement(child, referenceInfos, elementNode);
                 }
             }
         }
-
-        
     }
 }

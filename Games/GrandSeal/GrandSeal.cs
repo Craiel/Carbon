@@ -162,9 +162,7 @@
                 cameraDirection = Vector3.Normalize(cameraDirection);
                 this.Window.Text = string.Format("{0}, CamDir: X{1} Y{2} Z{3}", this.Window.Text, cameraDirection.X, cameraDirection.Y, cameraDirection.Z);
             }
-
             
-
             this.systemController.Update(gameTime);
 
             // Lock the cursor to the screencenter after everyone is done with the updates
