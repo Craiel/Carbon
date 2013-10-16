@@ -59,7 +59,7 @@
         // -------------------------------------------------------------------
         private SceneGraph BuildGraph()
         {
-            var graph = new SceneGraph();
+            var graph = new SceneGraph(new Node(new EmptyEntity { Name = "TEMP" }));
             foreach (IModelEntity model in this.rootModels)
             {
                 this.FillGraph(graph, null, model);
@@ -70,7 +70,7 @@
 
         private void FillGraph(SceneGraph graph, INode parent, IModelEntity model)
         {
-            var node = new EntityNode(model);
+            var node = new Node(model);
             graph.Add(node, parent);
             if (this.modelHirarchy.ContainsKey(model))
             {
@@ -85,6 +85,7 @@
         {
             var groupNode = new ModelEntity
             {
+                Name = group.Name,
                 Position = group.Offset,
                 Scale = group.Scale,
                 Rotation =

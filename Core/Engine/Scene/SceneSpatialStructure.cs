@@ -53,96 +53,162 @@
             this.nodeRegister.Clear();
         }
 
-        public IReadOnlyCollection<ILightEntity> GetLights()
+        public IList<ILightEntity> GetLights()
         {
-            return this.lights.AsReadOnly();
+            return this.GetEntityList<ILightEntity>(this.lights);
         }
 
-        public IReadOnlyCollection<ICameraEntity> GetCameras()
+        public IList<ICameraEntity> GetCameras()
         {
-            return this.cameras.AsReadOnly();
+            return this.GetEntityList<ICameraEntity>(this.cameras);
         }
 
-        public IReadOnlyCollection<IModelEntity> GetModels()
+        public IList<IModelEntity> GetModels()
         {
-            return this.models.AsReadOnly();
+            return this.GetEntityList<IModelEntity>(this.models);
         }
 
-        public ILightEntity GetLightById(string id)
+        public IList<ILightEntity> GetLightsById(string id)
         {
             if (!this.lightDictionary.ContainsKey(id))
             {
                 return null;
             }
 
-            return this.lightDictionary[id];
+            return this.GetEntityList<ILightEntity>(this.lightDictionary[id]);
         }
 
-        public ICameraEntity GetCameraById(string id)
+        public IList<ICameraEntity> GetCamerasById(string id)
         {
             if (!this.cameraDictionary.ContainsKey(id))
             {
                 return null;
             }
 
-            return this.cameraDictionary[id];
+            return this.GetEntityList<ICameraEntity>(this.cameraDictionary[id]);
         }
 
-        public IModelEntity GetModelById(string id)
+        public IList<IModelEntity> GetModelsById(string id)
         {
             if (!this.modelDictionary.ContainsKey(id))
             {
                 return null;
             }
 
-            return this.modelDictionary[id];
+            return this.GetEntityList<IModelEntity>(this.modelDictionary[id]);
         }
 
-        public INode GetNodeById(string id)
+        public IList<INode> GetNodesById(string id)
         {
             if (!this.nodeDictionary.ContainsKey(id))
             {
                 return null;
             }
 
-            return this.nodeDictionary[id];
+            return this.GetNodeList(this.nodeDictionary[id]);
         }
 
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected void Add(INode entity)
+        protected void Add(INode node)
         {
-            this.nodeDictionary.Add(entity.Name, entity);
+            int id = this.nextId++;
+            this.nodeRegister.Add(id, node);
 
-            // Register the entity lookups
-            if (entity as IEntityNode != null)
+            bool registerName = !string.IsNullOrEmpty(node.Name);
+            if (registerName)
             {
-                var typed = (IEntityNode)entity;
+                if (!this.nodeDictionary.ContainsKey(node.Name))
+                {
+                    this.nodeDictionary.Add(node.Name, new List<int>());
+                }
+
+                this.nodeDictionary[node.Name].Add(id);
+            }
+            
+            // Register the entity lookups
+            if (node as IEntityNode != null)
+            {
+                var typed = (IEntityNode)node;
                 if (typed.Entity as ILightEntity != null)
                 {
-                    this.lights.Add((ILightEntity)typed.Entity);
-                    this.lightDictionary.Add(entity.Name, (ILightEntity)typed.Entity);
+                    this.lights.Add(id);
+
+                    if (registerName)
+                    {
+                        if (!this.lightDictionary.ContainsKey(node.Name))
+                        {
+                            this.lightDictionary.Add(node.Name, new List<int>());
+                        }
+
+                        this.lightDictionary[node.Name].Add(id);
+                    }
+
                     return;
                 }
 
                 if (typed.Entity as ICameraEntity != null)
                 {
-                    this.cameras.Add((ICameraEntity)typed.Entity);
-                    this.cameraDictionary.Add(entity.Name, (ICameraEntity)typed.Entity);
+                    this.cameras.Add(id);
+
+                    if (registerName)
+                    {
+                        if (!this.cameraDictionary.ContainsKey(node.Name))
+                        {
+                            this.cameraDictionary.Add(node.Name, new List<int>());
+                        }
+
+                        this.cameraDictionary[node.Name].Add(id);
+                    }
+
                     return;
                 }
 
                 if (typed.Entity as IModelEntity != null)
                 {
-                    this.models.Add((IModelEntity)typed.Entity);
-                    this.modelDictionary.Add(entity.Name, (IModelEntity)typed.Entity);
+                    this.models.Add(id);
+
+                    if (registerName)
+                    {
+                        if (!this.modelDictionary.ContainsKey(node.Name))
+                        {
+                            this.modelDictionary.Add(node.Name, new List<int>());
+                        }
+
+                        this.modelDictionary[node.Name].Add(id);
+                    }
                 }
             }
         }
 
         protected void Remove(INode entity)
         {
+        }
+
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private IList<T> GetEntityList<T>(IEnumerable<int> source)
+        {
+            IList<T> results = new List<T>();
+            foreach (int entry in source)
+            {
+                results.Add((T)((IEntityNode)this.nodeRegister[entry]).Entity);
+            }
+
+            return results;
+        }
+
+        private IList<INode> GetNodeList(IEnumerable<int> source)
+        {
+            IList<INode> results = new List<INode>();
+            foreach (int entry in source)
+            {
+                results.Add(this.nodeRegister[entry]);
+            }
+
+            return results;
         }
     }
 }

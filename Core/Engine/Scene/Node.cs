@@ -5,11 +5,9 @@
 
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
-
-    using SharpDX;
-
+    
     /// <summary>
-    /// Container class for entities, used by all kinds of system to "bag" entities
+    /// Container class, used by the scenes for organization
     /// </summary>
     public class Node : EngineComponent, INode
     {
@@ -18,16 +16,15 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public Node()
+        public Node(ISceneEntity entity)
         {
             this.children = new List<INode>();
+            this.Entity = entity;
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public Quaternion Rotation { get; set; }
-
         public IReadOnlyCollection<INode> Children
         {
             get
@@ -40,10 +37,8 @@
 
         public INode Parent { get; set; }
 
-        public Vector3 Position { get; set; }
-
-        public Vector3 Scale { get; set; }
-
+        public ISceneEntity Entity { get; private set; }
+        
         public override void Dispose()
         {
             this.Clear();
@@ -102,6 +97,8 @@
             {
                 return false;
             }
+
+            // Todo: Do the matrix updates
 
             return true;
         }

@@ -49,7 +49,7 @@
         private IUserInterface userInterface;
         private IOrthographicCamera userInterfaceCamera;
 
-        private IProjectionCamera debugCamera;
+        private ICameraEntity debugCamera;
         private IFirstPersonController debugController;
 
         private ModelResourceGroup compassResource;
@@ -82,15 +82,15 @@
             set
             {
                 // Push the camera values and activate the controller
-                this.debugController.Position = this.Camera.Position;
-                this.debugController.Rotation = this.Camera.Rotation;
+                this.debugController.Position = this.Camera.Camera.Position;
+                this.debugController.Rotation = this.Camera.Camera.Rotation;
                 this.debugController.IsActive = value;
             }
         }
 
         public bool EnableRendering { get; set; }
 
-        public IProjectionCamera Camera
+        public ICameraEntity Camera
         {
             get
             {
@@ -145,7 +145,7 @@
                 this.AddSceneEntityToRenderingList(entity, 2);
             }*/
 
-            this.debugCamera = this.factory.Get<IProjectionCamera>();
+            this.debugCamera = new CameraEntity { Camera = this.factory.Get<IProjectionCamera>() };
             this.debugController = this.factory.Get<IFirstPersonController>();
             this.debugController.Initialize(graphic);
             this.debugController.SetInputBindings(InputManager.DefaultBindingDebugController);
@@ -210,7 +210,7 @@
             }
 
             // Render the entity data
-            FrameInstructionSet set = frameManager.BeginSet(this.debugCamera);
+            FrameInstructionSet set = frameManager.BeginSet(this.debugCamera.Camera);
             set.Technique = FrameTechnique.Plain;
             set.LightingEnabled = false;
             set.Topology = PrimitiveTopology.LineList;
@@ -228,7 +228,7 @@
         public override void Resize(TypedVector2<int> size)
         {
             // Update the camera perspectives
-            this.debugCamera.SetPerspective(size, 0.05f, 200.0f);
+            this.debugCamera.Camera.SetPerspective(size, 0.05f, 200.0f);
             this.userInterfaceCamera.SetPerspective(size, 0.05f, 200.0f);
         }
 

@@ -158,7 +158,7 @@
             if (this.debugOverlay.Camera != null)
             {
                 Vector3 cameraDirection = Vector3.Transform(
-                    this.debugOverlay.Camera.Forward, this.debugOverlay.Camera.Rotation);
+                    this.debugOverlay.Camera.Camera.Forward, this.debugOverlay.Camera.Rotation);
                 cameraDirection = Vector3.Normalize(cameraDirection);
                 this.Window.Text = string.Format("{0}, CamDir: X{1} Y{2} Z{3}", this.Window.Text, cameraDirection.X, cameraDirection.Y, cameraDirection.Z);
             }

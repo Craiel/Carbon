@@ -5,13 +5,14 @@
 
     public interface ISceneSpatialStructure : IDisposable
     {
-        IReadOnlyCollection<ILightEntity> GetLights();
-        IReadOnlyCollection<ICameraEntity> GetCameras();
-        IReadOnlyCollection<IModelEntity> GetModels();
+        IList<ILightEntity> GetLights();
+        IList<ICameraEntity> GetCameras();
+        IList<IModelEntity> GetModels();
 
-        ILightEntity GetLightById(string id);
-        ICameraEntity GetCameraById(string id);
-        IModelEntity GetModelById(string id);
-        INode GetNodeById(string id);
+        IList<ILightEntity> GetLightsById(string id);
+        IList<ICameraEntity> GetCamerasById(string id);
+        IList<IModelEntity> GetModelsById(string id);
+
+        IList<INode> GetNodesById(string id);
     }
 }

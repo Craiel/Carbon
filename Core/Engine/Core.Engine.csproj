@@ -130,6 +130,7 @@
     <Compile Include="Contracts\Resource\ICarbonResource.cs" />
     <Compile Include="Contracts\Resource\IContentManager.cs" />
     <Compile Include="Contracts\Resource\IResourceManager.cs" />
+    <Compile Include="Contracts\Scene\IEmptyEntity.cs" />
     <Compile Include="Contracts\Scene\ICameraEntity.cs" />
     <Compile Include="Contracts\Scene\ILightEntity.cs" />
     <Compile Include="Contracts\Scene\IModelEntity.cs" />
@@ -270,7 +271,7 @@
     <Compile Include="Resource\Resources\Stage\StagePropertyElement.cs" />
     <Compile Include="Resource\Resources\Stage\StageResource.cs" />
     <Compile Include="Scene\CameraEntity.cs" />
-    <Compile Include="Scene\EntityNode.cs" />
+    <Compile Include="Scene\EmptyEntity.cs" />
     <Compile Include="Scene\Exceptions.cs" />
     <Compile Include="Scene\ModelEntityLoader.cs" />
     <Compile Include="Scene\SceneEntity.cs" />

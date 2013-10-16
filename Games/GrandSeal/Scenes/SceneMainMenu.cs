@@ -1,7 +1,6 @@
 ﻿namespace GrandSeal.Scenes
 {
     using System;
-    using System.Collections.Generic;
 
     using Contracts;
 
@@ -38,12 +37,12 @@
         private IUserInterface userInterface;
         private IStage stage;
 
-        private IProjectionCamera activeCamera;
+        private ICameraEntity activeCamera;
         private IOrthographicCamera userInterfaceCamera;
 
         private bool useDebugCamera;
 
-        private IProjectionCamera activeSceneCamera;
+        private ICameraEntity activeSceneCamera;
 
         // --------------------------------------------------------------------
         // Constructor
@@ -114,6 +113,9 @@
                 this.stage.Initialize(this.graphics);
 
                 // Todo: for testing use debug camera and controller for now
+                this.activeCamera = this.stage.Graph.GetCameras()[0];
+
+                /*
                 this.activeCamera = this.stage.Cameras.FirstOrDefault().Value;
 
                 // Register the stage's entities and add them to the rendering list
@@ -127,7 +129,7 @@
                 {
                     this.RegisterAndInvalidate(light);
                     this.AddSceneEntityToRenderingList(light);
-                }
+                }*/
             }
         }
 
@@ -136,36 +138,10 @@
             this.stage.Update(gameTime);
 
             this.activeCamera.Update(gameTime);
-
-            foreach (IModelEntity node in this.stage.RootModels)
-            {
-                this.TestUpdate(node, null);
-            }
-
+            
             return base.Update(gameTime);
         }
-
-        private void TestUpdate(IModelEntity entity, IModelEntity parent)
-        {
-            this.InvalidateSceneEntity(entity);
-            if (parent != null)
-            {
-                entity.World = entity.Local * parent.World;
-            }
-            else
-            {
-                entity.World = entity.Local;
-            }
-
-            /*if (this.stage.ModelHirarchy.ContainsKey(entity))
-            {
-                foreach (IModelEntity child in this.stage.ModelHirarchy[entity])
-                {
-                    this.TestUpdate(child, entity);
-                }
-            }*/
-        }
-
+        
         public override void Render(IFrameManager frameManager)
         {
             FrameInstructionSet set;
@@ -173,7 +149,7 @@
             // The scene to deferred
             if (this.activeCamera != null)
             {
-                set = frameManager.BeginSet(this.activeCamera);
+                set = frameManager.BeginSet(this.activeCamera.Camera);
                 set.Technique = FrameTechnique.Forward;
                 set.LightingEnabled = true;
                 this.RenderList(1, set);
@@ -194,7 +170,7 @@
             // Update the camera perspectives
             if (this.activeCamera != null)
             {
-                this.activeCamera.SetPerspective(size, 0.05f, 200.0f);
+                this.activeCamera.Camera.SetPerspective(size, 0.05f, 200.0f);
             }
 
             this.userInterfaceCamera.SetPerspective(size, 0.05f, 200.0f);
@@ -305,7 +281,7 @@
                             this.activeSceneCamera = this.activeCamera;
 
                             this.activeCamera = this.debugOverlay.Camera;
-                            this.activeCamera.CopyFrom(this.activeSceneCamera);
+                            this.activeCamera.Camera.CopyFrom(this.activeSceneCamera.Camera);
                             this.debugOverlay.EnableController = true;
                         }
 
@@ -318,7 +294,7 @@
         private void RefreshDebugData()
         {
             // refresh and upload our entity information to the debug overlay
-            IList<SceneEntityDebugEntry> entityData = new List<SceneEntityDebugEntry>();
+            /*IList<SceneEntityDebugEntry> entityData = new List<SceneEntityDebugEntry>();
             foreach (IModelEntity entity in this.stage.Models)
             {
                 var entry = new SceneEntityDebugEntry("<TODO>", EntityDebugType.Model, new WeakReference<ISceneEntity>(entity));
@@ -334,7 +310,7 @@
                 entityData.Add(entry);
             }
 
-            this.debugOverlay.UpdateEntityData(entityData);
+            this.debugOverlay.UpdateEntityData(entityData);*/
         }
     }
 }

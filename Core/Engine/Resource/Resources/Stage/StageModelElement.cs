@@ -24,7 +24,11 @@
             System.Diagnostics.Debug.Assert(data.ScaleCount == 3, "Scale data has invalid count");
 
             this.Id = data.Id;
-            this.ReferenceId = data.ReferenceId;
+
+            if (data.HasReferenceId)
+            { 
+                this.ReferenceId = data.ReferenceId;
+            }
 
             this.Translation = VectorExtension.Vector3FromList(data.TranslationList);
             this.Rotation = new Quaternion(VectorExtension.Vector4FromList(data.RotationList));
@@ -53,7 +57,7 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public int ReferenceId { get; set; }
+        public int? ReferenceId { get; set; }
 
         public Vector3 Translation { get; set; }
         public Vector3 Scale { get; set; }
@@ -64,7 +68,12 @@
 
         public StageModel.Builder GetBuilder()
         {
-            var builder = new StageModel.Builder { Id = this.Id, ReferenceId = this.ReferenceId };
+            var builder = new StageModel.Builder { Id = this.Id };
+
+            if (this.ReferenceId != null)
+            {
+                builder.ReferenceId = (int)this.ReferenceId;
+            }
 
             builder.AddRangeTranslation(this.Translation.ToList());
             builder.AddRangeRotation(this.Rotation.ToList());

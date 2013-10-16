@@ -1,0 +1,32 @@
+
+
+		Scene
+
+ NodeList 	<- invalidate
+ NodeStack	<- invalidate
+ 
+ RenderingList(Entity)
+ 
+ 
+ 
+ 
+		Stage
+
+ Graph -> Nodes -> EntityNodes and others
+		-> Entities
+		
+ - Node has name
+
+ - Where is the position updated?
+ - Who invalidates the node in the scene?
+  -> SceneGraph, octree, script, should all work with the nodes
+ - What is entity for?
+	Holds BoundingBox / BoundingSphere info and a name
+	- LightEntity: Holds the engine's ILight
+				   render creates light instruction from the internal lights position
+				   update pushes position into the light internal struct
+				   
+	- ModelEntity: holds Mesh, Material and creates render instructions
+				   pulls the boundingbox and sphere from the attached mesh
+
+	- CameraEntity: Does nothing but forward the update call into the camera

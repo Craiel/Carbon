@@ -4,6 +4,8 @@
 
     public interface ISceneGraph : ISceneSpatialStructure
     {
+        INode Root { get; }
+
         void Add(INode node, INode parent = null);
         void Remove(INode child, INode parent = null);
 
@@ -17,14 +19,22 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public SceneGraph()
+        public SceneGraph(INode root)
         {
-            this.root = new Node { Name = "Root" };
+            this.root = root;
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public INode Root
+        {
+            get
+            {
+                return this.root;
+            }
+        }
+
         public void Add(INode node, INode parent = null)
         {
             base.Add(node);

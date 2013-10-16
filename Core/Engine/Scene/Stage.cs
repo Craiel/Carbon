@@ -13,18 +13,22 @@
     
     public class Stage : EngineComponent, IStage
     {
+        private const string LightRoot = "Lights";
+        private const string CameraRoot = "Cameras";
+        private const string ModelRoot = "Models";
+
         private readonly ISceneEntityFactory entityFactory;
         private readonly IGameState gameState;
         private readonly StageResource data;
-
-        private readonly IList<ICameraEntity> cameras;
-        private readonly IList<ILightEntity> lights;
         
         private readonly IList<ResourceInfo> unusedReferences;
 
         private readonly ModelEntityLoader modelLoader;
-        private readonly SceneGraph modelGraph;
 
+        private readonly IList<ISceneEntity> stageEntities;
+
+        private ISceneGraph stageGraph;
+        
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
@@ -38,45 +42,35 @@
             this.entityFactory = factory.Get<ISceneEntityFactory>();
             this.gameState = gameState;
             this.data = data;
-
-            this.cameras = new List<ICameraEntity>();
-            this.lights = new List<ILightEntity>();
             
             this.unusedReferences = new List<ResourceInfo>();
             this.modelLoader = new ModelEntityLoader();
-
-            this.modelGraph = new SceneGraph();
+            this.stageEntities = new List<ISceneEntity>();
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public SceneGraph BuildGraph()
+        public ISceneGraph Graph
         {
-            var graph = new SceneGraph();
-            var lightRoot = new Node { Name = "Lights" };
-            graph.Add(lightRoot);
-            foreach (ILightEntity light in this.lights)
+            get
             {
-                graph.Add(new EntityNode(light), lightRoot);
+                return this.stageGraph;
             }
+        }
 
-            var cameraRoot = new Node { Name = "Cameras" };
-            graph.Add(cameraRoot);
-            foreach (ICameraEntity camera in this.cameras)
-            {
-                graph.Add(new EntityNode(camera), cameraRoot);
-            }
-
-            var modelRoot = new Node { Name = "Models" };
-            graph.Add(modelRoot);
-
-            return graph;
+        private INode AddEmpty(string name)
+        {
+            saduiasdgasd
         }
 
         public override void Initialize(ICarbonGraphics graphics)
         {
             base.Initialize(graphics);
+
+            var rootEntity = new EmptyEntity { Name = "StageRoot" };
+            this.stageEntities.Add(rootEntity);
+            this.stageGraph = new SceneGraph(new Node(rootEntity));
 
             // Initialize the model loader for access to textures and other gpu resources
             this.modelLoader.Initialize(graphics);
@@ -84,13 +78,17 @@
             // Build and initialize all the scene components
             if (this.data.Cameras != null)
             {
+                var cameraRoot = new EmptyEntity { Name = CameraRoot };
+                var cameraRootNode = new Node(cameraRoot);
+                this.stageEntities.Add(cameraRoot);
+                this.stageGraph.Add(cameraRootNode);
                 foreach (StageCameraElement cameraElement in this.data.Cameras)
                 {
                     ICameraEntity camera = this.entityFactory.BuildCamera(cameraElement);
-                    this.cameras.Add(camera);
+                    this.stageGraph.Add(new Node(camera), cameraRootNode);
                 }
 
-                System.Diagnostics.Trace.TraceInformation("Stage loaded {0} cameras", this.cameras.Count);
+                System.Diagnostics.Trace.TraceInformation("Stage loaded cameras");
             }
             else
             {
@@ -99,13 +97,16 @@
             
             if (this.data.Lights != null)
             {
+                var lightRoot = new EmptyEntity { Name = LightRoot };
+                var lightRootNode = new Node(lightRoot);
+                this.stageGraph.Add(lightRootNode);
                 foreach (StageLightElement lightElement in this.data.Lights)
                 {
                     ILightEntity light = this.entityFactory.BuildLight(lightElement);
-                    this.lights.Add(light);
+                    this.stageGraph.Add(new Node(light), lightRootNode);
                 }
 
-                System.Diagnostics.Trace.TraceInformation("Stage loaded {0} lights", this.lights.Count);
+                System.Diagnostics.Trace.TraceInformation("Stage loaded lights");
             }
             else
             {
@@ -126,7 +127,7 @@
                     }
 
                     referenceInfos[i] = info;
-                    unusedReferences.Add(info);
+                    this.unusedReferences.Add(info);
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Stage has {0} references", referenceInfos.Length);
@@ -134,9 +135,12 @@
 
             if (this.data.Models != null)
             {
+                var modelRoot = new EmptyEntity { Name = ModelRoot };
+                var modelRootNode = new Node(modelRoot);
+                this.stageGraph.Add(modelRootNode);
                 foreach (StageModelElement modelElement in this.data.Models)
                 {
-                    this.LoadModelElement(modelElement, referenceInfos, null);
+                    this.LoadModelElement(modelElement, referenceInfos, modelRootNode);
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Stage loaded models");
@@ -155,11 +159,12 @@
         private void LoadModelElement(StageModelElement element, ResourceInfo[] referenceInfos, INode parent)
         {
             // Create a plain node first and register in the graph
-            INode elementNode = new Node { Name = element.Id };
-            this.modelGraph.Add(elementNode, parent);
+            var elementEntity = new EmptyEntity { Name = element.Id };
+            INode elementNode = new Node(elementEntity);
+            this.stageGraph.Add(elementNode, parent);
 
             // See if we have an actual object attached to this
-            if (element.ReferenceId >= 0)
+            if (element.ReferenceId != null)
             {
                 if (referenceInfos == null)
                 {
@@ -173,7 +178,7 @@
                     return;
                 }
 
-                ResourceInfo reference = referenceInfos[element.ReferenceId];
+                ResourceInfo reference = referenceInfos[(int)element.ReferenceId];
                 if (reference == null)
                 {
                     // We already warned about this earlier so just skip here
@@ -183,11 +188,25 @@
                 var resource = this.gameState.ResourceManager.Load<ModelResourceGroup>(reference.Hash);
                 
                 // Create the element and set its local properties
-                SceneGraph modelGraph = this.modelLoader.LoadModelGroup(resource);
-                /*model.Position = element.Translation;
-                model.Rotation = element.Rotation;
-                model.Scale = element.Scale;*/
-                // Todo: join the graphs
+                ISceneGraph modelGroupGraph = this.modelLoader.LoadModelGroup(resource);
+                if (modelGroupGraph.Root.Children != null)
+                {
+                    IList<INode> childNodes = new List<INode>(modelGroupGraph.Root.Children);
+                    foreach (INode modelElement in childNodes)
+                    {
+                        // Properly unroot the children before we move them over, to avoid unexpected behavior
+                        modelGroupGraph.Remove(modelElement, modelGroupGraph.Root);
+                        elementNode.AddChild(modelElement);
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Trace.TraceWarning("Model group returned no scene graph elements");
+                }
+
+                elementEntity.Position = element.Translation;
+                elementEntity.Rotation = element.Rotation;
+                elementEntity.Scale = element.Scale;
 
                 if (this.unusedReferences.Contains(reference))
                 {

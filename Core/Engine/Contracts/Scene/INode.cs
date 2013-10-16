@@ -3,25 +3,14 @@
     using System.Collections.Generic;
 
     using Core.Engine.Contracts.Logic;
-
-    using SharpDX;
-
-    public interface IEntityNode : INode
-    {
-        ISceneEntity Entity { get; set; }
-
-        void ResetTransformations();
-    }
-
+    
     public interface INode : IEngineComponent
     {
-        string Name { get; set; }
+        string Name { get; }
 
         INode Parent { get; set; }
 
-        Vector3 Position { get; set; }
-        Vector3 Scale { get; set; }
-        Quaternion Rotation { get; set; }
+        ISceneEntity Entity { get; }
 
         IReadOnlyCollection<INode> Children { get; }
 

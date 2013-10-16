@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
 
-    using Core.Engine.Contracts.Rendering;
     using Core.Engine.Resource.Resources.Model;
     using Core.Engine.Scene;
 
@@ -11,7 +10,7 @@
         bool EnableController { get; set; }
         bool EnableRendering { get; set; }
 
-        IProjectionCamera Camera { get; }
+        ICameraEntity Camera { get; }
 
         void SetDebugCompass(ModelResourceGroup resource);
         void UpdateEntityData(IEnumerable<SceneEntityDebugEntry> entities);

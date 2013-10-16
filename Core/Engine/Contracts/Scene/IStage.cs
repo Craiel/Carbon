@@ -5,6 +5,6 @@
 
     public interface IStage : IEngineComponent
     {
-        SceneGraph BuildGraph();
+        ISceneGraph Graph { get; }
     }
 }

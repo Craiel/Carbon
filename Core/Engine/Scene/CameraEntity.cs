@@ -5,7 +5,7 @@
 
     public class CameraEntity : SceneEntity, ICameraEntity
     {
-        public ICamera Camera { get; set; }
+        public IProjectionCamera Camera { get; set; }
 
         public override void Dispose()
         {
