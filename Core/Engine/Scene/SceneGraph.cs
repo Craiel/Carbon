@@ -4,22 +4,25 @@
 
     public interface ISceneGraph : ISceneSpatialStructure
     {
-        INode Root { get; }
+        ISceneEntity Root { get; }
 
-        void Add(INode node, INode parent = null);
-        void Remove(INode child, INode parent = null);
+        void Add(ISceneEntity entity, ISceneEntity parent = null);
+        void Remove(ISceneEntity child, ISceneEntity parent = null);
 
-        void Clear(INode parent = null);
+        void Clear(ISceneEntity parent = null);
+
+        void Append(ISceneGraph graph);
+        void AppendInto(ISceneGraph graph, string name);
     }
 
     public class SceneGraph : SceneSpatialStructure, ISceneGraph
     {
-        private readonly INode root;
+        private readonly ISceneEntity root;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public SceneGraph(INode root)
+        public SceneGraph(ISceneEntity root)
         {
             this.root = root;
         }
@@ -27,7 +30,7 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public INode Root
+        public ISceneEntity Root
         {
             get
             {
@@ -35,53 +38,84 @@
             }
         }
 
-        public void Add(INode node, INode parent = null)
+        public void Add(ISceneEntity entity, ISceneEntity parent = null)
         {
-            base.Add(node);
+            base.Add(entity);
 
             if (parent == null)
             {
-                this.root.AddChild(node);
+                entity.AddParent(this.root);
             }
             else
             {
-                parent.AddChild(node);
+                entity.AddParent(parent);
             }
         }
 
-        public void Remove(INode child, INode parent = null)
+        public void Remove(ISceneEntity child, ISceneEntity parent = null)
         {
             base.Remove(child);
 
             if (parent == null)
             {
-                this.root.RemoveChild(child);
+                child.AddParent(this.root);
             }
             else
             {
-                parent.RemoveChild(child);
+                child.AddParent(parent);
             }
         }
 
-        public void Clear(INode parent = null)
+        public void Clear(ISceneEntity parent = null)
         {
             this.DoClear(parent ?? this.root);
+        }
+
+        public void AppendInto(ISceneGraph graph, string name)
+        {
+            ISceneEntity subentity = new EmptyEntity { Name = name };
+            this.Add(subentity, this.root);
+            foreach (ISceneEntity child in graph.Root.Children)
+            {
+                this.AppendRecursive(subentity, child);
+            }
+        }
+
+        public void Append(ISceneGraph graph)
+        {
+            foreach (ISceneEntity child in graph.Root.Children)
+            {
+                this.AppendRecursive(this.root, child);
+            }
         }
 
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void DoClear(INode node)
+        private void AppendRecursive(ISceneEntity parent, ISceneEntity entity)
         {
-            if (node.Children != null)
+            ISceneEntity clone = entity.Clone();
+            this.Add(clone, parent);
+            if (entity.Children != null)
             {
-                foreach (INode child in node.Children)
+                foreach (ISceneEntity child in entity.Children)
+                {
+                    this.AppendRecursive(clone, child);
+                }
+            }
+        }
+
+        private void DoClear(ISceneEntity entity)
+        {
+            if (entity.Children != null)
+            {
+                foreach (ISceneEntity child in entity.Children)
                 {
                     this.DoClear(child);
                 }
             }
 
-            base.Remove(node);
+            base.Remove(entity);
         }
     }
 }

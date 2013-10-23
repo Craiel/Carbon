@@ -1,6 +1,7 @@
 ﻿namespace GrandSeal.Scenes
 {
     using System;
+    using System.Collections.Generic;
 
     using Contracts;
 
@@ -26,6 +27,8 @@
         private readonly ILog log;
         private readonly ISceneDebugOverlay debugOverlay;
         private readonly IGrandSealSystemController systemController;
+
+        private readonly ISceneGraph sceneGraph;
 
         private ICarbonGraphics graphics;
 
@@ -56,6 +59,8 @@
             this.systemController = this.factory.Get<IGrandSealSystemController>();
             
             this.log = factory.Get<IGrandSealLog>().AquireContextLog("MainMenuScene");
+
+            this.sceneGraph = new SceneGraph(new EmptyEntity { Name = "MainMenuRoot" });
         }
 
         // -------------------------------------------------------------------
@@ -112,24 +117,25 @@
                 this.stage = new Stage(this.factory, this.GameState, this.stageResource);
                 this.stage.Initialize(this.graphics);
 
-                // Todo: for testing use debug camera and controller for now
-                this.activeCamera = this.stage.Graph.GetCameras()[0];
+                // Hook the stage graph into our local graph
+                // NOTE: this is link not copy so we are potentially modifying the stage graph
+                this.sceneGraph.Append(this.stage.Graph);
+            }
 
-                /*
-                this.activeCamera = this.stage.Cameras.FirstOrDefault().Value;
+            // Now we need to register all the contents of the graph
+            this.RegisterAndInvalidate(this.sceneGraph.Root);
 
-                // Register the stage's entities and add them to the rendering list
-                foreach (IModelEntity entity in this.stage.Models)
-                {
-                    this.RegisterAndInvalidate(entity);
-                    this.AddSceneEntityToRenderingList(entity);
-                }
-                
-                foreach (ILightEntity light in this.stage.Lights.Values)
-                {
-                    this.RegisterAndInvalidate(light);
-                    this.AddSceneEntityToRenderingList(light);
-                }*/
+
+            // Todo: Still need to clean this up somehow
+            this.activeCamera = this.stage.Graph.GetCameras()[0];
+            foreach (IModelEntity model in this.sceneGraph.GetModels())
+            {
+                this.AddSceneEntityToRenderingList(model);
+            }
+
+            foreach (ILightEntity light in this.sceneGraph.GetLights())
+            {
+                this.AddSceneEntityToRenderingList(light);
             }
         }
 
@@ -138,6 +144,8 @@
             this.stage.Update(gameTime);
 
             this.activeCamera.Update(gameTime);
+
+            this.InvalidateSceneEntity(this.sceneGraph.Root);
             
             return base.Update(gameTime);
         }
@@ -294,23 +302,23 @@
         private void RefreshDebugData()
         {
             // refresh and upload our entity information to the debug overlay
-            /*IList<SceneEntityDebugEntry> entityData = new List<SceneEntityDebugEntry>();
-            foreach (IModelEntity entity in this.stage.Models)
+            IList<SceneEntityDebugEntry> entityData = new List<SceneEntityDebugEntry>();
+            foreach (IModelEntity entity in this.sceneGraph.GetModels())
             {
                 var entry = new SceneEntityDebugEntry("<TODO>", EntityDebugType.Model, new WeakReference<ISceneEntity>(entity));
                 entityData.Add(entry);
             }
 
-            foreach (string key in this.stage.Lights.Keys)
+            foreach (ILightEntity light in this.sceneGraph.GetLights())
             {
                 var entry = new SceneEntityDebugEntry(
-                    key,
+                    light.Name,
                     EntityDebugType.Light,
-                    new WeakReference<ISceneEntity>(this.stage.Lights[key]));
+                    new WeakReference<ISceneEntity>(light));
                 entityData.Add(entry);
             }
 
-            this.debugOverlay.UpdateEntityData(entityData);*/
+            this.debugOverlay.UpdateEntityData(entityData);
         }
     }
 }

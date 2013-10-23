@@ -11,5 +11,8 @@
         string SceneScriptHash { get; set; }
 
         void CheckState();
+
+        void InvalidateSceneEntity(ISceneEntity entity, int targetStack);
+        void AddSceneEntityToRenderingList(ISceneEntity entity, int targetList);
     }
 }

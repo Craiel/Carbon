@@ -59,7 +59,7 @@
         // -------------------------------------------------------------------
         private SceneGraph BuildGraph()
         {
-            var graph = new SceneGraph(new Node(new EmptyEntity { Name = "TEMP" }));
+            var graph = new SceneGraph(new EmptyEntity { Name = "TEMP" });
             foreach (IModelEntity model in this.rootModels)
             {
                 this.FillGraph(graph, null, model);
@@ -68,15 +68,14 @@
             return graph;
         }
 
-        private void FillGraph(SceneGraph graph, INode parent, IModelEntity model)
+        private void FillGraph(SceneGraph graph, ISceneEntity parent, IModelEntity model)
         {
-            var node = new Node(model);
-            graph.Add(node, parent);
+            graph.Add(model, parent);
             if (this.modelHirarchy.ContainsKey(model))
             {
                 foreach (IModelEntity child in this.modelHirarchy[model])
                 {
-                    this.FillGraph(graph, node, child);
+                    this.FillGraph(graph, model, child);
                 }
             }
         }

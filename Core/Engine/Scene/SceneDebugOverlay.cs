@@ -218,11 +218,11 @@
             frameManager.RenderSet(set);
 
             // User Interface as overlay on top
-            set = frameManager.BeginSet(this.userInterfaceCamera);
+            /*set = frameManager.BeginSet(this.userInterfaceCamera);
             set.LightingEnabled = false;
             set.Technique = FrameTechnique.Forward;
             this.RenderList((int)RenderingList.UserInterface, set);
-            frameManager.RenderSet(set);
+            frameManager.RenderSet(set);*/
         }
 
         public override void Resize(TypedVector2<int> size)
@@ -296,12 +296,9 @@
             }
 
             // Todo: handle this case
-            if (source.BoundingBox == null)
-            {
-                return;
-            }
-            
-            ModelResource resource = Cube.CreateBoundingBoxLines(source.BoundingBox.Value, ColorModelEntity);
+            BoundingBox boundingBox = source.BoundingBox ?? new BoundingBox(new Vector3(-1), new Vector3(1));
+
+            ModelResource resource = Cube.CreateBoundingBoxLines(boundingBox, ColorModelEntity);
             var entity = new ModelEntity
             {
                 Position = source.Position,

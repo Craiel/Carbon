@@ -78,19 +78,6 @@
             this.runtimeScript = this.LoadRuntimeScript(scriptHash);
         }
 
-        [ScriptingMethod]
-        public void RegisterEntity(ISceneEntity entity)
-        {
-            this.sceneEntities.Add(entity);
-        }
-
-        [ScriptingMethod]
-        public void UnregisterEntity(ISceneEntity entity)
-        {
-            this.sceneEntities.Remove(entity);
-        }
-
-        [ScriptingMethod]
         public void ClearScene()
         {
             this.sceneEntities.Clear();
@@ -106,42 +93,10 @@
             this.ClearScene();
         }
 
-        [ScriptingMethod]
-        public void InvalidateSceneEntity(ISceneEntity entity, int targetStack = DefaultSceneEntityStack)
-        {
-            if (!this.entityStacks.ContainsKey(targetStack))
-            {
-                this.entityStacks.Add(targetStack, new EngineComponentStack<ISceneEntity>());
-            }
-
-            this.entityStacks[targetStack].PushUpdate(entity);
-        }
-
-        [ScriptingMethod]
-        public void AddSceneEntityToRenderingList(ISceneEntity entity, int targetList = DefaultSceneEntityRenderingList)
-        {
-            if (!this.entityRenderLists.ContainsKey(targetList))
-            {
-                this.entityRenderLists.Add(targetList, new RenderableList<ISceneEntity>());
-            }
-
-            this.entityRenderLists[targetList].Add(entity);
-        }
-
-        [ScriptingMethod]
-        public void ClearRenderingList(int targetList = DefaultSceneEntityRenderingList)
-        {
-            if (this.entityRenderLists.ContainsKey(targetList))
-            {
-                this.entityRenderLists[targetList].Clear();
-            }
-        }
-
         // Convenience function for internal use, do not expose!
         public void RegisterAndInvalidate(ISceneEntity entity, int targetStack = DefaultSceneEntityStack)
         {
-            this.RegisterEntity(entity);
-            this.InvalidateSceneEntity(entity, targetStack);
+            this.LinkEntity(entity, targetStack);
         }
 
         public override bool Update(Utils.Contracts.ITimer gameTime)
@@ -173,6 +128,26 @@
             {
                 throw new InvalidSceneStateException("Runtime script is missing");
             }
+        }
+
+        public void InvalidateSceneEntity(ISceneEntity entity, int targetStack = DefaultSceneEntityStack)
+        {
+            if (!this.entityStacks.ContainsKey(targetStack))
+            {
+                this.entityStacks.Add(targetStack, new EngineComponentStack<ISceneEntity>());
+            }
+
+            this.InvalidateSceneEntity(entity, this.entityStacks[targetStack]);
+        }
+
+        public void AddSceneEntityToRenderingList(ISceneEntity entity, int targetList = DefaultSceneEntityRenderingList)
+        {
+            if (!this.entityRenderLists.ContainsKey(targetList))
+            {
+                this.entityRenderLists.Add(targetList, new RenderableList<ISceneEntity>());
+            }
+
+            this.entityRenderLists[targetList].Add(entity);
         }
 
         // -------------------------------------------------------------------
@@ -221,6 +196,70 @@
 
         protected abstract CarbonScript LoadRuntimeScript(string scriptHash);
         protected abstract Lua LoadRuntime(CarbonScript script);
+
+        protected void LinkEntity(ISceneEntity entity, int targetStack)
+        {
+            var linkStack = new Queue<ISceneEntity>();
+            linkStack.Enqueue(entity);
+            while (linkStack.Count > 0)
+            {
+                ISceneEntity current = linkStack.Dequeue();
+                current.Link(this, targetStack);
+                this.sceneEntities.Add(entity);
+                if (current.Children != null)
+                {
+                    foreach (ISceneEntity child in current.Children)
+                    {
+                        linkStack.Enqueue(child);
+                    }
+                }
+            }
+        }
+
+        protected void UnlinkEntity(ISceneEntity entity)
+        {
+            var unlinkStack = new Queue<ISceneEntity>();
+            unlinkStack.Enqueue(entity);
+            while (unlinkStack.Count > 0)
+            {
+                ISceneEntity current = unlinkStack.Dequeue();
+                current.Unlink();
+                this.sceneEntities.Remove(current);
+                if (current.Children != null)
+                {
+                    foreach (ISceneEntity child in current.Children)
+                    {
+                        unlinkStack.Enqueue(child);
+                    }
+                }
+            }
+        }
+
+        protected void ClearRenderingList(int targetList = DefaultSceneEntityRenderingList)
+        {
+            if (this.entityRenderLists.ContainsKey(targetList))
+            {
+                this.entityRenderLists[targetList].Clear();
+            }
+        }
+
+        private void InvalidateSceneEntity(ISceneEntity entity, EngineComponentStack<ISceneEntity> stack)
+        {
+            var invalidEntities = new Queue<ISceneEntity>();
+            invalidEntities.Enqueue(entity);
+            while (invalidEntities.Count > 0)
+            {
+                ISceneEntity current = invalidEntities.Dequeue();
+                stack.PushUpdate(current);
+                if (current.Children != null)
+                {
+                    foreach (ISceneEntity child in current.Children)
+                    {
+                        invalidEntities.Enqueue(child);
+                    }
+                }
+            }
+        }
 
         // Invalidate a node in all update lists
         // Invalidate a node in specific update lists

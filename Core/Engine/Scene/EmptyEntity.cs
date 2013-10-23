@@ -4,5 +4,9 @@
 
     public class EmptyEntity : SceneEntity, IEmptyEntity
     {
+        protected override ISceneEntity DoClone()
+        {
+            return new EmptyEntity();
+        }
     }
 }

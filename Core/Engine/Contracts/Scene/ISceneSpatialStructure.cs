@@ -13,6 +13,7 @@
         IList<ICameraEntity> GetCamerasById(string id);
         IList<IModelEntity> GetModelsById(string id);
 
-        IList<INode> GetNodesById(string id);
+        IList<ISceneEntity> GetEntitiesById(string id);
+        IList<ISceneEntity> GetEntities();
     }
 }

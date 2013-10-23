@@ -13,9 +13,10 @@
         private readonly IDictionary<string, IList<int>> lightDictionary;
         private readonly IDictionary<string, IList<int>> cameraDictionary;
         private readonly IDictionary<string, IList<int>> modelDictionary;
-        private readonly IDictionary<string, IList<int>> nodeDictionary;
+        private readonly IDictionary<string, IList<int>> entityDictionary;
 
-        private readonly IDictionary<int, INode> nodeRegister;
+        private readonly IDictionary<int, ISceneEntity> entityRegister;
+        private readonly IDictionary<ISceneEntity, int> entityRegisterReverse; 
  
         private int nextId;
 
@@ -31,9 +32,10 @@
             this.lightDictionary = new Dictionary<string, IList<int>>();
             this.cameraDictionary = new Dictionary<string, IList<int>>();
             this.modelDictionary = new Dictionary<string, IList<int>>();
-            this.nodeDictionary = new Dictionary<string, IList<int>>();
+            this.entityDictionary = new Dictionary<string, IList<int>>();
 
-            this.nodeRegister = new Dictionary<int, INode>();
+            this.entityRegister = new Dictionary<int, ISceneEntity>();
+            this.entityRegisterReverse = new Dictionary<ISceneEntity, int>();
         }
 
         // -------------------------------------------------------------------
@@ -48,9 +50,10 @@
             this.lightDictionary.Clear();
             this.cameraDictionary.Clear();
             this.modelDictionary.Clear();
-            this.nodeDictionary.Clear();
+            this.entityDictionary.Clear();
 
-            this.nodeRegister.Clear();
+            this.entityRegister.Clear();
+            this.entityRegisterReverse.Clear();
         }
 
         public IList<ILightEntity> GetLights()
@@ -98,114 +101,145 @@
             return this.GetEntityList<IModelEntity>(this.modelDictionary[id]);
         }
 
-        public IList<INode> GetNodesById(string id)
+        public IList<ISceneEntity> GetEntitiesById(string id)
         {
-            if (!this.nodeDictionary.ContainsKey(id))
+            if (!this.entityDictionary.ContainsKey(id))
             {
                 return null;
             }
 
-            return this.GetNodeList(this.nodeDictionary[id]);
+            return this.GetentityList(this.entityDictionary[id]);
+        }
+
+        public IList<ISceneEntity> GetEntities()
+        {
+            return new List<ISceneEntity>(this.entityRegisterReverse.Keys);
         }
 
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected void Add(INode node)
+        protected void Add(ISceneEntity entity)
         {
             int id = this.nextId++;
-            this.nodeRegister.Add(id, node);
+            this.entityRegister.Add(id, entity);
+            this.entityRegisterReverse.Add(entity, id);
 
-            bool registerName = !string.IsNullOrEmpty(node.Name);
+            bool registerName = !string.IsNullOrEmpty(entity.Name);
             if (registerName)
             {
-                if (!this.nodeDictionary.ContainsKey(node.Name))
+                if (!this.entityDictionary.ContainsKey(entity.Name))
                 {
-                    this.nodeDictionary.Add(node.Name, new List<int>());
+                    this.entityDictionary.Add(entity.Name, new List<int>());
                 }
 
-                this.nodeDictionary[node.Name].Add(id);
+                this.entityDictionary[entity.Name].Add(id);
             }
             
             // Register the entity lookups
-            if (node as IEntityNode != null)
+            if (entity as ILightEntity != null)
             {
-                var typed = (IEntityNode)node;
-                if (typed.Entity as ILightEntity != null)
+                this.lights.Add(id);
+
+                if (registerName)
                 {
-                    this.lights.Add(id);
-
-                    if (registerName)
+                    if (!this.lightDictionary.ContainsKey(entity.Name))
                     {
-                        if (!this.lightDictionary.ContainsKey(node.Name))
-                        {
-                            this.lightDictionary.Add(node.Name, new List<int>());
-                        }
-
-                        this.lightDictionary[node.Name].Add(id);
+                        this.lightDictionary.Add(entity.Name, new List<int>());
                     }
 
-                    return;
+                    this.lightDictionary[entity.Name].Add(id);
                 }
 
-                if (typed.Entity as ICameraEntity != null)
+                return;
+            }
+
+            if (entity as ICameraEntity != null)
+            {
+                this.cameras.Add(id);
+
+                if (registerName)
                 {
-                    this.cameras.Add(id);
-
-                    if (registerName)
+                    if (!this.cameraDictionary.ContainsKey(entity.Name))
                     {
-                        if (!this.cameraDictionary.ContainsKey(node.Name))
-                        {
-                            this.cameraDictionary.Add(node.Name, new List<int>());
-                        }
-
-                        this.cameraDictionary[node.Name].Add(id);
+                        this.cameraDictionary.Add(entity.Name, new List<int>());
                     }
 
-                    return;
+                    this.cameraDictionary[entity.Name].Add(id);
                 }
 
-                if (typed.Entity as IModelEntity != null)
+                return;
+            }
+
+            if (entity as IModelEntity != null)
+            {
+                this.models.Add(id);
+
+                if (registerName)
                 {
-                    this.models.Add(id);
-
-                    if (registerName)
+                    if (!this.modelDictionary.ContainsKey(entity.Name))
                     {
-                        if (!this.modelDictionary.ContainsKey(node.Name))
-                        {
-                            this.modelDictionary.Add(node.Name, new List<int>());
-                        }
-
-                        this.modelDictionary[node.Name].Add(id);
+                        this.modelDictionary.Add(entity.Name, new List<int>());
                     }
+
+                    this.modelDictionary[entity.Name].Add(id);
                 }
             }
         }
 
-        protected void Remove(INode entity)
+        protected void Remove(ISceneEntity entity)
         {
+            // Get the key and invalidate the lookup, we deal with it in other places
+            int key = this.entityRegisterReverse[entity];
+            this.entityRegister.Remove(key);
+            this.entityRegisterReverse.Remove(entity);
         }
 
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private IList<T> GetEntityList<T>(IEnumerable<int> source)
+        private IList<T> GetEntityList<T>(IList<int> source)
         {
             IList<T> results = new List<T>();
+            IList<int> invalidateList = new List<int>();
             foreach (int entry in source)
             {
-                results.Add((T)((IEntityNode)this.nodeRegister[entry]).Entity);
+                if (!this.entityRegister.ContainsKey(entry))
+                {
+                    invalidateList.Add(entry);
+                    continue;
+                }
+
+                results.Add((T)this.entityRegister[entry]);
+            }
+
+            // Remove every invalid entry to reduce the next lookup time
+            foreach (int invalidKey in invalidateList)
+            {
+                source.Remove(invalidKey);
             }
 
             return results;
         }
 
-        private IList<INode> GetNodeList(IEnumerable<int> source)
+        private IList<ISceneEntity> GetentityList(IList<int> source)
         {
-            IList<INode> results = new List<INode>();
+            IList<ISceneEntity> results = new List<ISceneEntity>();
+            IList<int> invalidateList = new List<int>();
             foreach (int entry in source)
             {
-                results.Add(this.nodeRegister[entry]);
+                if (!this.entityRegister.ContainsKey(entry))
+                {
+                    invalidateList.Add(entry);
+                    continue;
+                }
+
+                results.Add(this.entityRegister[entry]);
+            }
+
+            foreach (int invalidKey in invalidateList)
+            {
+                source.Remove(invalidKey);
             }
 
             return results;

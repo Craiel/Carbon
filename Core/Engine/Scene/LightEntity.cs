@@ -7,17 +7,7 @@
     public class LightEntity : SceneEntity, ILightEntity
     {
         public ILight Light { get; set; }
-
-        public override void Dispose()
-        {
-            if (this.Light != null)
-            {
-                this.Light.Dispose();
-            }
-
-            base.Dispose();
-        }
-
+        
         public override bool Update(Utils.Contracts.ITimer gameTime)
         {
             if (!base.Update(gameTime))
@@ -46,6 +36,14 @@
 
             var instruction = new LightInstruction { Light = this.Light, Position = this.Position, World = this.World };
             frameSet.LightInstructions.Add(instruction);
+        }
+
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected override ISceneEntity DoClone()
+        {
+            return new LightEntity { Light = this.Light };
         }
     }
 }

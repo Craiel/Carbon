@@ -58,19 +58,14 @@
                 return this.stageGraph;
             }
         }
-
-        private INode AddEmpty(string name)
-        {
-            saduiasdgasd
-        }
-
+        
         public override void Initialize(ICarbonGraphics graphics)
         {
             base.Initialize(graphics);
 
             var rootEntity = new EmptyEntity { Name = "StageRoot" };
             this.stageEntities.Add(rootEntity);
-            this.stageGraph = new SceneGraph(new Node(rootEntity));
+            this.stageGraph = new SceneGraph(rootEntity);
 
             // Initialize the model loader for access to textures and other gpu resources
             this.modelLoader.Initialize(graphics);
@@ -79,13 +74,13 @@
             if (this.data.Cameras != null)
             {
                 var cameraRoot = new EmptyEntity { Name = CameraRoot };
-                var cameraRootNode = new Node(cameraRoot);
+                var cameraRootNode = cameraRoot;
                 this.stageEntities.Add(cameraRoot);
                 this.stageGraph.Add(cameraRootNode);
                 foreach (StageCameraElement cameraElement in this.data.Cameras)
                 {
                     ICameraEntity camera = this.entityFactory.BuildCamera(cameraElement);
-                    this.stageGraph.Add(new Node(camera), cameraRootNode);
+                    this.stageGraph.Add(camera, cameraRootNode);
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Stage loaded cameras");
@@ -98,12 +93,12 @@
             if (this.data.Lights != null)
             {
                 var lightRoot = new EmptyEntity { Name = LightRoot };
-                var lightRootNode = new Node(lightRoot);
+                var lightRootNode = lightRoot;
                 this.stageGraph.Add(lightRootNode);
                 foreach (StageLightElement lightElement in this.data.Lights)
                 {
                     ILightEntity light = this.entityFactory.BuildLight(lightElement);
-                    this.stageGraph.Add(new Node(light), lightRootNode);
+                    this.stageGraph.Add(light, lightRootNode);
                 }
 
                 System.Diagnostics.Trace.TraceInformation("Stage loaded lights");
@@ -136,7 +131,7 @@
             if (this.data.Models != null)
             {
                 var modelRoot = new EmptyEntity { Name = ModelRoot };
-                var modelRootNode = new Node(modelRoot);
+                var modelRootNode = modelRoot;
                 this.stageGraph.Add(modelRootNode);
                 foreach (StageModelElement modelElement in this.data.Models)
                 {
@@ -156,12 +151,11 @@
             }
         }
 
-        private void LoadModelElement(StageModelElement element, ResourceInfo[] referenceInfos, INode parent)
+        private void LoadModelElement(StageModelElement element, ResourceInfo[] referenceInfos, ISceneEntity parent)
         {
             // Create a plain node first and register in the graph
             var elementEntity = new EmptyEntity { Name = element.Id };
-            INode elementNode = new Node(elementEntity);
-            this.stageGraph.Add(elementNode, parent);
+            this.stageGraph.Add(elementEntity, parent);
 
             // See if we have an actual object attached to this
             if (element.ReferenceId != null)
@@ -191,12 +185,12 @@
                 ISceneGraph modelGroupGraph = this.modelLoader.LoadModelGroup(resource);
                 if (modelGroupGraph.Root.Children != null)
                 {
-                    IList<INode> childNodes = new List<INode>(modelGroupGraph.Root.Children);
-                    foreach (INode modelElement in childNodes)
+                    IList<ISceneEntity> childNodes = new List<ISceneEntity>(modelGroupGraph.Root.Children);
+                    foreach (ISceneEntity modelElement in childNodes)
                     {
                         // Properly unroot the children before we move them over, to avoid unexpected behavior
                         modelGroupGraph.Remove(modelElement, modelGroupGraph.Root);
-                        elementNode.AddChild(modelElement);
+                        elementEntity.AddChild(modelElement);
                     }
                 }
                 else
@@ -216,10 +210,9 @@
             
             if (element.Children != null)
             {
-                // Todo: Save the hierarchy info
                 foreach (StageModelElement child in element.Children)
                 {
-                    this.LoadModelElement(child, referenceInfos, elementNode);
+                    this.LoadModelElement(child, referenceInfos, elementEntity);
                 }
             }
         }

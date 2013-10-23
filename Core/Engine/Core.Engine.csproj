@@ -134,7 +134,6 @@
     <Compile Include="Contracts\Scene\ICameraEntity.cs" />
     <Compile Include="Contracts\Scene\ILightEntity.cs" />
     <Compile Include="Contracts\Scene\IModelEntity.cs" />
-    <Compile Include="Contracts\Scene\INode.cs" />
     <Compile Include="Contracts\Scene\ISceneDebugOverlay.cs" />
     <Compile Include="Contracts\Scene\ISceneEntity.cs" />
     <Compile Include="Contracts\Scene\IScene.cs" />
@@ -277,7 +276,6 @@
     <Compile Include="Scene\SceneEntity.cs" />
     <Compile Include="Scene\LightEntity.cs" />
     <Compile Include="Scene\ModelEntity.cs" />
-    <Compile Include="Scene\Node.cs" />
     <Compile Include="Scene\SceneEntityDebugEntry.cs" />
     <Compile Include="Scene\SceneEntityFactory.cs" />
     <Compile Include="Scene\Scene.cs" />
