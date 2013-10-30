@@ -1,5 +1,6 @@
 ﻿namespace Core.Engine.Scene
 {
+    using System;
     using System.Collections.Generic;
 
     using Core.Engine.Contracts.Rendering;
@@ -80,6 +81,12 @@
 
         public void ClearScene()
         {
+            // Unlink all entities before clear to free them from this scene
+            foreach (ISceneEntity entity in this.sceneEntities)
+            {
+                entity.Unlink();
+            }
+
             this.sceneEntities.Clear();
 
             this.entityRenderLists.Clear();
@@ -93,10 +100,15 @@
             this.ClearScene();
         }
 
-        // Convenience function for internal use, do not expose!
-        public void RegisterAndInvalidate(ISceneEntity entity, int targetStack = DefaultSceneEntityStack)
+        public void LinkEntity(ISceneEntity entity, int targetStack = DefaultSceneEntityStack)
         {
-            this.LinkEntity(entity, targetStack);
+            this.EntityRecurse(
+                entity,
+                sceneEntity =>
+                    {
+                        sceneEntity.Link(this, targetStack);
+                        this.sceneEntities.Add(sceneEntity);
+                    });
         }
 
         public override bool Update(Utils.Contracts.ITimer gameTime)
@@ -140,14 +152,41 @@
             this.InvalidateSceneEntity(entity, this.entityStacks[targetStack]);
         }
 
-        public void AddSceneEntityToRenderingList(ISceneEntity entity, int targetList = DefaultSceneEntityRenderingList)
+        public void AddToRenderingList(ISceneEntity entity, int targetList = DefaultSceneEntityRenderingList)
         {
             if (!this.entityRenderLists.ContainsKey(targetList))
             {
                 this.entityRenderLists.Add(targetList, new RenderableList<ISceneEntity>());
             }
 
-            this.entityRenderLists[targetList].Add(entity);
+            this.EntityRecurse(
+                entity,
+                sceneEntity =>
+                    {
+                        if (sceneEntity.CanRender)
+                        {
+                            this.entityRenderLists[targetList].Add(sceneEntity);
+                        }
+                    });
+        }
+
+        private void EntityRecurse<T>(T entity, Action<ISceneEntity> action)
+            where T : ISceneEntity
+        {
+            var queue = new Queue<T>();
+            queue.Enqueue(entity);
+            while (queue.Count > 0)
+            {
+                ISceneEntity current = queue.Dequeue();
+                action(current);
+                if (current.Children != null)
+                {
+                    foreach (T child in current.Children)
+                    {
+                        queue.Enqueue(child);
+                    }
+                }
+            }
         }
 
         // -------------------------------------------------------------------
@@ -197,42 +236,15 @@
         protected abstract CarbonScript LoadRuntimeScript(string scriptHash);
         protected abstract Lua LoadRuntime(CarbonScript script);
 
-        protected void LinkEntity(ISceneEntity entity, int targetStack)
-        {
-            var linkStack = new Queue<ISceneEntity>();
-            linkStack.Enqueue(entity);
-            while (linkStack.Count > 0)
-            {
-                ISceneEntity current = linkStack.Dequeue();
-                current.Link(this, targetStack);
-                this.sceneEntities.Add(entity);
-                if (current.Children != null)
-                {
-                    foreach (ISceneEntity child in current.Children)
-                    {
-                        linkStack.Enqueue(child);
-                    }
-                }
-            }
-        }
-
         protected void UnlinkEntity(ISceneEntity entity)
         {
-            var unlinkStack = new Queue<ISceneEntity>();
-            unlinkStack.Enqueue(entity);
-            while (unlinkStack.Count > 0)
-            {
-                ISceneEntity current = unlinkStack.Dequeue();
-                current.Unlink();
-                this.sceneEntities.Remove(current);
-                if (current.Children != null)
-                {
-                    foreach (ISceneEntity child in current.Children)
+            this.EntityRecurse(
+                entity,
+                sceneEntity =>
                     {
-                        unlinkStack.Enqueue(child);
-                    }
-                }
-            }
+                        sceneEntity.Unlink();
+                        this.sceneEntities.Remove(sceneEntity);
+                    });
         }
 
         protected void ClearRenderingList(int targetList = DefaultSceneEntityRenderingList)
@@ -245,27 +257,7 @@
 
         private void InvalidateSceneEntity(ISceneEntity entity, EngineComponentStack<ISceneEntity> stack)
         {
-            var invalidEntities = new Queue<ISceneEntity>();
-            invalidEntities.Enqueue(entity);
-            while (invalidEntities.Count > 0)
-            {
-                ISceneEntity current = invalidEntities.Dequeue();
-                stack.PushUpdate(current);
-                if (current.Children != null)
-                {
-                    foreach (ISceneEntity child in current.Children)
-                    {
-                        invalidEntities.Enqueue(child);
-                    }
-                }
-            }
+            this.EntityRecurse(entity, stack.PushUpdate);
         }
-
-        // Invalidate a node in all update lists
-        // Invalidate a node in specific update lists
-        // Perform scenegraph calculations,
-        //  - Would these ever need to be on the actual node?
-        //  - every node should ever exist only once
-        //  - SceneGraph / octree / update list all reference nodes
     }
 }

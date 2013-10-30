@@ -14,9 +14,9 @@
         private static readonly IProjectionCamera StaticCamera = new ProjectionCamera();
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
-        private readonly Vector3 upVector = Vector3.UnitY;
+        private readonly Vector3 upVector = Vector3.Up;
 
-        private Vector3 targetVector = Vector3.UnitZ;
+        private Vector3 targetVector = Vector3.ForwardLH;
         
         private Quaternion rotation;
 

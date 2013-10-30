@@ -1,7 +1,5 @@
 ﻿namespace Core.Engine.Scene
 {
-    using System.Collections.Generic;
-
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Rendering;
 
@@ -34,6 +32,15 @@
         }
 
         public Material Material { get; set; }
+
+        public override bool CanRender
+        {
+            get
+            {
+                // No mesh will not allow this to go into the rendering lists
+                return this.mesh != null;
+            }
+        }
 
         public override bool Update(Utils.Contracts.ITimer gameTime)
         {
@@ -82,43 +89,9 @@
 
             if (this.Mesh != null)
             {
-                Matrix world = this.GetWorld();
+                Matrix world = this.OverrideWorld ?? this.GetWorld();
                 frameSet.Instructions.Add(new FrameInstruction { Mesh = this.Mesh, Material = this.Material, World = world * this.Local });
             }
-        }
-
-        private Matrix GetWorld()
-        {
-            if (this.Parents == null || this.Parents.Count <= 0)
-            {
-                return Matrix.Identity;
-            }
-
-            var matrixStack = new Stack<Matrix>();
-            var parentQueue = new Queue<ISceneEntity>();
-            parentQueue.Enqueue(this);
-            while (parentQueue.Count > 0)
-            {
-                ISceneEntity current = parentQueue.Dequeue();
-                matrixStack.Push(current.Local);
-                if (current.Parents != null)
-                {
-                    foreach (ISceneEntity parent in current.Parents)
-                    {
-                        // Todo: we don't know what to do with multiple parents yet
-                        parentQueue.Enqueue(parent);
-                        break;
-                    }
-                }
-            }
-
-            Matrix result = Matrix.Identity;
-            while (matrixStack.Count > 0)
-            {
-                result *= matrixStack.Pop();
-            }
-
-            return result;
         }
 
         // -------------------------------------------------------------------

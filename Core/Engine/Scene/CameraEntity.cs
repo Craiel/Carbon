@@ -6,7 +6,15 @@
     public class CameraEntity : SceneEntity, ICameraEntity
     {
         public IProjectionCamera Camera { get; set; }
-        
+
+        public override bool CanRender
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public override bool Update(Utils.Contracts.ITimer gameTime)
         {
             if (!base.Update(gameTime))

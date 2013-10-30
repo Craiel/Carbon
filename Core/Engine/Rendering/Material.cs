@@ -121,10 +121,10 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public Vector4? ColorDiffuse { get; private set; }
-        public Vector4? ColorSpecular { get; private set; }
-        public Vector4? ColorAmbient { get; private set; }
-        public Vector4? ColorEmissive { get; private set; }
+        public Vector4? ColorDiffuse { get; set; }
+        public Vector4? ColorSpecular { get; set; }
+        public Vector4? ColorAmbient { get; set; }
+        public Vector4? ColorEmissive { get; set; }
 
         public TextureReference DiffuseTexture { get; set; }
         public TextureReference NormalTexture { get; set; }

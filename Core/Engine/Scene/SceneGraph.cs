@@ -12,7 +12,7 @@
         void Clear(ISceneEntity parent = null);
 
         void Append(ISceneGraph graph);
-        void AppendInto(ISceneGraph graph, string name);
+        ISceneEntity AppendInto(ISceneGraph graph, string name);
     }
 
     public class SceneGraph : SceneSpatialStructure, ISceneGraph
@@ -71,7 +71,7 @@
             this.DoClear(parent ?? this.root);
         }
 
-        public void AppendInto(ISceneGraph graph, string name)
+        public ISceneEntity AppendInto(ISceneGraph graph, string name)
         {
             ISceneEntity subentity = new EmptyEntity { Name = name };
             this.Add(subentity, this.root);
@@ -79,6 +79,8 @@
             {
                 this.AppendRecursive(subentity, child);
             }
+
+            return subentity;
         }
 
         public void Append(ISceneGraph graph)

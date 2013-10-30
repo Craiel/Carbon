@@ -34,12 +34,13 @@
             this.Rotation = Quaternion.Identity;
 
             this.Local = Matrix.Identity;
-            this.World = Matrix.Identity;
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public abstract bool CanRender { get; }
+
         public string Name { get; set; }
 
         public Vector3 Position
@@ -95,7 +96,8 @@
         }
 
         public Matrix Local { get; private set; }
-        public Matrix World { get; set; }
+
+        public Matrix? OverrideWorld { get; set; }
 
         public BoundingSphere? BoundingSphere { get; set; }
         public BoundingBox? BoundingBox { get; set; }
@@ -188,6 +190,44 @@
             }
 
             this.linkedScene = null;
+        }
+
+        public Matrix GetWorld()
+        {
+            if (this.Parents == null || this.Parents.Count <= 0)
+            {
+                return Matrix.Identity;
+            }
+
+            var matrixStack = new Stack<Matrix>();
+            var parentQueue = new Queue<ISceneEntity>();
+            parentQueue.Enqueue(this);
+            while (parentQueue.Count > 0)
+            {
+                ISceneEntity current = parentQueue.Dequeue();
+                if (current != this)
+                {
+                    matrixStack.Push(current.Local);
+                }
+                
+                if (current.Parents != null)
+                {
+                    foreach (ISceneEntity parent in current.Parents)
+                    {
+                        // Todo: we don't know what to do with multiple parents yet
+                        parentQueue.Enqueue(parent);
+                        break;
+                    }
+                }
+            }
+
+            Matrix result = Matrix.Identity;
+            while (matrixStack.Count > 0)
+            {
+                result *= matrixStack.Pop();
+            }
+
+            return result;
         }
 
         public override bool Update(Utils.Contracts.ITimer gameTime)

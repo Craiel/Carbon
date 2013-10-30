@@ -10,6 +10,8 @@
 
     public interface ISceneEntity : IEngineComponent, IRenderable
     {
+        bool CanRender { get; }
+
         string Name { get; set; }
 
         Vector3 Position { get; set; }
@@ -17,7 +19,7 @@
         Quaternion Rotation { get; set; }
 
         Matrix Local { get; }
-        Matrix World { get; set; }
+        Matrix? OverrideWorld { get; set; }
         
         BoundingSphere? BoundingSphere { get; }
         BoundingBox? BoundingBox { get; }
@@ -35,5 +37,7 @@
 
         void Link(Scene scene, int targetStack);
         void Unlink();
+
+        Matrix GetWorld();
     }
 }

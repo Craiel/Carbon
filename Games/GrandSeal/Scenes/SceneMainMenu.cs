@@ -13,6 +13,7 @@
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Rendering;
+    using Core.Engine.Rendering.Primitives;
     using Core.Engine.Resource.Resources;
     using Core.Engine.Resource.Resources.Stage;
     using Core.Engine.Scene;
@@ -20,6 +21,8 @@
     using Core.Utils.Contracts;
 
     using Logic;
+
+    using SharpDX;
 
     public class SceneMainMenu : SceneBase, ISceneMainMenu
     {
@@ -107,8 +110,8 @@
                 // Register the UI entities and add them to the rendering list
                 foreach (ISceneEntity entity in this.userInterface.Entities)
                 {
-                    this.RegisterAndInvalidate(entity);
-                    this.AddSceneEntityToRenderingList(entity, 2);
+                    this.LinkEntity(entity);
+                    this.AddToRenderingList(entity, 2);
                 }
             }
 
@@ -122,21 +125,40 @@
                 this.sceneGraph.Append(this.stage.Graph);
             }
 
-            // Now we need to register all the contents of the graph
-            this.RegisterAndInvalidate(this.sceneGraph.Root);
+            // Testing
+            var testResource = Cone.Create(16, 4, 1);
+            var testEntity = new ModelEntity
+            {
+                Mesh = new Mesh(testResource),
+                Position = new Vector3(10, 0, 0),
+                Material = new Material(graphic) { ColorDiffuse = new Vector4(0, 1, 0, 1) },
+            };
+            this.sceneGraph.Add(testEntity);
+            var testEntity2 = new ModelEntity
+            {
+                Mesh = new Mesh(testResource),
+                Position = new Vector3(10, 0, 0),
+                Rotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(90)),
+                Material = new Material(graphic) { ColorDiffuse = new Vector4(0, 0, 1, 1) },
+            };
+            this.sceneGraph.Add(testEntity2);
+            var testEntity3 = new ModelEntity
+            {
+                Mesh = new Mesh(testResource),
+                Position = new Vector3(10, 0, 0),
+                Rotation = Quaternion.RotationAxis(Vector3.BackwardLH, MathUtil.DegreesToRadians(90)),
+                Material = new Material(graphic) { ColorDiffuse = new Vector4(1, 0, 0, 1) },
+            };
+            this.sceneGraph.Add(testEntity3);
 
+
+            // Now we need to register all the contents of the graph
+            this.LinkEntity(this.sceneGraph.Root);
 
             // Todo: Still need to clean this up somehow
+            //       right now we just add every renderable and take 0 camera
             this.activeCamera = this.stage.Graph.GetCameras()[0];
-            foreach (IModelEntity model in this.sceneGraph.GetModels())
-            {
-                this.AddSceneEntityToRenderingList(model);
-            }
-
-            foreach (ILightEntity light in this.sceneGraph.GetLights())
-            {
-                this.AddSceneEntityToRenderingList(light);
-            }
+            this.AddToRenderingList(this.sceneGraph.Root);
         }
 
         public override bool Update(ITimer gameTime)

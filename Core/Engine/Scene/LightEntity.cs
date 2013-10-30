@@ -4,10 +4,20 @@
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Rendering;
 
+    using SharpDX;
+
     public class LightEntity : SceneEntity, ILightEntity
     {
         public ILight Light { get; set; }
-        
+
+        public override bool CanRender
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public override bool Update(Utils.Contracts.ITimer gameTime)
         {
             if (!base.Update(gameTime))
@@ -34,7 +44,8 @@
                 return;
             }
 
-            var instruction = new LightInstruction { Light = this.Light, Position = this.Position, World = this.World };
+            Matrix world = this.OverrideWorld ?? this.GetWorld();
+            var instruction = new LightInstruction { Light = this.Light, Position = this.Position, World = world };
             frameSet.LightInstructions.Add(instruction);
         }
 

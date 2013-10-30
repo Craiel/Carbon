@@ -12,7 +12,9 @@
 
         void CheckState();
 
+        void LinkEntity(ISceneEntity entity, int targetStack);
         void InvalidateSceneEntity(ISceneEntity entity, int targetStack);
-        void AddSceneEntityToRenderingList(ISceneEntity entity, int targetList);
+
+        void AddToRenderingList(ISceneEntity entity, int targetList);
     }
 }

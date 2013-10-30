@@ -38,6 +38,8 @@
 
         private readonly ModelResource lightEntityModel;
 
+        private readonly ISceneGraph sceneGraph;
+        
         private ModelEntityLoader modelEntityLoader;
 
         private ICarbonGraphics graphics;
@@ -53,8 +55,7 @@
         private IFirstPersonController debugController;
 
         private ModelResourceGroup compassResource;
-        private IModelEntity compass;
-        private IList<IModelEntity> compassElements;
+        private ISceneEntity compass;
 
         // --------------------------------------------------------------------
         // Constructor
@@ -65,8 +66,8 @@
             this.log = factory.Get<IEngineLog>().AquireContextLog("SceneDebugOverlay");
 
             this.lightEntityModel = Sphere.Create(0, ColorLightEntity);
-
-            this.compassElements = new List<IModelEntity>();
+            
+            this.sceneGraph = new SceneGraph(new EmptyEntity { Name = "DebugOverlayRoot" });
         }
 
         // -------------------------------------------------------------------
@@ -159,23 +160,8 @@
                 this.log.Warning("Debug compass resource is not set");
             }
 
-            // Todo: Register the stage's entities and add them to the rendering list
-            /*foreach (IList<IModelEntity> entityList in this.stage.Models.Values)
-            {
-                foreach (IModelEntity entity in entityList)
-                {
-                    this.RegisterEntity(entity);
-                    this.AddSceneEntityToRenderingList(entity);
-                    this.InvalidateSceneEntity(entity);
-                }
-            }
-
-            foreach (ILightEntity light in this.stage.Lights.Values)
-            {
-                this.RegisterEntity(light);
-                this.AddSceneEntityToRenderingList(light);
-                this.InvalidateSceneEntity(light);
-            }*/
+            // Now we need to register all the contents of the graph
+            this.LinkEntity(this.sceneGraph.Root);
         }
 
         public override bool Update(ITimer gameTime)
@@ -187,17 +173,11 @@
             this.debugCamera.Position = this.debugController.Position;
             this.debugCamera.Rotation = this.debugController.Rotation;
 
-            /*if (this.compass != null)
+            if (this.compass != null)
             {
                 this.compass.Rotation = this.debugCamera.Rotation;
                 this.InvalidateSceneEntity(this.compass);
-
-                foreach (IModelEntity element in this.compassElements)
-                {
-                    element.World = this.compass.Local;
-                    this.InvalidateSceneEntity(element);
-                }
-            }*/
+            }
 
             return base.Update(gameTime);
         }
@@ -218,11 +198,11 @@
             frameManager.RenderSet(set);
 
             // User Interface as overlay on top
-            /*set = frameManager.BeginSet(this.userInterfaceCamera);
+            set = frameManager.BeginSet(this.userInterfaceCamera);
             set.LightingEnabled = false;
             set.Technique = FrameTechnique.Forward;
             this.RenderList((int)RenderingList.UserInterface, set);
-            frameManager.RenderSet(set);*/
+            frameManager.RenderSet(set);
         }
 
         public override void Resize(TypedVector2<int> size)
@@ -304,11 +284,12 @@
                 Position = source.Position,
                 Scale = new Vector3(1.1f),
                 Rotation = source.Rotation,
-                Mesh = new Mesh(resource)
+                Mesh = new Mesh(resource),
+                OverrideWorld = source.GetWorld()
             };
 
-            this.RegisterAndInvalidate(entity);
-            this.AddSceneEntityToRenderingList(entity, (int)RenderingList.Entity);
+            this.LinkEntity(entity);
+            this.AddToRenderingList(entity, (int)RenderingList.Entity);
         }
 
         private void AddLightEntity(SceneEntityDebugEntry entry)
@@ -324,27 +305,21 @@
                 Position = source.Position,
                 Scale = new Vector3(0.5f),
                 Rotation = source.Rotation,
-                Mesh = new Mesh(this.lightEntityModel)
+                Mesh = new Mesh(this.lightEntityModel),
+                OverrideWorld = source.GetWorld()
             };
 
-            this.RegisterAndInvalidate(entity);
-            this.AddSceneEntityToRenderingList(entity, (int)RenderingList.Entity);
+            this.LinkEntity(entity);
+            this.AddToRenderingList(entity, (int)RenderingList.Entity);
         }
 
         private void InitializeCompass()
         {
-            this.modelEntityLoader.LoadModelGroup(this.compassResource);
-
-            // Todo: Have to take the whole hirarchy here, use the scene graph code from the other scene once its done
-            // Todo: Multiple calls will keep adding and not replacing right now
-            /*this.compass = new ModelEntity { Position = new Vector3(100), Scale = new Vector3(50) };
-            this.compassElements = new List<IModelEntity>();
-            foreach (IModelEntity entity in this.modelEntityLoader.Models)
-            {
-                this.RegisterAndInvalidate(entity);
-                this.AddSceneEntityToRenderingList(entity, (int)RenderingList.UserInterface);
-                this.compassElements.Add(entity);
-            }*/
+            ISceneGraph modelGraph = this.modelEntityLoader.LoadModelGroup(this.compassResource);
+            this.compass = this.sceneGraph.AppendInto(modelGraph, "Compass");
+            this.compass.Position = new Vector3(100);
+            this.compass.Scale = new Vector3(50);
+            this.AddToRenderingList(this.compass, (int)RenderingList.UserInterface);
         }
     }
 }
