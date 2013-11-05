@@ -104,6 +104,15 @@
                 this.rootModels.Add(groupNode);
             }
 
+            // Add the custom transformations next
+            if (group.Transformations != null)
+            {
+                foreach (Matrix transformation in group.Transformations)
+                {
+                    groupNode.AddTransform(transformation);
+                }
+            }
+
             if (group.Models != null)
             {
                 foreach (ModelResource modelResource in group.Models)

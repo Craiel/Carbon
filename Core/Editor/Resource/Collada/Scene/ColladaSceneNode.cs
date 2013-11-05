@@ -26,6 +26,9 @@
         [XmlElement("scale")]
         public ColladaScale Scale { get; set; }
 
+        [XmlElement("matrix")]
+        public ColladaMatrix[] Matrices { get; set; }
+
         [XmlElement("instance_geometry")]
         public ColladaInstanceGeometry InstanceGeometry { get; set; }
 

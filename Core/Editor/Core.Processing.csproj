@@ -76,6 +76,7 @@
     <Compile Include="Logic\ResourceProcessor.cs" />
     <Compile Include="Processors\UserInterfaceProcessor.cs" />
     <Compile Include="Processors\ScriptProcessor.cs" />
+    <Compile Include="Resource\Collada\Data\ColladaMatrix.cs" />
     <Compile Include="Resource\Generic\Data\BoolArrayType.cs" />
     <Compile Include="Resource\Xcd\Scene\XcdElement.cs" />
     <Compile Include="Resource\Xcd\Scene\XcdBoundingBox.cs" />

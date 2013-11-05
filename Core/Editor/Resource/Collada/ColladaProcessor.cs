@@ -341,6 +341,17 @@
             {
                 MeshLibrary[targetNode].Rotation = GetNodeRotation(sceneNode);
             }
+
+            // Process additional matrices now
+            if (sceneNode.Matrices != null)
+            {
+                MeshLibrary[targetNode].Transformations = new List<Matrix>(sceneNode.Matrices.Length);
+                foreach (ColladaMatrix matrixEntry in sceneNode.Matrices)
+                {
+                    Matrix matrix = DataConversion.ToMatrix(matrixEntry.Data);
+                    MeshLibrary[targetNode].Transformations.Add(matrix);
+                }
+            }
         }
 
         private static Quaternion GetNodeRotation(ColladaSceneNode node)

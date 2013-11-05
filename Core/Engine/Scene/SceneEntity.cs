@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
@@ -18,9 +19,11 @@
         private Vector3 scale;
 
         private bool needBoundingUpdate = true;
+        private bool needLocalMatrixUpdate = true;
 
         private List<ISceneEntity> children;
-        private List<ISceneEntity> parents; 
+        private List<ISceneEntity> parents;
+        private List<Matrix> localTransforms;
 
         private IScene linkedScene;
         private int linkedStack;
@@ -55,6 +58,7 @@
                 if (this.position != value)
                 {
                     this.position = value;
+                    this.needLocalMatrixUpdate = true;
                     this.UpdateLink();
                 }
             }
@@ -73,6 +77,7 @@
                 {
                     this.scale = value;
                     this.needBoundingUpdate = true;
+                    this.needLocalMatrixUpdate = true;
                     this.UpdateLink();
                 }
             }
@@ -90,6 +95,7 @@
                 if (this.rotation != value)
                 {
                     this.rotation = value;
+                    this.needLocalMatrixUpdate = true;
                     this.UpdateLink();
                 }
             }
@@ -128,6 +134,14 @@
             }
         }
 
+        public IReadOnlyCollection<Matrix> LocalTransforms
+        {
+            get
+            {
+                return this.localTransforms;
+            }
+        }
+
         public void AddChild(ISceneEntity child)
         {
             if (this.children == null)
@@ -141,6 +155,12 @@
         public void RemoveChild(ISceneEntity child)
         {
             this.children.Remove(child);
+        }
+
+        public void ClearChildren()
+        {
+            this.children.Clear();
+            this.children = null;
         }
 
         public void AddParent(ISceneEntity parent)
@@ -160,6 +180,36 @@
             parent.RemoveChild(this);
         }
 
+        public void ClearParents()
+        {
+            this.parents.Clear();
+            this.parents = null;
+        }
+
+        public void AddTransform(Matrix matrix)
+        {
+            if (this.localTransforms == null)
+            {
+                this.localTransforms = new List<Matrix>();
+            }
+
+            this.localTransforms.Add(matrix);
+            this.needLocalMatrixUpdate = true;
+        }
+
+        public void RemoveTransform(Matrix matrix)
+        {
+            this.localTransforms.Remove(matrix);
+            this.needLocalMatrixUpdate = true;
+        }
+
+        public void ClearTransforms()
+        {
+            this.localTransforms.Clear();
+            this.localTransforms = null;
+            this.needLocalMatrixUpdate = true;
+        }
+
         // Clone is only cloning this entity without the children
         public virtual ISceneEntity Clone()
         {
@@ -168,6 +218,16 @@
             clone.Position = this.Position;
             clone.Rotation = this.Rotation;
             clone.Scale = this.Scale;
+
+            // Clone the custom transforms as well
+            if (this.localTransforms != null)
+            {
+                foreach (Matrix matrix in this.localTransforms)
+                {
+                    clone.AddTransform(matrix);
+                }
+            }
+
             return clone;
         }
 
@@ -247,8 +307,21 @@
                 this.needBoundingUpdate = false;
             }
 
-            this.Local = MatrixExtension.GetLocalMatrix(this.scale, this.Rotation, this.Position);
-            
+            if (this.needLocalMatrixUpdate)
+            {
+                Matrix newLocal = MatrixExtension.GetLocalMatrix(this.scale, this.Rotation, this.Position);
+
+                if (this.localTransforms != null)
+                {
+                    foreach (Matrix localTransform in this.localTransforms)
+                    {
+                        newLocal = newLocal * localTransform;
+                    }
+                }
+
+                this.Local = newLocal;
+            }
+
             return true;
         }
 

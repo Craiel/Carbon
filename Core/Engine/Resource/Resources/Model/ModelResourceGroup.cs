@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     using Core.Protocol.Resource;
     using Core.Utils;
@@ -36,7 +37,8 @@
         public Quaternion Rotation { get; set; }
 
         public IList<ModelResource> Models { get; set; }
-        public IList<ModelResourceGroup> Groups { get; set; } 
+        public IList<ModelResourceGroup> Groups { get; set; }
+        public IList<Matrix> Transformations { get; set; }
 
         public override void Load(Stream source)
         {
@@ -79,6 +81,16 @@
                     builder.AddGroups(group.GetBuilder());
                 }
             }
+
+            if (this.Transformations != null)
+            {
+                var matrixBuilder = new StoredMatrix.Builder();
+                foreach (Matrix transformation in this.Transformations)
+                {
+                    matrixBuilder.AddRangeData(transformation.ToArray());
+                    builder.AddTransformations(matrixBuilder.Build());
+                }
+            }
             
             return builder;
         }
@@ -117,6 +129,15 @@
                 foreach (ModelGroup group in entry.GroupsList)
                 {
                     this.Groups.Add(new ModelResourceGroup(group));
+                }
+            }
+
+            if (entry.TransformationsCount > 0)
+            {
+                this.Transformations = new List<Matrix>(entry.TransformationsCount);
+                foreach (StoredMatrix storedMatrix in entry.TransformationsList)
+                {
+                    this.Transformations.Add(new Matrix(storedMatrix.DataList.ToArray()));
                 }
             }
         }

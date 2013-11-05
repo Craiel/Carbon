@@ -26,12 +26,19 @@
 
         IReadOnlyCollection<ISceneEntity> Parents { get; }
         IReadOnlyCollection<ISceneEntity> Children { get; }
+        IReadOnlyCollection<Matrix> LocalTransforms { get; }
 
         void AddChild(ISceneEntity parent);
         void RemoveChild(ISceneEntity parent);
+        void ClearChildren();
 
         void AddParent(ISceneEntity parent);
         void RemoveParent(ISceneEntity parent);
+        void ClearParents();
+
+        void AddTransform(Matrix matrix);
+        void RemoveTransform(Matrix matrix);
+        void ClearTransforms();
 
         ISceneEntity Clone();
 

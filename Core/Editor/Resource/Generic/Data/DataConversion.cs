@@ -107,5 +107,11 @@
 
             return vertices;
         }
+
+        public static Matrix ToMatrix(float[] data)
+        {
+            Debug.Assert(data.Length == (4 * 4), "ToMatrix has to be called with 4x4 floats");
+            return new Matrix(data);
+        }
     }
 }

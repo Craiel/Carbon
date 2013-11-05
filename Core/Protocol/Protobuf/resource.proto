@@ -8,6 +8,10 @@ option (google.protobuf.csharp_file_options).file_extension = ".pb.cs";
 
 option optimize_for = SPEED;
 
+message StoredMatrix {
+	repeated float Data = 1;
+}
+
 message Raw {
 	required bytes Data = 1;
 }
@@ -68,6 +72,7 @@ message ModelGroup {
 	
 	repeated Model Models = 20;
 	repeated ModelGroup Groups = 21;
+	repeated StoredMatrix Transformations = 22;
 }
 
 message StageProperty {
