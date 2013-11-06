@@ -1,4 +1,4 @@
-#include "globals.fx"
+#include "Globals.fx"
 
 // ---------------------------------
 struct VS_INPUT
@@ -34,9 +34,9 @@ PS_INPUT VS(VS_INPUT input)
     
     input.Position.w = 1.0f;
     
-    output.Position = mul(input.Position, worldMatrix);
-    output.Position = mul(output.Position, View);
-    output.Position = mul(output.Position, Projection);
+    output.Position = mul(worldMatrix, input.Position);
+    output.Position = mul(View, output.Position);
+    output.Position = mul(Projection, output.Position);
     output.TextureCoordinates = input.TextureCoordinates;
 	output.Color = input.Color;
 	

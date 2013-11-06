@@ -33,7 +33,6 @@ cbuffer Constant : register(b0)
     matrix Projection;
     matrix InvertedView;
     matrix InvertedProjection;
-    matrix InvertedViewProjection;
 };
 
 #if INSTANCED == 1

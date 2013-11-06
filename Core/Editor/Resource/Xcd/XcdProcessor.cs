@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.IO;
     using System.Linq;
 
@@ -33,6 +32,8 @@
         private static readonly IList<StageLightElement> LightElements;
         private static readonly IList<StageModelElement> ModelElements;
         private static readonly IList<string> ReferenceDictionary;
+
+        private static readonly Matrix BlenderCompensation = Matrix.Scaling(1, 1, -1);
 
         private static XcdProcessingOptions currentOptions;
 
@@ -128,7 +129,9 @@
         private static void TranslateCamera(XcdCamera camera)
         {
             Vector3 position = DataConversion.ToVector3(camera.Position.Data)[0];
-            Quaternion rotation = GetRotation(camera.Rotation.Data);
+            position = BlenderUtils.AdjustCoordinateSystem(position);
+
+            Quaternion rotation = Quaternion.Invert(GetRotation(camera.Rotation.Data));
             var element = new StageCameraElement
                        {
                            Id = camera.Id,
@@ -155,11 +158,13 @@
             if (light.Direction != null)
             {
                 direction = DataConversion.ToVector3(light.Direction.Data)[0];
+                direction = BlenderUtils.AdjustCoordinateSystem(direction.Value);
             }
 
             if (light.Location != null)
             {
                 location = DataConversion.ToVector3(light.Location.Data)[0];
+                location = BlenderUtils.AdjustCoordinateSystem(location.Value);
             }
 
             if (light.Color != null)
@@ -194,6 +199,9 @@
         private static void TranslateElement(XcdElement element, StageModelElement parent)
         {
             Vector3 translation = DataConversion.ToVector3(element.Translation.Data)[0];
+            translation = BlenderUtils.AdjustCoordinateSystem(translation);
+
+            // Todo: Check if we need to compensate these...
             Quaternion rotation = GetRotation(element.Rotation.Data);
             Vector3 scale = DataConversion.ToVector3(element.Scale.Data)[0];
             

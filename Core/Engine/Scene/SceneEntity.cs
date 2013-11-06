@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
 
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
@@ -101,7 +100,7 @@
             }
         }
 
-        public Matrix Local { get; private set; }
+        public Matrix Local { get; protected set; }
 
         public Matrix? OverrideWorld { get; set; }
 

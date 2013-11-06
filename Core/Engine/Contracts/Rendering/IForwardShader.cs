@@ -2,7 +2,7 @@
 {
     using SharpDX;
 
-    public interface IDefaultShader : ICarbonShader
+    public interface IForwardShader : ICarbonShader
     {
         Vector4 AmbientLight { get; set; }
 

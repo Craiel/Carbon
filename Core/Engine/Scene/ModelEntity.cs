@@ -72,7 +72,7 @@
 
                 this.needMeshUpdate = false;
             }
-
+            
             return true;
         }
 

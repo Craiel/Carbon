@@ -13,7 +13,6 @@
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Rendering;
-    using Core.Engine.Rendering.Primitives;
     using Core.Engine.Resource.Resources;
     using Core.Engine.Resource.Resources.Stage;
     using Core.Engine.Scene;
@@ -21,9 +20,7 @@
     using Core.Utils.Contracts;
 
     using Logic;
-
-    using SharpDX;
-
+    
     public class SceneMainMenu : SceneBase, ISceneMainMenu
     {
         private readonly IEngineFactory factory;
@@ -124,34 +121,7 @@
                 // NOTE: this is link not copy so we are potentially modifying the stage graph
                 this.sceneGraph.Append(this.stage.Graph);
             }
-
-            // Testing
-            var testResource = Cone.Create(16, 4, 1);
-            var testEntity = new ModelEntity
-            {
-                Mesh = new Mesh(testResource),
-                Position = new Vector3(10, 0, 0),
-                Material = new Material(graphic) { ColorDiffuse = new Vector4(0, 1, 0, 1) },
-            };
-            this.sceneGraph.Add(testEntity);
-            var testEntity2 = new ModelEntity
-            {
-                Mesh = new Mesh(testResource),
-                Position = new Vector3(10, 0, 0),
-                Rotation = Quaternion.RotationAxis(Vector3.Right, MathUtil.DegreesToRadians(90)),
-                Material = new Material(graphic) { ColorDiffuse = new Vector4(0, 0, 1, 1) },
-            };
-            this.sceneGraph.Add(testEntity2);
-            var testEntity3 = new ModelEntity
-            {
-                Mesh = new Mesh(testResource),
-                Position = new Vector3(10, 0, 0),
-                Rotation = Quaternion.RotationAxis(Vector3.BackwardLH, MathUtil.DegreesToRadians(90)),
-                Material = new Material(graphic) { ColorDiffuse = new Vector4(1, 0, 0, 1) },
-            };
-            this.sceneGraph.Add(testEntity3);
-
-
+            
             // Now we need to register all the contents of the graph
             this.LinkEntity(this.sceneGraph.Root);
 

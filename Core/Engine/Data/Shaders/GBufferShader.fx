@@ -1,4 +1,4 @@
-﻿#include "globals.fx"
+﻿#include "Globals.fx"
 
 // ---------------------------------
 struct VS_INPUT
@@ -43,22 +43,22 @@ PS_INPUT VS(in VS_INPUT input)
     worldMatrix = Instances[input.InstanceID].World;
 #endif
 
-    matrix worldView = mul(World, View);
+    matrix worldView = mul(View, World);
     
     // normals to view space
-    output.Normal = normalize(mul(input.Normal, (float3x3)worldMatrix));
-    output.NormalVS = normalize(mul(input.Normal, (float3x3)worldView));
+    output.Normal = normalize(mul((float3x3)worldMatrix, input.Normal));
+    output.NormalVS = normalize(mul((float3x3)worldView, input.Normal));
     
     // Calculate Bi-tangent
-    float3 tangent = normalize(mul(input.Tangent.xyz, (float3x3)worldView));
+    float3 tangent = normalize(mul((float3x3)worldView, input.Tangent.xyz));
     float3 biTangent = normalize(cross(output.Normal, tangent)) * input.Tangent.w;
     output.Tangent = tangent;
     output.BiTangent = biTangent;
 
     // Calculate Clip-space position
-    output.Position = mul(input.Position, worldMatrix);
-    output.Position = mul(output.Position, View);
-    output.Position = mul(output.Position, Projection);
+    output.Position = mul(worldMatrix, input.Position);
+    output.Position = mul(View, output.Position);
+    output.Position = mul(Projection, output.Position);
 
     // Pass along the rest
     output.TextureCoordinates = input.TextureCoordinates;

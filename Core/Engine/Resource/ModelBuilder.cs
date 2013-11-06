@@ -55,7 +55,7 @@
             }
         }
 
-        public void EndPolygon()
+        public void EndPolygon(bool cw = false)
         {
             if (this.IsIndexed)
             {
@@ -67,33 +67,53 @@
                 throw new InvalidDataException("Polygon must have at least 3 vertices set!");
             }
 
-            if (this.pendingElements.Count > 3)
+            switch (this.pendingElements.Count)
             {
-                this.elements.Add(this.pendingElements[0]);
-                this.elements.Add(this.pendingElements[1]);
-                this.elements.Add(this.pendingElements[3]);
+                case 3:
+                    {
+                        // Triangle
+                        if (cw)
+                        {
+                            this.EndPolygonCCW3();
+                        }
+                        else
+                        {
+                            this.EndPolygonCW3();
+                        }
 
-                this.elements.Add(this.pendingElements[3]);
-                this.elements.Add(this.pendingElements[1]);
-                this.elements.Add(this.pendingElements[2]);
+                        break;
+                    }
 
-                if (this.DoubleSided)
-                {
-                    this.elements.Add(this.pendingElements[3]);
-                    this.elements.Add(this.pendingElements[1]);
-                    this.elements.Add(this.pendingElements[0]);
+                case 4:
+                    {
+                        // Quad, gets divided into triangles
+                        if (cw)
+                        {
+                            this.EndPolygonCW4();
+                        }
+                        else
+                        {
+                            this.EndPolygonCCW4();
+                        }
 
-                    this.elements.Add(this.pendingElements[2]);
-                    this.elements.Add(this.pendingElements[1]);
-                    this.elements.Add(this.pendingElements[3]);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < this.pendingElements.Count; i++)
-                {
-                    this.elements.Add(this.pendingElements[i]);
-                }
+                        break;
+                    }
+
+                default:
+                    {
+                        // N-gon
+                        if (!cw)
+                        {
+                            throw new NotImplementedException("N-gon does not support rotation clockwise change currently");
+                        }
+
+                        for (int i = 0; i < this.pendingElements.Count; i++)
+                        {
+                            this.elements.Add(this.pendingElements[i]);
+                        }
+
+                        break;
+                    }
             }
 
             this.pendingElements.Clear();
@@ -165,6 +185,81 @@
             }
 
             return new ModelResource { Elements = this.elements, Indices = indexData, Name = this.name };
+        }
+
+        // -------------------------------------------------------------------
+        // Private
+        // -------------------------------------------------------------------
+        private void EndPolygonCW3()
+        {
+            this.elements.Add(this.pendingElements[0]);
+            this.elements.Add(this.pendingElements[1]);
+            this.elements.Add(this.pendingElements[2]);
+
+            if (this.DoubleSided)
+            {
+                this.elements.Add(this.pendingElements[2]);
+                this.elements.Add(this.pendingElements[1]);
+                this.elements.Add(this.pendingElements[0]);
+            }
+        }
+
+        private void EndPolygonCCW3()
+        {
+            this.elements.Add(this.pendingElements[0]);
+            this.elements.Add(this.pendingElements[2]);
+            this.elements.Add(this.pendingElements[1]);
+
+            if (this.DoubleSided)
+            {
+                this.elements.Add(this.pendingElements[2]);
+                this.elements.Add(this.pendingElements[0]);
+                this.elements.Add(this.pendingElements[1]);
+            }
+        }
+
+        private void EndPolygonCW4()
+        {
+            this.elements.Add(this.pendingElements[0]);
+            this.elements.Add(this.pendingElements[1]);
+            this.elements.Add(this.pendingElements[3]);
+
+            this.elements.Add(this.pendingElements[3]);
+            this.elements.Add(this.pendingElements[1]);
+            this.elements.Add(this.pendingElements[2]);
+
+            if (this.DoubleSided)
+            {
+                this.elements.Add(this.pendingElements[3]);
+                this.elements.Add(this.pendingElements[1]);
+                this.elements.Add(this.pendingElements[0]);
+
+                this.elements.Add(this.pendingElements[2]);
+                this.elements.Add(this.pendingElements[1]);
+                this.elements.Add(this.pendingElements[3]);
+            }
+        }
+
+        private void EndPolygonCCW4()
+        {
+            this.elements.Add(this.pendingElements[0]);
+            this.elements.Add(this.pendingElements[3]);
+            this.elements.Add(this.pendingElements[1]);
+
+            this.elements.Add(this.pendingElements[3]);
+            this.elements.Add(this.pendingElements[2]);
+            this.elements.Add(this.pendingElements[1]);
+
+            if (this.DoubleSided)
+            {
+                this.elements.Add(this.pendingElements[3]);
+                this.elements.Add(this.pendingElements[0]);
+                this.elements.Add(this.pendingElements[1]);
+
+                this.elements.Add(this.pendingElements[2]);
+                this.elements.Add(this.pendingElements[3]);
+                this.elements.Add(this.pendingElements[1]);
+            }
         }
     }
 }

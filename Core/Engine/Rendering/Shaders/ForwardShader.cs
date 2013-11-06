@@ -11,7 +11,7 @@
     using SharpDX.Direct3D;
     using SharpDX.Direct3D11;
 
-    public class DefaultShader : CarbonShader, IDefaultShader
+    public class ForwardShader : CarbonShader, IForwardShader
     {
         private const int MaxDirectionalLights = 4;
         private const int MaxPointLights = 8;
@@ -48,7 +48,7 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public DefaultShader(ICarbonGraphics graphics)
+        public ForwardShader(ICarbonGraphics graphics)
             : base(graphics)
         {
             this.graphics = graphics;
@@ -64,7 +64,7 @@
             this.macros[3].Name = "SPECULARMAP";
             this.macros[4].Name = "ALPHAMAP";
 
-            this.SetFile("default.fx");
+            this.SetFile("Forward.fx");
             this.SetEntryPoints("VS", "PS");
             this.SetProfiles("vs_4_0", "ps_4_0");
 
@@ -216,12 +216,9 @@
             this.ConfigureTextures(instruction);
 
             // Finalize the default buffer
-            this.defaultConstantBuffer.World = Matrix.Transpose(instruction.World);
-            this.defaultConstantBuffer.View = Matrix.Transpose(parameters.View);
-            this.defaultConstantBuffer.Projection = Matrix.Transpose(parameters.Projection);
-            this.defaultConstantBuffer.InvertedView = Matrix.Transpose(Matrix.Invert(parameters.View));
-            this.defaultConstantBuffer.InvertedProjection = Matrix.Transpose(Matrix.Invert(parameters.Projection));
-            this.defaultConstantBuffer.InvertedViewProjection = Matrix.Transpose(Matrix.Invert(parameters.View * parameters.Projection));
+            this.defaultConstantBuffer.World = instruction.World;
+            this.defaultConstantBuffer.View = parameters.View;
+            this.defaultConstantBuffer.Projection = parameters.Projection;
 
             this.SetConstantBufferData(0, this.DefaultConstantBufferSize, this.defaultConstantBuffer);
 
@@ -234,7 +231,7 @@
                         throw new InvalidDataException("Instance data was null");
                     }
 
-                    this.instanceConstantBuffer.World[i] = Matrix.Transpose((Matrix)instruction.Instances[i]);
+                    this.instanceConstantBuffer.World[i] = (Matrix)instruction.Instances[i];
                 }
 
                 this.SetConstantBufferData(1, this.InstanceConstantBufferSize, this.instanceConstantBuffer.World);

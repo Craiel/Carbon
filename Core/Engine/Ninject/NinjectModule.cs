@@ -38,7 +38,7 @@ namespace Core.Engine.Ninject
             this.Bind<IOrthographicCamera>().To<OrthographicCamera>();
             this.Bind<IFrameManager>().To<FrameManager>().InSingletonScope();
             this.Bind<IRenderer>().To<Renderer>().InSingletonScope();
-            this.Bind<IDefaultShader>().To<DefaultShader>();
+            this.Bind<IForwardShader>().To<ForwardShader>();
             this.Bind<IGBufferShader>().To<GBufferShader>();
             this.Bind<IDeferredLightShader>().To<DeferredLightShader>();
             this.Bind<IDebugShader>().To<DebugShader>();

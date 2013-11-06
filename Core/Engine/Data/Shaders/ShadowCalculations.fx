@@ -1,5 +1,5 @@
 #ifndef SHADOW_CALCULATIONS
-#include "globals.fx"
+#include "Globals.fx"
 
 // ---------------------------------
 // Constants

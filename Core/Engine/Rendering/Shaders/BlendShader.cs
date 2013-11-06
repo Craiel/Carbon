@@ -54,13 +54,7 @@
             // Configure the Textures
             this.ConfigureTextures(instruction);
 
-            // Finalize the default buffer
-            this.defaultConstantBuffer.World = Matrix.Transpose(instruction.World);
-            this.defaultConstantBuffer.View = Matrix.Transpose(parameters.View);
-            this.defaultConstantBuffer.Projection = Matrix.Transpose(parameters.Projection);
-            this.defaultConstantBuffer.InvertedView = Matrix.Transpose(Matrix.Invert(parameters.View));
-            this.defaultConstantBuffer.InvertedProjection = Matrix.Transpose(Matrix.Invert(parameters.Projection));
-            this.defaultConstantBuffer.InvertedViewProjection = Matrix.Transpose(Matrix.Invert(parameters.View * parameters.Projection));
+            // No need to send any matrix info here, this only blends
 
             this.SetConstantBufferData(0, this.DefaultConstantBufferSize, this.defaultConstantBuffer);
         }

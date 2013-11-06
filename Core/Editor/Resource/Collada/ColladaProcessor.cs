@@ -243,12 +243,15 @@
                 for (int i = 0; i < count; i++)
                 {
                     Vector3 position = positionData[polygonData[polyIndex][(uint)vertexInput.Offset][indexPosition]];
+                    position = BlenderUtils.AdjustCoordinateSystem(position);
+
                     Vector3 normal = Vector3.Zero;
                     Vector2 texture = Vector2.Zero;
 
                     if (normalData != null)
                     {
                         normal = normalData[polygonData[polyIndex][(uint)normalInput.Offset][indexPosition]];
+                        normal = BlenderUtils.AdjustCoordinateSystem(normal);
                     }
 
                     if (textureData != null)
@@ -260,7 +263,8 @@
                     indexPosition++;
                 }
 
-                builder.EndPolygon();
+                // For collada we assume clockwise since we flip everything by -1z
+                builder.EndPolygon(cw: true);
             }
 
             return builder.ToResource();
@@ -332,20 +336,29 @@
 
             if (sceneNode.Translation != null)
             {
-                MeshLibrary[targetNode].Offset = DataConversion.ToVector3(sceneNode.Translation.Data)[0];
+                Vector3 translation = DataConversion.ToVector3(sceneNode.Translation.Data)[0];
+                translation = BlenderUtils.AdjustCoordinateSystem(translation);
+
+                MeshLibrary[targetNode].Offset = translation;
             }
 
             MeshLibrary[targetNode].Scale = sceneNode.Scale != null ? DataConversion.ToVector3(sceneNode.Scale.Data)[0] : new Vector3(1);
 
             if (sceneNode.Rotations != null)
             {
-                MeshLibrary[targetNode].Rotation = GetNodeRotation(sceneNode);
+                MeshLibrary[targetNode].Rotation = Quaternion.Invert(GetNodeRotation(sceneNode));
             }
+
+            // Create a default transformation matrix to rotate the object into place
+            // Todo: should do this statically so we don't have to do an extra matrix calculation in the engine
+            MeshLibrary[targetNode].Transformations = new List<Matrix>
+                                                          {
+                                                              Matrix.RotationX(MathUtil.DegreesToRadians(90))
+                                                          };
 
             // Process additional matrices now
             if (sceneNode.Matrices != null)
             {
-                MeshLibrary[targetNode].Transformations = new List<Matrix>(sceneNode.Matrices.Length);
                 foreach (ColladaMatrix matrixEntry in sceneNode.Matrices)
                 {
                     Matrix matrix = DataConversion.ToMatrix(matrixEntry.Data);

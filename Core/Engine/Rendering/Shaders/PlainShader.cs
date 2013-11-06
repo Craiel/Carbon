@@ -78,12 +78,9 @@
             this.ConfigureTextures(instruction);
 
             // Finalize the default buffer
-            this.defaultConstantBuffer.World = Matrix.Transpose(instruction.World);
-            this.defaultConstantBuffer.View = Matrix.Transpose(parameters.View);
-            this.defaultConstantBuffer.Projection = Matrix.Transpose(parameters.Projection);
-            this.defaultConstantBuffer.InvertedView = Matrix.Transpose(Matrix.Invert(parameters.View));
-            this.defaultConstantBuffer.InvertedProjection = Matrix.Transpose(Matrix.Invert(parameters.Projection));
-            this.defaultConstantBuffer.InvertedViewProjection = Matrix.Transpose(Matrix.Invert(parameters.View * parameters.Projection));
+            this.defaultConstantBuffer.World = instruction.World;
+            this.defaultConstantBuffer.View = parameters.View;
+            this.defaultConstantBuffer.Projection = parameters.Projection;
 
             this.SetConstantBufferData(0, this.DefaultConstantBufferSize, this.defaultConstantBuffer);
 
@@ -96,7 +93,7 @@
                         throw new InvalidDataException("Instance data is null");
                     }
 
-                    this.instanceConstantBuffer.World[i] = Matrix.Transpose((Matrix)instruction.Instances[i]);
+                    this.instanceConstantBuffer.World[i] = (Matrix)instruction.Instances[i];
                 }
 
                 this.SetConstantBufferData(1, this.InstanceConstantBufferSize, this.instanceConstantBuffer.World);

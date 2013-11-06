@@ -1,4 +1,4 @@
-﻿#include "globals.fx"
+﻿#include "Globals.fx"
 
 #if LIGHTING
 #define MAX_DIRECTIONAL_LIGHTS 4
@@ -96,11 +96,11 @@ PS_INPUT VS(VS_INPUT input)
     
     input.Position.w = 1.0f;
         
-    output.WorldPosition = mul(input.Position, worldMatrix);
-    output.Position = mul(output.WorldPosition, View);
-    output.Position = mul(output.Position, Projection);
+    output.WorldPosition = mul(worldMatrix, input.Position);
+    output.Position = mul(View, output.WorldPosition);
+    output.Position = mul(Projection, output.Position);
     output.TextureCoordinates = input.TextureCoordinates;
-    output.Normal = normalize(mul(input.Normal, (float3x3)worldMatrix));
+    output.Normal = normalize(mul((float3x3)worldMatrix, input.Normal));
 
     return output;
 }

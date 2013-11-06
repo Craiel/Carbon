@@ -116,7 +116,7 @@
     <Compile Include="Contracts\Rendering\ICamera.cs" />
     <Compile Include="Contracts\Rendering\ICarbonShader.cs" />
     <Compile Include="Contracts\Rendering\IDebugShader.cs" />
-    <Compile Include="Contracts\Rendering\IDefaultShader.cs" />
+    <Compile Include="Contracts\Rendering\IForwardShader.cs" />
     <Compile Include="Contracts\Rendering\IDeferredLightShader.cs" />
     <Compile Include="Contracts\Rendering\IGBufferShader.cs" />
     <Compile Include="Contracts\Rendering\ILight.cs" />
@@ -225,7 +225,7 @@
     <Compile Include="Rendering\Shaders\DebugShader.cs" />
     <Compile Include="Rendering\Shaders\DeferredLightShader.cs" />
     <Compile Include="Rendering\Shaders\GBufferShader.cs" />
-    <Compile Include="Rendering\Shaders\DefaultShader.cs" />
+    <Compile Include="Rendering\Shaders\ForwardShader.cs" />
     <Compile Include="Rendering\Shaders\PlainShader.cs" />
     <Compile Include="Rendering\Shaders\ShadowMapShader.cs" />
     <Compile Include="Rendering\Structs.cs" />
@@ -325,22 +325,22 @@
     <Content Include="Data\Shaders\Blend.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\Shaders\Forward.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Shaders\Globals.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\Shaders\Plain.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Shaders\Debug.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Shaders\default.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Data\Shaders\DeferredLight.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Shaders\GBufferShader.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Shaders\globals.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Shaders\ShadowCalculations.fx">

@@ -21,7 +21,7 @@
     {
         private readonly LimitedList<FrameStatistics> frameStatistics;
 
-        private readonly IDefaultShader defaultShader;
+        private readonly IForwardShader forwardShader;
 
         [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1305:FieldNamesMustNotUseHungarianNotation", Justification = "Reviewed. Suppression is OK here.")]
         private readonly IGBufferShader gBufferShader;
@@ -51,7 +51,7 @@
         {
             this.frameStatistics = new LimitedList<FrameStatistics>(200);
 
-            this.defaultShader = factory.Get<IDefaultShader>();
+            this.forwardShader = factory.Get<IForwardShader>();
             this.gBufferShader = factory.Get<IGBufferShader>();
             this.debugShader = factory.Get<IDebugShader>();
             this.deferredLightShader = factory.Get<IDeferredLightShader>();
@@ -80,7 +80,7 @@
             this.vertexBuffer = graphic.StateManager.GetDynamicBuffer(BindFlags.VertexBuffer);
             this.indexBuffer = graphic.StateManager.GetDynamicBuffer(BindFlags.IndexBuffer);
 
-            this.defaultShader.Initialize(graphic);
+            this.forwardShader.Initialize(graphic);
             this.gBufferShader.Initialize(graphic);
             this.debugShader.Initialize(graphic);
             this.deferredLightShader.Initialize(graphic);
@@ -96,7 +96,7 @@
 
         public void AddForwardLighting(IList<RenderLightInstruction> instructions)
         {
-            this.defaultShader.ClearLight();
+            this.forwardShader.ClearLight();
             foreach (RenderLightInstruction instruction in instructions)
             {
                 this.AddForwardLighting(instruction);
@@ -109,25 +109,25 @@
             {
                 case LightType.Ambient:
                     {
-                        this.defaultShader.AmbientLight = instruction.Color;
+                        this.forwardShader.AmbientLight = instruction.Color;
                         break;
                     }
 
                 case LightType.Direction:
                     {
-                        this.defaultShader.AddDirectionalLight(instruction.Direction, instruction.Color, instruction.SpecularPower);
+                        this.forwardShader.AddDirectionalLight(instruction.Direction, instruction.Color, instruction.SpecularPower);
                         break;
                     }
 
                 case LightType.Point:
                     {
-                        this.defaultShader.AddPointLight(instruction.Position, instruction.Color, instruction.Range, instruction.SpecularPower);
+                        this.forwardShader.AddPointLight(instruction.Position, instruction.Color, instruction.Range, instruction.SpecularPower);
                         break;
                     }
 
                 case LightType.Spot:
                     {
-                        this.defaultShader.AddSpotLight(instruction.Position, instruction.Direction, instruction.Color, instruction.Range, instruction.SpotAngles, instruction.SpecularPower);
+                        this.forwardShader.AddSpotLight(instruction.Position, instruction.Direction, instruction.Color, instruction.Range, instruction.SpotAngles, instruction.SpecularPower);
                         break;
                     }
 
@@ -202,7 +202,7 @@
 
         public void ClearCache()
         {
-            this.defaultShader.ForceReloadOnNextPass = true;
+            this.forwardShader.ForceReloadOnNextPass = true;
             this.gBufferShader.ForceReloadOnNextPass = true;
             this.deferredLightShader.ForceReloadOnNextPass = true;
             this.debugShader.ForceReloadOnNextPass = true;
@@ -218,7 +218,7 @@
             this.vertexBuffer.Dispose();
             this.indexBuffer.Dispose();
 
-            this.defaultShader.Dispose();
+            this.forwardShader.Dispose();
             this.gBufferShader.Dispose();
             this.debugShader.Dispose();
             this.deferredLightShader.Dispose();
@@ -272,9 +272,9 @@
             {
                 case RenderMode.Default:
                     {
-                        this.defaultShader.LightingEnabled = parameters.LightingEnabled;
-                        this.ActivateShader(context, this.defaultShader);
-                        this.defaultShader.Apply(context, typeof(PositionNormalVertex), parameters, instruction);
+                        this.forwardShader.LightingEnabled = parameters.LightingEnabled;
+                        this.ActivateShader(context, this.forwardShader);
+                        this.forwardShader.Apply(context, typeof(PositionNormalVertex), parameters, instruction);
                         return typeof(PositionNormalTangentVertex);
                     }
 

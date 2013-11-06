@@ -87,6 +87,7 @@
                 var matrixBuilder = new StoredMatrix.Builder();
                 foreach (Matrix transformation in this.Transformations)
                 {
+                    matrixBuilder.Clear();
                     matrixBuilder.AddRangeData(transformation.ToArray());
                     builder.AddTransformations(matrixBuilder.Build());
                 }

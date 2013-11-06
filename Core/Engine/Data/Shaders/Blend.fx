@@ -1,4 +1,4 @@
-#include "globals.fx"
+#include "Globals.fx"
 
 // ---------------------------------
 struct VS_INPUT

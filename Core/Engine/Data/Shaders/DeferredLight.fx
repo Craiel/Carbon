@@ -1,4 +1,4 @@
-#include "globals.fx"
+#include "Globals.fx"
 #include "ShadowCalculations.fx"
 
 cbuffer LightBuffer : register(b2)
@@ -42,7 +42,7 @@ PS_INPUT VS(VS_INPUT input)
     output.Position = input.Position;
 
     // For a quad we can clamp in the vertex shader, since we only interpolate in the XY direction
-    float3 viewSpacePosition = mul(input.Position, InvertedProjection).xyz;
+    float3 viewSpacePosition = mul(InvertedProjection, input.Position).xyz;
     output.ViewRay = float3(viewSpacePosition.xy / viewSpacePosition.z, 1.0f);
     
     return output;
