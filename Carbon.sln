@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{347882B3-6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GrandSeal", "GrandSeal", "{F3318951-AAE4-40DA-9709-B2FCED858AE3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game.GrandSeal.DataDemon", "Games\GrandSeal.DataDemon\Game.GrandSeal.DataDemon.csproj", "{F0031A4A-0E78-4650-98D8-07169DB3A3E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -62,6 +64,9 @@ Global
 		{458BE196-E526-4B6C-A257-B6A40B53DC0B}.Debug|x64.ActiveCfg = Release|x64
 		{458BE196-E526-4B6C-A257-B6A40B53DC0B}.Release|x64.ActiveCfg = Release|x64
 		{458BE196-E526-4B6C-A257-B6A40B53DC0B}.Release|x64.Build.0 = Release|x64
+		{F0031A4A-0E78-4650-98D8-07169DB3A3E0}.Debug|x64.ActiveCfg = Debug|x64
+		{F0031A4A-0E78-4650-98D8-07169DB3A3E0}.Debug|x64.Build.0 = Debug|x64
+		{F0031A4A-0E78-4650-98D8-07169DB3A3E0}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +80,7 @@ Global
 		{E05836D9-0BB3-4BFA-89E6-F5ED40A9D93C} = {347882B3-6639-4ADC-B3F3-82628E47D80C}
 		{7F99AF1C-CC9D-434B-8A2C-3CFFC0E04D98} = {F3318951-AAE4-40DA-9709-B2FCED858AE3}
 		{B7C2C25C-C2A1-40B4-955C-EED2C235346F} = {F3318951-AAE4-40DA-9709-B2FCED858AE3}
+		{F0031A4A-0E78-4650-98D8-07169DB3A3E0} = {F3318951-AAE4-40DA-9709-B2FCED858AE3}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

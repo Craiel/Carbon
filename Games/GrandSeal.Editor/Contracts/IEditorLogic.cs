@@ -1,10 +1,10 @@
-﻿using Core.Engine.Resource.Content;
-using Core.Utils.IO;
-using System.Collections.Generic;
-
-namespace GrandSeal.Editor.Contracts
+﻿namespace GrandSeal.Editor.Contracts
 {
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
+
+    using Core.Engine.Resource.Content;
+    using Core.Utils.IO;
 
     public delegate void ProjectChangedEventHandler();
 

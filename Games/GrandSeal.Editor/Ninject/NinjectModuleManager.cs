@@ -1,14 +1,16 @@
-﻿using Core.Engine.Ninject;
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Logic;
-using GrandSeal.Editor.ViewModels;
-using Ninject.Modules;
+﻿using Ninject.Modules;
 
 namespace GrandSeal.Editor.Ninject
 {
+    using Core.Engine.Ninject;
+
+    using GrandSeal.Editor.Contracts;
+    using GrandSeal.Editor.Logic;
+    using GrandSeal.Editor.ViewModels;
+
     public static class NinjectModuleManager
     {
-        public static NinjectModule[] GetModules()
+        public static INinjectModule[] GetModules()
         {
             return new NinjectModule[]
                        {

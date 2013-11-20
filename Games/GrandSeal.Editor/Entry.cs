@@ -1,14 +1,14 @@
-﻿using System;
-
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Ninject;
-
-using Core.Utils.Diagnostics;
-
-using Ninject;
+﻿using Ninject;
 
 namespace GrandSeal.Editor
 {
+    using System;
+
+    using Core.Utils.Diagnostics;
+
+    using GrandSeal.Editor.Contracts;
+    using GrandSeal.Editor.Ninject;
+
     public static class Entry
     {
         /// <summary>
@@ -17,8 +17,6 @@ namespace GrandSeal.Editor
         [STAThread]
         public static void Main()
         {
-            //log4net.Config.XmlConfigurator.Configure();
-
             IKernel kernel = new StandardKernel(NinjectModuleManager.GetModules());
             kernel.Get<IEditor>().Run();
 
