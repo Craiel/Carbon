@@ -66,7 +66,7 @@
   <ItemGroup>
     <Compile Include="Contracts\IDataDemon.cs" />
     <Compile Include="Contracts\IDemonBuild.cs" />
-    <Compile Include="Contracts\IDemonConversion.cs" />
+    <Compile Include="Contracts\IDemonFileInfo.cs" />
     <Compile Include="Contracts\IDemonLog.cs" />
     <Compile Include="Contracts\IDemonLogic.cs" />
     <Compile Include="Contracts\IDemonOperation.cs" />
@@ -74,7 +74,7 @@
     <Compile Include="Entry.cs" />
     <Compile Include="Logic\DemonBuild.cs" />
     <Compile Include="Logic\DemonConfig.cs" />
-    <Compile Include="Logic\DemonConversion.cs" />
+    <Compile Include="Logic\DemonFileInfo.cs" />
     <Compile Include="Logic\DemonLog.cs" />
     <Compile Include="Logic\DemonLogic.cs" />
     <Compile Include="Logic\DemonOperation.cs" />

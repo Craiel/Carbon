@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading.Tasks;
     using System.Xml.Serialization;
 
     using Core.Engine.Contracts;
@@ -17,9 +18,12 @@
 
         private readonly IEngineFactory factory;
 
-        private readonly IList<IDemonOperation> operations;
+        private readonly IList<IDemonOperation> parrallelOperations;
+        private readonly IList<IDemonOperation> sequentialOperations; 
 
         private readonly ILog log;
+
+        private readonly IDemonFileInfo fileInfo;
 
         private DemonConfig config;
 
@@ -30,8 +34,10 @@
         {
             this.factory = factory;
             this.log = factory.Get<IDemonLog>().AquireContextLog("Logic");
+            this.fileInfo = factory.Get<IDemonFileInfo>();
 
-            this.operations = new List<IDemonOperation>();
+            this.parrallelOperations = new List<IDemonOperation>();
+            this.sequentialOperations = new List<IDemonOperation>();
         }
 
         // -------------------------------------------------------------------
@@ -41,7 +47,12 @@
 
         public void Dispose()
         {
-            foreach (IDemonOperation operation in this.operations)
+            foreach (IDemonOperation operation in this.parrallelOperations)
+            {
+                operation.Dispose();
+            }
+
+            foreach (IDemonOperation operation in this.sequentialOperations)
             {
                 operation.Dispose();
             }
@@ -63,24 +74,36 @@
                 return false;
             }
 
-            return this.CheckConfiguration();
+            return this.CheckAndLoadConfiguration();
         }
 
         public void Refresh()
         {
-            lock (this.operations)
+            // Need to update file info first, this is done before all operations
+            this.fileInfo.Refresh();
+
+            // Now we execute everything that can be run in parrallel
+            var tasks = new Task[this.parrallelOperations.Count];
+            for (int i = 0; i < this.parrallelOperations.Count; i++)
             {
-                foreach (IDemonOperation operation in this.operations)
-                {
-                    operation.Refresh();
-                }
+                tasks[i] = new Task(this.parrallelOperations[i].Refresh);
+                tasks[i].Start();
+            }
+
+            Task.WaitAll(tasks);
+
+            // Lastly we execute all requested builds and things that can not run before the previous things are done
+            foreach (IDemonOperation operation in this.sequentialOperations)
+            {
+                operation.Refresh();
+                operation.Process();
             }
         }
 
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private bool CheckConfiguration()
+        private bool CheckAndLoadConfiguration()
         {
             if (this.config == null)
             {
@@ -95,21 +118,30 @@
             }
             
             // Treat as warning for now, demon might have other functions beside source conversion
-            if (this.config.DataConversions == null || this.config.DataConversions.Length <= 0)
+            if (this.config.SourceIncludes == null || this.config.SourceIncludes.Length <= 0)
             {
                 this.log.Warning("Configuration has no sources specified");
             }
             else
             {
-                foreach (DemonConversionConfig conversion in this.config.DataConversions)
+                foreach (DemonInclude include in this.config.SourceIncludes)
                 {
-                    if (!this.CheckDataConversion(conversion))
+                    if (!this.CheckInclude(include))
                     {
                         return false;
                     }
 
-                    var operation = this.factory.GetDemonConversion(conversion);
-                    this.operations.Add(operation);
+                    this.fileInfo.AddSourceInclude(include.Path);
+                }
+
+                foreach (DemonInclude include in this.config.IntermediateIncludes)
+                {
+                    if (!this.CheckInclude(include))
+                    {
+                        return false;
+                    }
+
+                    this.fileInfo.AddIntermediateInclude(include.Path);
                 }
             }
 
@@ -127,34 +159,22 @@
                     }
 
                     var operation = this.factory.GetDemonBuild(build);
-                    this.operations.Add(operation);
+                    this.sequentialOperations.Add(operation);
                 }
             }
 
             return true;
         }
 
-        private bool CheckDataConversion(DemonConversionConfig conversion)
+        private bool CheckInclude(DemonInclude include)
         {
-            if (string.IsNullOrEmpty(conversion.Name))
+            if (string.IsNullOrEmpty(include.Path))
             {
-                this.log.Error("Conversion has no name");
+                this.log.Error("Conversion source path is invalid: {0}", null, include.Path ?? "Null");
                 return false;
             }
 
-            if (string.IsNullOrEmpty(conversion.SourcePath) || !Directory.Exists(conversion.SourcePath))
-            {
-                this.log.Error("Conversion source path is invalid: {0}", null, conversion.SourcePath ?? "Null");
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(conversion.TargetPath))
-            {
-                this.log.Error("Conversion target path is invalid");
-                return false;
-            }
-
-            this.log.Info("Loaded conversion {0}", conversion.Name);
+            this.log.Info("Loaded include {0}", include.Path);
             return true;
         }
 

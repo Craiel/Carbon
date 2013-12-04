@@ -28,41 +28,53 @@
         [XmlAttribute]
         public int RefreshInterval { get; set; }
 
-        [XmlElement("DataConversion")]
-        public DemonConversionConfig[] DataConversions { get; set; }
+        [XmlElement("IncludeSource")]
+        public DemonInclude[] SourceIncludes { get; set; }
+
+        [XmlElement("IncludeIntermediate")]
+        public DemonInclude[] IntermediateIncludes { get; set; }
+
+        [XmlElement("ColladaExport")]
+        public DemonColladaExport[] ColladaExports { get; set; }
+
+        [XmlElement("StageExport")]
+        public DemonStageExport[] StageExports { get; set; }
 
         [XmlElement("Build")]
         public DemonBuildConfig[] Builds { get; set; }
     }
-
+    
     [Serializable]
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
-    public class DemonConversionConfig
+    public class DemonInclude
     {
-        // -------------------------------------------------------------------
-        // Constructor
-        // -------------------------------------------------------------------
-        public DemonConversionConfig()
-        {
-            this.AutoRefresh = true;
-        }
-
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
         [XmlAttribute]
-        public string Name { get; set; }
-
-        [XmlAttribute]
-        public string SourcePath { get; set; }
-
-        [XmlAttribute]
-        public string TargetPath { get; set; }
-
-        [XmlAttribute]
-        public bool AutoRefresh { get; set; }
+        public string Path { get; set; }
     }
 
+    [Serializable]
+    public class DemonColladaExport
+    {
+        [XmlAttribute]
+        public string Pattern { get; set; }
+
+        [XmlAttribute]
+        public string Target { get; set; }
+    }
+
+    [Serializable]
+    public class DemonStageExport
+    {
+        [XmlAttribute]
+        public string Pattern { get; set; }
+
+        [XmlAttribute]
+        public string Target { get; set; }
+    }
+    
     [Serializable]
     public class DemonBuildConfig
     {

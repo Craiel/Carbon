@@ -28,7 +28,7 @@ namespace GrandSeal.DataDemon.Ninject
                 this.Bind<IDemonLogic>().To<DemonLogic>().InSingletonScope();
                 this.Bind<IDemonLog>().To<DemonLog>().InSingletonScope();
 
-                this.Bind<IDemonConversion>().To<DemonConversion>();
+                this.Bind<IDemonFileInfo>().To<DemonFileInfo>().InSingletonScope();
                 this.Bind<IDemonBuild>().To<DemonBuild>();
             }
         }

@@ -10,11 +10,6 @@ namespace GrandSeal.DataDemon.Ninject
 
     public static class FactoryExtension
     {
-        public static IDemonConversion GetDemonConversion(this IEngineFactory factory, DemonConversionConfig config)
-        {
-            return factory.Kernel.Get<IDemonConversion>(new ConstructorArgument("config", config));
-        }
-
         public static IDemonBuild GetDemonBuild(this IEngineFactory factory, DemonBuildConfig config)
         {
             return factory.Kernel.Get<IDemonBuild>(new ConstructorArgument("config", config));
