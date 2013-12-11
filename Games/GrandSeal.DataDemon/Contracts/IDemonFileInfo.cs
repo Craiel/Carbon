@@ -1,6 +1,5 @@
 ﻿namespace GrandSeal.DataDemon.Contracts
 {
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     
     public interface IDemonFileInfo
@@ -8,8 +7,7 @@
         ReadOnlyCollection<string> SourceIncludes { get; }
         ReadOnlyCollection<string> IntermediateIncludes { get; }
 
-        int PendingSources { get; }
-        int PendingIntermediates { get; }
+        int PendingEntries { get; }
 
         void Refresh();
         
