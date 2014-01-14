@@ -11,8 +11,6 @@
 
     using SharpDX.Direct3D11;
 
-    using SharpDX.Direct3D11;
-
     public enum TextureReferenceType
     {
         Resource,
