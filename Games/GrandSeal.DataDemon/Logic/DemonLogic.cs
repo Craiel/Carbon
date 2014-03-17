@@ -6,11 +6,12 @@
     using System.Threading.Tasks;
     using System.Xml.Serialization;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts;
-    using Core.Utils.Contracts;
 
     using GrandSeal.DataDemon.Contracts;
-    using GrandSeal.DataDemon.Ninject;
+    using GrandSeal.DataDemon.IoC;
 
     public class DemonLogic : IDemonLogic
     {

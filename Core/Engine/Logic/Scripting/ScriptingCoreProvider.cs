@@ -4,8 +4,11 @@
     using System.Collections;
     using System.Collections.Generic;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts.Logic;
-    using Core.Utils.Contracts;
+
+    using NLua;
 
     using SharpDX;
 
@@ -34,7 +37,7 @@
         }
 
         [ScriptingMethod]
-        public static object[] Params(LuaInterface.LuaTable table)
+        public static object[] Params(LuaTable table)
         {
             if (table == null)
             {

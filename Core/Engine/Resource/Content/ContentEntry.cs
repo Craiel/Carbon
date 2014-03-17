@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Core.Engine.Contracts.Resource;
-
-using Core.Utils;
-
-namespace Core.Engine.Resource.Content
+﻿namespace Core.Engine.Resource.Content
 {
+    using System;
+    using System.Collections.Generic;
+
+    using CarbonCore.Utils;
+
+    using Core.Engine.Contracts.Resource;
+
     public abstract class ContentEntry : ICarbonContent
     {
         private int changeState;

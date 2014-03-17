@@ -1,8 +1,8 @@
-﻿using GrandSeal.Editor.Contracts;
-
-namespace GrandSeal.Editor.Events
+﻿namespace GrandSeal.Editor.Events
 {
-    using Core.Utils.IO;
+    using CarbonCore.Utils.IO;
+
+    using GrandSeal.Editor.Contracts;
 
     public class EventLoadLayout
     {

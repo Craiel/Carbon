@@ -1,7 +1,7 @@
-﻿using Core.Utils.Diagnostics;
-
-namespace GrandSeal.DataDemon.Logic
+﻿namespace GrandSeal.DataDemon.Logic
 {
+    using CarbonCore.Utils.Diagnostics;
+
     using GrandSeal.DataDemon.Contracts;
 
     public class DemonLog : LogBase, IDemonLog

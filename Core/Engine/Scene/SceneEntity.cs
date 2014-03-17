@@ -3,12 +3,13 @@
     using System;
     using System.Collections.Generic;
 
+    using CarbonCore.Utils.Contracts;
+    using CarbonCore.UtilsDX;
+
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
     using Core.Engine.Rendering;
-
-    using Core.Utils;
-
+    
     using SharpDX;
 
     public abstract class SceneEntity : EngineComponent, ISceneEntity
@@ -289,7 +290,7 @@
             return result;
         }
 
-        public override bool Update(Utils.Contracts.ITimer gameTime)
+        public override bool Update(ITimer gameTime)
         {
             if (!base.Update(gameTime))
             {

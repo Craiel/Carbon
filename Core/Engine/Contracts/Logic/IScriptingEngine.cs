@@ -1,8 +1,8 @@
 ﻿namespace Core.Engine.Contracts.Logic
 {
     using Core.Engine.Logic.Scripting;
-
-    using LuaInterface;
+    
+    using NLua;
 
     public interface IScriptingEngine
     {

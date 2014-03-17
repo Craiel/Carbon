@@ -3,8 +3,9 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
 
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Resource.Content;
-    using Core.Utils.IO;
 
     public delegate void ProjectChangedEventHandler();
 

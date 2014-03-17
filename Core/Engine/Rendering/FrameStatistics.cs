@@ -4,7 +4,7 @@
     using System.Reflection;
     using System.Text;
 
-    using Core.Utils;
+    using CarbonCore.Utils;
 
     public sealed class FrameStatistics
     {

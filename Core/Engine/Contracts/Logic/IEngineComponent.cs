@@ -2,8 +2,8 @@
 {
     using System;
 
-    using Core.Utils.Contracts;
-
+    using CarbonCore.Utils.Contracts;
+    
     public interface IEngineComponent : IDisposable
     {
         void Initialize(ICarbonGraphics graphics);

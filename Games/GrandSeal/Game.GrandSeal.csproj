@@ -63,15 +63,14 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LuaInterface">
-      <HintPath>..\..\External\LuaInterface\2.0.4\x64\LuaInterface.dll</HintPath>
+    <Reference Include="Autofac">
+      <HintPath>..\..\..\CarbonCore\External\Autofac\3.1.1\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject">
-      <HintPath>..\..\External\Ninject\3.0.0.15\Ninject.dll</HintPath>
+    <Reference Include="NLua">
+      <HintPath>..\..\..\CarbonCore\External\NLua\21ea9050e3\NLua.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\SharpDX\2.5.0\Bin\DirectX11-net40\SharpDX.dll</HintPath>
+    <Reference Include="SharpDX">
+      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\Bin\DirectX11_1-net40\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -101,8 +100,8 @@
     <Compile Include="Logic\GrandSealGameState.cs" />
     <Compile Include="Logic\GrandSealSettings.cs" />
     <Compile Include="Logic\GrandSealSystemController.cs" />
-    <Compile Include="Ninject\FactoryExtension.cs" />
-    <Compile Include="Ninject\NinjectModuleManager.cs" />
+    <Compile Include="IoC\FactoryExtension.cs" />
+    <Compile Include="IoC\IoC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\SceneBase.cs" />
     <Compile Include="Scenes\SceneMainMenu.cs" />
@@ -118,9 +117,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Utils\Core.Utils.csproj">
+    <ProjectReference Include="..\..\..\CarbonCore\Utils\CarbonCore.Utils.csproj">
       <Project>{E05836D9-0BB3-4BFA-89E6-F5ED40A9D93C}</Project>
-      <Name>Core.Utils</Name>
+      <Name>CarbonCore.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Editor\Core.Processing.csproj">
       <Project>{819ff5d0-4498-48f2-9f7d-81a322b9b082}</Project>
@@ -155,7 +154,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)External\sqllite\1.0.84.0\x64\Deploy.bat" $(TargetDir) &amp;&amp; "$(SolutionDir)Games\GrandSeal.Data\Deploy.bat" $(TargetDir) &amp;&amp; "$(SolutionDir)External\SharpDX\2.5.0\Bin\Redist\D3D\x64\Deploy.bat" $(TargetDir)</PostBuildEvent>
+    <PostBuildEvent>copy $(ProjectDir)..\..\..\CarbonCore\External\sqllite\1.0.91.0\* $(TargetDir)
+copy $(ProjectDir)..\..\..\CarbonCore\External\SharpDX\2.5.0\Bin\Redist\D3D\x64\* $(TargetDir)
+xcopy /Q /H /Y /E /I $(ProjectDir)..\GrandSeal.Data\Data $(TargetDir)\Data</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

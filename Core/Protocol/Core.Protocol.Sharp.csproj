@@ -62,26 +62,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Google.ProtocolBuffers">
-      <HintPath>..\..\External\protobuf-csharp-port\2.4.1.521\Google.ProtocolBuffers.dll</HintPath>
-    </Reference>
-    <Reference Include="LuaInterface">
-      <HintPath>..\..\External\LuaInterface\2.0.4\x64\LuaInterface.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject">
-      <HintPath>..\..\External\Ninject\3.0.0.15\Ninject.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\protobuf-csharp-port\2.4.1.521\Google.ProtocolBuffers.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite">
-      <HintPath>..\..\External\sqllite\1.0.84.0\x64\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="C#\NetworkProtocol.pb.cs" />
@@ -109,12 +93,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Utils\Core.Utils.csproj">
-      <Project>{E05836D9-0BB3-4BFA-89E6-F5ED40A9D93C}</Project>
-      <Name>Core.Utils</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

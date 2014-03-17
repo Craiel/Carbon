@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-
-using Core.Utils;
-
-namespace GrandSeal.Editor.Views
+﻿namespace GrandSeal.Editor.Views
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Windows;
+
+    using CarbonCore.Utils;
+
     public sealed partial class TaskProgress
     {
         private static TaskProgress instance;

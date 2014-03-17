@@ -6,11 +6,12 @@
     using System.Net.Sockets;
     using System.Threading;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Network;
     using Core.Engine.Logic;
     using Core.Protocol.Network;
-    using Core.Utils.Contracts;
 
     using Google.ProtocolBuffers;
 

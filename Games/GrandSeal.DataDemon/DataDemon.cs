@@ -3,8 +3,9 @@
     using System.IO;
     using System.Threading;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts;
-    using Core.Utils.Contracts;
 
     using GrandSeal.DataDemon.Contracts;
     using GrandSeal.DataDemon.Logic;

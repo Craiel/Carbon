@@ -3,12 +3,13 @@
     using System;
     using System.Collections.Generic;
 
+    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Threading;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
-    using Core.Utils.Contracts;
-    using Core.Utils.Threading;
 
     public class SceneManager : ThreadableEngineComponent, ISceneManager
     {

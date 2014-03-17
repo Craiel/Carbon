@@ -1,14 +1,15 @@
-﻿using Ninject;
-
-namespace Core.Engine.Contracts
+﻿namespace Core.Engine.Contracts
 {
+    using Autofac;
+
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Resource;
-    using Core.Utils.IO;
 
     public interface IEngineFactory
     {
-        IKernel Kernel { get; }
+        IContainer Kernel { get; }
 
         T Get<T>();
 

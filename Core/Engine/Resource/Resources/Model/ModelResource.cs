@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.IO;
 
-    using Core.Utils;
+    using CarbonCore.UtilsDX;
 
     using SharpDX;
 
@@ -175,7 +175,7 @@
                 Vector3 n = element.Normal.Value;
                 Vector3 t = tan1[i];
 
-                MathExtension.OrthoNormalize(ref n, ref t);
+                DXMathExtension.OrthoNormalize(ref n, ref t);
 
                 float w = (Vector3.Dot(Vector3.Cross(n, t), tan2[i]) < 0.0f) ? -1.0f : 1.0f;
                 elements[i].Tangent = new Vector4(tan1[i], w);

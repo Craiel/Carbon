@@ -7,12 +7,13 @@
     using System.Globalization;
     using System.Text;
 
+    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;
     using Core.Engine.Resource.Generic;
-    using Core.Utils.Contracts;
-    using Core.Utils.IO;
 
     public class ContentManager : IContentManager
     {

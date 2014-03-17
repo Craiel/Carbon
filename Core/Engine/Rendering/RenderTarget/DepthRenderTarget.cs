@@ -2,6 +2,8 @@
 {
     using System.IO;
 
+    using CarbonCore.UtilsDX;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Logic;
 
@@ -86,7 +88,7 @@
         {
             if (!this.isResizing && this.texture != null)
             {
-                SharpDX.Direct3D11.Resource.ToStream(context, this.texture.Texture2D, format, target);
+                ResourceUtils.ResourceToStream(context, this.texture.Texture2D, format, target);
             }
         }
         

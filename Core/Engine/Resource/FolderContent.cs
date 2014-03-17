@@ -3,11 +3,11 @@
     using System.IO;
     using System.IO.Compression;
 
+    using CarbonCore.Utils;
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Contracts.Resource;
-
-    using Core.Utils;
-    using Core.Utils.IO;
-
+    
     public class FolderContent : ResourceContent
     {
         private readonly CarbonDirectory folder;

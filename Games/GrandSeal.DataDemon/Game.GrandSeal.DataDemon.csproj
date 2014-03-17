@@ -52,8 +52,8 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ninject">
-      <HintPath>..\..\External\Ninject\3.0.0.15\Ninject.dll</HintPath>
+    <Reference Include="Autofac">
+      <HintPath>..\..\..\CarbonCore\External\Autofac\3.1.1\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -78,8 +78,8 @@
     <Compile Include="Logic\DemonLog.cs" />
     <Compile Include="Logic\DemonLogic.cs" />
     <Compile Include="Logic\DemonOperation.cs" />
-    <Compile Include="Ninject\FactoryExtension.cs" />
-    <Compile Include="Ninject\NinjectModuleManager.cs" />
+    <Compile Include="IoC\FactoryExtension.cs" />
+    <Compile Include="IoC\IoC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -94,9 +94,9 @@
       <Project>{A724DB75-B032-4AE5-B901-063A165F7E71}</Project>
       <Name>Core.Engine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Utils\Core.Utils.csproj">
+    <ProjectReference Include="..\..\..\CarbonCore\Utils\CarbonCore.Utils.csproj">
       <Project>{e05836d9-0bb3-4bfa-89e6-f5ed40a9d93c}</Project>
-      <Name>Core.Utils</Name>
+      <Name>CarbonCore.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

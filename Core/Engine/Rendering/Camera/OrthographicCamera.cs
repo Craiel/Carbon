@@ -3,10 +3,11 @@
     using System;
     using System.Diagnostics.CodeAnalysis;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Logic;
 
-    using Core.Utils.Contracts;
     using SharpDX;
 
     public class OrthographicCamera : BaseCamera, IOrthographicCamera

@@ -1,9 +1,9 @@
-﻿using GrandSeal.Editor.Contracts;
-
-using Core.Utils.Diagnostics;
-
-namespace GrandSeal.Editor.Logic
+﻿namespace GrandSeal.Editor.Logic
 {
+    using CarbonCore.Utils.Diagnostics;
+
+    using GrandSeal.Editor.Contracts;
+
     public class EditorLog : LogBase, IEditorLog
     {
         public EditorLog()

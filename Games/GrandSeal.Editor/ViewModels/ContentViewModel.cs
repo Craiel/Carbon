@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
-
-using GrandSeal.Editor.Contracts;
-
-using Core.Engine.Contracts;
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Resource;
-using Core.Engine.Resource.Content;
-
-using Core.Utils.Contracts;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Windows;
+
+    using GrandSeal.Editor.Contracts;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource;
+    using Core.Engine.Resource.Content;
+
     using System.Linq;
+
+    using CarbonCore.Utils.Contracts;
 
     public abstract class ContentViewModel : DocumentViewModel
     {

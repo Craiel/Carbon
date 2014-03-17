@@ -1,9 +1,9 @@
 ﻿namespace GrandSeal.Logic
 {
+    using CarbonCore.Utils.Diagnostics;
+
     using Contracts;
-
-    using Core.Utils.Diagnostics;
-
+    
     public class GrandSealLog : LogBase, IGrandSealLog
     {
         public GrandSealLog()

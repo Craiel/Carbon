@@ -1,9 +1,9 @@
-﻿using System.Windows.Input;
-
-namespace GrandSeal.Editor.Contracts
+﻿namespace GrandSeal.Editor.Contracts
 {
-    using Core.Utils.IO;
+    using System.Windows.Input;
 
+    using CarbonCore.Utils.IO;
+    
     public interface IEditorSettingsViewModel : IEditorDocument
     {
         CarbonDirectory TextureToolsFolder { get; }

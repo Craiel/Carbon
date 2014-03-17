@@ -2,11 +2,12 @@
 {
     using System;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Rendering;
-    using Core.Utils.Contracts;
 
     using SharpDX;
     using SharpDX.Direct3D11;

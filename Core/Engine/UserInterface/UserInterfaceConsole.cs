@@ -3,11 +3,11 @@
     using System;
     using System.Collections.Generic;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.UserInterface;
     using Core.Engine.Logic;
-
-    using Core.Utils.Contracts;
     
     public class UserInterfaceConsole : UserInterfaceControl, IUserInterfaceConsole
     {

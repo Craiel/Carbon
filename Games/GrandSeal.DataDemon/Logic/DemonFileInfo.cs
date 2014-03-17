@@ -6,9 +6,10 @@
     using System.IO;
     using System.Linq;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts;
     using Core.Processing.Logic;
-    using Core.Utils.Contracts;
 
     using GrandSeal.DataDemon.Contracts;
 

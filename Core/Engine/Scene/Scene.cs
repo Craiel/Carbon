@@ -3,13 +3,15 @@
     using System;
     using System.Collections.Generic;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Rendering;
-
-    using LuaInterface;
+    
+    using NLua;
 
     public abstract class Scene : EngineComponent, IScene
     {
@@ -111,7 +113,7 @@
                     });
         }
 
-        public override bool Update(Utils.Contracts.ITimer gameTime)
+        public override bool Update(ITimer gameTime)
         {
             if (!base.Update(gameTime))
             {

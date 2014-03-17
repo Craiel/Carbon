@@ -1,10 +1,10 @@
-﻿using System.IO;
-using System.Windows.Media.Imaging;
-
-using Core.Utils.IO;
-
-namespace GrandSeal.Editor.Logic.MVVM
+﻿namespace GrandSeal.Editor.Logic.MVVM
 {
+    using System.IO;
+    using System.Windows.Media.Imaging;
+
+    using CarbonCore.Utils.IO;
+
     public static class WPFUtilities
     {
         public static BitmapImage FileToImage(CarbonPath path)

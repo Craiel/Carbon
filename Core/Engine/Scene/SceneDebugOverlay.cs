@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
@@ -15,9 +17,8 @@
     using Core.Engine.Resource.Resources;
     using Core.Engine.Resource.Resources.Model;
     using Core.Engine.UserInterface;
-    using Core.Utils.Contracts;
 
-    using LuaInterface;
+    using NLua;
 
     using SharpDX;
     using SharpDX.Direct3D;

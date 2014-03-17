@@ -4,8 +4,9 @@
     using System.Collections.Generic;
     using System.IO;
 
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Contracts.Resource;
-    using Core.Utils.IO;
     
     public class ResourceManager : IResourceManager
     {

@@ -1,7 +1,7 @@
 ﻿namespace GrandSeal.DataDemon.Contracts
 {
-    using Core.Utils.Contracts;
-
+    using CarbonCore.Utils.Contracts;
+    
     public interface IDemonLog : ILogBase
     {
     }

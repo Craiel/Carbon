@@ -6,10 +6,11 @@
     using System.Text.RegularExpressions;
     using System.Xml;
 
+    using CarbonCore.Utils;
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Resource.Resources;
     using Core.Protocol.Resource;
-    using Core.Utils;
-    using Core.Utils.IO;
 
     public struct UserInterfaceProcessingOptions
     {

@@ -3,14 +3,15 @@
     using System;
     using System.Threading;
 
+    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Diagnostics;
+    using CarbonCore.Utils.Formatting;
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Resource;
-    using Core.Utils.Contracts;
-    using Core.Utils.Diagnostics;
-    using Core.Utils.Formatting;
-    using Core.Utils.IO;
 
     using SharpDX.Windows;
 
@@ -62,7 +63,7 @@
             this.scriptingEngine = factory.Get<IScriptingEngine>();
             this.log = factory.Get<IEngineLog>().AquireContextLog("CarbonGame");
 
-            this.gameTimer = new Utils.Timer();
+            this.gameTimer = new CarbonCore.Utils.Timer();
         }
 
         // -------------------------------------------------------------------

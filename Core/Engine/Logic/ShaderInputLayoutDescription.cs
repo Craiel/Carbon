@@ -1,9 +1,9 @@
-﻿using System;
-
-using Core.Utils;
-
-namespace Core.Engine.Logic
+﻿namespace Core.Engine.Logic
 {
+    using System;
+
+    using CarbonCore.Utils;
+
     public class ShaderInputLayoutDescription
     {
         public ShaderInputLayoutDescription(CarbonShaderDescription description)

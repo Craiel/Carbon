@@ -3,9 +3,10 @@
     using System;
     using System.Collections.Generic;
 
+    using CarbonCore.Utils;
+
     using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
-    using Core.Utils;
 
     using SharpDX;
 

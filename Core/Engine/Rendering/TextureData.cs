@@ -2,6 +2,8 @@
 {
     using System;
 
+    using CarbonCore.UtilsDX;
+
     using SharpDX.Direct3D11;
 
     public enum TextureDataType
@@ -145,11 +147,11 @@
                     {
                         if (this.loadInformation != null)
                         {
-                            this.Texture2D = Resource.FromMemory<Texture2D>(graphics, this.data, (ImageLoadInformation)this.loadInformation);
+                            this.Texture2D = ResourceUtils.ResourceFromMemory<Texture2D>(graphics, this.data, this.loadInformation);
                         }
                         else
                         {
-                            this.Texture2D = Resource.FromMemory<Texture2D>(graphics, this.data);
+                            this.Texture2D = ResourceUtils.ResourceFromMemory<Texture2D>(graphics, this.data);
                         }
 
                         break;

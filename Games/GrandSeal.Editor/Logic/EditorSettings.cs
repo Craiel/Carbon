@@ -1,15 +1,15 @@
-﻿using System;
-using System.Xml;
-using System.Xml.Serialization;
-
-using GrandSeal.Editor.Contracts;
-
-using Core.Engine.Contracts;
-
-namespace GrandSeal.Editor.Logic
+﻿namespace GrandSeal.Editor.Logic
 {
+    using CarbonCore.Utils.IO;
+
     using Core.Processing.Contracts;
-    using Core.Utils.IO;
+    using System;
+    using System.Xml;
+    using System.Xml.Serialization;
+
+    using GrandSeal.Editor.Contracts;
+
+    using Core.Engine.Contracts;
 
     [Serializable]
     public class EditorSettingsData

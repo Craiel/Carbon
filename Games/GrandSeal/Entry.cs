@@ -1,17 +1,19 @@
-﻿using Ninject;
-
-namespace GrandSeal
+﻿namespace GrandSeal
 {
+    using Autofac;
+
     using Contracts;
 
-    using Ninject;
+    using global::GrandSeal.IoC;
 
     public static class Entry
     {
         public static void Main()
         {
-            IKernel kernel = new StandardKernel(NinjectModuleManager.GetModules());
-            kernel.Get<IGrandSeal>().Run();
+            var builder = new ContainerBuilder();
+            builder.RegisterModule<GameModule>();
+            IContainer kernel = builder.Build();
+            kernel.Resolve<IGrandSeal>().Run();
         }
     }
 }

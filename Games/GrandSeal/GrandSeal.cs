@@ -4,18 +4,19 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Drawing;
 
+    using CarbonCore.Utils;
+    using CarbonCore.Utils.Contracts;
+
     using Contracts;
 
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
-    using Core.Utils;
-    using Core.Utils.Contracts;
+
+    using global::GrandSeal.IoC;
 
     using Logic;
-
-    using Ninject;
 
     using SharpDX;
 

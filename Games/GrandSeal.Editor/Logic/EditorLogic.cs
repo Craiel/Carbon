@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-namespace GrandSeal.Editor.Logic
+﻿namespace GrandSeal.Editor.Logic
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.Linq;
@@ -11,12 +11,13 @@ namespace GrandSeal.Editor.Logic
     using System.Windows;
     using System.Xml;
 
+    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;
     using Core.Engine.Resource.Generic;
-    using Core.Utils.Contracts;
-    using Core.Utils.IO;
 
     using GrandSeal.Editor.Contracts;
     using GrandSeal.Editor.Properties;

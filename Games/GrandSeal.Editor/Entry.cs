@@ -1,13 +1,13 @@
-﻿using Ninject;
-
-namespace GrandSeal.Editor
+﻿namespace GrandSeal.Editor
 {
     using System;
 
-    using Core.Utils.Diagnostics;
+    using Autofac;
 
+    using CarbonCore.Utils.Diagnostics;
+    
     using GrandSeal.Editor.Contracts;
-    using GrandSeal.Editor.Ninject;
+    using GrandSeal.Editor.IoC;
 
     public static class Entry
     {
@@ -17,8 +17,10 @@ namespace GrandSeal.Editor
         [STAThread]
         public static void Main()
         {
-            IKernel kernel = new StandardKernel(NinjectModuleManager.GetModules());
-            kernel.Get<IEditor>().Run();
+            var builder = new ContainerBuilder();
+            builder.RegisterModule<EditorModule>();
+            IContainer kernel = builder.Build();
+            kernel.Resolve<IEditor>().Run();
 
             Profiler.TraceProfilerStatistics();
         }

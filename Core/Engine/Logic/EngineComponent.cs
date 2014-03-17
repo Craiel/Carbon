@@ -2,9 +2,10 @@
 {
     using System.Diagnostics.CodeAnalysis;
 
+    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Threading;
+
     using Core.Engine.Contracts.Logic;
-    using Core.Utils.Contracts;
-    using Core.Utils.Threading;
 
     public abstract class ThreadableEngineComponent : ThreadQueuedComponent, IEngineComponent
     {

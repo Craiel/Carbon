@@ -1,7 +1,8 @@
 ﻿namespace Core.Engine.Resource.Resources.Model
 {
+    using CarbonCore.UtilsDX;
+
     using Core.Protocol.Resource;
-    using Core.Utils;
 
     using SharpDX;
 

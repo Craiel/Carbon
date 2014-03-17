@@ -1,5 +1,7 @@
 ﻿namespace Core.Engine.Scene
 {
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Rendering;
@@ -18,7 +20,7 @@
             }
         }
 
-        public override bool Update(Utils.Contracts.ITimer gameTime)
+        public override bool Update(ITimer gameTime)
         {
             if (!base.Update(gameTime))
             {

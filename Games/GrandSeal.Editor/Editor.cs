@@ -1,14 +1,14 @@
-﻿using System.Windows;
-
-using Core.Engine.Contracts;
-using Core.Utils.Contracts;
-
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Views;
-
-namespace GrandSeal.Editor
+﻿namespace GrandSeal.Editor
 {
     using System.ComponentModel;
+    using System.Windows;
+
+    using CarbonCore.Utils.Contracts;
+
+    using Core.Engine.Contracts;
+
+    using GrandSeal.Editor.Contracts;
+    using GrandSeal.Editor.Views;
 
     public class Editor : IEditor
     {

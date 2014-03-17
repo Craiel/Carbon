@@ -3,13 +3,13 @@
     using System;
     using System.Runtime.InteropServices;
 
+    using CarbonCore.Utils;
+    using CarbonCore.Utils.Diagnostics;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Logic;
-
-    using Core.Utils;
-    using Core.Utils.Diagnostics;
-
+    
     using SharpDX;
     using SharpDX.D3DCompiler;
     using SharpDX.Direct3D;

@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-using System.Windows.Media;
-
-using Core.Engine.Contracts.Resource;
-using Core.Engine.Resource.Content;
-
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Document;
-
-namespace GrandSeal.Editor.Contracts
+﻿namespace GrandSeal.Editor.Contracts
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Windows.Input;
+    using System.Windows.Media;
+
+    using Core.Engine.Contracts.Resource;
+    using Core.Engine.Resource.Content;
+
+    using ICSharpCode.AvalonEdit.CodeCompletion;
+    using ICSharpCode.AvalonEdit.Document;
+
     using System.Drawing;
 
+    using CarbonCore.Utils.IO;
+
     using Core.Processing.Processors;
-    using Core.Utils.IO;
 
     public interface IResourceRawViewModel : IResourceViewModel
     {

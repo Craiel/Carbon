@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Input;
-
-using Core.Engine.Contracts;
-using Core.Engine.Resource.Content;
-using Core.Utils.Contracts;
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Events;
-using GrandSeal.Editor.Logic;
-using GrandSeal.Editor.Logic.MVVM;
-using GrandSeal.Editor.Views;
-using Microsoft.Win32;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
-    using Core.Utils.IO;
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Windows;
+    using System.Windows.Input;
 
+    using CarbonCore.Utils.IO;
+
+    using Core.Engine.Contracts;
+    using Core.Engine.Resource.Content;
+    using GrandSeal.Editor.Contracts;
+    using GrandSeal.Editor.Events;
+    using GrandSeal.Editor.Logic;
+    using GrandSeal.Editor.Logic.MVVM;
+    using GrandSeal.Editor.Views;
+    using Microsoft.Win32;
+
+    using CarbonCore.Utils.Contracts;
+    
     using Xceed.Wpf.AvalonDock.Themes;
 
     public class MainViewModel : EditorBase, IMainViewModel

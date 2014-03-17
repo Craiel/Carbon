@@ -1,13 +1,13 @@
-﻿using System;
-using System.ComponentModel;
-using Core.Utils.Contracts;
-using GrandSeal.Editor.Events;
-
-namespace GrandSeal.Editor.Views
+﻿namespace GrandSeal.Editor.Views
 {
+    using System;
+    using System.ComponentModel;
     using System.Windows;
 
-    using Core.Utils.IO;
+    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.IO;
+
+    using GrandSeal.Editor.Events;
 
     using Xceed.Wpf.AvalonDock.Layout.Serialization;
 

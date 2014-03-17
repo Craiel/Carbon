@@ -10,7 +10,7 @@
     using Core.Engine.Resource.Resources;
     using Core.Engine.Scene;
 
-    using LuaInterface;
+    using NLua;
 
     public abstract class SceneBase : Scene
     {

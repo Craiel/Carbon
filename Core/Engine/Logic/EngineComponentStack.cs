@@ -3,8 +3,9 @@
     using System;
     using System.Collections.Generic;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts.Logic;
-    using Core.Utils.Contracts;
     
     public class EngineComponentStack<T> : EngineComponent
         where T : class, IEngineComponent

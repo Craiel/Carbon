@@ -1,5 +1,7 @@
 ﻿namespace Core.Engine.Scene
 {
+    using CarbonCore.UtilsDX;
+
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
@@ -7,7 +9,6 @@
     using Core.Engine.Rendering;
     using Core.Engine.Resource.Resources.Stage;
     using Core.Protocol.Resource;
-    using Core.Utils;
 
     using SharpDX;
 

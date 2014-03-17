@@ -1,9 +1,9 @@
-﻿using Core.Utils;
-
-using SharpDX;
-
-namespace Core.Engine.Resource.Resources.Stage
+﻿namespace Core.Engine.Resource.Resources.Stage
 {
+    using CarbonCore.UtilsDX;
+
+    using SharpDX;
+
     public class StageCameraElement : StageElement
     {
         // -------------------------------------------------------------------

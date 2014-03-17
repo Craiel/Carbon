@@ -1,5 +1,7 @@
 ﻿namespace Core.Engine.Logic
 {
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Resource;
@@ -39,7 +41,7 @@
             }
         }
 
-        public override bool Update(Utils.Contracts.ITimer gameTime)
+        public override bool Update(ITimer gameTime)
         {
             if (!base.Update(gameTime))
             {

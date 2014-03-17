@@ -1,10 +1,11 @@
 ﻿namespace GrandSeal.Logic
 {
+    using CarbonCore.Utils.IO;
+
     using Contracts;
 
     using Core.Engine.Contracts;
     using Core.Engine.Logic;
-    using Core.Utils.IO;
 
     public class GrandSealGameState : GameState, IGrandSealGameState
     {

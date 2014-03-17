@@ -2,12 +2,13 @@
 {
     using System;
 
+    using CarbonCore.Utils.Contracts;
+
     using Contracts;
 
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Logic;
-    using Core.Utils.Contracts;
 
     public class GrandSealSettings : EngineComponent, IGrandSealSettings
     {

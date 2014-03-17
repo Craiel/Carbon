@@ -4,9 +4,10 @@
     using System.IO;
     using System.Text.RegularExpressions;
 
+    using CarbonCore.Utils;
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Resource.Resources;
-    using Core.Utils;
-    using Core.Utils.IO;
 
     public delegate string ResolveIncludeDelegate(string include);
     public struct ScriptProcessingOptions

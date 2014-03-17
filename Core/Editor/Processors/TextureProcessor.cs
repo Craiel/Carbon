@@ -4,8 +4,9 @@
     using System.Diagnostics;
     using System.Text;
 
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Resource.Resources;
-    using Core.Utils.IO;
 
     public enum TextureTargetFormat
     {

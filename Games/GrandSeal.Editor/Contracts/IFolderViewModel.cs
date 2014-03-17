@@ -3,8 +3,9 @@
     using System.Collections.ObjectModel;
     using System.Windows.Input;
 
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Contracts.Resource;
-    using Core.Utils.IO;
 
     public interface IFolderViewModel : IEditorDocument
     {

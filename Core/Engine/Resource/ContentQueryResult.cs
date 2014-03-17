@@ -6,12 +6,12 @@
     using System.Data.Common;
     using System.IO;
 
+    using CarbonCore.Utils;
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;
-
-    using Core.Utils;
-    using Core.Utils.Contracts;
-
+    
     public class ContentQueryResult
     {
         private readonly IContentManager contentManager;

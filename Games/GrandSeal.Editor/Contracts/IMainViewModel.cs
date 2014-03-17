@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows.Input;
-
-using GrandSeal.Editor.Logic;
-
-namespace GrandSeal.Editor.Contracts
+﻿namespace GrandSeal.Editor.Contracts
 {
-    using Core.Utils.IO;
+    using System;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Windows.Input;
 
+    using GrandSeal.Editor.Logic;
+
+    using CarbonCore.Utils.IO;
+    
     using Xceed.Wpf.AvalonDock.Themes;
 
     public interface IMainViewModel : IEditorBase

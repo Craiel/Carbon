@@ -3,12 +3,13 @@
     using System;
     using System.Collections.Generic;
 
+    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Diagnostics;
+
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
-    using Core.Utils.Contracts;
-    using Core.Utils.Diagnostics;
 
-    using LuaInterface;
+    using NLua;
 
     public class ScriptingEngine : IScriptingEngine
     {

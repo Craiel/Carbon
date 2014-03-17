@@ -2,7 +2,7 @@
 {
     using System.IO;
 
-    using Core.Utils;
+    using CarbonCore.Utils;
 
     using SharpDX.D3DCompiler;
     using SharpDX.Direct3D;

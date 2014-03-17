@@ -2,8 +2,9 @@
 {
     using System.Collections.Generic;
 
+    using CarbonCore.UtilsDX;
+
     using Core.Protocol.Resource;
-    using Core.Utils;
 
     using SharpDX;
 

@@ -5,12 +5,13 @@
     using System.IO;
     using System.Linq;
 
+    using CarbonCore.Utils.IO;
+    using CarbonCore.UtilsDX;
+
     using Core.Engine.Resource.Resources.Stage;
     using Core.Processing.Logic;
     using Core.Processing.Resource.Generic.Data;
     using Core.Processing.Resource.Xcd.Scene;
-    using Core.Utils;
-    using Core.Utils.IO;
 
     using SharpDX;
 

@@ -89,14 +89,14 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac">
+      <HintPath>..\..\..\CarbonCore\External\Autofac\3.1.1\Autofac.dll</HintPath>
+    </Reference>
     <Reference Include="Fluent">
       <HintPath>..\..\External\FluentRibbon\c2848bed6826\Fluent.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit">
       <HintPath>..\..\External\AvalonEdit\4.3.0.9409\ICSharpCode.AvalonEdit.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject">
-      <HintPath>..\..\External\Ninject\3.0.0.15\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero">
       <Private>True</Private>
@@ -188,7 +188,7 @@
     <Compile Include="Logic\ResourceExplorerTemplateSelector.cs" />
     <Compile Include="Logic\TextureSynchronizer.cs" />
     <Compile Include="Logic\UndoRedoManager.cs" />
-    <Compile Include="Ninject\ViewModelFactory.cs" />
+    <Compile Include="IoC\ViewModelFactory.cs" />
     <Compile Include="StaticResources.cs" />
     <Compile Include="ViewModels\EditorSettingsViewModel.cs" />
     <Compile Include="ViewModels\ContentExplorerViewModel.cs" />
@@ -267,8 +267,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ninject\FactoryExtension.cs" />
-    <Compile Include="Ninject\NinjectModuleManager.cs" />
+    <Compile Include="IoC\FactoryExtension.cs" />
+    <Compile Include="IoC\IoC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -298,9 +298,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Utils\Core.Utils.csproj">
+    <ProjectReference Include="..\..\..\CarbonCore\Utils\CarbonCore.Utils.csproj">
       <Project>{e05836d9-0bb3-4bfa-89e6-f5ed40a9d93c}</Project>
-      <Name>Core.Utils</Name>
+      <Name>CarbonCore.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Editor\Core.Processing.csproj">
       <Project>{819ff5d0-4498-48f2-9f7d-81a322b9b082}</Project>
@@ -475,7 +475,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)External\sqllite\1.0.84.0\x64\Deploy.bat" $(TargetDir) &amp;&amp; "$(SolutionDir)External\nvidia-texture-tools\2.0.8-1\bin\Deploy.bat" $(TargetDir)\TexTools\</PostBuildEvent>
+    <PostBuildEvent>copy $(ProjectDir)..\..\..\CarbonCore\External\sqllite\1.0.91.0\* $(TargetDir)
+xcopy /Q /H /Y /E /I $(ProjectDir)..\..\External\nvidia-texture-tools\2.0.8-1\bin\* $(TargetDir)TexTools\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

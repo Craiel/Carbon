@@ -8,8 +8,9 @@
     using System.Drawing.Text;
     using System.IO;
 
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Resource.Resources;
-    using Core.Utils.IO;
 
     public struct FontProcessingOptions
     {

@@ -2,8 +2,8 @@
 {
     using System;
 
-    using Core.Utils;
-
+    using CarbonCore.Utils;
+    
     public class ContentCriterion
     {
         public ContentReflectionProperty PropertyInfo { get; set; }

@@ -1,7 +1,7 @@
-﻿using Core.Utils.Contracts;
-
-namespace GrandSeal.Editor.Contracts
+﻿namespace GrandSeal.Editor.Contracts
 {
+    using CarbonCore.Utils.Contracts;
+
     public interface IApplicationLog : ILogBase
     {
     }

@@ -1,7 +1,7 @@
 ﻿namespace Core.Engine.Resource.Resources.Model
 {
-    using Core.Utils;
-
+    using CarbonCore.UtilsDX;
+    
     using SharpDX;
 
     public class ModelResourceElement

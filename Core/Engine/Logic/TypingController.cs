@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using CarbonCore.Utils.Contracts;
+
     using Core.Engine.Contracts.Logic;
 
     public interface ITypingController : IBoundController
@@ -67,7 +69,7 @@
             return values;
         }
 
-        public override bool Update(Utils.Contracts.ITimer gameTime)
+        public override bool Update(ITimer gameTime)
         {
             if (!base.Update(gameTime))
             {
