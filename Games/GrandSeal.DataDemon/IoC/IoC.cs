@@ -1,8 +1,5 @@
 ﻿namespace GrandSeal.DataDemon.IoC
 {
-    using Autofac;
-    using Autofac.Core;
-
     using CarbonCore.Utils.IoC;
 
     using Core.Engine.IoC;
@@ -11,27 +8,21 @@
     using GrandSeal.DataDemon.Contracts;
     using GrandSeal.DataDemon.Logic;
 
-    public class DataDemonModule : Module
+    [DependsOnModule(typeof(UtilsModule))]
+    [DependsOnModule(typeof(EngineModule))]
+    [DependsOnModule(typeof(DataDemonModule))]
+    [DependsOnModule(typeof(CarbonEditorModule))]
+    public class DataDemonModule : CarbonModule
     {
-        public static IModule[] GetModules()
+        public DataDemonModule()
         {
-            return new IModule[]
-                    {
-                        new EngineModule(), new DataDemonModule(),
-                        new CarbonEditorModule(),
-                        new UtilsModule()
-                    };
-        }
+            this.For<IDataDemon>().Use<DataDemon>().Singleton();
 
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterType<IDataDemon>().As<DataDemon>().SingleInstance();
+            this.For<IDemonLogic>().Use<DemonLogic>().Singleton();
+            this.For<IDemonLog>().Use<DemonLog>().Singleton();
 
-            builder.RegisterType<IDemonLogic>().As<DemonLogic>().SingleInstance();
-            builder.RegisterType<IDemonLog>().As<DemonLog>().SingleInstance();
-
-            builder.RegisterType<IDemonFileInfo>().As<DemonFileInfo>().SingleInstance();
-            builder.RegisterType<IDemonBuild>().As<DemonBuild>();
+            this.For<IDemonFileInfo>().Use<DemonFileInfo>().Singleton();
+            this.For<IDemonBuild>().Use<DemonBuild>();
         }
     }
 }

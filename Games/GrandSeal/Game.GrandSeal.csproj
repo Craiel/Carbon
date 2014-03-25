@@ -64,7 +64,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac">
-      <HintPath>..\..\..\CarbonCore\External\Autofac\3.1.1\Autofac.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\Autofac\ef649c19540258add1bb48e9d855c54808a92a4d\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="NLua">
       <HintPath>..\..\..\CarbonCore\External\NLua\21ea9050e3\NLua.dll</HintPath>

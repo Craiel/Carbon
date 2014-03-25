@@ -1,8 +1,5 @@
 ﻿namespace GrandSeal.IoC
 {
-    using Autofac;
-    using Autofac.Core;
-
     using CarbonCore.Utils.IoC;
 
     using Contracts;
@@ -12,30 +9,23 @@
     using Logic;
     using Scenes;
 
-    public class GameModule : Module
+    [DependsOnModule(typeof(UtilsModule))]
+    [DependsOnModule(typeof(EngineModule))]
+    [DependsOnModule(typeof(GameModule))]
+    public class GameModule : CarbonModule
     {
-        public static IModule[] GetModules()
+        public GameModule()
         {
-            return new IModule[]
-                       {
-                           new EngineModule(), 
-                           new GameModule(), 
-                           new UtilsModule()
-                       };
-        }
+            this.For<IGrandSeal>().Use<GrandSeal>().Singleton();
 
-        protected override void Load(ContainerBuilder builder)
-        {
-            builder.RegisterType<IGrandSeal>().As<GrandSeal>().SingleInstance();
+            this.For<IGrandSealLog>().Use<GrandSealLog>();
+            this.For<IGrandSealScriptingProvider>().Use<GrandSealScriptingProvider>().Singleton();
+            this.For<IGrandSealGameState>().Use<GrandSealGameState>().Singleton();
+            this.For<IGrandSealSystemController>().Use<GrandSealSystemController>().Singleton();
+            this.For<IGrandSealSettings>().Use<GrandSealSettings>().Singleton();
 
-            builder.RegisterType<IGrandSealLog>().As<GrandSealLog>();
-            builder.RegisterType<IGrandSealScriptingProvider>().As<GrandSealScriptingProvider>().SingleInstance();
-            builder.RegisterType<IGrandSealGameState>().As<GrandSealGameState>().SingleInstance();
-            builder.RegisterType<IGrandSealSystemController>().As<GrandSealSystemController>().SingleInstance();
-            builder.RegisterType<IGrandSealSettings>().As<GrandSealSettings>().SingleInstance();
-
-            builder.RegisterType<ISceneEntry>().As<SceneEntry>().SingleInstance();
-            builder.RegisterType<ISceneMainMenu>().As<SceneMainMenu>().SingleInstance();
+            this.For<ISceneEntry>().Use<SceneEntry>().Singleton();
+            this.For<ISceneMainMenu>().Use<SceneMainMenu>().Singleton();
         }
     }
 }
