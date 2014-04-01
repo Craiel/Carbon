@@ -378,6 +378,8 @@
             public Matrix InvertedProjection;
 
             public Vector4 Padding; // Still no idea why this is needed...
+
+            public static DefaultConstantBuffer Empty { get; set; }
         }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

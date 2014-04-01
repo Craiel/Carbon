@@ -3,7 +3,6 @@
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
 
-    using SharpDX;
     using SharpDX.Direct3D;
     using SharpDX.Direct3D11;
 
@@ -14,9 +13,7 @@
         private readonly Buffer[] buffers;
         private readonly ShaderResourceView[] resources;
         private readonly ShaderMacro[] macros;
-
-        private DefaultConstantBuffer defaultConstantBuffer;
-
+        
         private bool reloadShaderState = true;
         
         // -------------------------------------------------------------------
@@ -55,8 +52,7 @@
             this.ConfigureTextures(instruction);
 
             // No need to send any matrix info here, this only blends
-
-            this.SetConstantBufferData(0, this.DefaultConstantBufferSize, this.defaultConstantBuffer);
+            this.SetConstantBufferData(0, this.DefaultConstantBufferSize, DefaultConstantBuffer.Empty);
         }
 
         private void ConfigureTextures(RenderInstruction instruction)
