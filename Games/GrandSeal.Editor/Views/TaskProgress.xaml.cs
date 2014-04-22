@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
     using System.Windows;
 
-    using CarbonCore.Utils;
+    using CarbonCore.UtilsWPF;
 
     public sealed partial class TaskProgress
     {

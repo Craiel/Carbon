@@ -64,13 +64,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac">
-      <HintPath>..\..\..\CarbonCore\External\Autofac\ef649c19540258add1bb48e9d855c54808a92a4d\Autofac.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\Autofac\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="NLua">
       <HintPath>..\..\..\CarbonCore\External\NLua\21ea9050e3\NLua.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\Bin\DirectX11_1-net40\SharpDX.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11_1-net40\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

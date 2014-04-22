@@ -119,14 +119,16 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="Xceed.Wpf.AvalonDock">
-      <HintPath>..\..\External\Extended WPF Toolkit\2.0.0\Xceed.Wpf.AvalonDock.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\Extended WPF Toolkit\2.1.0\Xceed.Wpf.AvalonDock.dll</HintPath>
     </Reference>
     <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
-      <HintPath>..\..\External\Extended WPF Toolkit\2.0.0\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\Extended WPF Toolkit\2.1.0\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
     </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit, Version=1.9.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\External\Extended WPF Toolkit\2.0.0\Xceed.Wpf.Toolkit.dll</HintPath>
+    <Reference Include="Xceed.Wpf.DataGrid">
+      <HintPath>..\..\..\CarbonCore\External\Extended WPF Toolkit\2.1.0\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\..\..\CarbonCore\External\Extended WPF Toolkit\2.1.0\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +300,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CarbonCore\UtilsWPF\CarbonCore.UtilsWPF.csproj">
+      <Project>{75FF83F3-C123-4982-91F7-09D0F8A66536}</Project>
+      <Name>CarbonCore.UtilsWPF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\CarbonCore\Utils\CarbonCore.Utils.csproj">
       <Project>{e05836d9-0bb3-4bfa-89e6-f5ed40a9d93c}</Project>
       <Name>CarbonCore.Utils</Name>

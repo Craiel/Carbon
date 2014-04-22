@@ -62,7 +62,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Autofac">
-      <HintPath>..\..\..\CarbonCore\External\Autofac\3.1.1\Autofac.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\Autofac\Autofac.dll</HintPath>
     </Reference>
     <Reference Include="Google.ProtocolBuffers">
       <HintPath>..\..\..\CarbonCore\External\protobuf-csharp-port\2.4.1.521\Google.ProtocolBuffers.dll</HintPath>
@@ -71,19 +71,19 @@
       <HintPath>..\..\..\CarbonCore\External\NLua\21ea9050e3\NLua.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\Bin\DirectX11_1-net40\SharpDX.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11_1-net40\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.D3DCompiler">
-      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\Bin\DirectX11_1-net40\SharpDX.D3DCompiler.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11_1-net40\SharpDX.D3DCompiler.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D11">
-      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\Bin\DirectX11_1-net40\SharpDX.Direct3D11.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11_1-net40\SharpDX.Direct3D11.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.DirectInput">
-      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\Bin\DirectX11-net40\SharpDX.DirectInput.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11-net40\SharpDX.DirectInput.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.DXGI">
-      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\Bin\DirectX11_1-net40\SharpDX.DXGI.dll</HintPath>
+      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11_1-net40\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
