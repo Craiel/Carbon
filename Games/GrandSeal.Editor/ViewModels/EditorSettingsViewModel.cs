@@ -120,7 +120,7 @@
             var dialog = new OpenFileDialog { CheckFileExists = false, CheckPathExists = true };
             if (dialog.ShowDialog() == true)
             {
-                this.TextureToolsFolder = new CarbonFile(dialog.FileName).ToDirectory();
+                this.TextureToolsFolder = new CarbonFile(dialog.FileName).GetDirectory();
             }
         }
         

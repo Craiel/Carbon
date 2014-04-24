@@ -490,7 +490,7 @@
 
             if (dialog.ShowDialog() == true)
             {
-                this.currentProject = new CarbonFile(dialog.FileName).ToDirectory();
+                this.currentProject = new CarbonFile(dialog.FileName).GetDirectory();
                 this.logic.SaveProject(this.currentProject);
             }
         }
