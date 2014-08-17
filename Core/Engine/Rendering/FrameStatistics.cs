@@ -1,6 +1,5 @@
 ﻿namespace Core.Engine.Rendering
 {
-    using System;
     using System.Reflection;
     using System.Text;
 
@@ -20,7 +19,7 @@
         }
 
         public ulong Id { get; private set; }
-        public TimeSpan StartTime { get; private set; }
+        public long StartTime { get; private set; }
         public double Duration { get; private set; }
         public ulong Triangles { get; set; }
         public ulong Instructions { get; set; }
@@ -74,7 +73,7 @@
 
         public void EndFrame()
         {
-            this.Duration = (Timer.CoreTimer.ElapsedTime - this.StartTime).TotalMilliseconds;
+            this.Duration = Timer.CoreTimer.ElapsedTime - this.StartTime;
 
             this.Ended = true;
         }

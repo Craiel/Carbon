@@ -22,7 +22,7 @@
 
     public abstract class CarbonGame : ICarbonGame
     {
-        private static readonly TimeSpan FrameTime = TimeSpan.FromSeconds(1);
+        private static readonly long FrameTime = TimeSpan.FromSeconds(1).Ticks;
 
         private readonly ITimer gameTimer;
         private readonly ICarbonGraphics graphics;
@@ -43,10 +43,10 @@
         private int currentFrameDrop;
 
         private Thread renderThread;
-        
-        private TimeSpan frameAccumulator;
-        private TimeSpan fpsAccumulator;
-        private TimeSpan lastUpdateTime;
+
+        private long frameAccumulator;
+        private long fpsAccumulator;
+        private long lastUpdateTime;
         private int frameCount;
         private int frameDropCount;
 
@@ -227,7 +227,7 @@
             {
                 this.gameTimer.Update();
 
-                TimeSpan elapsed = this.gameTimer.ActualElapsedTime - this.lastUpdateTime;
+                long elapsed = this.gameTimer.ActualElapsedTime - this.lastUpdateTime;
                 this.frameAccumulator += elapsed;
                 this.fpsAccumulator += elapsed;
 
@@ -263,7 +263,7 @@
 
                         this.FramesPerSecond = this.frameCount;
                         this.FramesSkipped = 0;
-                        this.fpsAccumulator = TimeSpan.FromTicks(0);
+                        this.fpsAccumulator = 0;
                         this.frameCount = 0;
                         this.possibleFramesPerSecond = 0;
                     }
@@ -271,7 +271,7 @@
                     if (!this.LimitFrameRate || this.frameDropCount > this.currentFrameDrop)
                     {
                         this.frameCount++;
-                        this.frameAccumulator = TimeSpan.FromTicks(0);
+                        this.frameAccumulator = 0;
                         this.frameDropCount = 0;
 
                         lock (this.RenderSynchronizationLock)

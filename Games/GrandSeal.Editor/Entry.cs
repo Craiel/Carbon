@@ -5,7 +5,8 @@
     using Autofac;
 
     using CarbonCore.Utils.Diagnostics;
-    
+    using CarbonCore.Utils.IoC;
+
     using GrandSeal.Editor.Contracts;
     using GrandSeal.Editor.IoC;
 
@@ -17,10 +18,8 @@
         [STAThread]
         public static void Main()
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterModule<EditorModule>();
-            IContainer kernel = builder.Build();
-            kernel.Resolve<IEditor>().Run();
+            IContainer container = CarbonContainerBuilder.Build<EditorModule>();
+            container.Resolve<IEditor>().Run();
 
             Profiler.TraceProfilerStatistics();
         }

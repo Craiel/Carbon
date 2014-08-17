@@ -22,7 +22,7 @@
         private int? activeScene;
         private int? suspendedScene;
 
-        private TimeSpan lastUpdateTime;
+        private long lastUpdateTime;
 
         private TypedVector2<int> currentSize;
 

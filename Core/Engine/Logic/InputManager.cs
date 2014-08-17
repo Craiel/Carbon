@@ -17,7 +17,7 @@
         public const string DefaultBindingDebugController = "_defaultDebugController";
         public const string DefaultBindingConsole = "_defaultConsole";
 
-        private static readonly TimeSpan UpdateCycle = TimeSpan.FromMilliseconds(10);
+        private static readonly long UpdateCycle = TimeSpan.FromMilliseconds(10).Ticks;
 
         private readonly IList<IInputReceiver> receivers;
         private readonly IDictionary<string, bool> pressedState;
@@ -28,7 +28,7 @@
         private readonly Keyboard keyboard;
         private readonly Mouse mouse;
 
-        private TimeSpan lastUpdateTime;
+        private long lastUpdateTime;
         
         // -------------------------------------------------------------------
         // Constructor
@@ -78,7 +78,7 @@
                 return false;
             }
 
-            if ((gameTimer.ActualElapsedTime - this.lastUpdateTime) < UpdateCycle)
+            if (gameTimer.ActualElapsedTime - this.lastUpdateTime < UpdateCycle)
             {
                 return true;
             }

@@ -24,8 +24,8 @@
         private string lineBuffer;
 
         private string lastTrigger;
-        private TimeSpan lastTriggerTime;
-        private TimeSpan lastUpdateTime;
+        private long lastTriggerTime;
+        private long lastUpdateTime;
         private bool repeatThresholdReached;
         
         // -------------------------------------------------------------------
@@ -120,14 +120,14 @@
             {
                 if (this.repeatThresholdReached)
                 {
-                    if ((this.lastUpdateTime - this.lastTriggerTime).TotalMilliseconds < this.RepeatDelay)
+                    if (this.lastUpdateTime - this.lastTriggerTime < this.RepeatDelay)
                     {
                         return false;
                     }
                 }
                 else
                 {
-                    if ((this.lastUpdateTime - this.lastTriggerTime).TotalMilliseconds < this.RepeatThreshold)
+                    if (this.lastUpdateTime - this.lastTriggerTime < this.RepeatThreshold)
                     {
                         return false;
                     }

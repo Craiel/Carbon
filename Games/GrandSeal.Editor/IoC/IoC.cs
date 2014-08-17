@@ -12,7 +12,7 @@
     using GrandSeal.Editor.Logic;
     using GrandSeal.Editor.ViewModels;
 
-    public class EditorModule : Module
+    public class EditorModule : CarbonModule
     {
         public static IModule[] GetModules()
         {
@@ -26,41 +26,41 @@
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<IEditor>().As<Editor>().SingleInstance();
+            this.For<IEditor>().Use<Editor>().Singleton();
 
-            builder.RegisterType<IApplicationLog>().As<ApplicationLog>().SingleInstance();
-            builder.RegisterType<IOperationProgress>().As<OperationProgress>().SingleInstance();
-            builder.RegisterType<IUndoRedoManager>().As<UndoRedoManager>().SingleInstance();
-            builder.RegisterType<IEditorLogic>().As<EditorLogic>().SingleInstance();
-            builder.RegisterType<IEditorLog>().As<EditorLog>().SingleInstance();
-            builder.RegisterType<IEditorSettings>().As<EditorSettings>().SingleInstance();
-            builder.RegisterType<IViewModelFactory>().As<ViewModelFactory>().SingleInstance();
+            this.For<IApplicationLog>().Use<ApplicationLog>().Singleton();
+            this.For<IOperationProgress>().Use<OperationProgress>().Singleton();
+            this.For<IUndoRedoManager>().Use<UndoRedoManager>().Singleton();
+            this.For<IEditorLogic>().Use<EditorLogic>().Singleton();
+            this.For<IEditorLog>().Use<EditorLog>().Singleton();
+            this.For<IEditorSettings>().Use<EditorSettings>().Singleton();
+            this.For<IViewModelFactory>().Use<ViewModelFactory>().Singleton();
 
-            builder.RegisterType<IMainViewModel>().As<MainViewModel>().SingleInstance();
+            this.For<IMainViewModel>().Use<MainViewModel>().Singleton();
 
-            builder.RegisterType<ITextureSynchronizer>().As<TextureSynchronizer>();
+            this.For<ITextureSynchronizer>().Use<TextureSynchronizer>();
 
             // Document views
-            builder.RegisterType<IEditorSettingsViewModel>().As<EditorSettingsViewModel>();
-            builder.RegisterType<IProjectViewModel>().As<ProjectViewModel>();
-            builder.RegisterType<IFolderViewModel>().As<FolderViewModel>();
-            builder.RegisterType<IStageViewModel>().As<StageViewModel>();
-            builder.RegisterType<IResourceTextureViewModel>().As<ResourceTextureViewModel>();
-            builder.RegisterType<IResourceModelViewModel>().As<ResourceModelViewModel>();
-            builder.RegisterType<IResourceScriptViewModel>().As<ResourceScriptViewModel>();
-            builder.RegisterType<IResourceFontViewModel>().As<ResourceFontViewModel>();
-            builder.RegisterType<IResourceRawViewModel>().As<ResourceRawViewModel>();
-            builder.RegisterType<IResourceStageViewModel>().As<ResourceStageViewModel>();
-            builder.RegisterType<IResourceUserInterfaceViewModel>().As<ResourceUserInterfaceViewModel>();
-            builder.RegisterType<IMaterialViewModel>().As<MaterialViewModel>();
-            builder.RegisterType<IFontViewModel>().As<FontViewModel>();
+            this.For<IEditorSettingsViewModel>().Use<EditorSettingsViewModel>();
+            this.For<IProjectViewModel>().Use<ProjectViewModel>();
+            this.For<IFolderViewModel>().Use<FolderViewModel>();
+            this.For<IStageViewModel>().Use<StageViewModel>();
+            this.For<IResourceTextureViewModel>().Use<ResourceTextureViewModel>();
+            this.For<IResourceModelViewModel>().Use<ResourceModelViewModel>();
+            this.For<IResourceScriptViewModel>().Use<ResourceScriptViewModel>();
+            this.For<IResourceFontViewModel>().Use<ResourceFontViewModel>();
+            this.For<IResourceRawViewModel>().Use<ResourceRawViewModel>();
+            this.For<IResourceStageViewModel>().Use<ResourceStageViewModel>();
+            this.For<IResourceUserInterfaceViewModel>().Use<ResourceUserInterfaceViewModel>();
+            this.For<IMaterialViewModel>().Use<MaterialViewModel>();
+            this.For<IFontViewModel>().Use<FontViewModel>();
 
             // Tool views
-            builder.RegisterType<IResourceExplorerViewModel>().As<ResourceExplorerViewModel>().SingleInstance();
-            builder.RegisterType<IMaterialExplorerViewModel>().As<MaterialExplorerViewModel>().SingleInstance();
-            builder.RegisterType<IFontExplorerViewModel>().As<FontExplorerViewModel>().SingleInstance();
-            builder.RegisterType<IPropertyViewModel>().As<PropertyViewModel>().SingleInstance();
-            builder.RegisterType<INewDialogViewModel>().As<NewDialogViewModel>().SingleInstance();
+            this.For<IResourceExplorerViewModel>().Use<ResourceExplorerViewModel>().Singleton();
+            this.For<IMaterialExplorerViewModel>().Use<MaterialExplorerViewModel>().Singleton();
+            this.For<IFontExplorerViewModel>().Use<FontExplorerViewModel>().Singleton();
+            this.For<IPropertyViewModel>().Use<PropertyViewModel>().Singleton();
+            this.For<INewDialogViewModel>().Use<NewDialogViewModel>().Singleton();
         }
     }
 }
