@@ -1,15 +1,15 @@
 ﻿namespace Core.Processing.IoC
 {
     using Autofac;
-
+    using CarbonCore.Utils.IoC;
     using Core.Processing.Contracts;
     using Core.Processing.Logic;
 
-    public class CarbonEditorModule : Module
+    public class CarbonEditorModule : CarbonModule
     {
-        protected override void Load(ContainerBuilder builder)
+        public CarbonEditorModule()
         {
-            builder.RegisterType<ResourceProcessor>().As<IResourceProcessor>().SingleInstance();
+            this.For<IResourceProcessor>().Use<ResourceProcessor>().Singleton();
         }
     }
 }

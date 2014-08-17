@@ -11,6 +11,9 @@ using GrandSeal.Editor.Views;
 
 namespace GrandSeal.Editor.ViewModels
 {
+    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.UtilsWPF;
+
     public class MaterialViewModel : ContentViewModel, IMaterialViewModel
     {
         private readonly IEditorLogic logic;
@@ -31,12 +34,10 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public MaterialViewModel(IEngineFactory factory, MaterialEntry data)
-            : base(factory, data)
+        public MaterialViewModel(IFactory factory)
+            : base(factory)
         {
-            this.logic = factory.Get<IEditorLogic>();
-
-            this.data = data;
+            this.logic = factory.Resolve<IEditorLogic>();
 
             this.Template = StaticResources.MaterialTemplate;
         }
@@ -197,7 +198,7 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                return this.commandSelectDiffuse ?? (this.commandSelectDiffuse = new RelayCommand(x => this.DiffuseTexture = this.SelectTexture()));
+                return this.commandSelectDiffuse ?? (this.commandSelectDiffuse = new RelayCommand(() => this.DiffuseTexture = this.SelectTexture()));
             }
         }
 
@@ -205,7 +206,7 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                return this.commandSelectNormal ?? (this.commandSelectNormal = new RelayCommand(x => this.NormalTexture = this.SelectTexture())); ;
+                return this.commandSelectNormal ?? (this.commandSelectNormal = new RelayCommand(() => this.NormalTexture = this.SelectTexture())); ;
             }
         }
 
@@ -213,7 +214,7 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                return this.commandSelectAlpha ?? (this.commandSelectAlpha = new RelayCommand(x => this.AlphaTexture = this.SelectTexture())); ;
+                return this.commandSelectAlpha ?? (this.commandSelectAlpha = new RelayCommand(() => this.AlphaTexture = this.SelectTexture())); ;
             }
         }
 
@@ -221,7 +222,7 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                return this.commandSelectSpecular ?? (this.commandSelectSpecular = new RelayCommand(x => this.SpecularTexture = this.SelectTexture())); ;
+                return this.commandSelectSpecular ?? (this.commandSelectSpecular = new RelayCommand(() => this.SpecularTexture = this.SelectTexture())); ;
             }
         }
         
@@ -277,7 +278,7 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected override void OnSave(object obj)
+        protected override void OnSave(bool force)
         {
             this.logic.Save(this);
         }

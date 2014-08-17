@@ -7,13 +7,17 @@
     using System.Windows;
     using System.Windows.Input;
 
+    using CarbonCore.ToolFramework.ViewModel;
+    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.Utils.IO;
+    using CarbonCore.UtilsWPF;
 
     using Core.Engine.Contracts;
     using Core.Engine.Resource.Content;
     using GrandSeal.Editor.Contracts;
     using GrandSeal.Editor.Events;
     using GrandSeal.Editor.Logic;
+    using GrandSeal.Editor.Logic.Docking;
     using GrandSeal.Editor.Logic.MVVM;
     using GrandSeal.Editor.Views;
     using Microsoft.Win32;
@@ -22,13 +26,13 @@
     
     using Xceed.Wpf.AvalonDock.Themes;
 
-    public class MainViewModel : EditorBase, IMainViewModel
+    public class MainViewModel : BaseViewModel, IMainViewModel
     {
         private const string DefaultProjectFileExtension = ".crbn";
         private const string DefaultProjectLayoutFile = "CarbonLayout.cedl";
 
         private readonly IEditorLogic logic;
-        private readonly IEngineFactory factory;
+        private readonly IFactory factory;
         private readonly IEventRelay eventRelay;
         private readonly IUndoRedoManager undoRedoManager;
         private readonly IOperationProgress operationProgress;
@@ -52,18 +56,18 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public MainViewModel(IEditorLogic logic, IEngineFactory factory)
+        public MainViewModel(IEditorLogic logic, IFactory factory)
         {
             this.logic = logic;
             this.factory = factory;
-            this.eventRelay = factory.Get<IEventRelay>();
-            this.undoRedoManager = factory.Get<IUndoRedoManager>();
+            this.eventRelay = factory.Resolve<IEventRelay>();
+            this.undoRedoManager = factory.Resolve<IUndoRedoManager>();
             this.undoRedoManager.PropertyChanged += this.OnUndoRedoManagerChanged;
-            this.operationProgress = factory.Get<IOperationProgress>();
-            this.propertyViewModel = factory.Get<IPropertyViewModel>();
-            this.resourceExplorerViewModel = factory.Get<IResourceExplorerViewModel>();
-            this.materialExplorerViewModel = factory.Get<IMaterialExplorerViewModel>();
-            this.fontExplorerViewModel = factory.Get<IFontExplorerViewModel>();
+            this.operationProgress = factory.Resolve<IOperationProgress>();
+            this.propertyViewModel = factory.Resolve<IPropertyViewModel>();
+            this.resourceExplorerViewModel = factory.Resolve<IResourceExplorerViewModel>();
+            this.materialExplorerViewModel = factory.Resolve<IMaterialExplorerViewModel>();
+            this.fontExplorerViewModel = factory.Resolve<IFontExplorerViewModel>();
             
             this.documentTemplates = new List<IDocumentTemplate>();
             this.documentTemplateCategories = new List<IDocumentTemplateCategory>();
@@ -84,7 +88,7 @@
             this.CommandNewFont = new RelayCommand(this.OnNewFont, this.CanCreateContent);
             this.CommandNewModel = new RelayCommand(this.OnNewModel, this.CanCreateContent);
             this.CommandNewResource = new RelayCommand(this.OnNewResource, this.CanCreateResource);
-            this.CommandOpenProject = new RelayCommand(this.OnOpenProject);
+            this.CommandOpenProject = new RelayCommand<CarbonDirectory>(this.OnOpenProject);
             this.CommandUndo = new RelayCommand(this.OnUndo, this.CanUndo);
             this.CommandRedo = new RelayCommand(this.OnRedo, this.CanRedo);
             this.CommandCloseProject = new RelayCommand(this.OnCloseProject, this.CanCloseProject);
@@ -95,7 +99,7 @@
             this.CommandOpenMaterialExplorer = new RelayCommand(this.OnShowMaterialExplorer);
             this.CommandOpenFontExplorer = new RelayCommand(this.OnShowFontExplorer);
             this.CommandOpenProperties = new RelayCommand(this.OnShowProperties);
-            this.CommandOpenNewDialog = new RelayCommand(this.OnNewDialog);
+            this.CommandOpenNewDialog = new RelayCommand<IFolderViewModel>(this.OnNewDialog);
             this.CommandReload = new RelayCommand(this.OnReload, this.CanReload);
             this.CommandOpenSettings = new RelayCommand(this.OnShowSettings);
             
@@ -206,7 +210,7 @@
         {
             get
             {
-                return this.projectViewModel ?? (this.projectViewModel = this.factory.Get<IProjectViewModel>());
+                return this.projectViewModel ?? (this.projectViewModel = this.factory.Resolve<IProjectViewModel>());
             }
         }
 
@@ -282,11 +286,11 @@
             }
         }
 
-        private void OnNewProject(object obj)
+        private void OnNewProject()
         {
-            if (this.CanCloseProject(null))
+            if (this.CanCloseProject())
             {
-                this.OnCloseProject(null);
+                this.OnCloseProject();
             }
 
             if (this.logic.IsProjectLoaded)
@@ -310,7 +314,7 @@
             this.NotifyProjectChange();
         }
 
-        private void OnNewResource(object obj)
+        private void OnNewResource()
         {
             if (this.currentCreationContext == null)
             {
@@ -322,50 +326,50 @@
             //this.currentCreationContext.AddContent(vm);
         }
 
-        private void OnNewModel(object obj)
+        private void OnNewModel()
         {
             throw new NotImplementedException();
         }
 
-        private void OnNewFont(object obj)
+        private void OnNewFont()
         {
             this.logic.AddFont();
         }
 
-        private void OnNewStage(object obj)
+        private void OnNewStage()
         {
             throw new NotImplementedException();
         }
 
-        private void OnNewMaterial(object obj)
+        private void OnNewMaterial()
         {
             this.logic.AddMaterial();
         }
 
-        private void OnReload(object obj)
+        private void OnReload()
         {
             this.logic.Reload();
         }
 
-        private bool CanReload(object obj)
+        private bool CanReload()
         {
             return this.logic.IsProjectLoaded;
         }
 
-        private void OnNewDialog(object obj)
+        private void OnNewDialog(IFolderViewModel context)
         {
-            this.currentCreationContext = obj as IFolderViewModel;
-            var vm = this.factory.Get<INewDialogViewModel>();
+            this.currentCreationContext = context;
+            var vm = this.factory.Resolve<INewDialogViewModel>();
             var view = new NewDocumentView { DataContext = vm };
             view.ShowDialog();
         }
 
-        private bool CanCreateContent(object obj)
+        private bool CanCreateContent()
         {
             return this.logic.IsProjectLoaded;
         }
 
-        private bool CanCreateResource(object obj)
+        private bool CanCreateResource()
         {
             return this.logic.IsProjectLoaded;
         }
@@ -393,34 +397,34 @@
             // ReSharper restore ExplicitCallerInfoArgument
         }
 
-        private void OnRedo(object obj)
+        private void OnRedo()
         {
             this.undoRedoManager.ActiveGroup.Redo();
             this.NotifyUndoRedoChanged();
         }
 
-        private bool CanRedo(object obj)
+        private bool CanRedo()
         {
             return this.undoRedoManager.ActiveGroup != null && this.undoRedoManager.ActiveGroup.CanRedo;
         }
 
-        private void OnUndo(object obj)
+        private void OnUndo()
         {
             this.undoRedoManager.ActiveGroup.Undo();
             this.NotifyUndoRedoChanged();
         }
 
-        private bool CanUndo(object obj)
+        private bool CanUndo()
         {
             return this.undoRedoManager.ActiveGroup != null && this.undoRedoManager.ActiveGroup.CanUndo;
         }
 
-        private bool CanCloseProject(object obj)
+        private bool CanCloseProject()
         {
             return this.logic.IsProjectLoaded;
         }
 
-        private void OnCloseProject(object obj)
+        private void OnCloseProject()
         {
             this.SaveProjectLayout();
             this.logic.CloseProject();
@@ -428,12 +432,12 @@
             this.NotifyProjectChange();
         }
 
-        private void OnOpenProject(object obj)
+        private void OnOpenProject(CarbonDirectory source)
         {
             // See if we got a path to open
-            if (obj as CarbonPath != null)
+            if (source != null)
             {
-                this.DoOpenProject((CarbonDirectory)obj);
+                this.DoOpenProject(source);
                 return;
             }
 
@@ -451,9 +455,9 @@
 
         private void DoOpenProject(CarbonDirectory path)
         {
-            if (this.CanCloseProject(null))
+            if (this.CanCloseProject())
                 {
-                    this.OnCloseProject(null);
+                    this.OnCloseProject();
                 }
 
                 this.currentProject = path;
@@ -462,23 +466,23 @@
                 this.NotifyProjectChange();
         }
         
-        private bool CanSaveProject(object obj)
+        private bool CanSaveProject()
         {
             return this.logic.IsProjectLoaded;
         }
 
-        private void OnSaveProject(object obj)
+        private void OnSaveProject()
         {
             if (this.currentProject.IsNull)
             {
-                this.OnSaveProjectAs(obj);
+                this.OnSaveProjectAs();
                 return;
             }
 
             this.logic.SaveProject(this.currentProject);
         }
 
-        private void OnSaveProjectAs(object obj)
+        private void OnSaveProjectAs()
         {
             // Todo: replace with directory dialog
             var dialog = new OpenFileDialog
@@ -495,40 +499,40 @@
             }
         }
 
-        private void OnExit(object obj)
+        private void OnExit()
         {
             Application.Current.Shutdown(0);
         }
         
-        private void OnShowResourceExplorer(object obj)
+        private void OnShowResourceExplorer()
         {
             this.resourceExplorerViewModel.IsVisible = true;
             this.resourceExplorerViewModel.IsActive = true;
         }
 
-        private void OnShowMaterialExplorer(object obj)
+        private void OnShowMaterialExplorer()
         {
             this.materialExplorerViewModel.IsVisible = true;
             this.materialExplorerViewModel.IsActive = true;
         }
 
-        private void OnShowFontExplorer(object obj)
+        private void OnShowFontExplorer()
         {
             this.fontExplorerViewModel.IsVisible = true;
             this.fontExplorerViewModel.IsActive = true;
         }
 
-        private void OnShowProperties(object obj)
+        private void OnShowProperties()
         {
             this.propertyViewModel.IsVisible = true;
             this.propertyViewModel.IsActive = true;
         }
 
-        private void OnShowSettings(object obj)
+        private void OnShowSettings()
         {
             if (this.settingsViewModel == null)
             {
-                this.settingsViewModel = this.factory.Get<IEditorSettingsViewModel>();
+                this.settingsViewModel = this.factory.Resolve<IEditorSettingsViewModel>();
             }
 
             if (this.Documents.Contains(this.settingsViewModel))

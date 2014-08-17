@@ -21,8 +21,6 @@
         private const string SqlLastId = "SELECT last_insert_rowid()";
 
         private readonly ILog log;
-
-        private readonly CarbonFile file;
         
         private readonly SQLiteFactory factory;
         private readonly IList<string> checkedTableList;
@@ -31,17 +29,17 @@
 
         private readonly IDictionary<int, ContentQueryResult> contentQueryCache;
 
+        private CarbonFile file;
+
         private SQLiteConnection connection;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ContentManager(IEngineLog log, CarbonFile file)
+        public ContentManager(IEngineLog log)
         {
             this.log = log.AquireContextLog("ContentManager");
-
-            this.file = file;
-
+            
             this.factory = new SQLiteFactory();
             this.checkedTableList = new List<string>();
             this.contentLinkCache = new Dictionary<int, ContentLink>();
@@ -188,7 +186,12 @@
             this.contentLinkCache.Clear();
             this.contentQueryCache.Clear();
         }
-        
+
+        public void Initialize(CarbonFile contentFile)
+        {
+            this.file = contentFile;
+        }
+
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------

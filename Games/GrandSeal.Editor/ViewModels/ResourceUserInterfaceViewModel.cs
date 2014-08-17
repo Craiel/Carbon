@@ -5,6 +5,8 @@
     using System.IO;
     using System.Windows;
 
+    using CarbonCore.Utils.Contracts.IoC;
+
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;
@@ -28,10 +30,10 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ResourceUserInterfaceViewModel(IEngineFactory factory, ResourceEntry data)
-            : base(factory, data)
+        public ResourceUserInterfaceViewModel(IFactory factory)
+            : base(factory)
         {
-            this.resourceProcessor = factory.Get<IResourceProcessor>();
+            this.resourceProcessor = factory.Resolve<IResourceProcessor>();
         }
 
         // -------------------------------------------------------------------

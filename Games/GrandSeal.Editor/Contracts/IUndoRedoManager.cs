@@ -1,8 +1,10 @@
-﻿using System;
-
-namespace GrandSeal.Editor.Contracts
+﻿namespace GrandSeal.Editor.Contracts
 {
-    public interface IUndoRedoManager : IEditorBase
+    using System;
+
+    using CarbonCore.ToolFramework.Contracts;
+
+    public interface IUndoRedoManager : IBaseViewModel
     {
         IUndoRedoGroup ActiveGroup { get; }
 

@@ -1,9 +1,11 @@
-﻿using System;
-using System.Windows.Input;
-
-namespace GrandSeal.Editor.Contracts
+﻿namespace GrandSeal.Editor.Contracts
 {
-    public interface IEditorDocument : IEditorBase
+    using System;
+    using System.Windows.Input;
+
+    using CarbonCore.ToolFramework.Contracts;
+
+    public interface IEditorDocument : IBaseViewModel
     {
         string Title { get; }
         string Name { get; set; }

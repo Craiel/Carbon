@@ -18,6 +18,7 @@
     
     using SharpDX;
     using SharpDX.Direct3D11;
+    using CarbonCore.Utils.Contracts.IoC;
 
     public class FrameManager : EngineComponent, IFrameManager
     {
@@ -40,10 +41,10 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public FrameManager(IEngineFactory factory)
+        public FrameManager(IFactory factory)
         {
-            this.graphics = factory.Get<ICarbonGraphics>();
-            this.renderer = factory.Get<IRenderer>();
+            this.graphics = factory.Resolve<ICarbonGraphics>();
+            this.renderer = factory.Resolve<IRenderer>();
 
             this.instructionCache = new List<RenderInstruction>();
             this.lightInstructionCache = new List<RenderLightInstruction>();

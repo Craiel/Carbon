@@ -1,19 +1,23 @@
 ﻿namespace GrandSeal.Logic
 {
+    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.Utils.IO;
 
     using Contracts;
 
-    using Core.Engine.Contracts;
+    using Core.Engine.Contracts.Resource;
     using Core.Engine.Logic;
 
     public class GrandSealGameState : GameState, IGrandSealGameState
     {
-        public GrandSealGameState(IEngineFactory factory)
+        public GrandSealGameState(IFactory factory)
             : base(factory)
         {
-            this.ResourceManager = factory.GetResourceManager(new CarbonDirectory("Data"));
-            this.ContentManager = factory.GetContentManager(this.ResourceManager, new CarbonFile("Main.db"));
+            this.ResourceManager = factory.Resolve<IResourceManager>();
+            this.ResourceManager.SetRoot(new CarbonDirectory("Data"));
+
+            this.ContentManager = factory.Resolve<IContentManager>();
+            this.ContentManager.Initialize(new CarbonFile("Main.db"));
         }
     }
 }

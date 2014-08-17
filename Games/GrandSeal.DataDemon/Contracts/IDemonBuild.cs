@@ -2,5 +2,6 @@
 {
     public interface IDemonBuild : IDemonOperation
     {
+        void SetConfig(Logic.DemonBuildConfig build);
     }
 }

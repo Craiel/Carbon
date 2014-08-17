@@ -7,7 +7,9 @@ using GrandSeal.Editor.Logic;
 
 namespace GrandSeal.Editor.ViewModels
 {
-    public class NewDialogViewModel : EditorBase, INewDialogViewModel
+    using CarbonCore.ToolFramework.ViewModel;
+
+    public class NewDialogViewModel : BaseViewModel, INewDialogViewModel
     {
         private readonly IMainViewModel mainViewModel;
         private readonly IEditorLogic logic;

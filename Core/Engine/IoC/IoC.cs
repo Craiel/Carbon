@@ -1,7 +1,7 @@
 ﻿namespace Core.Engine.IoC
 {
     using Autofac;
-
+    using CarbonCore.Utils.IoC;
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
@@ -17,45 +17,44 @@
     using Core.Engine.Scene;
     using Core.Engine.UserInterface;
 
-    public class EngineModule : Module
+    public class EngineModule : CarbonModule
     {
-        protected override void Load(ContainerBuilder builder)
+        public EngineModule()
         {
             // Core
-            builder.RegisterType<EngineFactory>().As<IEngineFactory>().SingleInstance();
-            builder.RegisterType<CarbonGraphics>().As<ICarbonGraphics>().SingleInstance();
-            builder.RegisterType<EngineLog>().As<IEngineLog>().SingleInstance();
+            this.For<ICarbonGraphics>().Use<CarbonGraphics>().Singleton();
+            this.For<IEngineLog>().Use<EngineLog>().Singleton();
 
             // Logic
-            builder.RegisterType<InputManager>().As<IInputManager>().SingleInstance();
-            builder.RegisterType<FirstPersonController>().As<IFirstPersonController>();
-            builder.RegisterType<TypingController>().As<ITypingController>();
-            builder.RegisterType<ScriptingEngine>().As<IScriptingEngine>();
-            builder.RegisterType<SceneManager>().As<ISceneManager>();
+            this.For<IInputManager>().Use<InputManager>().Singleton();
+            this.For<IFirstPersonController>().Use<FirstPersonController>();
+            this.For<ITypingController>().Use<TypingController>();
+            this.For<IScriptingEngine>().Use<ScriptingEngine>();
+            this.For<ISceneManager>().Use<SceneManager>();
 
             // Rendering
-            builder.RegisterType<ProjectionCamera>().As<IProjectionCamera>();
-            builder.RegisterType<OrthographicCamera>().As<IOrthographicCamera>();
-            builder.RegisterType<FrameManager>().As<IFrameManager>().SingleInstance();
-            builder.RegisterType<Renderer>().As<IRenderer>().SingleInstance();
-            builder.RegisterType<ForwardShader>().As<IForwardShader>();
-            builder.RegisterType<GBufferShader>().As<IGBufferShader>();
-            builder.RegisterType<DeferredLightShader>().As<IDeferredLightShader>();
-            builder.RegisterType<DebugShader>().As<IDebugShader>();
-            builder.RegisterType<BlendShader>().As<IBlendShader>();
-            builder.RegisterType<ShadowMapShader>().As<IShadowMapShader>();
-            builder.RegisterType<PlainShader>().As<IPlainShader>();
+            this.For<IProjectionCamera>().Use<ProjectionCamera>();
+            this.For<IOrthographicCamera>().Use<OrthographicCamera>();
+            this.For<IFrameManager>().Use<FrameManager>().Singleton();
+            this.For<IRenderer>().Use<Renderer>().Singleton();
+            this.For<IForwardShader>().Use<ForwardShader>();
+            this.For<IGBufferShader>().Use<GBufferShader>();
+            this.For<IDeferredLightShader>().Use<DeferredLightShader>();
+            this.For<IDebugShader>().Use<DebugShader>();
+            this.For<IBlendShader>().Use<BlendShader>();
+            this.For<IShadowMapShader>().Use<ShadowMapShader>();
+            this.For<IPlainShader>().Use<PlainShader>();
 
             // Resource
-            builder.RegisterType<ContentManager>().As<IContentManager>();
-            builder.RegisterType<ResourceManager>().As<IResourceManager>();
+            this.For<IContentManager>().Use<ContentManager>();
+            this.For<IResourceManager>().Use<ResourceManager>();
 
             // Scene
-            builder.RegisterType<SceneEntityFactory>().As<ISceneEntityFactory>().SingleInstance();
-            builder.RegisterType<SceneDebugOverlay>().As<ISceneDebugOverlay>().SingleInstance();
+            this.For<ISceneEntityFactory>().Use<SceneEntityFactory>().Singleton();
+            this.For<ISceneDebugOverlay>().Use<SceneDebugOverlay>().Singleton();
 
             // User Interface
-            builder.RegisterType<UserInterfaceConsole>().As<IUserInterfaceConsole>();
+            this.For<IUserInterfaceConsole>().Use<UserInterfaceConsole>();
         }
     }
 }

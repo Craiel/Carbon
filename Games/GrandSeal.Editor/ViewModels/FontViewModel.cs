@@ -10,6 +10,9 @@ using Core.Engine.Resource.Content;
 
 namespace GrandSeal.Editor.ViewModels
 {
+    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.UtilsWPF;
+
     using Core.Engine.Contracts.Resource;
 
     using global::GrandSeal.Editor.Views;
@@ -28,13 +31,11 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public FontViewModel(IEngineFactory factory, FontEntry data)
-            : base(factory, data)
+        public FontViewModel(IFactory factory)
+            : base(factory)
         {
-            this.logic = factory.Get<IEditorLogic>();
-
-            this.data = data;
-
+            this.logic = factory.Resolve<IEditorLogic>();
+            
             this.Template = StaticResources.FontTemplate;
         }
 
@@ -111,7 +112,7 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                return this.commandSelectResource ?? (this.commandSelectResource = new RelayCommand(x => this.Resource = this.SelectResource()));
+                return this.commandSelectResource ?? (this.commandSelectResource = new RelayCommand(() => this.Resource = this.SelectResource()));
             }
         }
         
@@ -144,7 +145,7 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected override void OnSave(object obj)
+        protected override void OnSave(bool force)
         {
             this.logic.Save(this);
         }

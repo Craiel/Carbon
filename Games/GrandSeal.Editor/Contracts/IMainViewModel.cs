@@ -5,13 +5,15 @@
     using System.ComponentModel;
     using System.Windows.Input;
 
+    using CarbonCore.ToolFramework.Contracts;
+
     using GrandSeal.Editor.Logic;
 
     using CarbonCore.Utils.IO;
     
     using Xceed.Wpf.AvalonDock.Themes;
 
-    public interface IMainViewModel : IEditorBase
+    public interface IMainViewModel : IBaseViewModel
     {
         event PropertyChangedEventHandler ProjectChanged;
 

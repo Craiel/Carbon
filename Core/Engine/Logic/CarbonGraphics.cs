@@ -1,22 +1,20 @@
 ﻿namespace Core.Engine.Logic
 {
     using System;
-
     using CarbonCore.Utils.Contracts;
-
-    using Core.Engine.Contracts;
-    using Core.Engine.Contracts.Logic;
-    using Core.Engine.Contracts.Resource;
-    using Core.Engine.Rendering;
-
+    using CarbonCore.Utils.Contracts.IoC;
+    using Contracts.Logic;
+    using Contracts.Resource;
+    using Rendering;
     using SharpDX;
     using SharpDX.Direct3D11;
     using SharpDX.DXGI;
-
+    
     public class CarbonGraphics : ICarbonGraphics
     {
         private readonly ILog log;
-        private readonly IResourceManager resourceManager;
+
+        private IResourceManager resourceManager;
 
         private CarbonDeviceContextDx11 context;
         private DeviceStateManager deviceStateManager;
@@ -41,9 +39,9 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public CarbonGraphics(IEngineFactory factory, IResourceManager resourceManager)
+        public CarbonGraphics(IFactory factory, IResourceManager resourceManager)
         {
-            this.log = factory.Get<IEngineLog>().AquireContextLog("CarbonGraphics");
+            this.log = factory.Resolve<IEngineLog>().AquireContextLog("CarbonGraphics");
             this.resourceManager = resourceManager;
 
             this.desiredDepthStencilState = DeviceStateManager.DefaultDepthStencilState;
@@ -184,6 +182,11 @@
         {
             this.DisposeBuffers();
             this.ReleaseContext();
+        }
+
+        public void SetResources(IResourceManager resources)
+        {
+            this.resourceManager = resources;
         }
 
         public void Reset()

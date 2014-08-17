@@ -2,10 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-
     using CarbonCore.Utils.Contracts;
-
-    using Core.Engine.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
@@ -17,24 +15,16 @@
     using Core.Engine.Resource.Resources;
     using Core.Engine.Resource.Resources.Model;
     using Core.Engine.UserInterface;
-
     using NLua;
-
     using SharpDX;
     using SharpDX.Direct3D;
 
     public class SceneDebugOverlay : Scene, ISceneDebugOverlay
     {
-        internal enum RenderingList
-        {
-            Entity = 10,
-            UserInterface = 20
-        }
-
         private static readonly Vector4 ColorModelEntity = new Vector4(0, 1, 0, 0.5f);
         private static readonly Vector4 ColorLightEntity = new Vector4(1, 1, 0, 0.5f);
 
-        private readonly IEngineFactory factory;
+        private readonly IFactory factory;
         private readonly ILog log;
 
         private readonly ModelResource lightEntityModel;
@@ -60,15 +50,24 @@
 
         // --------------------------------------------------------------------
         // Constructor
-        // -------------------------------------------------------------------
-        public SceneDebugOverlay(IEngineFactory factory)
+        // --------------------------------------------------------------------
+        public SceneDebugOverlay(IFactory factory)
         {
             this.factory = factory;
-            this.log = factory.Get<IEngineLog>().AquireContextLog("SceneDebugOverlay");
+            this.log = factory.Resolve<IEngineLog>().AquireContextLog("SceneDebugOverlay");
 
             this.lightEntityModel = Sphere.Create(0, ColorLightEntity);
             
             this.sceneGraph = new SceneGraph(new EmptyEntity { Name = "DebugOverlayRoot" });
+        }
+
+        // --------------------------------------------------------------------
+        // Enums
+        // --------------------------------------------------------------------
+        internal enum RenderingList
+        {
+            Entity = 10,
+            UserInterface = 20
         }
 
         // -------------------------------------------------------------------
@@ -133,7 +132,7 @@
             this.modelEntityLoader.Initialize(graphic);
 
             // Initialize our camera's
-            this.userInterfaceCamera = this.factory.Get<IOrthographicCamera>();
+            this.userInterfaceCamera = this.factory.Resolve<IOrthographicCamera>();
             this.userInterfaceCamera.Initialize(graphic);
 
             // Create the debug ui
@@ -147,8 +146,8 @@
                 this.AddSceneEntityToRenderingList(entity, 2);
             }*/
 
-            this.debugCamera = new CameraEntity { Camera = this.factory.Get<IProjectionCamera>() };
-            this.debugController = this.factory.Get<IFirstPersonController>();
+            this.debugCamera = new CameraEntity { Camera = this.factory.Resolve<IProjectionCamera>() };
+            this.debugController = this.factory.Resolve<IFirstPersonController>();
             this.debugController.Initialize(graphic);
             this.debugController.SetInputBindings(InputManager.DefaultBindingDebugController);
 

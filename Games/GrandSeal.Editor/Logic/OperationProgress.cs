@@ -2,7 +2,9 @@
 
 namespace GrandSeal.Editor.Logic
 {
-    public class OperationProgress : EditorBase, IOperationProgress
+    using CarbonCore.ToolFramework.ViewModel;
+
+    public class OperationProgress : BaseViewModel, IOperationProgress
     {
         private int minimum;
 

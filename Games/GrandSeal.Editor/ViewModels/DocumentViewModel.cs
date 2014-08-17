@@ -6,10 +6,14 @@ using GrandSeal.Editor.Logic;
 using GrandSeal.Editor.Logic.MVVM;
 
 using Core.Engine.Contracts;
+using CarbonCore.Utils.Contracts.IoC;
 
 namespace GrandSeal.Editor.ViewModels
 {
-    public abstract class DocumentViewModel : EditorBase, IEditorDocument
+    using CarbonCore.ToolFramework.ViewModel;
+    using CarbonCore.UtilsWPF;
+
+    public abstract class DocumentViewModel : BaseViewModel, IEditorDocument
     {
         private readonly IPropertyViewModel propertyViewModel;
         private readonly IMainViewModel mainViewModel;
@@ -26,11 +30,11 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        protected DocumentViewModel(IEngineFactory engineFactory)
+        protected DocumentViewModel(IFactory factory)
         {
-            this.propertyViewModel = engineFactory.Get<IPropertyViewModel>();
-            this.mainViewModel = engineFactory.Get<IMainViewModel>();
-            this.undoRedoManager = engineFactory.Get<IUndoRedoManager>();
+            this.propertyViewModel = factory.Resolve<IPropertyViewModel>();
+            this.mainViewModel = factory.Resolve<IMainViewModel>();
+            this.undoRedoManager = factory.Resolve<IUndoRedoManager>();
 
             this.undoRedoManager.RegisterGroup(this);
         }
@@ -103,7 +107,7 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                return this.commandSave ?? (this.commandSave = new RelayCommand(this.OnSave, this.CanSave));
+                return this.commandSave ?? (this.commandSave = new RelayCommand<bool>(this.OnSave, this.CanSave));
             }
         }
 
@@ -140,40 +144,40 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         protected IDocumentTemplate Template { get; set; }
 
-        protected virtual void OnOpen(object arg)
+        protected virtual void OnOpen()
         {
             this.mainViewModel.OpenDocument(this);
         }
 
-        protected virtual bool CanOpen(object arg)
+        protected virtual bool CanOpen()
         {
             return true;
         }
 
-        protected virtual void OnSave(object obj)
+        protected virtual void OnSave(bool force)
         {
         }
 
-        protected virtual bool CanSave(object obj)
+        protected virtual bool CanSave(bool force)
         {
             return this.IsChanged;
         }
 
-        protected virtual void OnClose(object arg)
+        protected virtual void OnClose()
         {
             this.mainViewModel.CloseDocument(this);
         }
 
-        protected virtual bool CanClose(object arg)
+        protected virtual bool CanClose()
         {
             return true;
         }
 
-        protected virtual void OnDelete(object arg)
+        protected virtual void OnDelete()
         {
         }
 
-        protected virtual void OnRefresh(object arg)
+        protected virtual void OnRefresh()
         {
         }
 

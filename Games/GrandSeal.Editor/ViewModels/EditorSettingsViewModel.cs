@@ -3,9 +3,9 @@
     using System.ComponentModel;
     using System.Windows.Input;
 
+    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.Utils.IO;
-
-    using Core.Engine.Contracts;
+    using CarbonCore.UtilsWPF;
 
     using GrandSeal.Editor.Contracts;
     using GrandSeal.Editor.Logic.MVVM;
@@ -21,11 +21,11 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public EditorSettingsViewModel(IEngineFactory factory)
+        public EditorSettingsViewModel(IFactory factory)
             : base(factory)
         {
-            this.settings = factory.Get<IEditorSettings>();
-            this.logic = factory.Get<IEditorLogic>();
+            this.settings = factory.Resolve<IEditorSettings>();
+            this.logic = factory.Resolve<IEditorLogic>();
             this.settings.PropertyChanged += this.OnSettingsChanged;
 
             this.CommandSelectTextureToolsFolder = new RelayCommand(this.OnSelectTextureToolsFolder);
@@ -103,10 +103,10 @@
         // -------------------------------------------------------------------
         private void OnSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.NotifyPropertyChanged(e.PropertyName);
+            this.NotifyPropertyChangedExplicit(e.PropertyName);
         }
 
-        private void OnSelectModelTextureParentFolder(object obj)
+        private void OnSelectModelTextureParentFolder()
         {
             var dialog = new SelectFolderDialog(this.logic);
             if (dialog.ShowDialog() == true)
@@ -115,7 +115,7 @@
             }
         }
 
-        private void OnSelectTextureToolsFolder(object obj)
+        private void OnSelectTextureToolsFolder()
         {
             var dialog = new OpenFileDialog { CheckFileExists = false, CheckPathExists = true };
             if (dialog.ShowDialog() == true)
@@ -124,7 +124,7 @@
             }
         }
         
-        private void OnCommandReset(object obj)
+        private void OnCommandReset()
         {
             this.settings.Reset();
         }

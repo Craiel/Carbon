@@ -4,8 +4,7 @@
     using System.Threading;
 
     using CarbonCore.Utils.Contracts;
-
-    using Core.Engine.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
 
     using GrandSeal.DataDemon.Contracts;
     using GrandSeal.DataDemon.Logic;
@@ -21,10 +20,10 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public DataDemon(IEngineFactory factory)
+        public DataDemon(IFactory factory)
         {
-            this.logic = factory.Get<IDemonLogic>();
-            this.log = factory.Get<IDemonLog>().AquireContextLog("Demon");
+            this.logic = factory.Resolve<IDemonLogic>();
+            this.log = factory.Resolve<IDemonLog>().AquireContextLog("Demon");
         }
 
         // -------------------------------------------------------------------

@@ -3,10 +3,10 @@
     using System;
 
     using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
 
     using Contracts;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Logic;
 
@@ -14,16 +14,16 @@
     {
         public const string BindingSystemController = "systemController";
 
-        private readonly IEngineFactory factory;
+        private readonly IFactory factory;
         private readonly ILog log;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public GrandSealSettings(IEngineFactory factory)
+        public GrandSealSettings(IFactory factory)
         {
             this.factory = factory;
-            this.log = factory.Get<IGrandSealLog>().AquireContextLog("GrandSealSettings");
+            this.log = factory.Resolve<IGrandSealLog>().AquireContextLog("GrandSealSettings");
 
             this.SetupDefaultBindings();
         }
@@ -50,7 +50,7 @@
         // -------------------------------------------------------------------
         private void SetupDefaultBindings()
         {
-            var inputManager = this.factory.Get<IInputManager>();
+            var inputManager = this.factory.Resolve<IInputManager>();
 
             var binding = inputManager.RegisterBinding(BindingSystemController);
             binding.BindEx("F3", "ToggleDebugOverlay", "PressAndRelease", "And");

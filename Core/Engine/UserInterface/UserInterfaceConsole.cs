@@ -8,6 +8,7 @@
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.UserInterface;
     using Core.Engine.Logic;
+    using CarbonCore.Utils.Contracts.IoC;
     
     public class UserInterfaceConsole : UserInterfaceControl, IUserInterfaceConsole
     {
@@ -27,14 +28,14 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public UserInterfaceConsole(IEngineFactory factory, ITypingController controller)
+        public UserInterfaceConsole(IFactory factory, ITypingController controller)
         {
             this.controller = controller;
             this.controller.OnReturnPressed += this.ControllerOnReturnPressed;
             this.controller.OnCompletionRequested += this.ControllerOnCompletionRequested;
             this.controller.SetInputBindings(InputManager.DefaultBindingConsole);
 
-            this.formatter = factory.Get<IFormatter>();
+            this.formatter = factory.Resolve<IFormatter>();
 
             this.buffer = new List<string>();
         }

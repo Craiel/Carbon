@@ -7,7 +7,9 @@
     using System.Windows;
     using System.Windows.Input;
 
+    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.Utils.IO;
+    using CarbonCore.UtilsWPF;
 
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
@@ -41,15 +43,15 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ResourceModelViewModel(IEngineFactory factory, ResourceEntry data)
-            : base(factory, data)
+        public ResourceModelViewModel(IFactory factory)
+            : base(factory)
         {
-            this.logic = factory.Get<IEditorLogic>();
-            this.settings = factory.Get<IEditorSettings>();
-            this.resourceProcessor = factory.Get<IResourceProcessor>();
+            this.logic = factory.Resolve<IEditorLogic>();
+            this.settings = factory.Resolve<IEditorSettings>();
+            this.resourceProcessor = factory.Resolve<IResourceProcessor>();
 
             this.sourceElements = new List<string>();
-            this.textureSynchronizer = factory.Get<ITextureSynchronizer>();
+            this.textureSynchronizer = factory.Resolve<ITextureSynchronizer>();
             this.textureSynchronizer.PropertyChanged += this.OnTextureSynchronizerChanged;
         }
 
@@ -177,7 +179,7 @@
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected override void OnDelete(object arg)
+        protected override void OnDelete()
         {
             if (MessageBox.Show(
                 "Delete Model " + this.Name,
@@ -189,7 +191,7 @@
                 return;
             }
 
-            this.OnClose(null);
+            this.OnClose();
             this.logic.Delete(this);
 
             if (this.AutoUpdateTextures && this.TextureFolder != null)
@@ -198,9 +200,9 @@
             }
         }
 
-        protected override void OnRefresh(object arg)
+        protected override void OnRefresh()
         {
-            base.OnRefresh(arg);
+            base.OnRefresh();
 
             this.textureSynchronizer.Refresh();
             if (this.AutoUpdateTextures)
@@ -240,7 +242,7 @@
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void OnSelectTextureFolder(object obj)
+        private void OnSelectTextureFolder()
         {
             var dialog = new SelectFolderDialog(this.logic);
             if (dialog.ShowDialog() == true)
@@ -251,7 +253,7 @@
 
         private void OnTextureSynchronizerChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.NotifyPropertyChanged("TextureSynchronizer");
+            this.NotifyPropertyChangedExplicit("TextureSynchronizer");
         }
 
         private void UpdateSourceElements()

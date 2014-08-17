@@ -1,7 +1,7 @@
 ﻿namespace Core.Engine.Scene
 {
+    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.UtilsDX;
-
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
@@ -9,17 +9,16 @@
     using Core.Engine.Rendering;
     using Core.Engine.Resource.Resources.Stage;
     using Core.Protocol.Resource;
-
     using SharpDX;
 
     public class SceneEntityFactory : EngineComponent, ISceneEntityFactory
     {
-        private readonly IEngineFactory factory;
+        private readonly IFactory factory;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public SceneEntityFactory(IEngineFactory factory)
+        public SceneEntityFactory(IFactory factory)
         {
             this.factory = factory;
         }
@@ -29,7 +28,7 @@
         // -------------------------------------------------------------------
         public ICameraEntity BuildCamera(StageCameraElement cameraElement)
         {
-            var camera = this.factory.Get<IProjectionCamera>();
+            var camera = this.factory.Resolve<IProjectionCamera>();
             camera.Position = cameraElement.Position;
             camera.Rotation = cameraElement.Rotation;
 

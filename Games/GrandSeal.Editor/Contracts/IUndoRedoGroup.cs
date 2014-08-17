@@ -4,7 +4,9 @@ using GrandSeal.Editor.Logic;
 
 namespace GrandSeal.Editor.Contracts
 {
-    public interface IUndoRedoGroup : IEditorBase
+    using CarbonCore.ToolFramework.Contracts;
+
+    public interface IUndoRedoGroup : IBaseViewModel
     {
         bool CanUndo { get; }
         bool CanRedo { get; }

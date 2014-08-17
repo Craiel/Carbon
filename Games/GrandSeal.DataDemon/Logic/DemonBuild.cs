@@ -1,23 +1,22 @@
 ﻿namespace GrandSeal.DataDemon.Logic
 {
     using CarbonCore.Utils.Contracts;
-
-    using Core.Engine.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
 
     using GrandSeal.DataDemon.Contracts;
 
     public class DemonBuild : DemonOperation, IDemonBuild
     {
-        private readonly DemonBuildConfig config;
         private readonly ILog log;
+
+        private DemonBuildConfig config;
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public DemonBuild(IEngineFactory factory, DemonBuildConfig config)
+        public DemonBuild(IFactory factory)
         {
-            this.config = config;
-            this.log = factory.Get<IDemonLog>().AquireContextLog("Build");
+            this.log = factory.Resolve<IDemonLog>().AquireContextLog("Build");
         }
 
         public override string Name
@@ -36,6 +35,11 @@
         public override void Process()
         {
             this.log.Debug("Processing build {0}", this.Name);
+        }
+
+        public void SetConfig(DemonBuildConfig build)
+        {
+            this.config = build;
         }
     }
 }

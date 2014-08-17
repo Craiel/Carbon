@@ -7,19 +7,17 @@
     using System.Xml.Serialization;
 
     using CarbonCore.Utils.Contracts;
-
-    using Core.Engine.Contracts;
-
+    using CarbonCore.Utils.Contracts.IoC;
+    
     using GrandSeal.DataDemon.Contracts;
-    using GrandSeal.DataDemon.IoC;
 
     public class DemonLogic : IDemonLogic
     {
         private static readonly XmlSerializer ConfigSerializer = new XmlSerializer(typeof(DemonConfig));
 
-        private readonly IEngineFactory factory;
+        private readonly IFactory factory;
 
-        private readonly IList<IDemonOperation> parrallelOperations;
+        private readonly IList<IDemonOperation> parallelOperations;
         private readonly IList<IDemonOperation> sequentialOperations; 
 
         private readonly ILog log;
@@ -31,13 +29,13 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public DemonLogic(IEngineFactory factory)
+        public DemonLogic(IFactory factory)
         {
             this.factory = factory;
-            this.log = factory.Get<IDemonLog>().AquireContextLog("Logic");
-            this.fileInfo = factory.Get<IDemonFileInfo>();
+            this.log = factory.Resolve<IDemonLog>().AquireContextLog("Logic");
+            this.fileInfo = factory.Resolve<IDemonFileInfo>();
 
-            this.parrallelOperations = new List<IDemonOperation>();
+            this.parallelOperations = new List<IDemonOperation>();
             this.sequentialOperations = new List<IDemonOperation>();
         }
 
@@ -48,7 +46,7 @@
 
         public void Dispose()
         {
-            foreach (IDemonOperation operation in this.parrallelOperations)
+            foreach (IDemonOperation operation in this.parallelOperations)
             {
                 operation.Dispose();
             }
@@ -83,11 +81,11 @@
             // Need to update file info first, this is done before all operations
             this.fileInfo.Refresh();
 
-            // Now we execute everything that can be run in parrallel
-            var tasks = new Task[this.parrallelOperations.Count];
-            for (int i = 0; i < this.parrallelOperations.Count; i++)
+            // Now we execute everything that can be run in parallel
+            var tasks = new Task[this.parallelOperations.Count];
+            for (int i = 0; i < this.parallelOperations.Count; i++)
             {
-                tasks[i] = new Task(this.parrallelOperations[i].Refresh);
+                tasks[i] = new Task(this.parallelOperations[i].Refresh);
                 tasks[i].Start();
             }
 
@@ -159,7 +157,8 @@
                         return false;
                     }
 
-                    var operation = this.factory.GetDemonBuild(build);
+                    var operation = this.factory.Resolve<IDemonBuild>();
+                    operation.SetConfig(build);
                     this.sequentialOperations.Add(operation);
                 }
             }

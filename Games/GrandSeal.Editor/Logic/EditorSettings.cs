@@ -1,15 +1,13 @@
 ﻿namespace GrandSeal.Editor.Logic
 {
-    using CarbonCore.Utils.IO;
-
-    using Core.Processing.Contracts;
     using System;
     using System.Xml;
     using System.Xml.Serialization;
-
+    using CarbonCore.ToolFramework.ViewModel;
+    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.IO;
+    using Core.Processing.Contracts;
     using GrandSeal.Editor.Contracts;
-
-    using Core.Engine.Contracts;
 
     [Serializable]
     public class EditorSettingsData
@@ -24,7 +22,7 @@
         public bool ModelTextureAutoCreateFolder { get; set; }
     }
 
-    public class EditorSettings : EditorBase, IEditorSettings
+    public class EditorSettings : BaseViewModel, IEditorSettings
     {
         private static readonly XmlSerializer serializer;
 
@@ -42,9 +40,9 @@
             serializer = new XmlSerializer(typeof(EditorSettingsData));
         }
 
-        public EditorSettings(IEngineFactory factory)
+        public EditorSettings(IFactory factory)
         {
-            this.resourceProcessor = factory.Get<IResourceProcessor>();
+            this.resourceProcessor = factory.Resolve<IResourceProcessor>();
 
             this.Reset();
         }

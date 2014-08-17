@@ -9,7 +9,9 @@
     using System.Windows.Media.Imaging;
 
     using CarbonCore.Utils;
+    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.Utils.IO;
+    using CarbonCore.UtilsWPF;
 
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
@@ -50,15 +52,12 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        protected ResourceViewModel(IEngineFactory factory, ResourceEntry data)
-            : base(factory, data)
+        protected ResourceViewModel(IFactory factory)
+            : base(factory)
         {
-            this.logic = factory.Get<IEditorLogic>();
-            this.settings = factory.Get<IEditorSettings>();
-            this.resourceProcessor = factory.Get<IResourceProcessor>();
-            this.data = data;
-            
-            this.NeedSave = data.IsNew;
+            this.logic = factory.Resolve<IEditorLogic>();
+            this.settings = factory.Resolve<IEditorSettings>();
+            this.resourceProcessor = factory.Resolve<IResourceProcessor>();
         }
 
         // -------------------------------------------------------------------
@@ -485,7 +484,7 @@
             }
         }
 
-        protected override void OnDelete(object arg)
+        protected override void OnDelete()
         {
             if (MessageBox.Show(
                 "Delete Resource " + this.Name,
@@ -497,11 +496,11 @@
                 return;
             }
 
-            this.OnClose(null);
+            this.OnClose();
             this.logic.Delete(this);
         }
 
-        protected override void OnRefresh(object arg)
+        protected override void OnRefresh()
         {
             this.CheckSource();
         }
@@ -577,7 +576,7 @@
             this.NeedSave = true;
         }
 
-        private void OnSelectFile(object obj)
+        private void OnSelectFile()
         {
             var dialog = new OpenFileDialog { CheckFileExists = true, CheckPathExists = true };
             if (dialog.ShowDialog() == true)

@@ -62,7 +62,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Google.ProtocolBuffers">
-      <HintPath>..\..\..\CarbonCore\External\protobuf-csharp-port\2.4.1.521\Google.ProtocolBuffers.dll</HintPath>
+      <HintPath>..\..\External\protobuf-csharp-port\2.4.1.521\Google.ProtocolBuffers.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -10,6 +10,7 @@
     using Core.Engine.Resource;
     using Core.Engine.Resource.Resources.Model;
     using Core.Engine.Resource.Resources.Stage;
+    using CarbonCore.Utils.Contracts.IoC;
     
     public class Stage : EngineComponent, IStage
     {
@@ -32,14 +33,14 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public Stage(IEngineFactory factory, IGameState gameState, StageResource data)
+        public Stage(IFactory factory, IGameState gameState, StageResource data)
         {
             if (data == null)
             {
                 throw new ArgumentException();
             }
 
-            this.entityFactory = factory.Get<ISceneEntityFactory>();
+            this.entityFactory = factory.Resolve<ISceneEntityFactory>();
             this.gameState = gameState;
             this.data = data;
             

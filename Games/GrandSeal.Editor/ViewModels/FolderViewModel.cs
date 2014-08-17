@@ -9,6 +9,7 @@
 
     using CarbonCore.Utils;
     using CarbonCore.Utils.IO;
+    using CarbonCore.UtilsWPF;
 
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
@@ -20,11 +21,12 @@
     using Microsoft.Win32;
 
     using global::GrandSeal.Editor.Views;
+    using CarbonCore.Utils.Contracts.IoC;
 
     public class FolderViewModel : ContentViewModel, IFolderViewModel
     {
         private readonly IEditorLogic logic;
-        private readonly IViewModelFactory viewModelFactory;
+        private readonly IFactory factory;
         private readonly ObservableCollection<IEditorDocument> content;
         private readonly IMainViewModel mainViewModel;
         private readonly ResourceTree data;
@@ -43,13 +45,12 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public FolderViewModel(IEngineFactory factory, ResourceTree data)
-            : base(factory, data)
+        public FolderViewModel(IFactory factory)
+            : base(factory)
         {
-            this.logic = factory.Get<IEditorLogic>();
-            this.viewModelFactory = factory.Get<IViewModelFactory>();
-            this.mainViewModel = factory.Get<IMainViewModel>();
-            this.data = data;
+            this.factory = factory;
+            this.logic = factory.Resolve<IEditorLogic>();            
+            this.mainViewModel = factory.Resolve<IMainViewModel>();
 
             this.content = new ObservableCollection<IEditorDocument>();
         }
@@ -282,7 +283,7 @@
 
         public IFolderViewModel AddFolder()
         {
-            var vm = this.viewModelFactory.GetFolderViewModel(new ResourceTree());
+            var vm = this.factory.Resolve<IFolderViewModel>();
             vm.Parent = this;
             this.content.Add(vm);
             return vm;
@@ -422,28 +423,23 @@
             this.NotifyPropertyChanged(string.Empty);
         }
 
-        protected override bool CanSave(object obj)
+        protected override bool CanSave(bool force)
         {
             return this.content.Count > 0;
         }
 
-        protected override void OnSave(object obj)
+        protected override void OnSave(bool force)
         {
-            if (obj is string && obj.Equals(bool.TrueString))
+            if (force)
             {
                 new TaskProgress(new[] { new Task(() => this.logic.Save(this, true)) }, 1);
                 return;
-            }
-
-            if (obj != null)
-            {
-                new TaskProgress(new[] { new Task(() => this.logic.Save(this)) }, 1);
             }
             
             this.logic.Save(this);
         }
 
-        protected override void OnDelete(object arg)
+        protected override void OnDelete()
         {
             if (MessageBox.Show(
                 "Delete Folder and all contents of " + this.Name,
@@ -458,19 +454,19 @@
             this.logic.Delete(this);
         }
 
-        protected override void OnRefresh(object arg)
+        protected override void OnRefresh()
         {
             IList<IEditorDocument> refreshList = new List<IEditorDocument>(this.content);
             foreach (IEditorDocument document in refreshList)
             {
-                document.CommandRefresh.Execute(arg);
+                document.CommandRefresh.Execute(null);
             }
         }
         
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void OnAddExistingResources(object obj)
+        private void OnAddExistingResources()
         {
             var dialog = new OpenFileDialog { CheckFileExists = true, CheckPathExists = true, Multiselect = true };
             if (dialog.ShowDialog() == true)
@@ -532,32 +528,32 @@
             }
         }
 
-        private void OnAddFolder(object obj)
+        private void OnAddFolder()
         {
             this.AddFolder();
         }
 
-        private void OnExpandAll(object obj)
+        private void OnExpandAll()
         {
             this.SetExpand(true);
         }
 
-        private bool CanExpandAll(object obj)
+        private bool CanExpandAll()
         {
             return this.content.Count > 0;
         }
 
-        private void OnCollapseAll(object obj)
+        private void OnCollapseAll()
         {
             this.SetExpand(false);
         }
 
-        private bool CanCollapseAll(object obj)
+        private bool CanCollapseAll()
         {
             return this.content.Count > 0;
         }
 
-        private void OnCopyPath(object obj)
+        private void OnCopyPath()
         {
             Clipboard.SetText(this.FullPath.ToString());
         }

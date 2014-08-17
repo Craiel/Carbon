@@ -11,20 +11,13 @@
     using GrandSeal.Editor.Contracts;
     using GrandSeal.Editor.Logic;
     using GrandSeal.Editor.ViewModels;
-
+   
+    [DependsOnModule(typeof(EngineModule))]
+    [DependsOnModule(typeof(CarbonEditorModule))]
+    [DependsOnModule(typeof(UtilsModule))]
     public class EditorModule : CarbonModule
     {
-        public static IModule[] GetModules()
-        {
-            return new IModule[]
-                       {
-                           new EngineModule(), new EditorModule(),
-                           new CarbonEditorModule(),
-                           new UtilsModule()
-                       };
-        }
-
-        protected override void Load(ContainerBuilder builder)
+        public EditorModule()
         {
             this.For<IEditor>().Use<Editor>().Singleton();
 
@@ -34,7 +27,6 @@
             this.For<IEditorLogic>().Use<EditorLogic>().Singleton();
             this.For<IEditorLog>().Use<EditorLog>().Singleton();
             this.For<IEditorSettings>().Use<EditorSettings>().Singleton();
-            this.For<IViewModelFactory>().Use<ViewModelFactory>().Singleton();
 
             this.For<IMainViewModel>().Use<MainViewModel>().Singleton();
 

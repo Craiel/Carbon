@@ -4,17 +4,15 @@
     using System.Threading;
 
     using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.Utils.Diagnostics;
     using CarbonCore.Utils.Formatting;
     using CarbonCore.Utils.IO;
-
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Resource;
-
     using SharpDX.Windows;
-
+    
     public struct EngineContent
     {
         public string FallbackTexture;
@@ -53,15 +51,19 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        protected CarbonGame(IEngineFactory factory)
+        protected CarbonGame(IFactory factory)
         {
-            this.coreResourceManager = factory.GetResourceManager(new CarbonDirectory("Data"));
-            this.graphics = factory.GetGraphics(this.coreResourceManager);
-            this.inputManager = factory.Get<IInputManager>();
-            this.mainFrameManager = factory.Get<IFrameManager>();
-            this.mainRenderer = factory.Get<IRenderer>();
-            this.scriptingEngine = factory.Get<IScriptingEngine>();
-            this.log = factory.Get<IEngineLog>().AquireContextLog("CarbonGame");
+            this.coreResourceManager = factory.Resolve<IResourceManager>();
+            this.graphics = factory.Resolve<ICarbonGraphics>();
+            this.inputManager = factory.Resolve<IInputManager>();
+            this.mainFrameManager = factory.Resolve<IFrameManager>();
+            this.mainRenderer = factory.Resolve<IRenderer>();
+            this.scriptingEngine = factory.Resolve<IScriptingEngine>();
+            this.log = factory.Resolve<IEngineLog>().AquireContextLog("CarbonGame");
+
+            // Wire up some of the components
+            this.coreResourceManager.SetRoot(new CarbonDirectory("Data"));
+            this.graphics.SetResources(this.coreResourceManager);
 
             this.gameTimer = new CarbonCore.Utils.Timer();
         }

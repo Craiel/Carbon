@@ -2,6 +2,8 @@
 {
     using System;
 
+    using CarbonCore.Utils.IO;
+
     using Core.Engine.Resource;
     using Core.Engine.Resource.Content;
     using Core.Engine.Resource.Generic;
@@ -19,5 +21,7 @@
         ContentLink ResolveLink(int id);
 
         void ClearCache();
+
+        void Initialize(CarbonFile file);
     }
 }

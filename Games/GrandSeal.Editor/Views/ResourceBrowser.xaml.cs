@@ -7,6 +7,8 @@ namespace GrandSeal.Editor.Views
     using System.Windows;
     using System.Windows.Input;
 
+    using CarbonCore.UtilsWPF;
+
     using global::GrandSeal.Editor.Contracts;
     using global::GrandSeal.Editor.Logic.MVVM;
 
@@ -54,7 +56,7 @@ namespace GrandSeal.Editor.Views
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void OnRefresh(object obj)
+        private void OnRefresh()
         {
             this.filteredList.Clear();
 

@@ -1,17 +1,18 @@
-﻿using GrandSeal.Editor.Contracts;
-
-using Core.Engine.Contracts;
-using Core.Engine.Resource.Content;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
+    using CarbonCore.Utils.Contracts.IoC;
+
+    using Core.Engine.Resource.Content;
+
+    using GrandSeal.Editor.Contracts;
+
     public class ResourceRawViewModel : ResourceViewModel, IResourceRawViewModel
     {
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ResourceRawViewModel(IEngineFactory factory, ResourceEntry data)
-            : base(factory, data)
+        public ResourceRawViewModel(IFactory factory, ResourceEntry data)
+            : base(factory)
         {
         }
     }

@@ -16,6 +16,7 @@
     using SharpDX;
     using SharpDX.Direct3D11;
     using SharpDX.DXGI;
+    using CarbonCore.Utils.Contracts.IoC;
 
     public class Renderer : EngineComponent, IRenderer
     {
@@ -47,17 +48,17 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public Renderer(IEngineFactory factory)
+        public Renderer(IFactory factory)
         {
             this.frameStatistics = new LimitedList<FrameStatistics>(200);
 
-            this.forwardShader = factory.Get<IForwardShader>();
-            this.gBufferShader = factory.Get<IGBufferShader>();
-            this.debugShader = factory.Get<IDebugShader>();
-            this.deferredLightShader = factory.Get<IDeferredLightShader>();
-            this.blendShader = factory.Get<IBlendShader>();
-            this.shadowMapShader = factory.Get<IShadowMapShader>();
-            this.plainShader = factory.Get<IPlainShader>();
+            this.forwardShader = factory.Resolve<IForwardShader>();
+            this.gBufferShader = factory.Resolve<IGBufferShader>();
+            this.debugShader = factory.Resolve<IDebugShader>();
+            this.deferredLightShader = factory.Resolve<IDeferredLightShader>();
+            this.blendShader = factory.Resolve<IBlendShader>();
+            this.shadowMapShader = factory.Resolve<IShadowMapShader>();
+            this.plainShader = factory.Resolve<IPlainShader>();
         }
 
         // -------------------------------------------------------------------

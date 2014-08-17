@@ -14,12 +14,12 @@
     using System.Linq;
 
     using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
 
     public abstract class ContentViewModel : DocumentViewModel
     {
         private readonly IEditorLogic logic;
-        private readonly ICarbonContent data;
-
+        
         private readonly ILog log;
 
         private readonly IDictionary<MetaDataKey, MetaDataEntry> metaData;
@@ -27,15 +27,16 @@
 
         private bool isLoaded;
 
+        protected ICarbonContent data;
+
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        protected ContentViewModel(IEngineFactory factory, ICarbonContent data)
+        protected ContentViewModel(IFactory factory)
             : base(factory)
         {
-            this.logic = factory.Get<IEditorLogic>();
-            this.log = factory.Get<IEditorLog>().AquireContextLog("ContentViewModel");
-            this.data = data;
+            this.logic = factory.Resolve<IEditorLogic>();
+            this.log = factory.Resolve<IEditorLog>().AquireContextLog("ContentViewModel");
 
             this.metaData = new Dictionary<MetaDataKey, MetaDataEntry>();
             this.metaDataToDelete = new List<MetaDataEntry>();
@@ -129,7 +130,7 @@
             }
         }
 
-        protected override void OnDelete(object arg)
+        protected override void OnDelete()
         {
             if (MessageBox.Show(
                 "Delete Content " + this.Name,
@@ -141,7 +142,7 @@
                 return;
             }
 
-            this.OnClose(null);
+            this.OnClose();
         }
 
         protected override object CreateMemento()
@@ -160,6 +161,11 @@
             this.CreateUndoState();
             this.data.LoadFrom(source);
             this.NotifyPropertyChanged(string.Empty);
+        }
+
+        protected void SetData(ICarbonContent data)
+        {
+            this.data = data;
         }
 
         protected void Save(IContentManager target)

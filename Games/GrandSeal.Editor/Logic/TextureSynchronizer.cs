@@ -5,6 +5,8 @@
     using System.Linq;
     using System.Windows;
 
+    using CarbonCore.ToolFramework.ViewModel;
+    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.Utils.IO;
 
     using Core.Engine.Contracts;
@@ -21,7 +23,7 @@
         public bool ToNormal;
     }
 
-    public class TextureSynchronizer : EditorBase, ITextureSynchronizer
+    public class TextureSynchronizer : BaseViewModel, ITextureSynchronizer
     {
         private readonly IList<SynchronizationEntry> queuedForAdd;
         private readonly IList<IResourceViewModel> queuedForDelete;
@@ -36,9 +38,9 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public TextureSynchronizer(IEngineFactory factory)
+        public TextureSynchronizer(IFactory factory)
         {
-            this.logic = factory.Get<IEditorLogic>();
+            this.logic = factory.Resolve<IEditorLogic>();
 
             this.queuedForAdd = new List<SynchronizationEntry>();
             this.queuedForDelete = new List<IResourceViewModel>();

@@ -5,9 +5,11 @@ using GrandSeal.Editor.Views.Properties;
 
 namespace GrandSeal.Editor.ViewModels
 {
+    using CarbonCore.ToolFramework.Contracts;
+
     public class PropertyViewModel : ToolViewModel, IPropertyViewModel
     {
-        private IEditorBase activeContext;
+        private IBaseViewModel activeContext;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -27,7 +29,7 @@ namespace GrandSeal.Editor.ViewModels
             }
         }
 
-        public IEditorBase ActiveContext
+        public IBaseViewModel ActiveContext
         {
             get
             {
@@ -47,7 +49,7 @@ namespace GrandSeal.Editor.ViewModels
 
         public Control PropertyControl { get; private set; }
 
-        public void SetActivation(IEditorBase source, bool active)
+        public void SetActivation(IBaseViewModel source, bool active)
         {
             if (active)
             {

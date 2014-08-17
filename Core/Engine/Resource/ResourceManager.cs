@@ -10,18 +10,16 @@
     
     public class ResourceManager : IResourceManager
     {
-        private readonly IList<ResourceContent> content;
-
         private readonly IDictionary<string, ICarbonResource> cache;
         private readonly IDictionary<string, ResourceInfo> infoCache;
+
+        private IList<ResourceContent> content;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ResourceManager(CarbonDirectory root)
+        public ResourceManager()
         {
-            this.content = new List<ResourceContent> { new FolderContent(root, true) };
-
             this.cache = new Dictionary<string, ICarbonResource>();
             this.infoCache = new Dictionary<string, ResourceInfo>();
         }
@@ -34,6 +32,14 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
+        public void SetRoot(CarbonDirectory directory)
+        {
+            this.content = new List<ResourceContent> { new FolderContent(directory, true) };
+
+            this.cache.Clear();
+            this.infoCache.Clear();
+        }
+
         public T Load<T>(string hash) where T : ICarbonResource
         {
             System.Diagnostics.Trace.TraceWarning("Loading Resource {0}", hash);

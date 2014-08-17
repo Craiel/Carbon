@@ -3,9 +3,10 @@
     using System.Data;
     using System.Threading;
 
+    using CarbonCore.Utils.Contracts.IoC;
+
     using Contracts;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Resource.Resources;
     using Core.Engine.Scene;
@@ -17,9 +18,9 @@
         // --------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        protected SceneBase(IEngineFactory factory)
+        protected SceneBase(IFactory factory)
         {
-            this.GameState = factory.Get<IGrandSealGameState>();
+            this.GameState = factory.Resolve<IGrandSealGameState>();
         }
         
         // -------------------------------------------------------------------

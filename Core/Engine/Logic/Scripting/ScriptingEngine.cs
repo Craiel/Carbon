@@ -10,6 +10,7 @@
     using Core.Engine.Contracts.Logic;
 
     using NLua;
+    using CarbonCore.Utils.Contracts.IoC;
 
     public class ScriptingEngine : IScriptingEngine
     {
@@ -19,9 +20,9 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ScriptingEngine(IEngineFactory factory)
+        public ScriptingEngine(IFactory factory)
         {
-            this.log = factory.Get<IEngineLog>().AquireContextLog("ScriptingEngine");
+            this.log = factory.Resolve<IEngineLog>().AquireContextLog("ScriptingEngine");
 
             this.providers = new List<IScriptingProvider>();
         }

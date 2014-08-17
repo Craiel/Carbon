@@ -1,19 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Logic.MVVM;
-
-using Core.Engine.Contracts;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
+    using System.Collections.ObjectModel;
+    using System.Windows.Input;
+
+    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.UtilsWPF;
+
+    using GrandSeal.Editor.Contracts;
+
     public abstract class ContentExplorerViewModel<T> : ToolViewModel, IContentExplorerViewModel<T>
         where T : IEditorDocument
     {
         private readonly IEditorLogic logic;
-        private readonly IEngineFactory factory;
+        private readonly IFactory factory;
 
         private readonly ObservableCollection<T> filteredDocuments;
 
@@ -25,7 +24,7 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        protected ContentExplorerViewModel(IEngineFactory factory, IEditorLogic logic)
+        protected ContentExplorerViewModel(IFactory factory, IEditorLogic logic)
         {
             this.factory = factory;
             this.logic = logic;
@@ -60,7 +59,7 @@ namespace GrandSeal.Editor.ViewModels
                 // Has to be acquired on demand otherwise we get circular IoC dependency
                 if (this.mainViewModel == null)
                 {
-                    this.mainViewModel = this.factory.Get<IMainViewModel>();
+                    this.mainViewModel = this.factory.Resolve<IMainViewModel>();
                 }
 
                 return this.mainViewModel.CommandOpenNewDialog;
@@ -71,7 +70,7 @@ namespace GrandSeal.Editor.ViewModels
         {
             get
             {
-                return this.commandSave ?? (this.commandSave = new RelayCommand(this.OnSave, this.CanSave));
+                return this.commandSave ?? (this.commandSave = new RelayCommand<bool>(this.OnSave, this.CanSave));
             }
         }
 
@@ -110,28 +109,28 @@ namespace GrandSeal.Editor.ViewModels
             this.NotifyPropertyChanged(string.Empty);
         }
 
-        private void OnSave(object obj)
+        private void OnSave(bool force)
         {
             foreach (var document in this.Documents)
             {
-                if (document.CommandSave.CanExecute(obj))
+                if (document.CommandSave.CanExecute(force))
                 {
-                    document.CommandSave.Execute(obj);
+                    document.CommandSave.Execute(force);
                 }
             }
         }
 
-        private bool CanSave(object obj)
+        private bool CanSave(bool force)
         {
             return this.logic.IsProjectLoaded;
         }
 
-        private void OnReload(object obj)
+        private void OnReload()
         {
             this.UpdateDocuments();
         }
 
-        private bool CanReload(object obj)
+        private bool CanReload()
         {
             return this.logic.IsProjectLoaded;
         }

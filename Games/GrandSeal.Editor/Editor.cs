@@ -4,15 +4,14 @@
     using System.Windows;
 
     using CarbonCore.Utils.Contracts;
-
-    using Core.Engine.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
 
     using GrandSeal.Editor.Contracts;
     using GrandSeal.Editor.Views;
 
     public class Editor : IEditor
     {
-        private readonly IEngineFactory factory;
+        private readonly IFactory factory;
         private readonly IEventRelay eventRelay;
         private readonly IEditorLogic logic;
 
@@ -21,11 +20,11 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public Editor(IEngineFactory factory)
+        public Editor(IFactory factory)
         {
             this.factory = factory;
-            this.eventRelay = factory.Get<IEventRelay>();
-            this.logic = factory.Get<IEditorLogic>();
+            this.eventRelay = factory.Resolve<IEventRelay>();
+            this.logic = factory.Resolve<IEditorLogic>();
             
             this.application = new Application();
 
@@ -39,7 +38,7 @@
         // -------------------------------------------------------------------
         public void Run()
         {
-            var vm = this.factory.Get<IMainViewModel>();
+            var vm = this.factory.Resolve<IMainViewModel>();
             this.MainView = new MainView(this.eventRelay) { DataContext = vm };
             this.MainView.Closing += this.OnMainViewClosing;
 

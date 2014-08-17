@@ -6,6 +6,8 @@ using GrandSeal.Editor.Contracts;
 
 namespace GrandSeal.Editor.Logic
 {
+    using CarbonCore.ToolFramework.ViewModel;
+
     public class UndoRedoOperation
     {
         private readonly Action action;
@@ -31,7 +33,7 @@ namespace GrandSeal.Editor.Logic
         Redo
     }
 
-    internal class UndoRedoGroup : EditorBase, IUndoRedoGroup
+    internal class UndoRedoGroup : BaseViewModel, IUndoRedoGroup
     {
         private readonly Stack<UndoRedoOperation> undoStack;
         private readonly Stack<UndoRedoOperation> redoStack;
@@ -131,7 +133,7 @@ namespace GrandSeal.Editor.Logic
         }
     }
 
-    public class UndoRedoManager : EditorBase, IUndoRedoManager
+    public class UndoRedoManager : BaseViewModel, IUndoRedoManager
     {
         private readonly IDictionary<object, IUndoRedoGroup> undoRedoGroups;
 

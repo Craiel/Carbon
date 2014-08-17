@@ -1,12 +1,12 @@
-﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-
-using GrandSeal.Editor.Contracts;
-
-using Core.Engine.Contracts;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+
+    using CarbonCore.Utils.Contracts.IoC;
+
+    using GrandSeal.Editor.Contracts;
+
     public class MaterialExplorerViewModel : ContentExplorerViewModel<IMaterialViewModel>, IMaterialExplorerViewModel
     {
         private readonly IEditorLogic logic;
@@ -14,7 +14,7 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public MaterialExplorerViewModel(IEngineFactory factory, IEditorLogic logic)
+        public MaterialExplorerViewModel(IFactory factory, IEditorLogic logic)
             : base(factory, logic)
         {
             this.logic = logic;
@@ -42,7 +42,7 @@ namespace GrandSeal.Editor.ViewModels
                 target.Add(material);
             }
 
-            this.NotifyPropertyChanged("Title");
+            this.NotifyPropertyChangedExplicit("Title");
         }
 
         // -------------------------------------------------------------------

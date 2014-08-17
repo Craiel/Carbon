@@ -9,6 +9,8 @@ namespace GrandSeal.Editor.ViewModels
     using System;
     using System.Threading.Tasks;
 
+    using CarbonCore.UtilsWPF;
+
     using global::GrandSeal.Editor.Views;
 
     public class ResourceExplorerViewModel : ToolViewModel, IResourceExplorerViewModel
@@ -61,66 +63,66 @@ namespace GrandSeal.Editor.ViewModels
             this.NotifyPropertyChanged("Folders");
         }
 
-        private void OnSave(object obj)
+        private void OnSave()
         {
             TaskProgress.Message = "Saving Resources...";
-            new TaskProgress(new[] { new Task(() => this.DoSave(obj)) }, 1);
+            new TaskProgress(new[] { new Task(this.DoSave) }, 1);
         }
 
-        private void DoSave(object obj)
+        private void DoSave()
         {
             TaskProgress.CurrentProgress = 0;
             TaskProgress.CurrentMaxProgress = this.Folders.Count;
             foreach (IFolderViewModel folder in this.Folders)
             {
                 TaskProgress.CurrentMessage = folder.FullPath.ToString();
-                folder.CommandRefresh.Execute(obj);
-                folder.CommandSave.Execute(obj);
+                folder.CommandRefresh.Execute(null);
+                folder.CommandSave.Execute(null);
                 TaskProgress.CurrentProgress++;
             }
         }
 
-        private void OnRefresh(object obj)
+        private void OnRefresh()
         {
             TaskProgress.Message = "Refreshing Resource Status...";
-            new TaskProgress(new[] { new Task(() => this.DoRefresh(obj)) }, 1);
+            new TaskProgress(new[] { new Task(this.DoRefresh) }, 1);
         }
 
-        private void DoRefresh(object obj)
+        private void DoRefresh()
         {
             TaskProgress.CurrentProgress = 0;
             TaskProgress.CurrentMaxProgress = this.Folders.Count;
             foreach (IFolderViewModel folder in this.Folders)
             {
                 TaskProgress.CurrentMessage = folder.FullPath.ToString();
-                folder.CommandRefresh.Execute(obj);
+                folder.CommandRefresh.Execute(null);
                 TaskProgress.CurrentProgress++;
             }
         }
 
-        private bool CanSave(object obj)
+        private bool CanSave()
         {
             return true;
         }
 
-        private void OnAddFolder(object obj)
+        private void OnAddFolder()
         {
             this.logic.AddFolder();
             this.NotifyPropertyChanged("Folders");
         }
 
-        private bool CanAddFolder(object obj)
+        private bool CanAddFolder()
         {
             return this.logic.IsProjectLoaded;
         }
 
-        private void OnReload(object obj)
+        private void OnReload()
         {
             // Todo:
             this.NotifyPropertyChanged("Folders");
         }
 
-        private bool CanReload(object obj)
+        private bool CanReload()
         {
             return this.logic.IsProjectLoaded;
         }

@@ -1,9 +1,9 @@
 ﻿namespace Core.Engine.Logic
 {
+    using CarbonCore.Utils.Contracts.IoC;
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Rendering;
-
     using SharpDX;
     using SharpDX.DirectInput;
 
@@ -24,9 +24,9 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public CarbonConsole(IEngineFactory factory)
+        public CarbonConsole(IFactory factory)
         {
-            this.controller = factory.Get<ITypingController>();
+            this.controller = factory.Resolve<ITypingController>();
         }
 
         // -------------------------------------------------------------------

@@ -1,0 +1,186 @@
+import bpy
+from array import array
+import struct
+from math import atan2
+
+def write_some_data(context, filepath):
+    print("running write_some_data...")
+    f = open(filepath, 'wb')
+
+    # Export all cameras
+    f.write(struct.pack("i", len(bpy.data.cameras)))
+    for camera in bpy.data.cameras:
+        f.write(bytes(camera.name, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(bytes(camera.type, "ASCII"))
+        f.write(struct.pack("b", 0))
+#        f.write(bytes(camera.lens_unit, "ASCII"))
+#        f.write(struct.pack("b", 0))
+        fov = 2 * atan2(camera.sensor_width, 2 * camera.lens) * 57.2957795
+        f.write(struct.pack("f", fov))
+        f.write(struct.pack("f", camera.clip_start))
+        f.write(struct.pack("f", camera.clip_end))
+
+    # Export all lights
+    f.write(struct.pack("i", len(bpy.data.lamps)))
+    for lamp in bpy.data.lamps:
+        f.write(bytes(lamp.name, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(bytes(lamp.type, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(struct.pack("f", lamp.color.r))
+        f.write(struct.pack("f", lamp.color.g))
+        f.write(struct.pack("f", lamp.color.b))
+        f.write(struct.pack("f", lamp.energy))
+        f.write(struct.pack("b", lamp.use_diffuse))
+        f.write(struct.pack("b", lamp.use_specular))
+        f.write(struct.pack("f", lamp.distance))
+        f.write(bytes(lamp.falloff_type, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(struct.pack("f", lamp.linear_attenuation))
+        f.write(struct.pack("f", lamp.quadratic_attenuation))
+        if lamp.type == "SPOT":
+            f.write(struct.pack("f", lamp.spot_size))
+            f.write(struct.pack("f", lamp.spot_blend))
+        else:
+            f.write(struct.pack("f", 0.0))
+            f.write(struct.pack("f", 0.0))
+        f.write(struct.pack("b", lamp.use_shadow))
+        f.write(struct.pack("f", lamp.shadow_color.r))
+        f.write(struct.pack("f", lamp.shadow_color.g))
+        f.write(struct.pack("f", lamp.shadow_color.b))
+        f.write(struct.pack("i", lamp.shadow_buffer_size))
+        f.write(struct.pack("f", lamp.shadow_buffer_clip_start))
+        f.write(struct.pack("f", lamp.shadow_buffer_clip_end))
+
+    # Export all materials
+    f.write(struct.pack("i", len(bpy.data.materials)))
+    for mat in bpy.data.materials:
+        f.write(bytes(mat.name, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(bytes(mat.type, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(bytes(mat.diffuse_shader, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(struct.pack("f", mat.diffuse_color.r))
+        f.write(struct.pack("f", mat.diffuse_color.g))
+        f.write(struct.pack("f", mat.diffuse_color.b))
+        f.write(struct.pack("f", mat.diffuse_intensity))
+        f.write(struct.pack("f", mat.roughness))
+        f.write(bytes(mat.specular_shader, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(struct.pack("f", mat.specular_color.r))
+        f.write(struct.pack("f", mat.specular_color.g))
+        f.write(struct.pack("f", mat.specular_color.b))
+        f.write(struct.pack("f", mat.specular_intensity))
+        f.write(struct.pack("H", mat.specular_hardness))
+        f.write(struct.pack("f", mat.specular_ior))
+        f.write(struct.pack("f", mat.emit))
+        f.write(struct.pack("f", mat.ambient))
+        f.write(bytes(mat.transparency_method, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(struct.pack("f", mat.alpha))
+        f.write(struct.pack("b", mat.use_shadows))
+        f.write(struct.pack("b", mat.use_cast_shadows))
+        # Write texture slots out
+        usedslots = sum(x != None for x in mat.texture_slots)
+        f.write(struct.pack("i", usedslots))
+        for ts in mat.texture_slots:
+            if ts == None:
+                continue
+            f.write(bytes(ts.texture.image.filepath, "ASCII"))
+            f.write(struct.pack("b", 0))
+#            f.write(bytes(ts.uv_layer, "ASCII"))
+#            f.write(struct.pack("b", 0))
+            f.write(struct.pack("b", ts.use_map_color_diffuse))
+            f.write(struct.pack("b", ts.use_map_color_spec))
+            f.write(struct.pack("b", ts.use_map_hardness))
+            f.write(struct.pack("b", ts.use_map_emit))
+            f.write(struct.pack("b", ts.use_map_normal))
+                                    
+    # Export all meshes
+    f.write(struct.pack("i", len(bpy.data.meshes)))
+    for mesh in bpy.data.meshes:
+        f.write(bytes(mesh.name, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(struct.pack("H", len(mesh.vertices)))
+        for vert in mesh.vertices:
+            f.write(struct.pack("f", vert.co[0]))
+            f.write(struct.pack("f", vert.co[1]))
+            f.write(struct.pack("f", vert.co[2]))
+            f.write(struct.pack("f", vert.normal[0]))
+            f.write(struct.pack("f", vert.normal[1]))
+            f.write(struct.pack("f", vert.normal[2]))
+        f.write(struct.pack("H", len(mesh.polygons) * 3))
+        for poly in mesh.polygons:
+            if len(poly.vertices) > 3:
+                raise Exception("Ran into a nontriangulated polygon! ooops!")
+            for pv in poly.vertices:
+                f.write(struct.pack("H", pv))
+    
+    # Objects
+    f.write(struct.pack("i", len(bpy.data.objects)))
+    for object in bpy.data.objects:
+        f.write(bytes(object.name, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(bytes(object.type, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(bytes(object.data.name, "ASCII"))
+        f.write(struct.pack("b", 0))
+        f.write(struct.pack("f", object.location[0]))
+        f.write(struct.pack("f", object.location[1]))
+        f.write(struct.pack("f", object.location[2]))
+        f.write(struct.pack("f", object.scale[0]))
+        f.write(struct.pack("f", object.scale[1]))
+        f.write(struct.pack("f", object.scale[2]))
+        f.write(bytes(object.rotation_mode, "ASCII"))
+        f.write(struct.pack("b", 0))
+        if object.rotation_mode == "QUATERNION":
+            f.write(struct.pack("f", object.rotation_quaternion[0]))
+            f.write(struct.pack("f", object.rotation_quaternion[1]))
+            f.write(struct.pack("f", object.rotation_quaternion[2]))
+            f.write(struct.pack("f", object.rotation_quaternion[3]))
+        elif object.rotation_mode == "AXIS_ANGLE":
+            f.write(struct.pack("f", object.rotation_axis_angle[0]))
+            f.write(struct.pack("f", object.rotation_axis_angle[1]))
+            f.write(struct.pack("f", object.rotation_axis_angle[2]))
+            f.write(struct.pack("f", object.rotation_axis_angle[3]))
+        else:
+            f.write(struct.pack("f", object.rotation_euler[0]))
+            f.write(struct.pack("f", object.rotation_euler[1]))
+            f.write(struct.pack("f", object.rotation_euler[2]))
+        
+    f.close()
+
+    return {'FINISHED'}
+
+
+# ExportHelper is a helper class, defines filename and
+# invoke() function which calls the file selector.
+from bpy_extras.io_utils import ExportHelper
+from bpy.props import StringProperty, BoolProperty, EnumProperty
+from bpy.types import Operator
+
+
+class ExportSomeData(Operator, ExportHelper):
+    """This appears in the tooltip of the operator and in the generated docs"""
+    bl_idname = "export_test.some_data"  # important since its how bpy.ops.import_test.some_data is constructed
+    bl_label = "Export Emerald engine definition..."
+
+    # ExportHelper mixin class uses this
+    filename_ext = ".ee"
+
+    filter_glob = StringProperty(
+            default="*.ee",
+            options={'HIDDEN'},
+            )
+
+    # List of operator properties, the attributes will be assigned
+    # to the class instance from the operator settings before calling.
+    #use_setting = BoolProperty(
+     #       name="Example Boolean",
+      #      description="Example Tooltip",
+       #     default=True,
+        #    )
+
+#    type = EnumProperty..

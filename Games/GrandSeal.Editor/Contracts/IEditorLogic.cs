@@ -3,13 +3,14 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
 
+    using CarbonCore.ToolFramework.Contracts;
     using CarbonCore.Utils.IO;
 
     using Core.Engine.Resource.Content;
 
     public delegate void ProjectChangedEventHandler();
 
-    public interface IEditorLogic : IEditorBase
+    public interface IEditorLogic : IBaseViewModel
     {
         event ProjectChangedEventHandler ProjectChanged;
 

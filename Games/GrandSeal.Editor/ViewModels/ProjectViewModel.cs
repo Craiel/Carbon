@@ -4,21 +4,19 @@ using GrandSeal.Editor.Contracts;
 
 using Core.Engine.Contracts;
 using Core.Engine.Resource.Content;
+using CarbonCore.Utils.Contracts.IoC;
 
 namespace GrandSeal.Editor.ViewModels
 {
     public class ProjectViewModel : ContentViewModel, IProjectViewModel
     {
-        private readonly ProjectEntry data;
-
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ProjectViewModel(IEngineFactory factory, ProjectEntry data)
-            : base(factory, data)
+        public ProjectViewModel(IFactory factory)
+            : base(factory)
         {
             this.Template = StaticResources.ProjectTemplate;
-            this.data = data;
         }
 
         // -------------------------------------------------------------------

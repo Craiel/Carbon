@@ -136,7 +136,6 @@
     <Compile Include="Contracts\IFontViewModel.cs" />
     <Compile Include="Contracts\IApplicationLog.cs" />
     <Compile Include="Contracts\IEditor.cs" />
-    <Compile Include="Contracts\IEditorBase.cs" />
     <Compile Include="Contracts\IEditorDocument.cs" />
     <Compile Include="Contracts\IEditorSettings.cs" />
     <Compile Include="Contracts\IEditorSettingsViewModel.cs" />
@@ -162,12 +161,10 @@
     <Compile Include="Contracts\IUndoRedoGroup.cs" />
     <Compile Include="Contracts\IUndoRedoManager.cs" />
     <Compile Include="Contracts\IUserInterfaceViewModel.cs" />
-    <Compile Include="Contracts\IViewModelFactory.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="Events\LayoutEvents.cs" />
     <Compile Include="Logic\ApplicationLog.cs" />
     <Compile Include="Editor.cs" />
-    <Compile Include="Logic\EditorBase.cs" />
     <Compile Include="Logic\EditorLogic.cs" />
     <Compile Include="Logic\EditorLog.cs" />
     <Compile Include="Logic\EditorSettings.cs" />
@@ -185,12 +182,10 @@
     <Compile Include="Logic\MVVM\OneWayBinding.cs" />
     <Compile Include="Logic\MVVM\WPFUtilities.cs" />
     <Compile Include="Logic\OperationProgress.cs" />
-    <Compile Include="Logic\MVVM\RelayCommand.cs" />
     <Compile Include="Logic\MVVM\TreeViewExtension.cs" />
     <Compile Include="Logic\ResourceExplorerTemplateSelector.cs" />
     <Compile Include="Logic\TextureSynchronizer.cs" />
     <Compile Include="Logic\UndoRedoManager.cs" />
-    <Compile Include="IoC\ViewModelFactory.cs" />
     <Compile Include="StaticResources.cs" />
     <Compile Include="ViewModels\EditorSettingsViewModel.cs" />
     <Compile Include="ViewModels\ContentExplorerViewModel.cs" />
@@ -269,7 +264,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IoC\FactoryExtension.cs" />
     <Compile Include="IoC\IoC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -300,6 +294,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CarbonCore\ToolFramework\CarbonCore.ToolFramework.csproj">
+      <Project>{E4643DF2-D2DB-4E99-AB4B-D8CE4FD94D81}</Project>
+      <Name>CarbonCore.ToolFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\CarbonCore\UtilsWPF\CarbonCore.UtilsWPF.csproj">
       <Project>{75FF83F3-C123-4982-91F7-09D0F8A66536}</Project>
       <Name>CarbonCore.UtilsWPF</Name>

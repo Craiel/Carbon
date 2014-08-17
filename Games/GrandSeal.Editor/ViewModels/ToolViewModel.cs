@@ -1,11 +1,12 @@
-﻿using System;
-
-using GrandSeal.Editor.Contracts;
-using GrandSeal.Editor.Logic;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
-    public abstract class ToolViewModel : EditorBase, IEditorTool
+    using System;
+
+    using CarbonCore.ToolFramework.ViewModel;
+
+    using GrandSeal.Editor.Contracts;
+
+    public abstract class ToolViewModel : BaseViewModel, IEditorTool
     {
         private bool isVisible;
 
@@ -48,6 +49,7 @@ namespace GrandSeal.Editor.ViewModels
             {
                 return this.isVisible;
             }
+
             set
             {
                 if (this.isVisible != value)
@@ -64,6 +66,7 @@ namespace GrandSeal.Editor.ViewModels
             {
                 return this.isSelected;
             }
+
             set
             {
                 if (this.isSelected != value)
@@ -80,6 +83,7 @@ namespace GrandSeal.Editor.ViewModels
             {
                 return this.isActive;
             }
+
             set
             {
                 if (this.isActive != value)

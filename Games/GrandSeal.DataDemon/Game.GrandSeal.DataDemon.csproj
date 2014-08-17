@@ -78,7 +78,6 @@
     <Compile Include="Logic\DemonLog.cs" />
     <Compile Include="Logic\DemonLogic.cs" />
     <Compile Include="Logic\DemonOperation.cs" />
-    <Compile Include="IoC\FactoryExtension.cs" />
     <Compile Include="IoC\IoC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

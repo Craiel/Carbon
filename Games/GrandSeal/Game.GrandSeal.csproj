@@ -101,7 +101,6 @@
     <Compile Include="Logic\GrandSealGameState.cs" />
     <Compile Include="Logic\GrandSealSettings.cs" />
     <Compile Include="Logic\GrandSealSystemController.cs" />
-    <Compile Include="IoC\FactoryExtension.cs" />
     <Compile Include="IoC\IoC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scenes\SceneBase.cs" />
@@ -155,7 +154,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(ProjectDir)..\..\..\CarbonCore\External\sqllite\1.0.91.0\* $(TargetDir)
+    <PostBuildEvent>copy $(ProjectDir)..\..\..\CarbonCore\External\sqllite\1.0.93.0\* $(TargetDir)
 copy $(ProjectDir)..\..\..\CarbonCore\External\SharpDX\2.5.0\Bin\Redist\D3D\x64\* $(TargetDir)
 xcopy /Q /H /Y /E /I $(ProjectDir)..\GrandSeal.Data\Data $(TargetDir)\Data</PostBuildEvent>
   </PropertyGroup>

@@ -1,8 +1,10 @@
-﻿using System;
-
-namespace GrandSeal.Editor.Contracts
+﻿namespace GrandSeal.Editor.Contracts
 {
-    public interface IEditorTool : IEditorBase
+    using System;
+
+    using CarbonCore.ToolFramework.Contracts;
+
+    public interface IEditorTool : IBaseViewModel
     {
         string Title { get; }
         string ContentId { get; }

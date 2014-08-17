@@ -1,7 +1,7 @@
 ﻿namespace Core.Engine.Logic
 {
     using CarbonCore.Utils.Contracts;
-
+    using CarbonCore.Utils.Contracts.IoC;
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Resource;
@@ -14,13 +14,13 @@
         {
         }
 
-        protected GameState(IEngineFactory factory)
+        protected GameState(IFactory factory)
         {
-            this.SceneManager = factory.Get<ISceneManager>();
+            this.SceneManager = factory.Resolve<ISceneManager>();
 
-            this.ScriptingEngine = factory.Get<IScriptingEngine>();
-            this.ScriptingEngine.Register(new ScriptingCoreProvider(factory.Get<IEngineLog>()));
-            this.ScriptingEngine.Register(factory.Get<IInputManager>());
+            this.ScriptingEngine = factory.Resolve<IScriptingEngine>();
+            this.ScriptingEngine.Register(new ScriptingCoreProvider(factory.Resolve<IEngineLog>()));
+            this.ScriptingEngine.Register(factory.Resolve<IInputManager>());
         }
 
         // -------------------------------------------------------------------

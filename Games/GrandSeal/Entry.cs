@@ -2,6 +2,8 @@
 {
     using Autofac;
 
+    using CarbonCore.Utils.IoC;
+
     using Contracts;
 
     using global::GrandSeal.IoC;
@@ -10,9 +12,7 @@
     {
         public static void Main()
         {
-            var builder = new ContainerBuilder();
-            builder.RegisterModule<GameModule>();
-            IContainer kernel = builder.Build();
+            IContainer kernel = CarbonContainerBuilder.Build<GameModule>();
             kernel.Resolve<IGrandSeal>().Run();
         }
     }

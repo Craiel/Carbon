@@ -175,7 +175,7 @@
                 {
                     case AttributeName:
                         {
-                            builder.Type = CsamlAttribute.Types.CsamlAttributeType.Name; 
+                            builder.Type = CsamlAttribute.Types.CsamlAttributeType.ControlName; 
                             SetStringValue(attribute.Value, builder);
                             break;
                         }

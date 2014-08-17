@@ -1,12 +1,12 @@
-﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-
-using GrandSeal.Editor.Contracts;
-
-using Core.Engine.Contracts;
-
-namespace GrandSeal.Editor.ViewModels
+﻿namespace GrandSeal.Editor.ViewModels
 {
+    using System.Collections.ObjectModel;
+    using System.Collections.Specialized;
+
+    using CarbonCore.Utils.Contracts.IoC;
+
+    using GrandSeal.Editor.Contracts;
+
     public class FontExplorerViewModel : ContentExplorerViewModel<IFontViewModel>, IFontExplorerViewModel
     {
         private readonly IEditorLogic logic;
@@ -14,7 +14,7 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public FontExplorerViewModel(IEngineFactory factory, IEditorLogic logic)
+        public FontExplorerViewModel(IFactory factory, IEditorLogic logic)
             : base(factory, logic)
         {
             this.logic = logic;
@@ -42,7 +42,7 @@ namespace GrandSeal.Editor.ViewModels
                 target.Add(font);
             }
 
-            this.NotifyPropertyChanged("Title");
+            this.NotifyPropertyChangedExplicit("Title");
         }
 
         // -------------------------------------------------------------------

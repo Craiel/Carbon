@@ -4,10 +4,10 @@
     using System.Collections.Generic;
 
     using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
 
     using Contracts;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
@@ -24,7 +24,7 @@
     
     public class SceneMainMenu : SceneBase, ISceneMainMenu
     {
-        private readonly IEngineFactory factory;
+        private readonly IFactory factory;
         private readonly ILog log;
         private readonly ISceneDebugOverlay debugOverlay;
         private readonly IGrandSealSystemController systemController;
@@ -51,15 +51,15 @@
         // --------------------------------------------------------------------
         // Constructor
         // --------------------------------------------------------------------
-        public SceneMainMenu(IEngineFactory factory)
+        public SceneMainMenu(IFactory factory)
             : base(factory)
         {
             this.factory = factory;
-            this.debugOverlay = this.factory.Get<ISceneDebugOverlay>();
+            this.debugOverlay = this.factory.Resolve<ISceneDebugOverlay>();
 
-            this.systemController = this.factory.Get<IGrandSealSystemController>();
+            this.systemController = this.factory.Resolve<IGrandSealSystemController>();
             
-            this.log = factory.Get<IGrandSealLog>().AquireContextLog("MainMenuScene");
+            this.log = factory.Resolve<IGrandSealLog>().AquireContextLog("MainMenuScene");
 
             this.sceneGraph = new SceneGraph(new EmptyEntity { Name = "MainMenuRoot" });
         }
@@ -89,7 +89,7 @@
             this.graphics = graphic;
 
             // Initialize our camera's
-            this.userInterfaceCamera = this.factory.Get<IOrthographicCamera>();
+            this.userInterfaceCamera = this.factory.Resolve<IOrthographicCamera>();
             this.userInterfaceCamera.Initialize(graphic);
 
             // Load the init script for the scene
@@ -145,12 +145,10 @@
         
         public override void Render(IFrameManager frameManager)
         {
-            FrameInstructionSet set;
-
             // The scene to deferred
             if (this.activeCamera != null)
             {
-                set = frameManager.BeginSet(this.activeCamera.Camera);
+                FrameInstructionSet set = frameManager.BeginSet(this.activeCamera.Camera);
                 set.Technique = FrameTechnique.Forward;
                 set.LightingEnabled = true;
                 this.RenderList(1, set);

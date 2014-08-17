@@ -3,10 +3,13 @@
     using System;
 
     using Core.Engine.Resource;
+    using CarbonCore.Utils.IO;
 
     public interface IResourceManager : IDisposable
     {
         T Load<T>(string hash) where T : ICarbonResource;
+
+        void SetRoot(CarbonDirectory directory);
 
         void Store(string hash, ICarbonResource resource);
         void Replace(string hash, ICarbonResource resource);

@@ -9,6 +9,9 @@ using Core.Engine.Contracts;
 
 namespace GrandSeal.Editor.ViewModels
 {
+    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.UtilsWPF;
+
     using Core.Engine.Resource.Content;
 
     public class StageViewModel : ContentViewModel, IStageViewModel
@@ -18,8 +21,8 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public StageViewModel(IEngineFactory factory, StageEntry data)
-            : base(factory, data)
+        public StageViewModel(IFactory factory)
+            : base(factory)
         {
             this.data = data;
 
@@ -69,12 +72,12 @@ namespace GrandSeal.Editor.ViewModels
         // -------------------------------------------------------------------
         // Private
         // -------------------------------------------------------------------
-        private void OnUpdatePreview(object obj)
+        private void OnUpdatePreview()
         {
             this.UpdatePreview();
         }
 
-        private bool CanPreview(object obj)
+        private bool CanPreview()
         {
             return false;
         }

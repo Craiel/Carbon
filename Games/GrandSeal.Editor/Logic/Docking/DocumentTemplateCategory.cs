@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-
-using GrandSeal.Editor.Contracts;
-
-namespace GrandSeal.Editor.Logic
+﻿namespace GrandSeal.Editor.Logic.Docking
 {
-    class DocumentTemplateCategory : EditorBase, IDocumentTemplateCategory
+    using System.Collections.Generic;
+
+    using CarbonCore.ToolFramework.ViewModel;
+
+    using GrandSeal.Editor.Contracts;
+
+    public class DocumentTemplateCategory : BaseViewModel, IDocumentTemplateCategory
     {
         public DocumentTemplateCategory()
         {
@@ -17,7 +19,7 @@ namespace GrandSeal.Editor.Logic
 
         public bool Contains(IDocumentTemplateCategory category)
         {
-            foreach (IDocumentTemplateCategory child in Children)
+            foreach (IDocumentTemplateCategory child in this.Children)
             {
                 if (child == category || child.Contains(category))
                 {

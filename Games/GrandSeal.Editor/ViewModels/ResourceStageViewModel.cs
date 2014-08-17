@@ -2,6 +2,7 @@
 {
     using System.Windows;
 
+    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.Utils.IO;
 
     using Core.Engine.Contracts;
@@ -14,27 +15,23 @@
 
     public class ResourceStageViewModel : ResourceViewModel, IResourceStageViewModel
     {
-        private enum Flags
-        {
-        }
-
         private readonly IEditorLogic logic;
         private readonly IResourceProcessor resourceProcessor;
 
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ResourceStageViewModel(IEngineFactory factory, ResourceEntry data)
-            : base(factory, data)
+        public ResourceStageViewModel(IFactory factory)
+            : base(factory)
         {
-            this.logic = factory.Get<IEditorLogic>();
-            this.resourceProcessor = factory.Get<IResourceProcessor>();
+            this.logic = factory.Resolve<IEditorLogic>();
+            this.resourceProcessor = factory.Resolve<IResourceProcessor>();
         }
 
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected override void OnDelete(object arg)
+        protected override void OnDelete()
         {
             if (MessageBox.Show(
                 "Delete stage " + this.Name,
@@ -46,7 +43,7 @@
                 return;
             }
 
-            this.OnClose(null);
+            this.OnClose();
             this.logic.Delete(this);
         }
         

@@ -7,8 +7,8 @@
     using System.Linq;
 
     using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
 
-    using Core.Engine.Contracts;
     using Core.Processing.Logic;
 
     using GrandSeal.DataDemon.Contracts;
@@ -30,9 +30,9 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public DemonFileInfo(IEngineFactory factory)
+        public DemonFileInfo(IFactory factory)
         {
-            this.log = factory.Get<IDemonLog>().AquireContextLog("FileInfo");
+            this.log = factory.Resolve<IDemonLog>().AquireContextLog("FileInfo");
 
             this.processedEntries = new HashSet<ContentInfoEntry>();
             this.pendingEntries = new HashSet<ContentInfoEntry>();

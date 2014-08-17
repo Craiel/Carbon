@@ -6,15 +6,13 @@
 
     using CarbonCore.Utils;
     using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
 
     using Contracts;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
-
-    using global::GrandSeal.IoC;
 
     using Logic;
 
@@ -29,7 +27,7 @@
 
     public class GrandSeal : CarbonGame, IGrandSeal
     {
-        private readonly IEngineFactory factory;
+        private readonly IFactory factory;
         private readonly ILog log;
         private readonly IGrandSealGameState gameState;
         private readonly IGrandSealScriptingProvider scriptingProvider;
@@ -43,17 +41,17 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public GrandSeal(IEngineFactory factory)
+        public GrandSeal(IFactory factory)
             : base(factory)
         {
             this.factory = factory;
-            this.log = factory.Get<IGrandSealLog>().AquireContextLog("GrandSeal");
+            this.log = factory.Resolve<IGrandSealLog>().AquireContextLog("GrandSeal");
 
-            this.gameState = factory.Get<IGrandSealGameState>();
-            this.scriptingProvider = factory.GetScriptingProvider(this);
-            this.systemController = factory.Get<IGrandSealSystemController>();
-            this.settings = factory.Get<IGrandSealSettings>();
-            this.debugOverlay = factory.Get<ISceneDebugOverlay>();
+            this.gameState = factory.Resolve<IGrandSealGameState>();
+            this.scriptingProvider = factory.Resolve<IGrandSealScriptingProvider>();
+            this.systemController = factory.Resolve<IGrandSealSystemController>();
+            this.settings = factory.Resolve<IGrandSealSettings>();
+            this.debugOverlay = factory.Resolve<ISceneDebugOverlay>();
         }
 
         // -------------------------------------------------------------------
@@ -118,12 +116,12 @@
             this.Window.Size = new Size(size.X, size.Y);
 
             // Setup the entry scene
-            var entryScene = this.factory.Get<ISceneEntry>();
+            var entryScene = this.factory.Resolve<ISceneEntry>();
             entryScene.SceneScriptHash = HashUtils.BuildResourceHash(@"Scripts\Entry\Init.lua");
             this.gameState.SceneManager.Register((int)SceneKey.Entry, entryScene);
 
             // Setup the debug overlay
-            var debugOverlay = this.factory.Get<ISceneDebugOverlay>();
+            var debugOverlay = this.factory.Resolve<ISceneDebugOverlay>();
             this.gameState.SceneManager.Register((int)SceneKey.DebugOverlay, debugOverlay);
            
             // Activate the entry scene

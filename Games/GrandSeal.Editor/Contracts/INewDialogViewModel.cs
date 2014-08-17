@@ -3,7 +3,9 @@ using System.Windows.Input;
 
 namespace GrandSeal.Editor.Contracts
 {
-    public interface INewDialogViewModel : IEditorBase
+    using CarbonCore.ToolFramework.Contracts;
+
+    public interface INewDialogViewModel : IBaseViewModel
     {
         string Name { get; set; }
 

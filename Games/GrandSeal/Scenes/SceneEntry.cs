@@ -4,10 +4,10 @@
     using System.Data;
 
     using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
 
     using Contracts;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
@@ -18,19 +18,19 @@
     
     public class SceneEntry : SceneBase, ISceneEntry
     {
-        private readonly IEngineFactory factory;
+        private readonly IFactory factory;
         private readonly ILog log;
         private readonly ISceneDebugOverlay debugOverlay;
 
         // --------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public SceneEntry(IEngineFactory factory)
+        public SceneEntry(IFactory factory)
             : base(factory)
         {
             this.factory = factory;
-            this.log = factory.Get<IGrandSealLog>().AquireContextLog("EntryScene");
-            this.debugOverlay = factory.Get<ISceneDebugOverlay>();
+            this.log = factory.Resolve<IGrandSealLog>().AquireContextLog("EntryScene");
+            this.debugOverlay = factory.Resolve<ISceneDebugOverlay>();
         }
 
         // -------------------------------------------------------------------
@@ -87,7 +87,7 @@
                 case SceneKey.MainMenu:
                     {
                         this.log.Info("Transition into MainMenu Scene...");
-                        var scene = this.factory.Get<ISceneMainMenu>();
+                        var scene = this.factory.Resolve<ISceneMainMenu>();
                         scene.SceneScriptHash = initializeScriptHash;
                         this.GameState.SceneManager.Register((int)SceneKey.MainMenu, scene);
                         this.GameState.SceneManager.Prepare((int)SceneKey.MainMenu);

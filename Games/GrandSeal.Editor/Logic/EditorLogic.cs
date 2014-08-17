@@ -11,6 +11,7 @@
     using System.Windows;
     using System.Xml;
 
+    using CarbonCore.ToolFramework.ViewModel;
     using CarbonCore.Utils.Contracts;
     using CarbonCore.Utils.IO;
 
@@ -24,14 +25,14 @@
     using GrandSeal.Editor.Views;
     using ICSharpCode.AvalonEdit.Highlighting;
     using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+    using CarbonCore.Utils.Contracts.IoC;
 
-    public class EditorLogic : EditorBase, IEditorLogic
+    public class EditorLogic : BaseViewModel, IEditorLogic
     {
         private const int RecentProjectMaximum = 10;
 
-        private readonly IEngineFactory engineFactory;
+        private readonly IFactory factory;
         private readonly ILog log;
-        private readonly IViewModelFactory viewModelFactory;
         private readonly IEditorSettings settings;
 
         private readonly ObservableCollection<IMaterialViewModel> materials;
@@ -48,12 +49,11 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public EditorLogic(IEngineFactory factory)
+        public EditorLogic(IFactory factory)
         {
-            this.engineFactory = factory;
-            this.log = factory.Get<IEditorLog>().AquireContextLog("Logic");
-            this.viewModelFactory = factory.Get<IViewModelFactory>();
-            this.settings = factory.Get<IEditorSettings>();
+            this.factory = factory;
+            this.log = factory.Resolve<IEditorLog>().AquireContextLog("Logic");
+            this.settings = factory.Resolve<IEditorSettings>();
 
             this.materials = new ObservableCollection<IMaterialViewModel>();
             this.fonts = new ObservableCollection<IFontViewModel>();
@@ -203,7 +203,7 @@
 
         public IMaterialViewModel AddMaterial()
         {
-            var vm = this.viewModelFactory.GetMaterialViewModel(new MaterialEntry());
+            var vm = this.factory.Resolve<IMaterialViewModel>();
             this.materials.Insert(0, vm);
             return vm;
         }
@@ -230,7 +230,7 @@
 
         public IFontViewModel AddFont()
         {
-            var vm = this.viewModelFactory.GetFontViewModel(new FontEntry());
+            var vm = this.factory.Resolve<IFontViewModel>();
             this.fonts.Insert(0, vm);
             return vm;
         }
@@ -257,7 +257,7 @@
 
         public IFolderViewModel AddFolder()
         {
-            var vm = this.viewModelFactory.GetFolderViewModel(new ResourceTree());
+            var vm = this.factory.Resolve<IFolderViewModel>();
             this.folders.Add(vm);
             return vm;
         }
@@ -293,49 +293,49 @@
         
         public IResourceTextureViewModel AddResourceTexture()
         {
-            var vm = this.viewModelFactory.GetResourceTextureViewModel(new ResourceEntry { Type = ResourceType.Texture });
+            var vm = this.factory.Resolve<IResourceTextureViewModel>();
             this.resourceViewModels.Add(vm);
             return vm;
         }
 
         public IResourceModelViewModel AddResourceModel()
         {
-            var vm = this.viewModelFactory.GetResourceModelViewModel(new ResourceEntry { Type = ResourceType.Model });
+            var vm = this.factory.Resolve<IResourceModelViewModel>();
             this.resourceViewModels.Add(vm);
             return vm;
         }
 
         public IResourceScriptViewModel AddResourceScript()
         {
-            var vm = this.viewModelFactory.GetResourceScriptViewModel(new ResourceEntry { Type = ResourceType.Script });
+            var vm = this.factory.Resolve<IResourceScriptViewModel>();
             this.resourceViewModels.Add(vm);
             return vm;
         }
 
         public IResourceFontViewModel AddResourceFont()
         {
-            var vm = this.viewModelFactory.GetResourceFontViewModel(new ResourceEntry { Type = ResourceType.Font });
+            var vm = this.factory.Resolve<IResourceFontViewModel>();
             this.resourceViewModels.Add(vm);
             return vm;
         }
 
         public IResourceRawViewModel AddResourceRaw()
         {
-            var vm = this.viewModelFactory.GetResourceRawViewModel(new ResourceEntry { Type = ResourceType.Raw });
+            var vm = this.factory.Resolve<IResourceRawViewModel>();
             this.resourceViewModels.Add(vm);
             return vm;
         }
 
         public IResourceStageViewModel AddResourceStage()
         {
-            var vm = this.viewModelFactory.GetResourceStageViewModel(new ResourceEntry { Type = ResourceType.Stage });
+            var vm = this.factory.Resolve<IResourceStageViewModel>();
             this.resourceViewModels.Add(vm);
             return vm;
         }
 
         public IResourceUserInterfaceViewModel AddResourceUserInterface()
         {
-            var vm = this.viewModelFactory.GetResourceUserInterfaceViewModel(new ResourceEntry { Type = ResourceType.UserInterface });
+            var vm = this.factory.Resolve<IResourceUserInterfaceViewModel>();
             this.resourceViewModels.Add(vm);
             return vm;
         }
@@ -383,7 +383,7 @@
         {
             // Todo: Cache if this gets to slow
             IList<ResourceTree> treeData = this.projectContent.TypedLoad(new ContentQuery<ResourceTree>().IsEqual("Parent", parent)).ToList();
-            return treeData.Select(x => this.viewModelFactory.GetFolderViewModel(x)).ToList();
+            return treeData.Select(x => this.factory.Resolve<IFolderViewModel>()).ToList();
         }
 
         public IList<IResourceViewModel> GetResourceTreeContent(int node)
@@ -393,50 +393,50 @@
                 this.projectContent.TypedLoad(new ContentQuery<ResourceEntry>().IsEqual("TreeNode", node))
                     .ToList();
 
-            IList<IResourceViewModel> results = new List<IResourceViewModel>();
+            /*IList<IResourceViewModel> results = new List<IResourceViewModel>();
             foreach (ResourceEntry entry in resourceData)
             {
                 switch (entry.Type)
                 {
                     case ResourceType.Texture:
                         {
-                            results.Add(this.viewModelFactory.GetResourceTextureViewModel(entry));
+                            results.Add(this.factory.GetResourceTextureViewModel(entry));
                             break;
                         }
 
                     case ResourceType.Model:
                         {
-                            results.Add(this.viewModelFactory.GetResourceModelViewModel(entry));
+                            results.Add(this.factory.GetResourceModelViewModel(entry));
                             break;
                         }
 
                     case ResourceType.Script:
                         {
-                            results.Add(this.viewModelFactory.GetResourceScriptViewModel(entry));
+                            results.Add(this.factory.GetResourceScriptViewModel(entry));
                             break;
                         }
 
                     case ResourceType.Font:
                         {
-                            results.Add(this.viewModelFactory.GetResourceFontViewModel(entry));
+                            results.Add(this.factory.GetResourceFontViewModel(entry));
                             break;
                         }
 
                     case ResourceType.Raw:
                         {
-                            results.Add(this.viewModelFactory.GetResourceRawViewModel(entry));
+                            results.Add(this.factory.GetResourceRawViewModel(entry));
                             break;
                         }
 
                     case ResourceType.Stage:
                         {
-                            results.Add(this.viewModelFactory.GetResourceStageViewModel(entry));
+                            results.Add(this.factory.GetResourceStageViewModel(entry));
                             break;
                         }
 
                     case ResourceType.UserInterface:
                         {
-                            results.Add(this.viewModelFactory.GetResourceUserInterfaceViewModel(entry));
+                            results.Add(this.factory.GetResourceUserInterfaceViewModel(entry));
                             break;
                         }
 
@@ -452,7 +452,8 @@
                 this.resourceViewModels.Add(resourceViewModel);
             }
 
-            return results;
+            return results;*/
+            return null;
         }
 
         public IFolderViewModel LocateFolder(string hash)
@@ -542,7 +543,7 @@
             {
                 TaskProgress.CurrentProgress++;
                 TaskProgress.CurrentMessage = "Folder: " + entry.Id.ToString();
-                IFolderViewModel vm = this.viewModelFactory.GetFolderViewModel(entry);
+                var vm = this.factory.Resolve<IFolderViewModel>();
                 vm.Load();
                 Application.Current.Dispatcher.Invoke(() => this.folders.Add(vm));
             }
@@ -556,7 +557,7 @@
             foreach (MaterialEntry entry in materialEntries)
             {
                 TaskProgress.CurrentProgress++;
-                IMaterialViewModel vm = this.viewModelFactory.GetMaterialViewModel(entry);
+                var vm = this.factory.Resolve<IMaterialViewModel>();
                 vm.Load();
                 Application.Current.Dispatcher.Invoke(() => this.materials.Add(vm));
             }
@@ -570,7 +571,7 @@
             foreach (FontEntry entry in fontEntries)
             {
                 TaskProgress.CurrentProgress++;
-                IFontViewModel vm = this.viewModelFactory.GetFontViewModel(entry);
+                var vm = this.factory.Resolve<IFontViewModel>();
                 vm.Load();
                 Application.Current.Dispatcher.Invoke(() => this.fonts.Add(vm));
             }
@@ -585,10 +586,12 @@
         private void InitializeProject(CarbonDirectory rootPath)
         {
             CarbonDirectory resourcePath = rootPath.ToDirectory("Data");
-            this.projectResources = this.engineFactory.GetResourceManager(resourcePath);
+            this.projectResources = this.factory.Resolve<IResourceManager>();
+            this.projectResources.SetRoot(resourcePath);
 
             CarbonFile contentFile = rootPath.ToFile("Main.db");
-            this.projectContent = this.engineFactory.GetContentManager(this.projectResources, contentFile);
+            this.projectContent = this.factory.Resolve<IContentManager>();
+            this.projectContent.Initialize(contentFile);
 
             this.settings.Load(rootPath);
         }

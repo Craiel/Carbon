@@ -2,12 +2,14 @@
 
 namespace GrandSeal.Editor.Contracts
 {
+    using CarbonCore.ToolFramework.Contracts;
+
     public interface IPropertyViewModel : IEditorTool
     {
-        IEditorBase ActiveContext { get; set; }
+        IBaseViewModel ActiveContext { get; set; }
 
         Control PropertyControl { get; }
 
-        void SetActivation(IEditorBase source, bool active);
+        void SetActivation(IBaseViewModel source, bool active);
     }
 }

@@ -3,8 +3,7 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.IO;
-
-    using Core.Engine.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Contracts.UserInterface;
     using Core.Engine.Logic;
@@ -13,7 +12,7 @@
 
     public class UserInterface : EngineComponent, IUserInterface
     {
-        private readonly IEngineFactory factory;
+        private readonly IFactory factory;
         private readonly UserInterfaceResource data;
 
         private readonly IList<IUserInterfaceControl> controls;
@@ -25,7 +24,7 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public UserInterface(IEngineFactory factory, UserInterfaceResource data)
+        public UserInterface(IFactory factory, UserInterfaceResource data)
         {
             this.factory = factory;
             this.data = data;
@@ -127,7 +126,7 @@
 
         private IUserInterfaceImage BuildImageControl(CsamlNode source)
         {
-            var control = this.factory.Get<IUserInterfaceImage>();
+            var control = this.factory.Resolve<IUserInterfaceImage>();
             this.SetBasicAttributes(control, source.AttributesList);
 
             return control;
@@ -135,7 +134,7 @@
 
         private IUserInterfaceFrame BuildFrameControl(CsamlNode source)
         {
-            var control = this.factory.Get<IUserInterfaceFrame>();
+            var control = this.factory.Resolve<IUserInterfaceFrame>();
             this.SetBasicAttributes(control, source.AttributesList);
 
             return control;
@@ -143,7 +142,7 @@
 
         private IUserInterfaceConsole BuildConsoleControl(CsamlNode source)
         {
-            var control = this.factory.Get<IUserInterfaceConsole>();
+            var control = this.factory.Resolve<IUserInterfaceConsole>();
             this.SetBasicAttributes(control, source.AttributesList);
 
             return control;
@@ -155,7 +154,7 @@
             {
                 switch (attribute.Type)
                 {
-                    case CsamlAttribute.Types.CsamlAttributeType.Name:
+                    case CsamlAttribute.Types.CsamlAttributeType.ControlName:
                         {
                             control.Name = attribute.ValueString;
                             continue;

@@ -2,6 +2,7 @@
 {
     using System.Drawing;
 
+    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.Utils.IO;
 
     using Core.Engine.Contracts;
@@ -20,10 +21,10 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ResourceFontViewModel(IEngineFactory factory, ResourceEntry data)
-            : base(factory, data)
+        public ResourceFontViewModel(IFactory factory)
+            : base(factory)
         {
-            this.resourceProcessor = factory.Get<IResourceProcessor>();
+            this.resourceProcessor = factory.Resolve<IResourceProcessor>();
         }
 
         // -------------------------------------------------------------------
