@@ -67,8 +67,9 @@
     <Reference Include="Google.ProtocolBuffers">
       <HintPath>..\..\..\CarbonCore\External\protobuf-csharp-port\2.4.1.521\Google.ProtocolBuffers.dll</HintPath>
     </Reference>
-    <Reference Include="NLua">
-      <HintPath>..\..\..\CarbonCore\External\NLua\21ea9050e3\NLua.dll</HintPath>
+    <Reference Include="NLua, Version=1.3.0.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\CarbonCore\External\NLua\d5e748c909\NLua.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11_1-net40\SharpDX.dll</HintPath>
@@ -162,7 +163,6 @@
     <Compile Include="Logic\ShaderIncludeHandler.cs" />
     <Compile Include="Logic\TextureReference.cs" />
     <Compile Include="Logic\TypedVectors.cs" />
-    <Compile Include="Logic\Scripting\ScriptingGameProvider.cs" />
     <Compile Include="Logic\TypingController.cs" />
     <Compile Include="Logic\EngineComponent.cs" />
     <Compile Include="Contracts\Logic\ICarbonGame.cs" />

@@ -67,8 +67,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\CarbonCore\External\Autofac\3.1.1\Autofac.dll</HintPath>
     </Reference>
-    <Reference Include="NLua">
-      <HintPath>..\..\..\CarbonCore\External\NLua\21ea9050e3\NLua.dll</HintPath>
+    <Reference Include="NLua, Version=1.3.1.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\CarbonCore\External\NLua\d5e748c909\NLua.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
       <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11_1-net40\SharpDX.dll</HintPath>
@@ -154,8 +155,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(ProjectDir)..\..\..\CarbonCore\External\sqllite\1.0.93.0\* $(TargetDir)
-copy $(ProjectDir)..\..\..\CarbonCore\External\SharpDX\2.5.0\Bin\Redist\D3D\x64\* $(TargetDir)
+    <PostBuildEvent>xcopy /Q /H /Y /E /I $(ProjectDir)..\..\Runtime\x64 $(TargetDir)
 xcopy /Q /H /Y /E /I $(ProjectDir)..\GrandSeal.Data\Data $(TargetDir)\Data</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
