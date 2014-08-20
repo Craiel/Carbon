@@ -120,10 +120,6 @@
       <Project>{E05836D9-0BB3-4BFA-89E6-F5ED40A9D93C}</Project>
       <Name>CarbonCore.Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Editor\Core.Processing.csproj">
-      <Project>{819ff5d0-4498-48f2-9f7d-81a322b9b082}</Project>
-      <Name>Core.Processing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Engine\Core.Engine.csproj">
       <Project>{A724DB75-B032-4AE5-B901-063A165F7E71}</Project>
       <Name>Core.Engine</Name>

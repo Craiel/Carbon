@@ -302,13 +302,13 @@
       <Project>{e05836d9-0bb3-4bfa-89e6-f5ed40a9d93c}</Project>
       <Name>CarbonCore.Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Editor\Core.Processing.csproj">
-      <Project>{819ff5d0-4498-48f2-9f7d-81a322b9b082}</Project>
-      <Name>Core.Processing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Engine\Core.Engine.csproj">
       <Project>{a724db75-b032-4ae5-b901-063a165f7e71}</Project>
       <Name>Core.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Processing\Core.Processing.csproj">
+      <Project>{819FF5D0-4498-48F2-9F7D-81A322B9B082}</Project>
+      <Name>Core.Processing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

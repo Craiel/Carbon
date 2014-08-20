@@ -11,7 +11,7 @@
     [DependsOnModule(typeof(UtilsModule))]
     [DependsOnModule(typeof(EngineModule))]
     [DependsOnModule(typeof(DataDemonModule))]
-    [DependsOnModule(typeof(CarbonEditorModule))]
+    [DependsOnModule(typeof(CarbonProcessingModule))]
     public class DataDemonModule : CarbonModule
     {
         public DataDemonModule()

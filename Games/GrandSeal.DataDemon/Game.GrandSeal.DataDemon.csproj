@@ -83,10 +83,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Editor\Core.Processing.csproj">
-      <Project>{819ff5d0-4498-48f2-9f7d-81a322b9b082}</Project>
-      <Name>Core.Processing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Engine\Core.Engine.csproj">
       <Project>{A724DB75-B032-4AE5-B901-063A165F7E71}</Project>
       <Name>Core.Engine</Name>
@@ -94,6 +90,10 @@
     <ProjectReference Include="..\..\..\CarbonCore\Utils\CarbonCore.Utils.csproj">
       <Project>{e05836d9-0bb3-4bfa-89e6-f5ed40a9d93c}</Project>
       <Name>CarbonCore.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Processing\Core.Processing.csproj">
+      <Project>{819FF5D0-4498-48F2-9F7D-81A322B9B082}</Project>
+      <Name>Core.Processing</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

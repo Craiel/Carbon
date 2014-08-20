@@ -10,7 +10,7 @@
     using GrandSeal.Editor.ViewModels;
    
     [DependsOnModule(typeof(EngineModule))]
-    [DependsOnModule(typeof(CarbonEditorModule))]
+    [DependsOnModule(typeof(CarbonProcessingModule))]
     [DependsOnModule(typeof(UtilsModule))]
     public class EditorModule : CarbonModule
     {
