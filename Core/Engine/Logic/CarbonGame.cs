@@ -24,7 +24,6 @@
 
         private readonly ITimer gameTimer;
         private readonly ICarbonGraphics graphics;
-        private readonly ILog log;
 
         private readonly IResourceManager coreResourceManager;
         private readonly IInputManager inputManager;
@@ -59,7 +58,6 @@
             this.mainFrameManager = factory.Resolve<IFrameManager>();
             this.mainRenderer = factory.Resolve<IRenderer>();
             this.scriptingEngine = factory.Resolve<IScriptingEngine>();
-            this.log = factory.Resolve<IEngineLog>().AquireContextLog("CarbonGame");
 
             // Wire up some of the components
             this.coreResourceManager.SetRoot(new CarbonDirectory("Data"));
@@ -99,13 +97,13 @@
             this.gameTimer.Reset();
 
             // Starting the render-thread is delayed until the first update cycle was finished
-            this.log.Debug("Bringing up Render Thread");
+            System.Diagnostics.Trace.TraceInformation("Bringing up Render Thread");
             this.renderThread = new Thread(this.MainRenderLoop);
             this.isStarting = true;
             
             Console.WriteLine("\n");
-            this.log.Debug("------------------------------------------------------");
-            this.log.Debug("Main Loop");
+            System.Diagnostics.Trace.TraceInformation("------------------------------------------------------");
+            System.Diagnostics.Trace.TraceInformation("Main Loop");
 
             RenderLoop.Run(this.window, this.MainLoop);
         }
@@ -299,8 +297,8 @@
             Formatter.SetGlobal("GameName", this.InternalGameName);
 
             Console.WriteLine("\n");
-            this.log.Debug("------------------------------------------------------");
-            this.log.Debug("Initializing {0}", this.InternalGameName);
+            System.Diagnostics.Trace.TraceInformation("------------------------------------------------------");
+            System.Diagnostics.Trace.TraceInformation("Initializing {0}", this.InternalGameName);
 
             this.window = new CarbonWindow();
 
@@ -317,8 +315,8 @@
         private void OnClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
         {
             Console.WriteLine("\n");
-            this.log.Debug("------------------------------------------------------");
-            this.log.Debug("Closing Down");
+            System.Diagnostics.Trace.TraceInformation("------------------------------------------------------");
+            System.Diagnostics.Trace.TraceInformation("Closing Down");
             this.isClosing = true;
             while (this.renderThread.IsAlive)
             {

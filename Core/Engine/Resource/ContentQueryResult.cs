@@ -7,7 +7,6 @@
     using System.IO;
 
     using CarbonCore.Utils;
-    using CarbonCore.Utils.Contracts;
 
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;
@@ -15,7 +14,6 @@
     public class ContentQueryResult
     {
         private readonly IContentManager contentManager;
-        private readonly ILog log;
 
         private readonly DbCommand command;
 
@@ -24,10 +22,9 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ContentQueryResult(IContentManager contentManager, ILog log, DbCommand command)
+        public ContentQueryResult(IContentManager contentManager, DbCommand command)
         {
             this.contentManager = contentManager;
-            this.log = log;
             this.command = command;
         }
 
@@ -103,7 +100,7 @@
             {
                 if (this.results[i].Length != properties.Count)
                 {
-                    this.log.Error(
+                    System.Diagnostics.Trace.TraceError(
                         "Result does not match property count for {0} (got {1} but expected {2}",
                         null,
                         targetType,

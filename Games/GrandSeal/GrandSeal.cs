@@ -28,7 +28,6 @@
     public class GrandSeal : CarbonGame, IGrandSeal
     {
         private readonly IFactory factory;
-        private readonly ILog log;
         private readonly IGrandSealGameState gameState;
         private readonly IGrandSealScriptingProvider scriptingProvider;
         private readonly IGrandSealSystemController systemController;
@@ -45,7 +44,6 @@
             : base(factory)
         {
             this.factory = factory;
-            this.log = factory.Resolve<IGrandSealLog>().AquireContextLog("GrandSeal");
 
             this.gameState = factory.Resolve<IGrandSealGameState>();
             this.scriptingProvider = factory.Resolve<IGrandSealScriptingProvider>();
@@ -92,7 +90,7 @@
 
         protected override void Initialize()
         {
-            this.log.Info("Initializing");
+            System.Diagnostics.Trace.TraceInformation("Initializing");
 
             base.Initialize();
 
@@ -134,7 +132,7 @@
             {
                 base.OnWindowResize(sender, eventArgs);
 
-                this.log.Debug("OnWindowResize {0}", this.Window.Location.ToString());
+                System.Diagnostics.Trace.TraceInformation("OnWindowResize {0}", this.Window.Location.ToString());
 
                 // Todo: need to fix this
                 // this.Cursor.MinPosition = new Vector2(this.Window.Location.X, this.Window.Location.Y);
@@ -208,7 +206,7 @@
             {
                 case GrandSealSystemAction.ToggleDebugOverlay:
                     {
-                        this.log.Info("Setting debug overlay: " + !this.isDebugOverlayEnabled);
+                        System.Diagnostics.Trace.TraceInformation("Setting debug overlay: " + !this.isDebugOverlayEnabled);
 
                         if (this.isDebugOverlayEnabled)
                         {

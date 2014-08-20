@@ -18,7 +18,6 @@
         {
             this.For<IGrandSeal>().Use<GrandSeal>().Singleton();
 
-            this.For<IGrandSealLog>().Use<GrandSealLog>();
             this.For<IGrandSealScriptingProvider>().Use<GrandSealScriptingProvider>().Singleton();
             this.For<IGrandSealGameState>().Use<GrandSealGameState>().Singleton();
             this.For<IGrandSealSystemController>().Use<GrandSealSystemController>().Singleton();

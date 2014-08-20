@@ -23,7 +23,6 @@
         {
             // Core
             this.For<ICarbonGraphics>().Use<CarbonGraphics>().Singleton();
-            this.For<IEngineLog>().Use<EngineLog>().Singleton();
 
             // Logic
             this.For<IInputManager>().Use<InputManager>().Singleton();

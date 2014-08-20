@@ -58,7 +58,7 @@
             }
             else
             {
-                this.Log.Error("Failed to export Stage resource {0}", null, this.SourcePath);
+                System.Diagnostics.Trace.TraceError("Failed to export Stage resource {0}", null, this.SourcePath);
             }
         }
 
@@ -69,11 +69,11 @@
             IResourceViewModel resource = this.logic.LocateResource(referenceFile);
             if (resource == null)
             {
-                this.Log.Warning("Reference could not be resolved: " + reference);
+                System.Diagnostics.Trace.TraceWarning("Reference could not be resolved: " + reference);
                 return null;
             }
 
-            this.Log.Info("Resolved reference {0} as {1}", reference, resource.Name);
+            System.Diagnostics.Trace.TraceInformation("Resolved reference {0} as {1}", reference, resource.Name);
             return resource.Hash;
         }
     }

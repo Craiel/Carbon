@@ -73,9 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\IResourceProcessor.cs" />
-    <Compile Include="Logic\ContentSettings.cs" />
-    <Compile Include="Logic\ContentInfoEntry.cs" />
-    <Compile Include="Logic\ContentPathUtilities.cs" />
     <Compile Include="Logic\ResourceProcessor.cs" />
     <Compile Include="Processors\UserInterfaceProcessor.cs" />
     <Compile Include="Processors\ScriptProcessor.cs" />

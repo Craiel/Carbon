@@ -4,22 +4,13 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.IO;
-    using System.Linq;
 
-    using CarbonCore.Utils.Contracts;
     using CarbonCore.Utils.Contracts.IoC;
-
-    using Core.Processing.Logic;
-
+    
     using GrandSeal.DataDemon.Contracts;
 
     public class DemonFileInfo : IDemonFileInfo
     {
-        private readonly ILog log;
-
-        private readonly HashSet<ContentInfoEntry> processedEntries;
-        private readonly HashSet<ContentInfoEntry> pendingEntries;
-
         private readonly List<string> sourceIncludes;
         private readonly List<string> intermediateIncludes; 
 
@@ -32,11 +23,6 @@
         // -------------------------------------------------------------------
         public DemonFileInfo(IFactory factory)
         {
-            this.log = factory.Resolve<IDemonLog>().AquireContextLog("FileInfo");
-
-            this.processedEntries = new HashSet<ContentInfoEntry>();
-            this.pendingEntries = new HashSet<ContentInfoEntry>();
-
             this.pendingRefreshQueue = new Queue<string>();
             
             this.sourceIncludes = new List<string>();
@@ -66,7 +52,7 @@
         {
             get
             {
-                return this.pendingEntries.Count;
+                return -1;
             }
         }
 
@@ -74,8 +60,6 @@
         {
             if (this.needRefresh)
             {
-                this.processedEntries.Clear();
-                this.pendingEntries.Clear();
                 this.needRefresh = false;
             }
 
@@ -92,7 +76,7 @@
         
         public void RefreshFromSource(string includeRoot)
         {
-            this.log.Debug("Refreshing FileInfo or source includes");
+            System.Diagnostics.Trace.TraceInformation("Refreshing FileInfo or source includes");
             this.pendingRefreshQueue.Enqueue(includeRoot);
 
             while (this.pendingRefreshQueue.Count > 0)
@@ -101,14 +85,15 @@
                 string[] files = Directory.GetFiles(root);
                 for (int i = 0; i < files.Length; i++)
                 {
-                    var entry = new ContentInfoEntry();
+                    System.Diagnostics.Trace.TraceWarning("Processing: "+files[i]);
+                    /*var entry = new ContentInfoEntry();
                     entry.InitializeFromSource(files[i]);
                     if (this.CheckFile(entry))
                     {
                         continue;
                     }
 
-                    this.pendingEntries.Add(entry);
+                    this.pendingEntries.Add(entry);*/
                 }
 
                 // Process sub-directories
@@ -122,7 +107,7 @@
 
         public void RefreshFromIntermediate(string includeRoot)
         {
-            this.log.Debug("Refreshing FileInfo for intermediate includes");
+            System.Diagnostics.Trace.TraceInformation("Refreshing FileInfo for intermediate includes");
             this.pendingRefreshQueue.Enqueue(includeRoot);
 
             while (this.pendingRefreshQueue.Count > 0)
@@ -131,14 +116,15 @@
                 string[] files = Directory.GetFiles(root);
                 for (int i = 0; i < files.Length; i++)
                 {
-                    var entry = new ContentInfoEntry();
+                    System.Diagnostics.Trace.TraceWarning("File: "+files[i]);
+                    /*var entry = new ContentInfoEntry();
                     entry.InitializeFromIntermediate(files[i]);
                     if (this.CheckFile(entry))
                     {
                         continue;
                     }
 
-                    this.pendingEntries.Add(entry);
+                    this.pendingEntries.Add(entry);*/
                 }
 
                 // Process sub-directories
@@ -179,35 +165,6 @@
             this.needRefresh = true;
             this.sourceIncludes.Clear();
             this.intermediateIncludes.Clear();
-            
-            this.pendingEntries.Clear();
-        }
-
-        // -------------------------------------------------------------------
-        // Private
-        // -------------------------------------------------------------------
-        private bool CheckFile(ContentInfoEntry entry)
-        {
-            // If we have never seen this file we assume that it's new
-            // If we are already scheduled to process this skip as well
-            if (!this.processedEntries.Contains(entry) || this.pendingEntries.Contains(entry))
-            {
-                return false;
-            }
-
-            ContentInfoEntry cachedEntry = this.processedEntries.FirstOrDefault(x => x.Equals(entry));
-            if (cachedEntry == null)
-            {
-                throw new InvalidOperationException();
-            }
-
-            // Check if the file we have was modified anywhere
-            if (entry.IsNewerThan(cachedEntry))
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

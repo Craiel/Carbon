@@ -25,7 +25,6 @@
         private static readonly Vector4 ColorLightEntity = new Vector4(1, 1, 0, 0.5f);
 
         private readonly IFactory factory;
-        private readonly ILog log;
 
         private readonly ModelResource lightEntityModel;
 
@@ -54,7 +53,6 @@
         public SceneDebugOverlay(IFactory factory)
         {
             this.factory = factory;
-            this.log = factory.Resolve<IEngineLog>().AquireContextLog("SceneDebugOverlay");
 
             this.lightEntityModel = Sphere.Create(0, ColorLightEntity);
             
@@ -157,7 +155,7 @@
             }
             else
             {
-                this.log.Warning("Debug compass resource is not set");
+                System.Diagnostics.Trace.TraceWarning("Debug compass resource is not set");
             }
 
             // Now we need to register all the contents of the graph

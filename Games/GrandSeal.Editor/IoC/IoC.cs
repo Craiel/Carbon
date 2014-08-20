@@ -1,8 +1,5 @@
 ﻿namespace GrandSeal.Editor.IoC
 {
-    using Autofac;
-    using Autofac.Core;
-
     using CarbonCore.Utils.IoC;
 
     using Core.Engine.IoC;
@@ -21,11 +18,9 @@
         {
             this.For<IEditor>().Use<Editor>().Singleton();
 
-            this.For<IApplicationLog>().Use<ApplicationLog>().Singleton();
             this.For<IOperationProgress>().Use<OperationProgress>().Singleton();
             this.For<IUndoRedoManager>().Use<UndoRedoManager>().Singleton();
             this.For<IEditorLogic>().Use<EditorLogic>().Singleton();
-            this.For<IEditorLog>().Use<EditorLog>().Singleton();
             this.For<IEditorSettings>().Use<EditorSettings>().Singleton();
 
             this.For<IMainViewModel>().Use<MainViewModel>().Singleton();

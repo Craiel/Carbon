@@ -19,7 +19,7 @@
             this.SceneManager = factory.Resolve<ISceneManager>();
 
             this.ScriptingEngine = factory.Resolve<IScriptingEngine>();
-            this.ScriptingEngine.Register(new ScriptingCoreProvider(factory.Resolve<IEngineLog>()));
+            this.ScriptingEngine.Register(new ScriptingCoreProvider());
             this.ScriptingEngine.Register(factory.Resolve<IInputManager>());
         }
 

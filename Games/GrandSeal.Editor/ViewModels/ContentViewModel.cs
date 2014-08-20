@@ -20,8 +20,6 @@
     {
         private readonly IEditorLogic logic;
         
-        private readonly ILog log;
-
         private readonly IDictionary<MetaDataKey, MetaDataEntry> metaData;
         private readonly IList<MetaDataEntry> metaDataToDelete; 
 
@@ -36,7 +34,6 @@
             : base(factory)
         {
             this.logic = factory.Resolve<IEditorLogic>();
-            this.log = factory.Resolve<IEditorLog>().AquireContextLog("ContentViewModel");
 
             this.metaData = new Dictionary<MetaDataKey, MetaDataEntry>();
             this.metaDataToDelete = new List<MetaDataEntry>();
@@ -92,7 +89,7 @@
         {
             if (this.isLoaded)
             {
-                this.log.Warning("Load called with entry already loaded");
+                System.Diagnostics.Trace.TraceWarning("Load called with entry already loaded");
                 return;
             }
 
@@ -108,7 +105,7 @@
             {
                 if (this.metaData.ContainsKey(metaDataList[i].Key))
                 {
-                    this.log.Warning("Duplicate metadata entry detected, will be removed on next save: {0}", metaDataList[i].Key);
+                    System.Diagnostics.Trace.TraceWarning("Duplicate metadata entry detected, will be removed on next save: {0}", metaDataList[i].Key);
                     this.metaDataToDelete.Add(metaDataList[i]);
                     continue;
                 }
@@ -122,14 +119,6 @@
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
-        protected ILog Log
-        {
-            get
-            {
-                return this.log;
-            }
-        }
-
         protected override void OnDelete()
         {
             if (MessageBox.Show(

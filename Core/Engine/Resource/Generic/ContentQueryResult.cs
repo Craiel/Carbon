@@ -15,8 +15,8 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ContentQueryResult(IContentManager contentManager, ILog log, DbCommand command)
-            : base(contentManager, log, command)
+        public ContentQueryResult(IContentManager contentManager, DbCommand command)
+            : base(contentManager, command)
         {
         }
 

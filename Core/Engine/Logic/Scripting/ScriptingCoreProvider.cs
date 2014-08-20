@@ -14,28 +14,9 @@
 
     public class ScriptingCoreProvider : IScriptingProvider
     {
-        private readonly ILog log;
-
-        // -------------------------------------------------------------------
-        // Constructor
-        // -------------------------------------------------------------------
-        public ScriptingCoreProvider(ILogBase log)
-        {
-            this.log = log.AquireContextLog("CoreProvider");
-        }
-
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        [ScriptingProperty]
-        public ILog Log
-        {
-            get
-            {
-                return this.log;
-            }
-        }
-
         [ScriptingMethod]
         public static object[] Params(LuaTable table)
         {

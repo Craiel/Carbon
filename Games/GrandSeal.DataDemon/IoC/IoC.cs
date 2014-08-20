@@ -19,7 +19,6 @@
             this.For<IDataDemon>().Use<DataDemon>().Singleton();
 
             this.For<IDemonLogic>().Use<DemonLogic>().Singleton();
-            this.For<IDemonLog>().Use<DemonLog>().Singleton();
 
             this.For<IDemonFileInfo>().Use<DemonFileInfo>().Singleton();
             this.For<IDemonBuild>().Use<DemonBuild>();

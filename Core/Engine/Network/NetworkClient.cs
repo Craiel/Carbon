@@ -19,9 +19,7 @@
     {
         public static readonly Guid Guid;
         public static readonly Client ClientData;
-
-        private readonly ILog log;
-
+        
         private readonly Queue<INetworkMessage> pending;
         private readonly Stack<INetworkMessage> received;
         
@@ -46,9 +44,8 @@
             ClientData = clientBuilder.Build();
         }
 
-        public NetworkClient(IEngineLog log)
+        public NetworkClient()
         {
-            this.log = log.AquireContextLog("NetworkClient");
             this.Id = Guid.NewGuid();
 
             this.pending = new Queue<INetworkMessage>();
@@ -180,7 +177,7 @@
             }
             catch (Exception e)
             {
-                this.log.Error("Connection attempt failed for {0}:{1}", e, this.connectionTarget.Address, this.connectionTarget.Port);
+                System.Diagnostics.Trace.TraceError("Connection attempt failed for {0}:{1}", e, this.connectionTarget.Address, this.connectionTarget.Port);
             }
 
             return false;
@@ -217,7 +214,7 @@
             }
             catch (Exception e)
             {
-                this.log.Error("Error while trying to send data", e);
+                System.Diagnostics.Trace.TraceError("Error while trying to send data", e);
             }
         }
 
@@ -234,20 +231,20 @@
                         {
                             case Header.Types.MessageType.Unknown:
                                 {
-                                    this.log.Warning("Header received with unknown message type");
+                                    System.Diagnostics.Trace.TraceWarning("Header received with unknown message type");
                                     break;
                                 }
                         }
                     }
                     else
                     {
-                        this.log.Warning("Received packet was properly formatted");
+                        System.Diagnostics.Trace.TraceWarning("Received packet was properly formatted");
                     }
                 }
             }
             catch (Exception e)
             {
-                this.log.Error("Error while trying to receive data", e);
+                System.Diagnostics.Trace.TraceError("Error while trying to receive data", e);
             }
         }
     }

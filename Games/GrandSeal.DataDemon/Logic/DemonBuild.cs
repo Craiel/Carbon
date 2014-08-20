@@ -7,18 +7,11 @@
 
     public class DemonBuild : DemonOperation, IDemonBuild
     {
-        private readonly ILog log;
-
         private DemonBuildConfig config;
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public DemonBuild(IFactory factory)
-        {
-            this.log = factory.Resolve<IDemonLog>().AquireContextLog("Build");
-        }
-
         public override string Name
         {
             get
@@ -29,12 +22,12 @@
 
         public override void Refresh()
         {
-            this.log.Debug("Refreshing build {0}", this.Name);
+            System.Diagnostics.Trace.TraceInformation("Refreshing build {0}", this.Name);
         }
 
         public override void Process()
         {
-            this.log.Debug("Processing build {0}", this.Name);
+            System.Diagnostics.Trace.TraceInformation("Processing build {0}", this.Name);
         }
 
         public void SetConfig(DemonBuildConfig build)

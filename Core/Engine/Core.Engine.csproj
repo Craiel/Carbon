@@ -109,7 +109,6 @@
     <Compile Include="Contracts\Network\INetworkClient.cs" />
     <Compile Include="Contracts\Logic\ICarbonGraphics.cs" />
     <Compile Include="Contracts\Logic\IEngineComponent.cs" />
-    <Compile Include="Contracts\Logic\IEngineLog.cs" />
     <Compile Include="Contracts\Logic\IInputManager.cs" />
     <Compile Include="Contracts\Network\INetworkMessage.cs" />
     <Compile Include="Contracts\Network\INetworkTarget.cs" />
@@ -167,7 +166,6 @@
     <Compile Include="Logic\EngineComponent.cs" />
     <Compile Include="Contracts\Logic\ICarbonGame.cs" />
     <Compile Include="Logic\CarbonGame.cs" />
-    <Compile Include="Logic\EngineLog.cs" />
     <Compile Include="Logic\FirstPersonController.cs" />
     <Compile Include="Logic\InputManager.cs" />
     <Compile Include="Logic\Scripting\CarbonScript.cs" />

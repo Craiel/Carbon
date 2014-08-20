@@ -14,7 +14,6 @@
 
     public class ScriptingEngine : IScriptingEngine
     {
-        private readonly ILog log;
         private readonly IList<IScriptingProvider> providers;
         
         // -------------------------------------------------------------------
@@ -22,8 +21,6 @@
         // -------------------------------------------------------------------
         public ScriptingEngine(IFactory factory)
         {
-            this.log = factory.Resolve<IEngineLog>().AquireContextLog("ScriptingEngine");
-
             this.providers = new List<IScriptingProvider>();
         }
 
@@ -71,7 +68,7 @@
             }
             catch (Exception e)
             {
-                this.log.Error("Error in script execution: {0} at {1}", e, e.Message, e.Source);
+                System.Diagnostics.Trace.TraceError("Error in script execution: {0} at {1}", e, e.Message, e.Source);
             }
         }
 

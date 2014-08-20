@@ -19,8 +19,6 @@
     {
         private const string SqlNotNull = " NOT NULL";
         private const string SqlLastId = "SELECT last_insert_rowid()";
-
-        private readonly ILog log;
         
         private readonly SQLiteFactory factory;
         private readonly IList<string> checkedTableList;
@@ -36,10 +34,8 @@
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
-        public ContentManager(IEngineLog log)
+        public ContentManager()
         {
-            this.log = log.AquireContextLog("ContentManager");
-            
             this.factory = new SQLiteFactory();
             this.checkedTableList = new List<string>();
             this.contentLinkCache = new Dictionary<int, ContentLink>();
@@ -56,7 +52,7 @@
         // -------------------------------------------------------------------
         public ContentQueryResult<T> TypedLoad<T>(ContentQuery<T> criteria) where T : ICarbonContent
         {
-            return new ContentQueryResult<T>(this, this.log, this.GetCommand(criteria));
+            return new ContentQueryResult<T>(this, this.GetCommand(criteria));
         }
 
         public ContentQueryResult Load(ContentQuery criteria, bool useResultCache = true)
@@ -69,13 +65,13 @@
                     return this.contentQueryCache[hash];
                 }
 
-                var result = new ContentQueryResult(this, this.log, this.GetCommand(criteria));
+                var result = new ContentQueryResult(this, this.GetCommand(criteria));
                 this.contentQueryCache.Add(hash, result);
                 
                 return result;
             }
 
-            return new ContentQueryResult(this, this.log, this.GetCommand(criteria));
+            return new ContentQueryResult(this, this.GetCommand(criteria));
         }
 
         public T Load<T>(ContentLink link)
@@ -124,8 +120,8 @@
             {
                 command.CommandText = this.BuildUpdateStatement(content);
             }
-            
-            this.log.Debug("ContentManager.Save<{0}>: {1}", content.GetType(), command.CommandText);
+
+            System.Diagnostics.Trace.TraceInformation("ContentManager.Save<{0}>: {1}", content.GetType(), command.CommandText);
             int affected = command.ExecuteNonQuery();
             if (affected != 1)
             {
@@ -157,7 +153,7 @@
             SQLiteCommand command = this.connection.CreateCommand();
             command.CommandText = this.BuildDeleteStatement(content);
 
-            this.log.Debug("ContentManager.Delete<{0}>: {1}", content.GetType(), command.CommandText);
+            System.Diagnostics.Trace.TraceInformation("ContentManager.Delete<{0}>: {1}", content.GetType(), command.CommandText);
             int affected = command.ExecuteNonQuery();
             if (affected != 1)
             {
@@ -203,7 +199,7 @@
             SQLiteCommand command = this.connection.CreateCommand();
             command.CommandText = this.BuildSelectStatement(criteria);
 
-            this.log.Debug("ConentManager.Load<{0}>: {1}", criteria.Type, command.CommandText);
+            System.Diagnostics.Trace.TraceInformation("ConentManager.Load<{0}>: {1}", criteria.Type, command.CommandText);
             return command;
         }
 
@@ -347,7 +343,7 @@
 
             if (criterion.Values.Length > 1)
             {
-                this.log.Warning(
+                System.Diagnostics.Trace.TraceWarning(
                     "Equals with multiple values detected for {0}, excess values will be ignored",
                     criterion.PropertyInfo.Name);
             }
@@ -370,7 +366,7 @@
 
             if (criterion.Values.Length == 1)
             {
-                this.log.Warning("Equals statement with single value detected for {0}", criterion.PropertyInfo.Name);
+                System.Diagnostics.Trace.TraceWarning("Equals statement with single value detected for {0}", criterion.PropertyInfo.Name);
             }
 
             IList<string> containValues = new List<string>();
@@ -456,7 +452,7 @@
             this.connection = this.factory.CreateConnection() as SQLiteConnection;
             if (this.connection == null)
             {
-                this.log.Error("Could not create connection");
+                System.Diagnostics.Trace.TraceError("Could not create connection");
                 return;
             }
 
@@ -562,7 +558,7 @@
 
             if (needRecreate)
             {
-                this.log.Debug("Table {0} needs to be re-created", tableName);
+                System.Diagnostics.Trace.TraceInformation("Table {0} needs to be re-created", tableName);
                 command = this.connection.CreateCommand();
                 command.CommandText = string.Format("CREATE TABLE {0}({1})", tableName, string.Join(",", columnSegments));
                 command.ExecuteNonQuery();

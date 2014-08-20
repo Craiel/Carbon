@@ -25,7 +25,6 @@
     public class SceneMainMenu : SceneBase, ISceneMainMenu
     {
         private readonly IFactory factory;
-        private readonly ILog log;
         private readonly ISceneDebugOverlay debugOverlay;
         private readonly IGrandSealSystemController systemController;
 
@@ -59,8 +58,6 @@
 
             this.systemController = this.factory.Resolve<IGrandSealSystemController>();
             
-            this.log = factory.Resolve<IGrandSealLog>().AquireContextLog("MainMenuScene");
-
             this.sceneGraph = new SceneGraph(new EmptyEntity { Name = "MainMenuRoot" });
         }
 
@@ -210,7 +207,7 @@
         {
             if (this.userInterfaceResource != null)
             {
-                this.log.Warning("UserInterface resource changed without unloading!");
+                System.Diagnostics.Trace.TraceWarning("UserInterface resource changed without unloading!");
             }
 
             this.userInterfaceResource = this.GameState.ResourceManager.Load<UserInterfaceResource>(hash);
@@ -221,7 +218,7 @@
         {
             if (this.stageResource != null)
             {
-                this.log.Warning("Stage resource changed without unloading!");
+                System.Diagnostics.Trace.TraceWarning("Stage resource changed without unloading!");
             }
 
             this.stageResource = this.GameState.ResourceManager.Load<StageResource>(hash);

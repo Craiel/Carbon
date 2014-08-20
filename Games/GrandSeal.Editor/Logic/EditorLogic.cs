@@ -32,7 +32,6 @@
         private const int RecentProjectMaximum = 10;
 
         private readonly IFactory factory;
-        private readonly ILog log;
         private readonly IEditorSettings settings;
 
         private readonly ObservableCollection<IMaterialViewModel> materials;
@@ -52,7 +51,6 @@
         public EditorLogic(IFactory factory)
         {
             this.factory = factory;
-            this.log = factory.Resolve<IEditorLog>().AquireContextLog("Logic");
             this.settings = factory.Resolve<IEditorSettings>();
 
             this.materials = new ObservableCollection<IMaterialViewModel>();
@@ -167,7 +165,7 @@
 
         public void SaveProject(CarbonDirectory path)
         {
-            this.log.Warning("Saving into different file is not fully supported yet!");
+            System.Diagnostics.Trace.TraceWarning("Saving into different file is not fully supported yet!");
             /*
              * Todo:
              * - Choose a target path instead of file

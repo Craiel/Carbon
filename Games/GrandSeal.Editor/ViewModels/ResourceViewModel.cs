@@ -546,7 +546,7 @@
             }
             else
             {
-                this.Log.Error("Failed to export raw resource {0}", null, this.SourcePath);
+                System.Diagnostics.Trace.TraceError("Failed to export raw resource {0}", null, this.SourcePath);
             }
         }
 

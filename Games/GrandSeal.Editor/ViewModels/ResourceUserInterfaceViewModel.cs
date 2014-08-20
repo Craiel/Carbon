@@ -91,7 +91,7 @@
             }
             else
             {
-                this.Log.Error("Failed to export User Interface resource {0}", null, this.SourcePath);
+                System.Diagnostics.Trace.TraceError("Failed to export User Interface resource {0}", null, this.SourcePath);
             }
         }
 

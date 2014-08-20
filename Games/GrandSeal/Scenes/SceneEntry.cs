@@ -3,7 +3,6 @@
     using System;
     using System.Data;
 
-    using CarbonCore.Utils.Contracts;
     using CarbonCore.Utils.Contracts.IoC;
 
     using Contracts;
@@ -19,17 +18,15 @@
     public class SceneEntry : SceneBase, ISceneEntry
     {
         private readonly IFactory factory;
-        private readonly ILog log;
         private readonly ISceneDebugOverlay debugOverlay;
 
         // --------------------------------------------------------------------
         // Constructor
-        // -------------------------------------------------------------------
+        // --------------------------------------------------------------------
         public SceneEntry(IFactory factory)
             : base(factory)
         {
             this.factory = factory;
-            this.log = factory.Resolve<IGrandSealLog>().AquireContextLog("EntryScene");
             this.debugOverlay = factory.Resolve<ISceneDebugOverlay>();
         }
 
@@ -40,7 +37,7 @@
         {
             base.Initialize(graphic);
 
-            this.log.Info("Entry scene initializing...");
+            System.Diagnostics.Trace.TraceInformation("Entry scene initializing...");
             
             // Load the init script for the scene, we only register the scene in the script environment temporary for this
             this.GameState.ScriptingEngine.Register(this);
@@ -78,7 +75,7 @@
             SceneKey key;
             if (!Enum.TryParse(target, out key))
             {
-                this.log.Error("Unknown scene for transition: " + key);
+                System.Diagnostics.Trace.TraceError("Unknown scene for transition: " + key);
                 return;
             }
 
@@ -86,7 +83,7 @@
             {
                 case SceneKey.MainMenu:
                     {
-                        this.log.Info("Transition into MainMenu Scene...");
+                        System.Diagnostics.Trace.TraceInformation("Transition into MainMenu Scene...");
                         var scene = this.factory.Resolve<ISceneMainMenu>();
                         scene.SceneScriptHash = initializeScriptHash;
                         this.GameState.SceneManager.Register((int)SceneKey.MainMenu, scene);
@@ -97,7 +94,7 @@
 
                 default:
                     {
-                        this.log.Error("Scene for transition is not implemented: " + key);
+                        System.Diagnostics.Trace.TraceError("Scene for transition is not implemented: " + key);
                         break;
                     }
             }

@@ -235,7 +235,7 @@
             }
             else
             {
-                this.Log.Error("Failed to export Model resource {0}, with target {1}", null, this.SourcePath, this.SelectedSourceElement);
+                System.Diagnostics.Trace.TraceError("Failed to export Model resource {0}, with target {1}", null, this.SourcePath, this.SelectedSourceElement);
             }
         }
 
@@ -278,7 +278,7 @@
             }
             catch (Exception e)
             {
-                this.Log.Error("Could not get collada info of source file for mesh, please check the format", e);
+                System.Diagnostics.Trace.TraceError("Could not get collada info of source file for mesh, please check the format", e);
             }
 
             if (string.IsNullOrEmpty(selection) || this.sourceElements.Contains(selection))

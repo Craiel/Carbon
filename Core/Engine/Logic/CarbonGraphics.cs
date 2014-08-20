@@ -12,8 +12,6 @@
     
     public class CarbonGraphics : ICarbonGraphics
     {
-        private readonly ILog log;
-
         private IResourceManager resourceManager;
 
         private CarbonDeviceContextDx11 context;
@@ -41,7 +39,6 @@
         // -------------------------------------------------------------------
         public CarbonGraphics(IFactory factory, IResourceManager resourceManager)
         {
-            this.log = factory.Resolve<IEngineLog>().AquireContextLog("CarbonGraphics");
             this.resourceManager = resourceManager;
 
             this.desiredDepthStencilState = DeviceStateManager.DefaultDepthStencilState;
@@ -206,7 +203,7 @@
             this.isResizing = true;
             lock (this.context)
             {
-                this.log.Info("Resizing to {0}x{1}", size.X, size.Y);
+                System.Diagnostics.Trace.TraceInformation("Resizing to {0}x{1}", size.X, size.Y);
 
                 this.windowViewport = new Viewport(0, 0, size.X, size.Y);
 
@@ -297,7 +294,7 @@
                 return;
             }
 
-            this.log.Info("Acquiring DeviceContext");
+            System.Diagnostics.Trace.TraceInformation("Acquiring DeviceContext");
             if (this.TargetHandle == IntPtr.Zero)
             {
                 throw new InvalidOperationException("Context creation requested before target point was set!");

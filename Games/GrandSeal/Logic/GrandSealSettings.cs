@@ -15,7 +15,6 @@
         public const string BindingSystemController = "systemController";
 
         private readonly IFactory factory;
-        private readonly ILog log;
 
         // -------------------------------------------------------------------
         // Constructor
@@ -23,7 +22,6 @@
         public GrandSealSettings(IFactory factory)
         {
             this.factory = factory;
-            this.log = factory.Resolve<IGrandSealLog>().AquireContextLog("GrandSealSettings");
 
             this.SetupDefaultBindings();
         }
@@ -42,7 +40,7 @@
 
         public void Reload()
         {
-            this.log.Error("Reload is not implemented");
+            System.Diagnostics.Trace.TraceError("Reload is not implemented");
         }
 
         // -------------------------------------------------------------------

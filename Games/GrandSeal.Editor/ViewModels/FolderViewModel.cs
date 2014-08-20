@@ -130,7 +130,7 @@
             {
                 if (!this.IsNamed)
                 {
-                    this.Log.Warning("FullPath queried with name not being set yet!");
+                    System.Diagnostics.Trace.TraceWarning("FullPath queried with name not being set yet!");
                     return null;
                 }
 

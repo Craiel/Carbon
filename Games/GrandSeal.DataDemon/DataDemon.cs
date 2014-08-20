@@ -12,7 +12,6 @@
     public class DataDemon : IDataDemon
     {
         private readonly IDemonLogic logic;
-        private readonly ILog log;
 
         private DemonArguments arguments;
         private bool isRunning;
@@ -23,7 +22,6 @@
         public DataDemon(IFactory factory)
         {
             this.logic = factory.Resolve<IDemonLogic>();
-            this.log = factory.Resolve<IDemonLog>().AquireContextLog("Demon");
         }
 
         // -------------------------------------------------------------------
@@ -32,13 +30,13 @@
         public void Run(DemonArguments args)
         {
             this.arguments = args;
-            this.log.Info("Demon starting up...");
+            System.Diagnostics.Trace.TraceInformation("Demon starting up...");
             if (!this.PrepareEnvironment())
             {
                 return;
             }
 
-            this.log.Info("Entering loop");
+            System.Diagnostics.Trace.TraceInformation("Entering loop");
             this.isRunning = true;
             while (this.isRunning)
             {
@@ -46,7 +44,7 @@
                 Thread.Sleep(this.logic.RefreshInterval);
             }
 
-            this.log.Info("Shutting down");
+            System.Diagnostics.Trace.TraceInformation("Shutting down");
             this.logic.Dispose();
         }
 
@@ -54,13 +52,13 @@
         {
             if (string.IsNullOrEmpty(this.arguments.Config) || !File.Exists(this.arguments.Config))
             {
-                this.log.Error("No valid configuration specified!");
+                System.Diagnostics.Trace.TraceError("No valid configuration specified!");
                 return false;
             }
 
             if (!this.logic.LoadConfig(this.arguments.Config))
             {
-                this.log.Error("Failed to load demon configuration!");
+                System.Diagnostics.Trace.TraceError("Failed to load demon configuration!");
                 return false;
             }
 

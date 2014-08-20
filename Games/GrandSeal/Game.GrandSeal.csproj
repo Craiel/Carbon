@@ -82,7 +82,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contracts\IGrandSealLog.cs" />
     <Compile Include="Contracts\IGrandSealSettings.cs" />
     <Compile Include="Contracts\IGrandSealSystemController.cs" />
     <Compile Include="Contracts\ISceneEntry.cs" />
@@ -95,7 +94,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Config.settings</DependentUpon>
     </Compile>
-    <Compile Include="Logic\GrandSealLog.cs" />
     <Compile Include="Logic\GrandSealScriptingProvider.cs" />
     <Compile Include="GrandSeal.cs" />
     <Compile Include="Entry.cs" />

@@ -134,7 +134,6 @@
   <ItemGroup>
     <Compile Include="Contracts\IFontExplorerViewModel.cs" />
     <Compile Include="Contracts\IFontViewModel.cs" />
-    <Compile Include="Contracts\IApplicationLog.cs" />
     <Compile Include="Contracts\IEditor.cs" />
     <Compile Include="Contracts\IEditorDocument.cs" />
     <Compile Include="Contracts\IEditorSettings.cs" />
@@ -145,7 +144,6 @@
     <Compile Include="Contracts\IDocumentTemplateCategory.cs" />
     <Compile Include="Contracts\IEditorLogic.cs" />
     <Compile Include="Contracts\IEditorTool.cs" />
-    <Compile Include="Contracts\IEditorLog.cs" />
     <Compile Include="Contracts\IMaterialExplorerViewModel.cs" />
     <Compile Include="Contracts\IMaterialViewModel.cs" />
     <Compile Include="Contracts\INewDialogViewModel.cs" />
@@ -163,10 +161,8 @@
     <Compile Include="Contracts\IUserInterfaceViewModel.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="Events\LayoutEvents.cs" />
-    <Compile Include="Logic\ApplicationLog.cs" />
     <Compile Include="Editor.cs" />
     <Compile Include="Logic\EditorLogic.cs" />
-    <Compile Include="Logic\EditorLog.cs" />
     <Compile Include="Logic\EditorSettings.cs" />
     <Compile Include="Logic\MVVM\CommandReference.cs" />
     <Compile Include="Logic\MVVM\Converters.cs" />

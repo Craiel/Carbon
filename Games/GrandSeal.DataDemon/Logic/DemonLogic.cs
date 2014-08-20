@@ -19,9 +19,7 @@
 
         private readonly IList<IDemonOperation> parallelOperations;
         private readonly IList<IDemonOperation> sequentialOperations; 
-
-        private readonly ILog log;
-
+        
         private readonly IDemonFileInfo fileInfo;
 
         private DemonConfig config;
@@ -32,7 +30,6 @@
         public DemonLogic(IFactory factory)
         {
             this.factory = factory;
-            this.log = factory.Resolve<IDemonLog>().AquireContextLog("Logic");
             this.fileInfo = factory.Resolve<IDemonFileInfo>();
 
             this.parallelOperations = new List<IDemonOperation>();
@@ -69,7 +66,7 @@
             }
             catch (Exception e)
             {
-                this.log.Error("Failed to de-serialize configuration", e);
+                System.Diagnostics.Trace.TraceError("Failed to de-serialize configuration", e);
                 return false;
             }
 
@@ -106,20 +103,20 @@
         {
             if (this.config == null)
             {
-                this.log.Error("No configuration loaded!");
+                System.Diagnostics.Trace.TraceError("No configuration loaded!");
                 return false;
             }
 
             this.RefreshInterval = TimeSpan.FromMilliseconds(this.config.RefreshInterval);
             if (this.RefreshInterval < TimeSpan.FromSeconds(1))
             {
-                this.log.Warning("Refresh is less then one second, this can cause severe stress on the system!");
+                System.Diagnostics.Trace.TraceWarning("Refresh is less then one second, this can cause severe stress on the system!");
             }
             
             // Treat as warning for now, demon might have other functions beside source conversion
             if (this.config.SourceIncludes == null || this.config.SourceIncludes.Length <= 0)
             {
-                this.log.Warning("Configuration has no sources specified");
+                System.Diagnostics.Trace.TraceWarning("Configuration has no sources specified");
             }
             else
             {
@@ -146,7 +143,7 @@
 
             if (this.config.Builds == null || this.config.Builds.Length <= 0)
             {
-                this.log.Warning("Configuration has no builds specified");
+                System.Diagnostics.Trace.TraceWarning("Configuration has no builds specified");
             }
             else
             {
@@ -170,11 +167,11 @@
         {
             if (string.IsNullOrEmpty(include.Path))
             {
-                this.log.Error("Conversion source path is invalid: {0}", null, include.Path ?? "Null");
+                System.Diagnostics.Trace.TraceError("Conversion source path is invalid: {0}", null, include.Path ?? "Null");
                 return false;
             }
 
-            this.log.Info("Loaded include {0}", include.Path);
+            System.Diagnostics.Trace.TraceInformation("Loaded include {0}", include.Path);
             return true;
         }
 
@@ -182,17 +179,17 @@
         {
             if (string.IsNullOrEmpty(build.Name))
             {
-                this.log.Error("Build has no name");
+                System.Diagnostics.Trace.TraceError("Build has no name");
                 return false;
             }
 
             if (string.IsNullOrEmpty(build.ProjectRoot) || !Directory.Exists(build.ProjectRoot))
             {
-                this.log.Error("Build project root is invalid: {0}", null, build.ProjectRoot ?? "Null");
+                System.Diagnostics.Trace.TraceError("Build project root is invalid: {0}", null, build.ProjectRoot ?? "Null");
                 return false;
             }
 
-            this.log.Info("Loaded build {0}", build.Name);
+            System.Diagnostics.Trace.TraceInformation("Loaded build {0}", build.Name);
             return true;
         }
     }
