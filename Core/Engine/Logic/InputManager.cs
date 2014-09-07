@@ -190,9 +190,17 @@
             return this.bindings[name];
         }
 
-        public override void Dispose()
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected override void Dispose(bool disposing)
         {
-            base.Dispose();
+            if (!disposing)
+            {
+                return;
+            }
+
+            base.Dispose(true);
 
             this.mouse.Dispose();
             this.keyboard.Dispose();

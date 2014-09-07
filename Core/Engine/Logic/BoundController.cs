@@ -167,13 +167,6 @@
         {
         }
         
-        public override void Dispose()
-        {
-            this.inputManager.UnregisterReceiver(this);
-
-            base.Dispose();
-        }
-
         public void SetInputBindings(string name)
         {
             this.bindings = this.inputManager.GetBindings(name);
@@ -182,6 +175,18 @@
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            this.inputManager.UnregisterReceiver(this);
+
+            base.Dispose(true);
+        }
+
         protected virtual void OnBindingsTriggered(IReadOnlyCollection<InputBindingEntry> triggeredBindings)
         {
         }

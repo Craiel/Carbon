@@ -1,5 +1,6 @@
 ﻿namespace Core.Engine.Logic
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
 
     using CarbonCore.Utils.Contracts;
@@ -12,9 +13,10 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public virtual void Dispose()
+        public void Dispose()
         {
-            this.Unload();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public virtual void Initialize(ICarbonGraphics graphics)
@@ -28,6 +30,19 @@
         public virtual bool Update(ITimer gameTime)
         {
             return true;
+        }
+
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            this.Unload();
         }
     }
 
@@ -37,9 +52,10 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public virtual void Dispose()
+        public void Dispose()
         {
-            this.Unload();
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public virtual void Initialize(ICarbonGraphics graphics)
@@ -53,6 +69,19 @@
         public virtual bool Update(ITimer gameTime)
         {
             return true;
+        }
+
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            this.Unload();
         }
     }
 }

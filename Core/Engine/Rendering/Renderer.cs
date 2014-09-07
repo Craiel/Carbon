@@ -4,19 +4,15 @@
     using System.Collections.Generic;
     using System.Data;
     using System.Diagnostics.CodeAnalysis;
-
     using CarbonCore.Utils;
-
-    using Core.Engine.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Logic;
     using Core.Engine.Rendering.Shaders;
-    
     using SharpDX;
     using SharpDX.Direct3D11;
     using SharpDX.DXGI;
-    using CarbonCore.Utils.Contracts.IoC;
 
     public class Renderer : EngineComponent, IRenderer
     {
@@ -212,9 +208,17 @@
             this.plainShader.ForceReloadOnNextPass = true;
         }
 
-        public override void Dispose()
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected override void Dispose(bool disposing)
         {
-            base.Dispose();
+            if (!disposing)
+            {
+                return;
+            }
+
+            base.Dispose(true);
 
             this.vertexBuffer.Dispose();
             this.indexBuffer.Dispose();

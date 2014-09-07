@@ -1,5 +1,7 @@
 ﻿namespace Core.Engine.Rendering.RenderTarget
 {
+    using System;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Logic;
@@ -99,8 +101,22 @@
             graphics.ImmediateContext.OutputMerger.BlendState = this.blendState;
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
             if (this.blendState != null)
             {
                 this.blendState.Dispose();
@@ -108,9 +124,6 @@
             }
         }
 
-        // -------------------------------------------------------------------
-        // Protected
-        // -------------------------------------------------------------------
         protected abstract void DoResize(ICarbonGraphics graphics, TypedVector2<int> size);
 
         private void UpdateBlendState(ICarbonGraphics graphics)

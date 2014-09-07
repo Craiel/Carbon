@@ -6,19 +6,15 @@
     using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
-
     using CarbonCore.Utils;
-
-    using Core.Engine.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Logic;
     using Core.Engine.Rendering.Primitives;
     using Core.Engine.Rendering.RenderTarget;
-    
     using SharpDX;
     using SharpDX.Direct3D11;
-    using CarbonCore.Utils.Contracts.IoC;
 
     public class FrameManager : EngineComponent, IFrameManager
     {
@@ -160,8 +156,16 @@
             this.shadowMapCache.Clear();
         }
 
-        public override void Dispose()
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected override void Dispose(bool disposing)
         {
+            if (!disposing)
+            {
+                return;
+            }
+
             this.backBufferRenderTarget.Dispose();
             this.gBufferTarget.Dispose();
             this.deferredLightTarget.Dispose();
@@ -175,6 +179,8 @@
             this.textureTargets.Clear();
 
             this.ClearCache();
+
+            base.Dispose(true);
         }
 
         // -------------------------------------------------------------------
@@ -280,7 +286,7 @@
             // Render the Lighting
             if (set.LightingEnabled && this.lightInstructionCache.Count > 0)
             {
-                // Turn off depth for the following parts, we dont want it
+                // Turn off depth for the following parts, we don't want it
                 parameters.DepthEnabled = false;
                 
                 this.deferredLightTarget.Set(this.graphics);

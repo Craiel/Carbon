@@ -97,16 +97,21 @@
             base.Set(graphics);
         }
 
-        public override void Dispose()
-        {
-            this.DisposeResources();
-
-            base.Dispose();
-        }
-        
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            this.DisposeResources();
+
+            base.Dispose(true);
+        }
+
         protected override void DoResize(ICarbonGraphics graphics, TypedVector2<int> size)
         {
             this.isResizing = true;

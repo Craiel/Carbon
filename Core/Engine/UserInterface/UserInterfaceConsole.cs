@@ -147,9 +147,17 @@
             this.AddHistory(line, this.lineFormat);
         }
 
-        public override void Dispose()
+        // -------------------------------------------------------------------
+        // protected
+        // -------------------------------------------------------------------
+        protected override void Dispose(bool disposing)
         {
-            base.Dispose();
+            if (!disposing)
+            {
+                return;
+            }
+
+            base.Dispose(true);
 
             this.controller.OnReturnPressed -= this.ControllerOnReturnPressed;
             this.controller.OnCompletionRequested -= this.ControllerOnCompletionRequested;

@@ -1,5 +1,7 @@
 ﻿namespace GrandSeal.DataDemon.Logic
 {
+    using System;
+
     using GrandSeal.DataDemon.Contracts;
 
     public abstract class DemonOperation : IDemonOperation
@@ -17,8 +19,10 @@
 
         public int ProgressMax { get; private set; }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public abstract void Refresh();
@@ -38,6 +42,10 @@
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
+        protected virtual void Dispose(bool disposing)
+        {
+        }
+
         protected void SetProgress(int max, int current)
         {
             this.ProgressMax = max;

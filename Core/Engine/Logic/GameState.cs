@@ -2,7 +2,6 @@
 {
     using CarbonCore.Utils.Contracts;
     using CarbonCore.Utils.Contracts.IoC;
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Contracts.Scene;
@@ -56,9 +55,17 @@
             return true;
         }
 
-        public override void Dispose()
+        // -------------------------------------------------------------------
+        // Protected
+        // -------------------------------------------------------------------
+        protected override void Dispose(bool disposing)
         {
-            base.Dispose();
+            if (!disposing)
+            {
+                return;
+            }
+
+            base.Dispose(true);
 
             if (this.SceneManager != null)
             {

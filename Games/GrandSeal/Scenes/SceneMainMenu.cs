@@ -64,16 +64,6 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override void Dispose()
-        {
-            if (this.IsActive)
-            {
-                this.systemController.ActionTriggered -= this.OnSystemAction;
-            }
-
-            base.Dispose();
-        }
-
         public override void Initialize(ICarbonGraphics graphic)
         {
             if (string.IsNullOrEmpty(this.SceneScriptHash))
@@ -227,6 +217,21 @@
         // --------------------------------------------------------------------
         // Protected
         // --------------------------------------------------------------------
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            if (this.IsActive)
+            {
+                this.systemController.ActionTriggered -= this.OnSystemAction;
+            }
+
+            base.Dispose(true);
+        }
+
         protected override void Activate()
         {
             this.systemController.ActionTriggered += this.OnSystemAction;

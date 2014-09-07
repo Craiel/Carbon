@@ -20,13 +20,6 @@
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public override void Dispose()
-        {
-            this.DisposeResources();
-
-            base.Dispose();
-        }
-        
         public override void Clear(ICarbonGraphics graphics, Vector4 color)
         {
             if (this.isResizing)
@@ -55,6 +48,18 @@
         // -------------------------------------------------------------------
         // Protected
         // -------------------------------------------------------------------
+        protected override void Dispose(bool disposing)
+        {
+            if (!disposing)
+            {
+                return;
+            }
+
+            this.DisposeResources();
+
+            base.Dispose();
+        }
+
         protected override void DoResize(ICarbonGraphics graphics, TypedVector2<int> size)
         {
             this.isResizing = true;
