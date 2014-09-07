@@ -57,7 +57,7 @@
 
             this.DisposeResources();
 
-            base.Dispose();
+            base.Dispose(true);
         }
 
         protected override void DoResize(ICarbonGraphics graphics, TypedVector2<int> size)
