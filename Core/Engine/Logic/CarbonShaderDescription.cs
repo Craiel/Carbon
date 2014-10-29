@@ -62,7 +62,7 @@
                 this.Profile,
                 this.ShaderFlags,
                 this.EffectFlags,
-                HashUtils.GetFNVFileName(HashUtils.CombineHashes(this.Macros)));
+                HashFileName.GetHashFileName(HashUtils.CombineHashes(this.Macros)));
         }
     }
 }

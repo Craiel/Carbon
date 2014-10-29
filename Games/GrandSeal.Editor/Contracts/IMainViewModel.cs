@@ -49,9 +49,6 @@
         ICommand CommandOpenProject { get; }
         ICommand CommandCloseProject { get; }
         ICommand CommandSaveProject { get; }
-        
-        ICommand CommandUndo { get; }
-        ICommand CommandRedo { get; }
 
         ICommand CommandExit { get; }
 
