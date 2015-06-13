@@ -2,17 +2,15 @@
 {
     using System.Windows;
 
+    using CarbonCore.Processing.Contracts;
+    using CarbonCore.Processing.Source.Xcd;
+    using CarbonCore.Utils.Compat.IO;
     using CarbonCore.Utils.Contracts.IoC;
-    using CarbonCore.Utils.IO;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
-    using Core.Engine.Resource.Content;
-    using Core.Processing.Contracts;
-    using Core.Processing.Resource.Xcd;
 
     using GrandSeal.Editor.Contracts;
-
+    
     public class ResourceStageViewModel : ResourceViewModel, IResourceStageViewModel
     {
         private readonly IEditorLogic logic;

@@ -2,7 +2,7 @@
 {
     using System;
 
-    using CarbonCore.ToolFramework.Contracts;
+    using CarbonCore.ToolFramework.Contracts.ViewModels;
 
     public interface IUndoRedoManager : IBaseViewModel
     {

@@ -12,10 +12,8 @@
     using System.Xml;
 
     using CarbonCore.ToolFramework.ViewModel;
-    using CarbonCore.Utils.Contracts;
-    using CarbonCore.Utils.IO;
+    using CarbonCore.Utils.Compat.IO;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;
     using Core.Engine.Resource.Generic;

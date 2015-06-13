@@ -3,8 +3,8 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
 
-    using CarbonCore.ToolFramework.Contracts;
-    using CarbonCore.Utils.IO;
+    using CarbonCore.ToolFramework.Contracts.ViewModels;
+    using CarbonCore.Utils.Compat.IO;
 
     using Core.Engine.Resource.Content;
 

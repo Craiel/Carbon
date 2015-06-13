@@ -1,9 +1,8 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
-
-namespace GrandSeal.Editor.Contracts
+﻿namespace GrandSeal.Editor.Contracts
 {
-    using CarbonCore.ToolFramework.Contracts;
+    using System.Collections.ObjectModel;
+
+    using CarbonCore.ToolFramework.Contracts.ViewModels;
 
     public interface INewDialogViewModel : IBaseViewModel
     {

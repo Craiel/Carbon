@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Data;
 
-    using Core.Engine.Resource.Resources.Model;
-
+    using CarbonCore.Processing.Resource.Model;
+    
     using SharpDX;
 
     public class Mesh : IDisposable

@@ -3,8 +3,9 @@
     using System;
     using System.IO;
 
+    using CarbonCore.Protocol.Network;
+
     using Core.Engine.Contracts.Network;
-    using Core.Protocol.Network;
 
     using Google.ProtocolBuffers;
 

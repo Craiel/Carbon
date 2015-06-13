@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Compat.Contracts;
     using CarbonCore.UtilsDX;
 
     using Core.Engine.Contracts.Scene;

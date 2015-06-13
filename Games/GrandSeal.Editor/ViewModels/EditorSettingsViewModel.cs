@@ -3,12 +3,11 @@
     using System.ComponentModel;
     using System.Windows.Input;
 
+    using CarbonCore.Utils.Compat.IO;
     using CarbonCore.Utils.Contracts.IoC;
-    using CarbonCore.Utils.IO;
     using CarbonCore.UtilsWPF;
 
     using GrandSeal.Editor.Contracts;
-    using GrandSeal.Editor.Logic.MVVM;
     using GrandSeal.Editor.Views;
 
     using Microsoft.Win32;

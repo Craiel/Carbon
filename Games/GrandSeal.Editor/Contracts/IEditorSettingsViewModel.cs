@@ -2,7 +2,7 @@
 {
     using System.Windows.Input;
 
-    using CarbonCore.Utils.IO;
+    using CarbonCore.Utils.Compat.IO;
     
     public interface IEditorSettingsViewModel : IEditorDocument
     {

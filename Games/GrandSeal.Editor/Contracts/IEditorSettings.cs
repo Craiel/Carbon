@@ -2,7 +2,7 @@
 {
     using System.ComponentModel;
 
-    using CarbonCore.Utils.IO;
+    using CarbonCore.Utils.Compat.IO;
     
     public interface IEditorSettings : INotifyPropertyChanged
     {

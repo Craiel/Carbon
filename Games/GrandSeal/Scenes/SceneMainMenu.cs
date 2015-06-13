@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
 
-    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Processing.Resource;
+    using CarbonCore.Processing.Resource.Stage;
+    using CarbonCore.Utils.Compat.Contracts;
     using CarbonCore.Utils.Contracts.IoC;
 
     using Contracts;
@@ -15,8 +17,6 @@
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Rendering;
-    using Core.Engine.Resource.Resources;
-    using Core.Engine.Resource.Resources.Stage;
     using Core.Engine.Scene;
     using Core.Engine.UserInterface;
 

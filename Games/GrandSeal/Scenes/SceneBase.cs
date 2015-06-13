@@ -3,12 +3,12 @@
     using System.Data;
     using System.Threading;
 
+    using CarbonCore.Processing.Resource;
     using CarbonCore.Utils.Contracts.IoC;
 
     using Contracts;
 
     using Core.Engine.Logic.Scripting;
-    using Core.Engine.Resource.Resources;
     using Core.Engine.Scene;
 
     using NLua;

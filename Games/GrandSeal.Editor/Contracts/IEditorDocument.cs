@@ -3,7 +3,7 @@
     using System;
     using System.Windows.Input;
 
-    using CarbonCore.ToolFramework.Contracts;
+    using CarbonCore.ToolFramework.Contracts.ViewModels;
 
     public interface IEditorDocument : IBaseViewModel
     {

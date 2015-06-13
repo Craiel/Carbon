@@ -4,8 +4,8 @@
     using System.ComponentModel;
     using System.Windows;
 
-    using CarbonCore.Utils.Contracts;
-    using CarbonCore.Utils.IO;
+    using CarbonCore.Utils.Compat.Contracts;
+    using CarbonCore.Utils.Compat.IO;
 
     using GrandSeal.Editor.Events;
 

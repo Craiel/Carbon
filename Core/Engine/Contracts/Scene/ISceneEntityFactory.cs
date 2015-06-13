@@ -1,7 +1,8 @@
 ﻿namespace Core.Engine.Contracts.Scene
 {
+    using CarbonCore.Processing.Resource.Stage;
+
     using Core.Engine.Contracts.Logic;
-    using Core.Engine.Resource.Resources.Stage;
 
     public interface ISceneEntityFactory : IEngineComponent
     {

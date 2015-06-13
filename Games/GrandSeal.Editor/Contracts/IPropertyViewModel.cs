@@ -2,7 +2,7 @@
 
 namespace GrandSeal.Editor.Contracts
 {
-    using CarbonCore.ToolFramework.Contracts;
+    using CarbonCore.ToolFramework.Contracts.ViewModels;
 
     public interface IPropertyViewModel : IEditorTool
     {

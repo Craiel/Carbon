@@ -1,6 +1,6 @@
 ﻿namespace GrandSeal.Editor.Events
 {
-    using CarbonCore.Utils.IO;
+    using CarbonCore.Utils.Compat.IO;
 
     using GrandSeal.Editor.Contracts;
 

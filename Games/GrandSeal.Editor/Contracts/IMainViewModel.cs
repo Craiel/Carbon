@@ -5,11 +5,10 @@
     using System.ComponentModel;
     using System.Windows.Input;
 
-    using CarbonCore.ToolFramework.Contracts;
+    using CarbonCore.ToolFramework.Contracts.ViewModels;
+    using CarbonCore.Utils.Compat.IO;
 
     using GrandSeal.Editor.Logic;
-
-    using CarbonCore.Utils.IO;
     
     using Xceed.Wpf.AvalonDock.Themes;
 

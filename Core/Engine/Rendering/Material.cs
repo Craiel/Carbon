@@ -2,12 +2,13 @@
 {
     using System;
 
+    using CarbonCore.Processing.Resource.Model;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Logic;
     using Core.Engine.Resource.Content;
-    using Core.Engine.Resource.Resources.Model;
-
+    
     using SharpDX;
 
     public class Material : IDisposable

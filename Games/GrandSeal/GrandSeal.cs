@@ -4,8 +4,8 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Drawing;
 
-    using CarbonCore.Utils;
-    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Compat;
+    using CarbonCore.Utils.Compat.Contracts;
     using CarbonCore.Utils.Contracts.IoC;
 
     using Contracts;

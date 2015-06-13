@@ -5,12 +5,10 @@
     using System.Linq;
     using System.Windows;
 
+    using CarbonCore.Processing.Source.Collada;
     using CarbonCore.ToolFramework.ViewModel;
+    using CarbonCore.Utils.Compat.IO;
     using CarbonCore.Utils.Contracts.IoC;
-    using CarbonCore.Utils.IO;
-
-    using Core.Engine.Contracts;
-    using Core.Processing.Resource.Collada;
 
     using GrandSeal.Editor.Contracts;
 

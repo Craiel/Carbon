@@ -7,18 +7,16 @@
     using System.Windows;
     using System.Windows.Input;
 
+    using CarbonCore.Processing.Contracts;
+    using CarbonCore.Processing.Source.Collada;
+    using CarbonCore.Utils.Compat.IO;
     using CarbonCore.Utils.Contracts.IoC;
-    using CarbonCore.Utils.IO;
     using CarbonCore.UtilsWPF;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;
-    using Core.Processing.Contracts;
-    using Core.Processing.Resource.Collada;
 
     using GrandSeal.Editor.Contracts;
-    using GrandSeal.Editor.Logic.MVVM;
     using GrandSeal.Editor.Views;
 
     public class ResourceModelViewModel : ResourceViewModel, IResourceModelViewModel

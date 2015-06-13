@@ -3,8 +3,8 @@
     using System;
     using System.IO;
 
-    using Core.Protocol.Network;
-
+    using CarbonCore.Protocol.Network;
+    
     public interface INetworkMessage
     {
         Guid Id { get; }

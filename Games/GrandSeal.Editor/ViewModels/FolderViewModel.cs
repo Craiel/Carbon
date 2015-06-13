@@ -7,16 +7,14 @@
     using System.Windows;
     using System.Windows.Input;
 
-    using CarbonCore.Utils;
-    using CarbonCore.Utils.IO;
+    using CarbonCore.Utils.Compat;
+    using CarbonCore.Utils.Compat.IO;
     using CarbonCore.UtilsWPF;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;
 
     using GrandSeal.Editor.Contracts;
-    using GrandSeal.Editor.Logic.MVVM;
 
     using Microsoft.Win32;
 

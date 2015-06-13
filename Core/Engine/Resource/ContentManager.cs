@@ -7,10 +7,8 @@
     using System.Globalization;
     using System.Text;
 
-    using CarbonCore.Utils.Contracts;
-    using CarbonCore.Utils.IO;
+    using CarbonCore.Utils.Compat.IO;
 
-    using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;
     using Core.Engine.Resource.Generic;

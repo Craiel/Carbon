@@ -1,6 +1,6 @@
 ﻿namespace Core.Engine.Scene
 {
-    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Compat.Contracts;
 
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Rendering;

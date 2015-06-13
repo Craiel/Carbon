@@ -1,14 +1,13 @@
 ﻿namespace Core.Engine.Scene
 {
+    using CarbonCore.Processing.Resource.Stage;
+    using CarbonCore.Protocol.Resource;
     using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.UtilsDX;
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
     using Core.Engine.Rendering;
-    using Core.Engine.Resource.Resources.Stage;
-    using Core.Protocol.Resource;
     using SharpDX;
 
     public class SceneEntityFactory : EngineComponent, ISceneEntityFactory

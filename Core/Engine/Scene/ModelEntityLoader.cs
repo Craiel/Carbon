@@ -3,11 +3,12 @@
     using System;
     using System.Collections.Generic;
 
+    using CarbonCore.Processing.Resource.Model;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
     using Core.Engine.Rendering;
-    using Core.Engine.Resource.Resources.Model;
 
     using SharpDX;
 

@@ -8,22 +8,20 @@
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
-    using CarbonCore.Utils;
+    using CarbonCore.Processing.Contracts;
+    using CarbonCore.Utils.Compat;
+    using CarbonCore.Utils.Compat.IO;
     using CarbonCore.Utils.Contracts.IoC;
-    using CarbonCore.Utils.IO;
     using CarbonCore.UtilsWPF;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource;
     using Core.Engine.Resource.Content;
-    using Core.Processing.Contracts;
 
     using GrandSeal.Editor.Contracts;
-    using GrandSeal.Editor.Logic.MVVM;
     using ICSharpCode.AvalonEdit.CodeCompletion;
     using Microsoft.Win32;
-
+    
     public abstract class ResourceViewModel : ContentViewModel, IResourceViewModel
     {
         private enum CoreFlags

@@ -1,9 +1,9 @@
 ﻿namespace GrandSeal.DataDemon.IoC
 {
+    using CarbonCore.Processing.IoC;
     using CarbonCore.Utils.IoC;
 
     using Core.Engine.IoC;
-    using Core.Processing.IoC;
 
     using GrandSeal.DataDemon.Contracts;
     using GrandSeal.DataDemon.Logic;

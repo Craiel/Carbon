@@ -116,6 +116,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CarbonCore\Processing\CarbonCore.Processing.csproj">
+      <Project>{4DB8D196-1F50-493F-9FFB-40E1E503EE87}</Project>
+      <Name>CarbonCore.Processing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\CarbonCore\UtilsCompat\CarbonCore.Utils.Compat.csproj">
+      <Project>{B823CDCE-5ED4-4030-AB35-44DAF233D4C0}</Project>
+      <Name>CarbonCore.Utils.Compat</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\CarbonCore\Utils\CarbonCore.Utils.csproj">
       <Project>{E05836D9-0BB3-4BFA-89E6-F5ED40A9D93C}</Project>
       <Name>CarbonCore.Utils</Name>

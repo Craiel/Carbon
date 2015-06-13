@@ -2,7 +2,8 @@
 {
     using System.Collections.Generic;
 
-    using Core.Engine.Resource.Resources.Model;
+    using CarbonCore.Processing.Resource.Model;
+
     using Core.Engine.Scene;
 
     public interface ISceneDebugOverlay : IScene

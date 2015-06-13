@@ -2,7 +2,7 @@
 {
     using System;
 
-    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Compat.Contracts;
     
     public interface IEngineComponent : IDisposable
     {

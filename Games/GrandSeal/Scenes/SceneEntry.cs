@@ -3,6 +3,8 @@
     using System;
     using System.Data;
 
+    using CarbonCore.Processing.Resource;
+    using CarbonCore.Processing.Resource.Model;
     using CarbonCore.Utils.Contracts.IoC;
 
     using Contracts;
@@ -12,8 +14,6 @@
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
     using Core.Engine.Logic.Scripting;
-    using Core.Engine.Resource.Resources;
-    using Core.Engine.Resource.Resources.Model;
     
     public class SceneEntry : SceneBase, ISceneEntry
     {

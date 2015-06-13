@@ -3,10 +3,9 @@
     using System.IO;
     using System.IO.Compression;
 
-    using CarbonCore.Utils;
-    using CarbonCore.Utils.IO;
-
-    using Core.Engine.Contracts.Resource;
+    using CarbonCore.Processing.Contracts;
+    using CarbonCore.Utils.Compat;
+    using CarbonCore.Utils.Compat.IO;
     
     public class FolderContent : ResourceContent
     {

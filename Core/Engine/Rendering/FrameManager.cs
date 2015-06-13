@@ -6,7 +6,7 @@
     using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
-    using CarbonCore.Utils;
+    using CarbonCore.Utils.Compat;
     using CarbonCore.Utils.Contracts.IoC;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;

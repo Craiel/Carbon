@@ -3,9 +3,8 @@
     using System;
     using System.Collections.Generic;
 
-    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Compat.Contracts;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.UserInterface;
     using Core.Engine.Logic;
     using CarbonCore.Utils.Contracts.IoC;

@@ -290,9 +290,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CarbonCore\Processing\CarbonCore.Processing.csproj">
+      <Project>{4DB8D196-1F50-493F-9FFB-40E1E503EE87}</Project>
+      <Name>CarbonCore.Processing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\CarbonCore\ToolFramework\CarbonCore.ToolFramework.csproj">
       <Project>{E4643DF2-D2DB-4E99-AB4B-D8CE4FD94D81}</Project>
       <Name>CarbonCore.ToolFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\CarbonCore\UtilsCompat\CarbonCore.Utils.Compat.csproj">
+      <Project>{B823CDCE-5ED4-4030-AB35-44DAF233D4C0}</Project>
+      <Name>CarbonCore.Utils.Compat</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\CarbonCore\UtilsWPF\CarbonCore.UtilsWPF.csproj">
       <Project>{75FF83F3-C123-4982-91F7-09D0F8A66536}</Project>
@@ -305,10 +313,6 @@
     <ProjectReference Include="..\..\Core\Engine\Core.Engine.csproj">
       <Project>{a724db75-b032-4ae5-b901-063a165f7e71}</Project>
       <Name>Core.Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Processing\Core.Processing.csproj">
-      <Project>{819FF5D0-4498-48F2-9F7D-81A322B9B082}</Project>
-      <Name>Core.Processing</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

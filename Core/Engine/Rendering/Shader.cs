@@ -3,8 +3,8 @@
     using System;
     using System.Runtime.InteropServices;
 
-    using CarbonCore.Utils;
-    using CarbonCore.Utils.Diagnostics;
+    using CarbonCore.Utils.Compat;
+    using CarbonCore.Utils.Compat.Diagnostics;
 
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;

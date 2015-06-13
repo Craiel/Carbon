@@ -6,14 +6,12 @@
 
     using GrandSeal.Editor.Contracts;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource;
     using Core.Engine.Resource.Content;
 
     using System.Linq;
 
-    using CarbonCore.Utils.Contracts;
     using CarbonCore.Utils.Contracts.IoC;
 
     public abstract class ContentViewModel : DocumentViewModel

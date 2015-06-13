@@ -127,7 +127,6 @@
     <Compile Include="Contracts\Rendering\IRenderTarget.cs" />
     <Compile Include="Contracts\Rendering\IShadowMapShader.cs" />
     <Compile Include="Contracts\Resource\ICarbonContent.cs" />
-    <Compile Include="Contracts\Resource\ICarbonResource.cs" />
     <Compile Include="Contracts\Resource\IContentManager.cs" />
     <Compile Include="Contracts\Resource\IResourceManager.cs" />
     <Compile Include="Contracts\Scene\IEmptyEntity.cs" />
@@ -247,25 +246,10 @@
     <Compile Include="Resource\Content\ScriptEntry.cs" />
     <Compile Include="Resource\ResourceContent.cs" />
     <Compile Include="Resource\ResourceInfo.cs" />
-    <Compile Include="Resource\Resources\CompiledShaderResource.cs" />
-    <Compile Include="Resource\Resources\UserInterfaceResource.cs" />
-    <Compile Include="Resource\Resources\Model\ModelResourceGroup.cs" />
-    <Compile Include="Resource\Resources\Model\ModelMaterialElement.cs" />
-    <Compile Include="Resource\Resources\Model\ModelResourceElement.cs" />
-    <Compile Include="Resource\Resources\Model\ModelResource.cs" />
     <Compile Include="Resource\FolderContent.cs" />
-    <Compile Include="Resource\Resources\ProtocolResource.cs" />
-    <Compile Include="Resource\Resources\RawResource.cs" />
     <Compile Include="Resource\ResourceManager.cs" />
     <Compile Include="Logic\CarbonShaderDescription.cs" />
     <Compile Include="Logic\ShaderManager.cs" />
-    <Compile Include="Resource\Resources\ScriptResource.cs" />
-    <Compile Include="Resource\Resources\Stage\StageCameraElement.cs" />
-    <Compile Include="Resource\Resources\Stage\StageElement.cs" />
-    <Compile Include="Resource\Resources\Stage\StageLightElement.cs" />
-    <Compile Include="Resource\Resources\Stage\StageModelElement.cs" />
-    <Compile Include="Resource\Resources\Stage\StagePropertyElement.cs" />
-    <Compile Include="Resource\Resources\Stage\StageResource.cs" />
     <Compile Include="Scene\CameraEntity.cs" />
     <Compile Include="Scene\EmptyEntity.cs" />
     <Compile Include="Scene\Exceptions.cs" />
@@ -309,6 +293,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\CarbonCore\Processing\CarbonCore.Processing.csproj">
+      <Project>{4DB8D196-1F50-493F-9FFB-40E1E503EE87}</Project>
+      <Name>CarbonCore.Processing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\CarbonCore\UtilsCompat\CarbonCore.Utils.Compat.csproj">
+      <Project>{B823CDCE-5ED4-4030-AB35-44DAF233D4C0}</Project>
+      <Name>CarbonCore.Utils.Compat</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\CarbonCore\UtilsDX\CarbonCore.UtilsDX.csproj">
       <Project>{c3e6c35a-fe50-481b-9b6a-559dfdffb52e}</Project>
       <Name>CarbonCore.UtilsDX</Name>
@@ -316,10 +308,6 @@
     <ProjectReference Include="..\..\..\CarbonCore\Utils\CarbonCore.Utils.csproj">
       <Project>{E05836D9-0BB3-4BFA-89E6-F5ED40A9D93C}</Project>
       <Name>CarbonCore.Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Protocol\Core.Protocol.Sharp.csproj">
-      <Project>{9fde20aa-a982-4ca0-9ffc-fd57faf82088}</Project>
-      <Name>Core.Protocol.Sharp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
     using System;
     using System.Diagnostics.CodeAnalysis;
 
-    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Compat.Contracts;
 
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Logic;

@@ -3,10 +3,11 @@
     using System;
     using System.Xml;
     using System.Xml.Serialization;
+
+    using CarbonCore.Processing.Contracts;
     using CarbonCore.ToolFramework.ViewModel;
+    using CarbonCore.Utils.Compat.IO;
     using CarbonCore.Utils.Contracts.IoC;
-    using CarbonCore.Utils.IO;
-    using Core.Processing.Contracts;
     using GrandSeal.Editor.Contracts;
 
     [Serializable]

@@ -2,8 +2,8 @@
 {
     using System.IO;
 
-    using Core.Engine.Contracts.Resource;
-
+    using CarbonCore.Processing.Contracts;
+    
     public abstract class ResourceContent
     {
         public abstract Stream Load(string hash);

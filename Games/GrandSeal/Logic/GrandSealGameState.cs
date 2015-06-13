@@ -1,7 +1,7 @@
 ﻿namespace GrandSeal.Logic
 {
+    using CarbonCore.Utils.Compat.IO;
     using CarbonCore.Utils.Contracts.IoC;
-    using CarbonCore.Utils.IO;
 
     using Contracts;
 

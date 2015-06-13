@@ -3,7 +3,7 @@
     using System.Collections.ObjectModel;
     using System.Windows.Input;
 
-    using CarbonCore.Utils.IO;
+    using CarbonCore.Utils.Compat.IO;
 
     using Core.Engine.Contracts.Resource;
 

@@ -14,10 +14,9 @@
 
     using System.Drawing;
 
-    using CarbonCore.Utils.IO;
-
-    using Core.Processing.Processors;
-
+    using CarbonCore.Processing.Processors;
+    using CarbonCore.Utils.Compat.IO;
+    
     public interface IResourceRawViewModel : IResourceViewModel
     {
     }

@@ -6,10 +6,10 @@
     using System.Security.Cryptography;
     using System.Text;
 
-    using CarbonCore.Utils;
+    using CarbonCore.Processing.Resource;
+    using CarbonCore.Utils.Compat;
 
     using Core.Engine.Contracts.Resource;
-    using Core.Engine.Resource.Resources;
 
     using SharpDX.D3DCompiler;
     using SharpDX.Direct3D11;

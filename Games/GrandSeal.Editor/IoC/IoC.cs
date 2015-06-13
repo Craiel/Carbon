@@ -1,9 +1,9 @@
 ﻿namespace GrandSeal.Editor.IoC
 {
+    using CarbonCore.Processing.IoC;
     using CarbonCore.Utils.IoC;
 
     using Core.Engine.IoC;
-    using Core.Processing.IoC;
 
     using GrandSeal.Editor.Contracts;
     using GrandSeal.Editor.Logic;

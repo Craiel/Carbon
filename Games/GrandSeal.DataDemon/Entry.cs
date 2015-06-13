@@ -2,7 +2,7 @@
 {
     using Autofac;
 
-    using CarbonCore.Utils.Diagnostics;
+    using CarbonCore.Utils.Compat.Diagnostics;
     using CarbonCore.Utils.IoC;
 
     using GrandSeal.DataDemon.Contracts;

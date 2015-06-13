@@ -3,12 +3,13 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.IO;
+
+    using CarbonCore.Processing.Resource;
+    using CarbonCore.Protocol.Resource;
     using CarbonCore.Utils.Contracts.IoC;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Contracts.UserInterface;
     using Core.Engine.Logic;
-    using Core.Engine.Resource.Resources;
-    using Core.Protocol.Resource;
 
     public class UserInterface : EngineComponent, IUserInterface
     {

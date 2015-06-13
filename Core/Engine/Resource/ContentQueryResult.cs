@@ -6,7 +6,7 @@
     using System.Data.Common;
     using System.IO;
 
-    using CarbonCore.Utils;
+    using CarbonCore.Utils.Compat;
 
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;

@@ -2,8 +2,10 @@
 {
     using System;
 
+    using CarbonCore.Processing.Contracts;
+    using CarbonCore.Utils.Compat.IO;
+
     using Core.Engine.Resource;
-    using CarbonCore.Utils.IO;
 
     public interface IResourceManager : IDisposable
     {

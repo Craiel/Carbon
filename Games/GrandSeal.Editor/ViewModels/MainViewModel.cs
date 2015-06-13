@@ -8,21 +8,18 @@
     using System.Windows.Input;
 
     using CarbonCore.ToolFramework.ViewModel;
+    using CarbonCore.Utils.Compat.Contracts;
+    using CarbonCore.Utils.Compat.IO;
     using CarbonCore.Utils.Contracts.IoC;
-    using CarbonCore.Utils.IO;
     using CarbonCore.UtilsWPF;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Resource.Content;
     using GrandSeal.Editor.Contracts;
     using GrandSeal.Editor.Events;
     using GrandSeal.Editor.Logic;
     using GrandSeal.Editor.Logic.Docking;
-    using GrandSeal.Editor.Logic.MVVM;
     using GrandSeal.Editor.Views;
     using Microsoft.Win32;
-
-    using CarbonCore.Utils.Contracts;
     
     using Xceed.Wpf.AvalonDock.Themes;
 

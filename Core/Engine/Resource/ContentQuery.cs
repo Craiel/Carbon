@@ -5,7 +5,7 @@
     using System.Collections.ObjectModel;
     using System.Linq;
 
-    using CarbonCore.Utils;
+    using CarbonCore.Utils.Compat;
 
     public enum CriterionType
     {

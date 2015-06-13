@@ -1,7 +1,8 @@
 ﻿namespace Core.Engine.Rendering.Primitives
 {
+    using CarbonCore.Processing.Resource.Model;
+
     using Core.Engine.Resource;
-    using Core.Engine.Resource.Resources.Model;
 
     using SharpDX;
 

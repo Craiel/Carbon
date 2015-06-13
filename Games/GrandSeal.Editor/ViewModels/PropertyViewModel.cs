@@ -5,19 +5,12 @@ using GrandSeal.Editor.Views.Properties;
 
 namespace GrandSeal.Editor.ViewModels
 {
-    using CarbonCore.ToolFramework.Contracts;
+    using CarbonCore.ToolFramework.Contracts.ViewModels;
 
     public class PropertyViewModel : ToolViewModel, IPropertyViewModel
     {
         private IBaseViewModel activeContext;
-
-        // -------------------------------------------------------------------
-        // Constructor
-        // -------------------------------------------------------------------
-        public PropertyViewModel()
-        {
-        }
-
+        
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------

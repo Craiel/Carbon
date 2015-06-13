@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
 
-    using CarbonCore.Utils.Contracts;
-    using CarbonCore.Utils.Threading;
+    using CarbonCore.Utils.Compat.Contracts;
+    using CarbonCore.Utils.Compat.Threading;
 
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;

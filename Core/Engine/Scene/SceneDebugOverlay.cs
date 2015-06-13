@@ -2,7 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
-    using CarbonCore.Utils.Contracts;
+
+    using CarbonCore.Processing.Resource;
+    using CarbonCore.Processing.Resource.Model;
+    using CarbonCore.Utils.Compat.Contracts;
     using CarbonCore.Utils.Contracts.IoC;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
@@ -12,8 +15,6 @@
     using Core.Engine.Logic.Scripting;
     using Core.Engine.Rendering;
     using Core.Engine.Rendering.Primitives;
-    using Core.Engine.Resource.Resources;
-    using Core.Engine.Resource.Resources.Model;
     using Core.Engine.UserInterface;
     using NLua;
     using SharpDX;

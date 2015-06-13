@@ -3,7 +3,7 @@
     using System.IO;
     using System.Windows.Media.Imaging;
 
-    using CarbonCore.Utils.IO;
+    using CarbonCore.Utils.Compat.IO;
 
     public static class WPFUtilities
     {

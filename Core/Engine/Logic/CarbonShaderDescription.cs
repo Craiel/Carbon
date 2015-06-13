@@ -3,6 +3,7 @@
     using System.IO;
 
     using CarbonCore.Utils;
+    using CarbonCore.Utils.Compat;
 
     using SharpDX.D3DCompiler;
     using SharpDX.Direct3D;

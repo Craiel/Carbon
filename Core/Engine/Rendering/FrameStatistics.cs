@@ -3,7 +3,7 @@
     using System.Reflection;
     using System.Text;
 
-    using CarbonCore.Utils;
+    using CarbonCore.Utils.Compat;
 
     public sealed class FrameStatistics
     {

@@ -4,13 +4,11 @@
     using System.IO;
     using System.Windows;
 
+    using CarbonCore.Processing.Contracts;
+    using CarbonCore.Processing.Processors;
     using CarbonCore.Utils.Contracts.IoC;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
-    using Core.Engine.Resource.Content;
-    using Core.Processing.Contracts;
-    using Core.Processing.Processors;
 
     using GrandSeal.Editor.Contracts;
 

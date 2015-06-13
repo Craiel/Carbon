@@ -3,7 +3,7 @@
                     xmlns:System="clr-namespace:System;assembly=mscorlib"
                     xmlns:drawing="clr-namespace:System.Drawing;assembly=System.Drawing"
                     xmlns:StatDataLogic="clr-namespace:Core.Engine.Resource.Content;assembly=Carbon.Core.Engine"
-                    xmlns:processors="clr-namespace:Core.Processing.Processors;assembly=Carbon.Core.Processing">
+                    xmlns:processors="clr-namespace:CarbonCore.Processing.Processors;assembly=CarbonCore.Processing">
     
     <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type System:Enum}" x:Key="ResourceTypes">
         <ObjectDataProvider.MethodParameters>

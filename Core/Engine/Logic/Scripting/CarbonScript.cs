@@ -1,7 +1,7 @@
 ﻿namespace Core.Engine.Logic.Scripting
 {
-    using Core.Engine.Resource.Resources;
-
+    using CarbonCore.Processing.Resource;
+    
     public class CarbonScript
     {
         // -------------------------------------------------------------------

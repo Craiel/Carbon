@@ -5,9 +5,10 @@
     using System.Data;
     using System.IO;
 
+    using CarbonCore.Processing.Resource;
+
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Rendering;
-    using Core.Engine.Resource.Resources;
 
     using SharpDX.Direct3D11;
 

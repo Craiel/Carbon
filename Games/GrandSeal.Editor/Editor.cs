@@ -3,7 +3,7 @@
     using System.ComponentModel;
     using System.Windows;
 
-    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Compat.Contracts;
     using CarbonCore.Utils.Contracts.IoC;
 
     using GrandSeal.Editor.Contracts;

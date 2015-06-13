@@ -2,15 +2,14 @@
 {
     using System.Drawing;
 
+    using CarbonCore.Processing.Contracts;
+    using CarbonCore.Processing.Processors;
+    using CarbonCore.Processing.Resource;
+    using CarbonCore.Utils.Compat.IO;
     using CarbonCore.Utils.Contracts.IoC;
-    using CarbonCore.Utils.IO;
 
-    using Core.Engine.Contracts;
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Resource.Content;
-    using Core.Engine.Resource.Resources;
-    using Core.Processing.Contracts;
-    using Core.Processing.Processors;
     using global::GrandSeal.Editor.Contracts;
     using GrandSeal.Editor.Logic.MVVM;
 

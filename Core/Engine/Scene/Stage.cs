@@ -3,13 +3,13 @@
     using System;
     using System.Collections.Generic;
 
-    using Core.Engine.Contracts;
+    using CarbonCore.Processing.Resource.Model;
+    using CarbonCore.Processing.Resource.Stage;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
     using Core.Engine.Resource;
-    using Core.Engine.Resource.Resources.Model;
-    using Core.Engine.Resource.Resources.Stage;
     using CarbonCore.Utils.Contracts.IoC;
     
     public class Stage : EngineComponent, IStage
