@@ -2,7 +2,7 @@
 {
     using CarbonCore.Processing.Resource.Stage;
     using CarbonCore.Protocol.Resource;
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.UtilsDX;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;

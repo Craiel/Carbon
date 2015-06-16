@@ -1,6 +1,7 @@
 ﻿namespace GrandSeal.DataDemon.IoC
 {
     using CarbonCore.Processing.IoC;
+    using CarbonCore.Utils.Compat.IoC;
     using CarbonCore.Utils.IoC;
 
     using Core.Engine.IoC;
@@ -12,7 +13,7 @@
     [DependsOnModule(typeof(EngineModule))]
     [DependsOnModule(typeof(DataDemonModule))]
     [DependsOnModule(typeof(CarbonProcessingModule))]
-    public class DataDemonModule : CarbonModule
+    public class DataDemonModule : CarbonModuleAutofac
     {
         public DataDemonModule()
         {

@@ -6,9 +6,9 @@
     using System.Threading.Tasks;
     using System.Xml.Serialization;
 
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.Utils.Contracts;
-    using CarbonCore.Utils.Contracts.IoC;
-    
+
     using GrandSeal.DataDemon.Contracts;
 
     public class DemonLogic : IDemonLogic

@@ -10,7 +10,7 @@ using Core.Engine.Resource.Content;
 
 namespace GrandSeal.Editor.ViewModels
 {
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.UtilsWPF;
 
     using Core.Engine.Contracts.Resource;

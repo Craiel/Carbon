@@ -6,7 +6,8 @@
     using CarbonCore.Processing.Resource;
     using CarbonCore.Processing.Resource.Model;
     using CarbonCore.Utils.Compat.Contracts;
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Scene;

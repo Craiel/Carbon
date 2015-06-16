@@ -3,6 +3,7 @@
     using Autofac;
 
     using CarbonCore.Utils.Compat.Diagnostics;
+    using CarbonCore.Utils.Compat.IoC;
     using CarbonCore.Utils.IoC;
 
     using GrandSeal.DataDemon.Contracts;
@@ -16,7 +17,7 @@
             // Todo: Process Arguments
             var arguments = new DemonArguments { Config = @"C:\Dev\Carbon\Games\GrandSeal.Data\Demon.conf" };
 
-            IContainer kernel = CarbonContainerBuilder.Build<DataDemonModule>();
+            IContainer kernel = new CarbonContainerAutofacBuilder().Build<DataDemonModule>() as IContainer;
             kernel.Resolve<IDataDemon>().Run(arguments);
 
             Profiler.TraceProfilerStatistics();

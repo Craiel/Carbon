@@ -3,8 +3,8 @@
     using System.ComponentModel;
     using System.Windows.Input;
 
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.Utils.Compat.IO;
-    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.UtilsWPF;
 
     using GrandSeal.Editor.Contracts;

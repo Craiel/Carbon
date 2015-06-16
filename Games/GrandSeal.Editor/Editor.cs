@@ -4,7 +4,7 @@
     using System.Windows;
 
     using CarbonCore.Utils.Compat.Contracts;
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
 
     using GrandSeal.Editor.Contracts;
     using GrandSeal.Editor.Views;

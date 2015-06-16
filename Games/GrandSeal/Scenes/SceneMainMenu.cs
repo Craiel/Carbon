@@ -6,7 +6,7 @@
     using CarbonCore.Processing.Resource;
     using CarbonCore.Processing.Resource.Stage;
     using CarbonCore.Utils.Compat.Contracts;
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
 
     using Contracts;
 

@@ -4,10 +4,11 @@
     using System.Threading;
 
     using CarbonCore.Utils.Compat.Contracts;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.Utils.Compat.Diagnostics;
     using CarbonCore.Utils.Compat.Formatting;
     using CarbonCore.Utils.Compat.IO;
-    using CarbonCore.Utils.Contracts.IoC;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Contracts.Resource;

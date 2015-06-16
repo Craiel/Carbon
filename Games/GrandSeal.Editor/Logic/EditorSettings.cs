@@ -6,8 +6,9 @@
 
     using CarbonCore.Processing.Contracts;
     using CarbonCore.ToolFramework.ViewModel;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.Utils.Compat.IO;
-    using CarbonCore.Utils.Contracts.IoC;
+
     using GrandSeal.Editor.Contracts;
 
     [Serializable]

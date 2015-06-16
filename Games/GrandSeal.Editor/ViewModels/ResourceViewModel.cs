@@ -10,8 +10,8 @@
 
     using CarbonCore.Processing.Contracts;
     using CarbonCore.Utils.Compat;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.Utils.Compat.IO;
-    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.UtilsWPF;
 
     using Core.Engine.Contracts.Resource;

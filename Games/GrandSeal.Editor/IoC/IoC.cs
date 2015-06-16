@@ -1,6 +1,7 @@
 ﻿namespace GrandSeal.Editor.IoC
 {
     using CarbonCore.Processing.IoC;
+    using CarbonCore.Utils.Compat.IoC;
     using CarbonCore.Utils.IoC;
 
     using Core.Engine.IoC;
@@ -12,7 +13,7 @@
     [DependsOnModule(typeof(EngineModule))]
     [DependsOnModule(typeof(CarbonProcessingModule))]
     [DependsOnModule(typeof(UtilsModule))]
-    public class EditorModule : CarbonModule
+    public class EditorModule : CarbonModuleAutofac
     {
         public EditorModule()
         {

@@ -8,6 +8,7 @@
     using System.Windows.Input;
 
     using CarbonCore.Utils.Compat;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.Utils.Compat.IO;
     using CarbonCore.UtilsWPF;
 
@@ -19,7 +20,6 @@
     using Microsoft.Win32;
 
     using global::GrandSeal.Editor.Views;
-    using CarbonCore.Utils.Contracts.IoC;
 
     public class FolderViewModel : ContentViewModel, IFolderViewModel
     {

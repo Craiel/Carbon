@@ -4,11 +4,11 @@
     using System.Collections.Generic;
 
     using CarbonCore.Utils.Compat.Contracts;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
 
     using Core.Engine.Contracts.UserInterface;
     using Core.Engine.Logic;
-    using CarbonCore.Utils.Contracts.IoC;
-    
+
     public class UserInterfaceConsole : UserInterfaceControl, IUserInterfaceConsole
     {
         private readonly ITypingController controller;

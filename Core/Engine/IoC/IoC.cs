@@ -17,7 +17,7 @@
     using Core.Engine.Scene;
     using Core.Engine.UserInterface;
 
-    public class EngineModule : CarbonModule
+    public class EngineModule : CarbonModuleAutofac
     {
         public EngineModule()
         {

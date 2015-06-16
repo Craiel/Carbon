@@ -11,7 +11,7 @@ using GrandSeal.Editor.Views;
 
 namespace GrandSeal.Editor.ViewModels
 {
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.UtilsWPF;
 
     public class MaterialViewModel : ContentViewModel, IMaterialViewModel

@@ -4,10 +4,11 @@ using GrandSeal.Editor.Contracts;
 
 using Core.Engine.Contracts;
 using Core.Engine.Resource.Content;
-using CarbonCore.Utils.Contracts.IoC;
 
 namespace GrandSeal.Editor.ViewModels
 {
+    using CarbonCore.Utils.Compat.Contracts.IoC;
+
     public class ProjectViewModel : ContentViewModel, IProjectViewModel
     {
         // -------------------------------------------------------------------

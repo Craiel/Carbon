@@ -12,7 +12,7 @@
 
     using System.Linq;
 
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
 
     public abstract class ContentViewModel : DocumentViewModel
     {

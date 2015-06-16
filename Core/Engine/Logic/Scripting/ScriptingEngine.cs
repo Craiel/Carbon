@@ -3,12 +3,12 @@
     using System;
     using System.Collections.Generic;
 
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.Utils.Compat.Diagnostics;
 
     using Core.Engine.Contracts.Logic;
 
     using NLua;
-    using CarbonCore.Utils.Contracts.IoC;
 
     public class ScriptingEngine : IScriptingEngine
     {

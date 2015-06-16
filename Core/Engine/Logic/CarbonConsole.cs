@@ -1,6 +1,7 @@
 ﻿namespace Core.Engine.Logic
 {
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
+
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Rendering;

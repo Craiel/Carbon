@@ -1,5 +1,6 @@
 ﻿namespace GrandSeal.IoC
 {
+    using CarbonCore.Utils.Compat.IoC;
     using CarbonCore.Utils.IoC;
 
     using Contracts;
@@ -12,7 +13,7 @@
     [DependsOnModule(typeof(UtilsModule))]
     [DependsOnModule(typeof(EngineModule))]
     [DependsOnModule(typeof(GameModule))]
-    public class GameModule : CarbonModule
+    public class GameModule : CarbonModuleAutofac
     {
         public GameModule()
         {

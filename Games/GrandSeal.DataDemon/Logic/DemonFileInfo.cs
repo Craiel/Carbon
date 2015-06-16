@@ -5,8 +5,8 @@
     using System.Collections.ObjectModel;
     using System.IO;
 
-    using CarbonCore.Utils.Contracts.IoC;
-    
+    using CarbonCore.Utils.Compat.Contracts.IoC;
+
     using GrandSeal.DataDemon.Contracts;
 
     public class DemonFileInfo : IDemonFileInfo

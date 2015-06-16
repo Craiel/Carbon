@@ -5,7 +5,8 @@
     using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using CarbonCore.Utils.Compat;
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
+
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
     using Core.Engine.Logic;

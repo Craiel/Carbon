@@ -2,6 +2,7 @@
 {
     using Autofac;
 
+    using CarbonCore.Utils.Compat.IoC;
     using CarbonCore.Utils.IoC;
 
     using Contracts;
@@ -12,7 +13,7 @@
     {
         public static void Main()
         {
-            IContainer kernel = CarbonContainerBuilder.Build<GameModule>();
+            IContainer kernel = new CarbonContainerAutofacBuilder().Build<GameModule>() as IContainer;
             kernel.Resolve<IGrandSeal>().Run();
         }
     }

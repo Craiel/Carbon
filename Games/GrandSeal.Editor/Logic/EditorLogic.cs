@@ -12,6 +12,7 @@
     using System.Xml;
 
     using CarbonCore.ToolFramework.ViewModel;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.Utils.Compat.IO;
 
     using Core.Engine.Contracts.Resource;
@@ -23,7 +24,6 @@
     using GrandSeal.Editor.Views;
     using ICSharpCode.AvalonEdit.Highlighting;
     using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-    using CarbonCore.Utils.Contracts.IoC;
 
     public class EditorLogic : BaseViewModel, IEditorLogic
     {

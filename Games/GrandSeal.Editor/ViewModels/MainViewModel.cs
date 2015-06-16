@@ -9,8 +9,8 @@
 
     using CarbonCore.ToolFramework.ViewModel;
     using CarbonCore.Utils.Compat.Contracts;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.Utils.Compat.IO;
-    using CarbonCore.Utils.Contracts.IoC;
     using CarbonCore.UtilsWPF;
 
     using Core.Engine.Resource.Content;

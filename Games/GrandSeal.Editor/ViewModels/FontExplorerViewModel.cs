@@ -3,7 +3,7 @@
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
 
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
 
     using GrandSeal.Editor.Contracts;
 

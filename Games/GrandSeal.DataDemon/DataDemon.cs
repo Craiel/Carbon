@@ -3,8 +3,8 @@
     using System.IO;
     using System.Threading;
 
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.Utils.Contracts;
-    using CarbonCore.Utils.Contracts.IoC;
 
     using GrandSeal.DataDemon.Contracts;
     using GrandSeal.DataDemon.Logic;

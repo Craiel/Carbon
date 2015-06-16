@@ -6,11 +6,11 @@ using GrandSeal.Editor.Logic;
 using GrandSeal.Editor.Logic.MVVM;
 
 using Core.Engine.Contracts;
-using CarbonCore.Utils.Contracts.IoC;
 
 namespace GrandSeal.Editor.ViewModels
 {
     using CarbonCore.ToolFramework.ViewModel;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.UtilsWPF;
 
     public abstract class DocumentViewModel : BaseViewModel, IEditorDocument

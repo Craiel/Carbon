@@ -1,7 +1,6 @@
 ﻿namespace GrandSeal.DataDemon.Logic
 {
     using CarbonCore.Utils.Contracts;
-    using CarbonCore.Utils.Contracts.IoC;
 
     using GrandSeal.DataDemon.Contracts;
 

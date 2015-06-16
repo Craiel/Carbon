@@ -5,7 +5,7 @@
 
     using CarbonCore.Processing.Resource;
     using CarbonCore.Processing.Resource.Model;
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
 
     using Contracts;
 

@@ -5,13 +5,13 @@
 
     using CarbonCore.Processing.Resource.Model;
     using CarbonCore.Processing.Resource.Stage;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
 
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Scene;
     using Core.Engine.Logic;
     using Core.Engine.Resource;
-    using CarbonCore.Utils.Contracts.IoC;
-    
+
     public class Stage : EngineComponent, IStage
     {
         private const string LightRoot = "Lights";

@@ -2,8 +2,8 @@
 {
     using System;
 
+    using CarbonCore.Utils.Compat.Contracts.IoC;
     using CarbonCore.Utils.Contracts;
-    using CarbonCore.Utils.Contracts.IoC;
 
     using Contracts;
 

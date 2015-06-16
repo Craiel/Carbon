@@ -4,7 +4,7 @@
     using System.Threading;
 
     using CarbonCore.Processing.Resource;
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
 
     using Contracts;
 

@@ -1,6 +1,6 @@
 ﻿namespace GrandSeal.Editor.ViewModels
 {
-    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Compat.Contracts.IoC;
 
     using Core.Engine.Resource.Content;
 
