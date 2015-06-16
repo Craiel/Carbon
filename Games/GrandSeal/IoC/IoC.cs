@@ -13,7 +13,7 @@
     [DependsOnModule(typeof(UtilsModule))]
     [DependsOnModule(typeof(EngineModule))]
     [DependsOnModule(typeof(GameModule))]
-    public class GameModule : CarbonModuleAutofac
+    public class GameModule : CarbonQuickModule
     {
         public GameModule()
         {

@@ -13,7 +13,7 @@
     [DependsOnModule(typeof(EngineModule))]
     [DependsOnModule(typeof(DataDemonModule))]
     [DependsOnModule(typeof(CarbonProcessingModule))]
-    public class DataDemonModule : CarbonModuleAutofac
+    public class DataDemonModule : CarbonQuickModule
     {
         public DataDemonModule()
         {

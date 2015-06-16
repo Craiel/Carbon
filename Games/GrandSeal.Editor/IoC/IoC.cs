@@ -13,7 +13,7 @@
     [DependsOnModule(typeof(EngineModule))]
     [DependsOnModule(typeof(CarbonProcessingModule))]
     [DependsOnModule(typeof(UtilsModule))]
-    public class EditorModule : CarbonModuleAutofac
+    public class EditorModule : CarbonQuickModule
     {
         public EditorModule()
         {

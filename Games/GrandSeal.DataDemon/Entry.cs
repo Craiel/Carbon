@@ -1,9 +1,6 @@
 ﻿namespace GrandSeal.DataDemon
 {
-    using Autofac;
-
     using CarbonCore.Utils.Compat.Diagnostics;
-    using CarbonCore.Utils.Compat.IoC;
     using CarbonCore.Utils.IoC;
 
     using GrandSeal.DataDemon.Contracts;
@@ -17,8 +14,8 @@
             // Todo: Process Arguments
             var arguments = new DemonArguments { Config = @"C:\Dev\Carbon\Games\GrandSeal.Data\Demon.conf" };
 
-            IContainer kernel = new CarbonContainerAutofacBuilder().Build<DataDemonModule>() as IContainer;
-            kernel.Resolve<IDataDemon>().Run(arguments);
+            var container = CarbonContainerAutofacBuilder.Build<DataDemonModule>();
+            container.Resolve<IDataDemon>().Run(arguments);
 
             Profiler.TraceProfilerStatistics();
         }

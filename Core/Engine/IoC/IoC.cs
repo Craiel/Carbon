@@ -1,6 +1,8 @@
 ﻿namespace Core.Engine.IoC
 {
     using Autofac;
+
+    using CarbonCore.Utils.Compat.IoC;
     using CarbonCore.Utils.IoC;
     using Core.Engine.Contracts;
     using Core.Engine.Contracts.Logic;
@@ -17,7 +19,7 @@
     using Core.Engine.Scene;
     using Core.Engine.UserInterface;
 
-    public class EngineModule : CarbonModuleAutofac
+    public class EngineModule : CarbonQuickModule
     {
         public EngineModule()
         {
