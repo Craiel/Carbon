@@ -4,7 +4,6 @@
     using System.Threading;
 
     using CarbonCore.Utils.Compat.Contracts.IoC;
-    using CarbonCore.Utils.Contracts;
 
     using GrandSeal.DataDemon.Contracts;
     using GrandSeal.DataDemon.Logic;

@@ -3,9 +3,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
-
-    using CarbonCore.Utils.Contracts;
-
+    
     using Core.Engine.Contracts.Logic;
 
     using NLua;

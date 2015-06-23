@@ -3,7 +3,6 @@
     using System;
 
     using CarbonCore.Utils.Compat.Contracts.IoC;
-    using CarbonCore.Utils.Contracts;
 
     using Contracts.Logic;
     using Contracts.Resource;

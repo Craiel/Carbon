@@ -5,8 +5,6 @@
     using System.Data.Common;
     using System.Linq;
 
-    using CarbonCore.Utils.Contracts;
-
     using Core.Engine.Contracts.Resource;
 
     public class ContentQueryResult<T> : ContentQueryResult

@@ -7,7 +7,6 @@
     using System.Xml.Serialization;
 
     using CarbonCore.Utils.Compat.Contracts.IoC;
-    using CarbonCore.Utils.Contracts;
 
     using GrandSeal.DataDemon.Contracts;
 

@@ -1,7 +1,5 @@
 ﻿namespace GrandSeal.DataDemon.Logic
 {
-    using CarbonCore.Utils.Contracts;
-
     using GrandSeal.DataDemon.Contracts;
 
     public class DemonBuild : DemonOperation, IDemonBuild
