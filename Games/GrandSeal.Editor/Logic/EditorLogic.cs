@@ -177,7 +177,8 @@
             // Move the database file over to our new location
             if (this.projectPath.Exists)
             {
-                this.projectPath.CopyTo(path);
+                throw new NotImplementedException("CarbonDirectory CopyTo");
+                // this.projectPath.CopyTo(path);
             }
             
             this.OpenProject(path);
