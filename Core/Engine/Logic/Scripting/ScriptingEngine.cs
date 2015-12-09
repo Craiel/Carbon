@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-
-    using CarbonCore.Utils.Compat.Contracts.IoC;
-    using CarbonCore.Utils.Compat.Diagnostics;
+    
+    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Diagnostics;
 
     using Core.Engine.Contracts.Logic;
 

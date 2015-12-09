@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-
-    using CarbonCore.Utils.Compat.Contracts;
+    
+    using CarbonCore.Utils.Contracts;
 
     using Core.Engine.Contracts.Logic;
     

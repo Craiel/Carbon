@@ -1,9 +1,9 @@
 ﻿namespace Core.Engine.Contracts.Logic
 {
     using System;
-
-    using CarbonCore.Utils.Compat.Contracts;
     
+    using CarbonCore.Utils.Contracts;
+
     public interface IEngineComponent : IDisposable
     {
         void Initialize(ICarbonGraphics graphics);

@@ -25,6 +25,7 @@ Thumbs.db
 tmp
 obj
 Publish
+Packages
 
 # Misc
 *.log

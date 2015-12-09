@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GrandSeal.Editor</RootNamespace>
     <AssemblyName>GrandSeal.Editor</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -30,6 +30,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -89,9 +90,6 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac">
-      <HintPath>..\..\..\CarbonCore\External\Autofac\3.1.1\Autofac.dll</HintPath>
-    </Reference>
     <Reference Include="Fluent">
       <HintPath>..\..\External\FluentRibbon\c2848bed6826\Fluent.dll</HintPath>
     </Reference>
@@ -118,18 +116,6 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock">
-      <HintPath>..\..\..\CarbonCore\External\Extended WPF Toolkit\2.1.0\Xceed.Wpf.AvalonDock.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
-      <HintPath>..\..\..\CarbonCore\External\Extended WPF Toolkit\2.1.0\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid">
-      <HintPath>..\..\..\CarbonCore\External\Extended WPF Toolkit\2.1.0\Xceed.Wpf.DataGrid.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\..\..\CarbonCore\External\Extended WPF Toolkit\2.1.0\Xceed.Wpf.Toolkit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contracts\IFontExplorerViewModel.cs" />
@@ -291,24 +277,16 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\CarbonCore\Processing\CarbonCore.Processing.csproj">
-      <Project>{4DB8D196-1F50-493F-9FFB-40E1E503EE87}</Project>
+      <Project>{4db8d196-1f50-493f-9ffb-40e1e503ee87}</Project>
       <Name>CarbonCore.Processing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\CarbonCore\ToolFramework\CarbonCore.ToolFramework.csproj">
-      <Project>{E4643DF2-D2DB-4E99-AB4B-D8CE4FD94D81}</Project>
-      <Name>CarbonCore.ToolFramework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\CarbonCore\UtilsCompat\CarbonCore.Utils.Compat.csproj">
-      <Project>{B823CDCE-5ED4-4030-AB35-44DAF233D4C0}</Project>
-      <Name>CarbonCore.Utils.Compat</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\CarbonCore\UtilsWPF\CarbonCore.UtilsWPF.csproj">
-      <Project>{75FF83F3-C123-4982-91F7-09D0F8A66536}</Project>
-      <Name>CarbonCore.UtilsWPF</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\CarbonCore\Utils\CarbonCore.Utils.csproj">
       <Project>{e05836d9-0bb3-4bfa-89e6-f5ed40a9d93c}</Project>
       <Name>CarbonCore.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\CarbonCore\Utils\Edge\CarbonCore.Utils.Edge.csproj">
+      <Project>{a46b19fc-eb4a-4bda-97e1-5b522fb4cc6b}</Project>
+      <Name>CarbonCore.Utils.Edge</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Engine\Core.Engine.csproj">
       <Project>{a724db75-b032-4ae5-b901-063a165f7e71}</Project>

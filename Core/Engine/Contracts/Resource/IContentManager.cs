@@ -1,8 +1,8 @@
 ﻿namespace Core.Engine.Contracts.Resource
 {
     using System;
-
-    using CarbonCore.Utils.Compat.IO;
+    
+    using CarbonCore.Utils.IO;
 
     using Core.Engine.Resource;
     using Core.Engine.Resource.Content;

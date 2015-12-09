@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Core.Engine</RootNamespace>
     <AssemblyName>Carbon.Core.Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
@@ -28,6 +28,8 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,30 +63,32 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Autofac">
-      <HintPath>..\..\..\CarbonCore\External\Autofac\3.1.1\Autofac.dll</HintPath>
-    </Reference>
     <Reference Include="Google.ProtocolBuffers">
       <HintPath>..\..\..\CarbonCore\External\protobuf-csharp-port\2.4.1.521\Google.ProtocolBuffers.dll</HintPath>
     </Reference>
-    <Reference Include="NLua, Version=1.3.0.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
+    <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, PublicKeyToken=8df2ab518030ea95, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLua.1.3.2.1\lib\net45\NLua.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SharpDX, Version=2.6.3.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\CarbonCore\External\NLua\d5e748c909\NLua.dll</HintPath>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX">
-      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11_1-net40\SharpDX.dll</HintPath>
+    <Reference Include="SharpDX.D3DCompiler, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SharpDX.2.6.3\Bin\DirectX11-net40\SharpDX.D3DCompiler.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.D3DCompiler">
-      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11_1-net40\SharpDX.D3DCompiler.dll</HintPath>
+    <Reference Include="SharpDX.Direct3D11, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SharpDX.2.6.3\Bin\DirectX11-net40\SharpDX.Direct3D11.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Direct3D11">
-      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11_1-net40\SharpDX.Direct3D11.dll</HintPath>
+    <Reference Include="SharpDX.DirectInput, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SharpDX.2.6.3\Bin\DirectX11-net40\SharpDX.DirectInput.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.DirectInput">
-      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11-net40\SharpDX.DirectInput.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpDX.DXGI">
-      <HintPath>..\..\..\CarbonCore\External\SharpDX\2.5.0\DirectX11_1-net40\SharpDX.DXGI.dll</HintPath>
+    <Reference Include="SharpDX.DXGI, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\SharpDX.2.6.3\Bin\DirectX11-net40\SharpDX.DXGI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -293,24 +297,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\CarbonCore\Processing\CarbonCore.Processing.csproj">
-      <Project>{4DB8D196-1F50-493F-9FFB-40E1E503EE87}</Project>
-      <Name>CarbonCore.Processing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\CarbonCore\UtilsCompat\CarbonCore.Utils.Compat.csproj">
-      <Project>{B823CDCE-5ED4-4030-AB35-44DAF233D4C0}</Project>
-      <Name>CarbonCore.Utils.Compat</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\CarbonCore\UtilsDX\CarbonCore.UtilsDX.csproj">
-      <Project>{c3e6c35a-fe50-481b-9b6a-559dfdffb52e}</Project>
-      <Name>CarbonCore.UtilsDX</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\CarbonCore\Utils\CarbonCore.Utils.csproj">
-      <Project>{E05836D9-0BB3-4BFA-89E6-F5ED40A9D93C}</Project>
-      <Name>CarbonCore.Utils</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Data\Shaders\Blend.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -345,6 +331,25 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Engine.Designer.cs</LastGenOutput>
     </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\CarbonCore\Processing\CarbonCore.Processing.csproj">
+      <Project>{4db8d196-1f50-493f-9ffb-40e1e503ee87}</Project>
+      <Name>CarbonCore.Processing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\CarbonCore\Utils\CarbonCore.Utils.csproj">
+      <Project>{e05836d9-0bb3-4bfa-89e6-f5ed40a9d93c}</Project>
+      <Name>CarbonCore.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\CarbonCore\Utils\Edge\CarbonCore.Utils.Edge.csproj">
+      <Project>{a46b19fc-eb4a-4bda-97e1-5b522fb4cc6b}</Project>
+      <Name>CarbonCore.Utils.Edge</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\CarbonCore\Utils\Edge\DirectX\CarbonCore.Utils.Edge.DirectX.csproj">
+      <Project>{c3e6c35a-fe50-481b-9b6a-559dfdffb52e}</Project>
+      <Name>CarbonCore.Utils.Edge.DirectX</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -353,8 +358,15 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
-    </PostBuildEvent>
+xcopy /s /y "D:\Dev\Carbon\packages\NLua.1.3.2.1\lib\native\*.*" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\..\packages\SharpDX.2.6.3\build\SharpDX.targets" Condition="Exists('..\..\packages\SharpDX.2.6.3\build\SharpDX.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\SharpDX.2.6.3\build\SharpDX.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\SharpDX.2.6.3\build\SharpDX.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

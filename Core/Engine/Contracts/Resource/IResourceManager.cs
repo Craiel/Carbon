@@ -3,7 +3,7 @@
     using System;
 
     using CarbonCore.Processing.Contracts;
-    using CarbonCore.Utils.Compat.IO;
+    using CarbonCore.Utils.IO;
 
     using Core.Engine.Resource;
 

@@ -2,9 +2,9 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
-
-    using CarbonCore.Utils.Compat.Contracts;
-    using CarbonCore.Utils.Compat.Threading;
+    
+    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Threading;
 
     using Core.Engine.Contracts.Logic;
 

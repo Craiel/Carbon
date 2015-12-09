@@ -2,12 +2,12 @@
 {
     using System;
     using System.Threading;
-
-    using CarbonCore.Utils.Compat.Contracts;
-    using CarbonCore.Utils.Compat.Contracts.IoC;
-    using CarbonCore.Utils.Compat.Diagnostics;
-    using CarbonCore.Utils.Compat.Formatting;
-    using CarbonCore.Utils.Compat.IO;
+    
+    using CarbonCore.Utils.Contracts;
+    using CarbonCore.Utils.Contracts.IoC;
+    using CarbonCore.Utils.Diagnostics;
+    using CarbonCore.Utils.Formatting;
+    using CarbonCore.Utils.IO;
 
     using Core.Engine.Contracts.Logic;
     using Core.Engine.Contracts.Rendering;
@@ -64,7 +64,7 @@
             this.coreResourceManager.SetRoot(new CarbonDirectory("Data"));
             this.graphics.SetResources(this.coreResourceManager);
 
-            this.gameTimer = new CarbonCore.Utils.Compat.Timer();
+            this.gameTimer = new CarbonCore.Utils.Timer();
         }
 
         // -------------------------------------------------------------------

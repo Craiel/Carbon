@@ -1,6 +1,7 @@
 ﻿namespace Core.Engine.Contracts.Logic
 {
     using System;
+
     using Core.Engine.Contracts.Resource;
     using Core.Engine.Logic;
     using SharpDX;

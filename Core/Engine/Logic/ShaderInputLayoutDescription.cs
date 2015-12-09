@@ -2,7 +2,7 @@
 {
     using System;
 
-    using CarbonCore.Utils.Compat;
+    using CarbonCore.Utils;
 
     public class ShaderInputLayoutDescription
     {
